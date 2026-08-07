@@ -1798,7 +1798,7 @@ function adminLoginScreen(){
     <div class="login-card">
       <h2 class="serif">ورود به پنل مدیریت</h2>
       <p class="sub">WHITE RAVEN ADMIN</p>
-      <div class="form-field"><label>رمز عبور</label><input type="password" id="adminPass" placeholder="رمز عبور مدیریت"></div>
+      <div class="form-field"><label>رمز عبور</label><input type="password" id="adminPass" placeholder="رمز عبور مدیریت" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div>
       <div class="err-msg" id="adminErr"></div>
       <button class="btn btn-solid btn-block" id="adminLoginBtn">ورود</button>
       <a href="#/" data-link class="btn btn-ghost btn-block" style="margin-top:10px">بازگشت به فروشگاه</a>
@@ -1813,8 +1813,9 @@ function bindAdminLogin(){
   const btn = $('#adminLoginBtn');
   if(!btn) return;
   btn.onclick = async ()=>{
-    const val = $('#adminPass').value;
+    const val = $('#adminPass').value.trim();
     const errBox = $('#adminErr');
+    errBox.textContent = '';
     if(!supabaseClient){
       errBox.textContent = 'ورود به پنل نیاز به اتصال Supabase دارد — به README.md بخش «محافظت واقعی از رمز پنل مدیریت» مراجعه کنید.';
       return;
