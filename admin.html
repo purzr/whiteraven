@@ -272,13 +272,37 @@
               ${new Date(msg.created_at)
                 .toLocaleString('fa-IR')}
             </p>
+            <button
+              onclick="deleteMessage('${msg.id}')"
+              style="background:#d9534f;color:white;margin-top:10px;"
+              >
+              حذف پیام
+              </button>
 
           </div>
 
         `).join('');
     }
 
+async function deleteMessage(id) {
+  const confirmDelete = confirm('آیا از حذف این پیام مطمئن هستید؟');
 
+  if (!confirmDelete) return;
+
+  const { error } = await supabaseClient
+    .from('messages')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('DELETE ERROR:', error);
+    alert('حذف پیام انجام نشد');
+    return;
+  }
+
+  alert('پیام با موفقیت حذف شد ✓');
+  loadMessages();
+}
     // خروج
     async function logout() {
 
