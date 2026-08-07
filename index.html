@@ -1422,9 +1422,26 @@ function pageContact(){
           <div class="form-field"><label>نام</label><input required placeholder="نام شما"></div>
           <div class="form-field"><label>ایمیل</label><input required type="email" placeholder="example@gmail.com"></div>
         </div>
-        <div class="form-field"><label>موضوع</label><input placeholder="موضوع پیام"></div>
-        <div class="form-field"><label>پیام</label><textarea required placeholder="پیام خود را بنویسید..."></textarea></div>
-        <button class="btn btn-solid btn-block" type="submit">ارسال پیام</button>
+<div class="form-field">
+  <label>موضوع</label>
+  <input id="messageSubject" placeholder="موضوع پیام">
+</div>
+        <div class="form-field">
+  <label>پیام</label>
+
+  <textarea
+    id="messageInput"
+    required
+    maxlength="500"
+    placeholder="پیام خود را بنویسید..."
+  ></textarea>
+
+  <div id="messageCounter" style="display:none;font-size:11px; color:#999; margin-top:4px;">
+    0 / 500
+  </div>
+</div>
+
+<button class="btn btn-solid btn-block" type="submit">ارسال پیام</button>
       </form>
     </div>
   </div>`;
@@ -1592,6 +1609,22 @@ if(contactForm) contactForm.onsubmit = async e => {
     showToast('پیام شما با موفقیت ارسال شد ✓');
     contactForm.reset();
 };
+
+const messageInput = $('#messageInput');
+const messageCounter = $('#messageCounter');
+
+if (messageInput && messageCounter) {
+    messageInput.addEventListener('input', function () {
+        const count = this.value.length;
+
+        if (count >= 400) {
+            messageCounter.style.display = 'block';
+            messageCounter.textContent = count + ' / 500';
+        } else {
+            messageCounter.style.display = 'none';
+        }
+    });
+}
 
   const loginForm = $('#loginForm');
   if(loginForm) loginForm.onsubmit = async e=>{
