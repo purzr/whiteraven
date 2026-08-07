@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>White Raven | فروشگاه لباس زیر</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Estedad:wght@300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&family=Mada:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <!-- Supabase client — used for the shared product catalog & orders. See README.md "اتصال به Supabase" section. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -24,13 +24,29 @@
   --ok:#7a9b6e;
   --radius:2px;
   --maxw:1320px;
+
+  /* ===== customizable typography (editable from admin ▸ تنظیمات ظاهری) ===== */
+  --font-header:'Vazirmatn',sans-serif;
+  --font-hero:'Cormorant Garamond',serif;
+  --font-heading:'Cormorant Garamond',serif;
+  --font-product:'Vazirmatn',sans-serif;
+  --font-body:'Vazirmatn',sans-serif;
+  --font-footer:'Vazirmatn',sans-serif;
+  --scale-header:1;
+  --scale-hero:1;
+  --scale-heading:1;
+  --scale-product:1;
+  --scale-body:1;
+  --scale-footer:1;
+  --logo-h:34px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
   background:var(--bg);
   color:var(--text);
-  font-family:'Vazirmatn',sans-serif;
+  font-family:var(--font-body);
+  font-size:calc(16px * var(--scale-body));
   line-height:1.7;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
@@ -86,10 +102,11 @@ header.site{
   height:84px;
 }
 .logo{display:flex;align-items:center;gap:12px}
-.logo .wordmark{font-family:'Cormorant Garamond',serif;font-size:22px;letter-spacing:.22em;font-weight:600}
-.logo .wordmark small{display:block;font-family:'Vazirmatn';font-size:9px;letter-spacing:.3em;color:var(--text-faint);margin-top:2px}
+.logo img.logo-img{height:var(--logo-h);width:auto;max-width:180px;object-fit:contain}
+.logo .wordmark{font-family:var(--font-header);font-size:calc(22px * var(--scale-header));letter-spacing:.22em;font-weight:600}
+.logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(9px * var(--scale-header));letter-spacing:.3em;color:var(--text-faint);margin-top:2px}
 nav.main-nav{display:flex;gap:36px}
-nav.main-nav a{font-size:14px;color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s}
+nav.main-nav a{font-family:var(--font-header);font-size:calc(14px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s}
 nav.main-nav a:hover,nav.main-nav a.active{color:var(--gold-light)}
 nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:0;height:1px;background:var(--gold)}
 .header-icons{display:flex;align-items:center;gap:22px}
@@ -107,6 +124,16 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
   nav.main-nav{display:none}
   .hamburger{display:block}
 }
+@media(max-width:520px){
+  .header-row{height:auto;min-height:64px;padding:14px 0}
+  .logo{gap:9px}
+  .logo img.logo-img{height:26px}
+  .logo .wordmark{font-size:15px;letter-spacing:.12em;white-space:nowrap}
+  .logo .wordmark small{font-size:8px;letter-spacing:.16em;margin-top:3px}
+  .header-icons{gap:15px}
+  .icon-btn svg{width:18px;height:18px}
+  .icon-btn,.hamburger{min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center}
+}
 
 /* mobile drawer */
 .mobile-nav{
@@ -119,7 +146,7 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .mobile-nav.open{transform:translateX(0)}
 .mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
 .mobile-overlay.open{opacity:1;pointer-events:auto}
-.mobile-nav a{display:block;padding:14px 0;font-size:16px;border-bottom:1px solid var(--line);color:var(--text-dim)}
+.mobile-nav a{display:block;padding:14px 0;font-family:var(--font-header);font-size:calc(16px * var(--scale-header));border-bottom:1px solid var(--line);color:var(--text-dim)}
 .mobile-nav a.active{color:var(--gold-light)}
 .mobile-close{margin-bottom:20px;color:var(--text-dim)}
 
@@ -137,25 +164,50 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
     radial-gradient(ellipse 70% 80% at 90% 30%, rgba(255,255,255,.05), transparent 55%),
     var(--bg);
 }
+.hero-bg.has-photo{
+  background:
+    linear-gradient(90deg, rgba(10,9,8,.92) 0%, rgba(10,9,8,.55) 42%, rgba(10,9,8,.25) 100%),
+    var(--hero-photo) center/cover no-repeat;
+}
+@media(max-width:900px){
+  .hero-bg.has-photo{
+    background:
+      linear-gradient(180deg, rgba(10,9,8,.55) 0%, rgba(10,9,8,.88) 78%),
+      var(--hero-photo) center/cover no-repeat;
+  }
+}
 .hero-feather-svg{position:absolute;left:2%;top:8%;width:56%;max-width:760px;opacity:.95;filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
 @media(max-width:900px){.hero-feather-svg{opacity:.16;left:-10%;top:0;width:120%}}
 .hero-inner{position:relative;z-index:2;padding:90px 0}
 .hero h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(48px,7vw,92px);
+  font-family:var(--font-hero);
+  font-size:calc(clamp(48px,7vw,92px) * var(--scale-hero));
   font-weight:600;
   letter-spacing:.02em;
   line-height:1;
   max-width:640px;
 }
-.hero p.lede{color:var(--text-dim);font-size:17px;max-width:440px;margin-bottom:32px}
+.hero p.lede{color:var(--text-dim);font-family:var(--font-body);font-size:calc(17px * var(--scale-body));max-width:440px;margin-bottom:32px}
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+@media(max-width:640px){
+  .hero{min-height:auto}
+  .hero-inner{padding:64px 0 56px}
+  .hero h1{font-size:calc(clamp(40px,13vw,58px) * var(--scale-hero))}
+  .hero p.lede{font-size:calc(15px * var(--scale-body));max-width:100%}
+  .hero-cta{width:100%}
+  .hero-cta .btn{flex:1;min-width:0}
+}
 
 /* ===== Section heading ===== */
 .section{padding:96px 0}
 .section-head{text-align:center;margin-bottom:56px}
-.section-head h2{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600}
+.section-head h2{font-family:var(--font-heading);font-size:calc(38px * var(--scale-heading));font-weight:600}
 .section-head .divider{margin:16px auto}
+@media(max-width:640px){
+  .section{padding:56px 0}
+  .section-head{margin-bottom:36px}
+  .section-head h2{font-size:calc(28px * var(--scale-heading))}
+}
 
 /* ===== Category split ===== */
 .cat-split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
@@ -168,9 +220,10 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .cat-panel:hover .cat-bg{transform:scale(1.06);opacity:.7}
 .cat-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,.15) 60%)}
 .cat-content{position:relative;z-index:2}
-.cat-content h3{font-family:'Cormorant Garamond',serif;font-size:34px;margin-bottom:2px}
+.cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
 .cat-content .eyebrow{margin-bottom:14px;display:block}
 @media(max-width:760px){.cat-split{grid-template-columns:1fr}.cat-panel{min-height:280px}}
+@media(max-width:520px){.cat-panel{min-height:220px;padding:26px}.cat-content h3{font-size:calc(26px * var(--scale-heading))}}
 
 /* ===== Features bar ===== */
 .features{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-alt)}
@@ -178,17 +231,17 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .feature{display:flex;align-items:center;gap:16px;padding:34px 20px;border-left:1px solid var(--line)}
 .feature:last-child{border-left:none}
 .feature svg{flex:none;color:var(--gold)}
-.feature h4{font-size:14px;margin-bottom:4px}
-.feature p{font-size:12.5px;color:var(--text-faint)}
+.feature h4{font-size:calc(14px * var(--scale-body));margin-bottom:4px}
+.feature p{font-size:calc(12.5px * var(--scale-body));color:var(--text-faint)}
 @media(max-width:760px){.features .container{grid-template-columns:1fr 1fr}.feature{border-left:none;border-bottom:1px solid var(--line)}}
 
 /* ===== Product grid ===== */
 .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px;flex-wrap:wrap}
 .chip-row{display:flex;gap:10px;flex-wrap:wrap}
-.chip{padding:8px 18px;border:1px solid var(--line);font-size:13px;color:var(--text-dim);border-radius:30px;transition:.2s}
+.chip{padding:8px 18px;border:1px solid var(--line);font-size:calc(13px * var(--scale-body));color:var(--text-dim);border-radius:30px;transition:.2s}
 .chip.active,.chip:hover{border-color:var(--gold);color:var(--gold-light)}
 .search-mini{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:6px 2px;min-width:200px}
-.search-mini input{background:none;border:none;color:var(--text);font-size:13px;flex:1;font-family:inherit}
+.search-mini input{background:none;border:none;color:var(--text);font-size:calc(13px * var(--scale-body));flex:1;font-family:inherit}
 .search-mini input:focus{outline:none}
 
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
@@ -200,15 +253,15 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .card:hover{border-color:var(--gold-dim)}
 .card-img{aspect-ratio:3/4;background:#0d0d0e;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .card-img img{width:100%;height:100%;object-fit:cover}
-.card-img .ph{color:var(--text-faint);display:flex;flex-direction:column;align-items:center;gap:10px;font-size:11px;letter-spacing:.1em;text-align:center;padding:20px}
-.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:10px;padding:4px 9px;letter-spacing:.05em}
-.card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-dim);letter-spacing:.1em}
-.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
-.card-body .cat-tag{font-size:10.5px;letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
-.card-body h3{font-size:15.5px;font-weight:500}
+.card-img .ph{color:var(--text-faint);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.1em;text-align:center;padding:20px}
+.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:calc(10px * var(--scale-product));padding:4px 9px;letter-spacing:.05em}
+.card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product)}
+.card-body .cat-tag{font-size:calc(10.5px * var(--scale-product));letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
+.card-body h3{font-size:calc(15.5px * var(--scale-product));font-weight:500}
 .card-price{display:flex;align-items:baseline;gap:8px;margin-top:auto}
-.card-price .now{color:var(--gold-light);font-size:15px;font-weight:600}
-.card-price .was{color:var(--text-faint);font-size:12.5px;text-decoration:line-through}
+.card-price .now{color:var(--gold-light);font-size:calc(15px * var(--scale-product));font-weight:600}
+.card-price .was{color:var(--text-faint);font-size:calc(12.5px * var(--scale-product));text-decoration:line-through}
 .card-actions{display:flex;gap:8px;margin-top:10px}
 .card-actions .btn{flex:1;padding:10px;font-size:12.5px;justify-content:center}
 .icon-sq{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--text-dim);transition:.2s}
@@ -222,20 +275,59 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 @media(max-width:860px){.pd-wrap{grid-template-columns:1fr;gap:30px}}
 .pd-img{aspect-ratio:1/1;background:#0d0d0e;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .pd-img img{width:100%;height:100%;object-fit:cover}
-.pd-info .cat-tag{font-size:11px;letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase}
-.pd-info h1{font-family:'Cormorant Garamond',serif;font-size:38px;margin:10px 0 14px}
-.pd-price{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
-.pd-price .now{font-size:26px;color:var(--gold-light);font-weight:600}
-.pd-price .was{color:var(--text-faint);text-decoration:line-through;font-size:15px}
-.pd-desc{color:var(--text-dim);font-size:14.5px;margin-bottom:26px;line-height:1.9}
+
+/* ===== product gallery (multi-image, drag/swipe) ===== */
+.pd-gallery{position:relative}
+.pd-gallery-main{aspect-ratio:1/1;background:#0d0d0e;border:1px solid var(--line);overflow:hidden;position:relative;cursor:zoom-in;touch-action:pan-y}
+.pd-gallery-track{display:flex;height:100%;transition:transform .38s cubic-bezier(.4,0,.2,1);will-change:transform}
+.pd-gallery-track.dragging{transition:none}
+.pd-gallery-slide{flex:0 0 100%;height:100%;display:flex;align-items:center;justify-content:center;-webkit-user-drag:none}
+.pd-gallery-slide img{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.pd-gallery-dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:7px;z-index:3}
+.pd-gallery-dots button{width:7px;height:7px;border-radius:50%;background:rgba(242,239,232,.35);transition:.2s}
+.pd-gallery-dots button.active{background:var(--gold);width:20px;border-radius:4px}
+.pd-gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;background:rgba(10,10,11,.55);color:var(--text);display:flex;align-items:center;justify-content:center;z-index:3;transition:.2s;border-radius:50%}
+.pd-gallery-arrow:hover{background:var(--gold);color:#0a0a0b}
+.pd-gallery-arrow.next{left:12px}
+.pd-gallery-arrow.prev{right:12px}
+.pd-gallery-thumbs{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.pd-gallery-thumbs button{width:64px;height:78px;flex:none;border:1px solid var(--line);overflow:hidden;opacity:.55;transition:.2s;padding:0}
+.pd-gallery-thumbs button.active{opacity:1;border-color:var(--gold)}
+.pd-gallery-thumbs img{width:100%;height:100%;object-fit:cover}
+.pd-gallery-hint{position:absolute;bottom:14px;left:14px;z-index:3;background:rgba(10,10,11,.55);color:var(--text-dim);font-size:10.5px;padding:5px 10px;border-radius:20px;letter-spacing:.03em;pointer-events:none}
+
+.pd-info .cat-tag{font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase}
+.pd-info h1{font-family:var(--font-product);font-size:calc(38px * var(--scale-product));margin:10px 0 14px}
+.pd-price{display:flex;align-items:baseline;gap:12px;margin-bottom:22px;font-family:var(--font-product)}
+.pd-price .now{font-size:calc(26px * var(--scale-product));color:var(--gold-light);font-weight:600}
+.pd-price .was{color:var(--text-faint);text-decoration:line-through;font-size:calc(15px * var(--scale-product))}
+.pd-desc{color:var(--text-dim);font-family:var(--font-product);font-size:calc(14.5px * var(--scale-product));margin-bottom:26px;line-height:1.9}
+
+/* ===== lightbox (click-to-zoom viewer) ===== */
+.lightbox-overlay{position:fixed;inset:0;background:rgba(6,6,7,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;align-items:center;justify-content:center}
+.lightbox-overlay.open{opacity:1;pointer-events:auto}
+.lightbox-stage{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
+.lightbox-stage img{max-width:92vw;max-height:88vh;object-fit:contain;cursor:zoom-in;transition:transform .28s ease;user-select:none;-webkit-user-drag:none}
+.lightbox-stage img.zoomed{cursor:grab;transition:transform .05s linear}
+.lightbox-stage img.zoomed.panning{cursor:grabbing}
+.lightbox-top{position:absolute;top:18px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 22px;z-index:2}
+.lightbox-count{color:var(--text-dim);font-size:13px;letter-spacing:.05em}
+.lightbox-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:18px;transition:.2s}
+.lightbox-close:hover{background:var(--gold);color:#0a0a0b}
+.lightbox-arrow{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--text);display:flex;align-items:center;justify-content:center;z-index:2;transition:.2s}
+.lightbox-arrow:hover{background:var(--gold);color:#0a0a0b}
+.lightbox-arrow.next{left:18px}
+.lightbox-arrow.prev{right:18px}
+.lightbox-hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:var(--text-faint);font-size:11.5px;letter-spacing:.05em;z-index:2}
+@media(max-width:640px){.lightbox-arrow{width:38px;height:38px}}
 .qty-row{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .qty-box{display:flex;align-items:center;border:1px solid var(--line)}
 .qty-box button{width:38px;height:40px}
-.qty-box span{width:40px;text-align:center;font-size:14px}
+.qty-box span{width:40px;text-align:center;font-size:calc(14px * var(--scale-body))}
 .size-row{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
-.size-opt{width:44px;height:40px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;transition:.2s}
+.size-opt{width:44px;height:40px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:calc(13px * var(--scale-body));transition:.2s}
 .size-opt.active,.size-opt:hover{border-color:var(--gold);color:var(--gold-light)}
-.pd-meta{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:12.5px;color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
+.pd-meta{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
 
 /* ===== Cart drawer ===== */
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -248,31 +340,31 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 }
 .cart-drawer.open{transform:translateX(0)}
 .cart-head{display:flex;align-items:center;justify-content:space-between;padding:24px;border-bottom:1px solid var(--line)}
-.cart-head h3{font-family:'Cormorant Garamond',serif;font-size:22px}
-.cart-items{flex:1;overflow-y:auto;padding:10px 24px}
+.cart-head h3{font-family:var(--font-heading);font-size:calc(22px * var(--scale-heading))}
+.cart-items{flex:1;overflow-y:auto;padding:10px 24px;font-family:var(--font-body)}
 .cart-line{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
 .cart-line .thumb{width:76px;height:92px;background:#0d0d0e;flex:none;border:1px solid var(--line);overflow:hidden}
 .cart-line .thumb img{width:100%;height:100%;object-fit:cover}
 .cart-line .ci-body{flex:1;display:flex;flex-direction:column;gap:6px}
-.cart-line h4{font-size:14px}
-.cart-line .ci-meta{font-size:11.5px;color:var(--text-faint)}
+.cart-line h4{font-size:calc(14px * var(--scale-body))}
+.cart-line .ci-meta{font-size:calc(11.5px * var(--scale-body));color:var(--text-faint)}
 .cart-line .ci-row{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
 .cart-line .ci-qty{display:flex;align-items:center;border:1px solid var(--line)}
-.cart-line .ci-qty button{width:26px;height:26px;font-size:13px}
-.cart-line .ci-qty span{width:26px;text-align:center;font-size:12.5px}
-.cart-line .ci-price{color:var(--gold-light);font-size:13.5px}
-.cart-line .ci-remove{color:var(--text-faint);font-size:11.5px;text-decoration:underline}
-.cart-foot{padding:22px 24px;border-top:1px solid var(--line)}
-.cart-sum-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px;color:var(--text-dim)}
-.cart-sum-row.total{color:var(--text);font-size:17px;font-weight:600;margin:14px 0}
+.cart-line .ci-qty button{width:26px;height:26px;font-size:calc(13px * var(--scale-body))}
+.cart-line .ci-qty span{width:26px;text-align:center;font-size:calc(12.5px * var(--scale-body))}
+.cart-line .ci-price{color:var(--gold-light);font-size:calc(13.5px * var(--scale-body))}
+.cart-line .ci-remove{color:var(--text-faint);font-size:calc(11.5px * var(--scale-body));text-decoration:underline}
+.cart-foot{padding:22px 24px;border-top:1px solid var(--line);font-family:var(--font-body)}
+.cart-sum-row{display:flex;justify-content:space-between;font-size:calc(14px * var(--scale-body));margin-bottom:10px;color:var(--text-dim)}
+.cart-sum-row.total{color:var(--text);font-size:calc(17px * var(--scale-body));font-weight:600;margin:14px 0}
 
 /* ===== Auth / account ===== */
 .narrow{max-width:420px;margin:0 auto}
 .form-field{margin-bottom:18px}
-.form-field label{display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:8px}
+.form-field label{display:block;font-size:calc(12.5px * var(--scale-body));color:var(--text-dim);margin-bottom:8px}
 .form-field input,.form-field textarea,.form-field select{
   width:100%;background:var(--bg-card);border:1px solid var(--line);color:var(--text);
-  padding:12px 14px;font-size:14px;font-family:inherit;
+  padding:12px 14px;font-size:calc(14px * var(--scale-body));font-family:inherit;
 }
 .form-field input:focus,.form-field textarea:focus,.form-field select:focus{outline:none;border-color:var(--gold)}
 .form-field textarea{min-height:100px;resize:vertical}
@@ -283,9 +375,10 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 footer.site{border-top:1px solid var(--line);background:var(--bg-alt);padding:70px 0 26px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
 @media(max-width:760px){.foot-grid{grid-template-columns:1fr 1fr;gap:30px}}
-.foot-col h5{font-size:13px;letter-spacing:.1em;color:var(--gold-light);margin-bottom:18px}
-.foot-col a,.foot-col p{display:block;font-size:13px;color:var(--text-dim);margin-bottom:10px}
-.foot-bottom{border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text-faint)}
+footer.site{font-family:var(--font-footer)}
+.foot-col h5{font-size:calc(13px * var(--scale-footer));letter-spacing:.1em;color:var(--gold-light);margin-bottom:18px}
+.foot-col a,.foot-col p{display:block;font-size:calc(13px * var(--scale-footer));color:var(--text-dim);margin-bottom:10px}
+.foot-bottom{border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:calc(12px * var(--scale-footer));color:var(--text-faint)}
 
 /* ===== Toast ===== */
 .toast{
@@ -333,6 +426,42 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .upload-box:hover{border-color:var(--gold)}
 .upload-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .upload-box input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* multi-image admin uploader */
+.multi-upload-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
+.multi-upload-thumb{position:relative;aspect-ratio:3/4;border:1px solid var(--line);overflow:hidden;background:var(--bg-card)}
+.multi-upload-thumb img{width:100%;height:100%;object-fit:cover}
+.multi-upload-thumb .mu-main-tag{position:absolute;top:4px;right:4px;background:var(--gold);color:#0a0a0b;font-size:9px;padding:2px 6px;letter-spacing:.03em}
+.multi-upload-thumb .mu-remove{position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.multi-upload-thumb .mu-remove:hover{background:var(--danger)}
+.multi-upload-add{aspect-ratio:3/4;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text-faint);font-size:11px;cursor:pointer;position:relative;text-align:center;padding:6px}
+.multi-upload-add:hover{border-color:var(--gold);color:var(--gold-light)}
+.multi-upload-add input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* admin settings page */
+.settings-card{background:var(--bg-card);border:1px solid var(--line);padding:24px;margin-bottom:22px}
+.settings-card h3{font-family:'Cormorant Garamond',serif;font-size:19px;margin-bottom:4px}
+.settings-card .settings-desc{font-size:12.5px;color:var(--text-faint);margin-bottom:20px}
+.font-section-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:end;padding:14px 0;border-bottom:1px solid var(--line)}
+.font-section-row:last-child{border-bottom:none}
+.font-section-row .fs-label{font-size:13px;color:var(--text);align-self:center}
+@media(max-width:760px){.font-section-row{grid-template-columns:1fr}}
+.range-field{display:flex;flex-direction:column;gap:6px}
+.range-field input[type=range]{width:100%;accent-color:var(--gold)}
+.range-field .range-val{font-size:11.5px;color:var(--text-faint)}
+.toggle-switch{position:relative;display:inline-block;width:42px;height:24px;flex:none}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--line);transition:.25s;border-radius:24px}
+.toggle-slider::before{content:"";position:absolute;height:18px;width:18px;right:3px;bottom:3px;background:var(--text-dim);transition:.25s;border-radius:50%}
+.toggle-switch input:checked + .toggle-slider{background:var(--gold-dim)}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(-18px);background:var(--gold-light)}
+.toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.toggle-row .tr-label{font-size:13.5px}
+.logo-upload-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo-upload-box{width:110px;height:110px;border:1px dashed var(--line);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;background:#0d0d0e}
+.logo-upload-box img{width:100%;height:100%;object-fit:contain;padding:10px}
+.logo-upload-box input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.logo-upload-box:hover{border-color:var(--gold)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
 .modal-box{background:var(--bg-alt);border:1px solid var(--line);max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px}
@@ -349,25 +478,25 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .login-card p.sub{text-align:center;color:var(--text-faint);font-size:12.5px;margin-bottom:28px}
 .err-msg{color:var(--danger);font-size:12.5px;margin-top:-8px;margin-bottom:14px;min-height:16px}
 
-.breadcrumb{font-size:12.5px;color:var(--text-faint);margin-bottom:30px}
+.breadcrumb{font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);margin-bottom:30px}
 .breadcrumb a:hover{color:var(--gold-light)}
 
 .page-head{padding:60px 0 40px;border-bottom:1px solid var(--line);text-align:center}
-.page-head h1{font-family:'Cormorant Garamond',serif;font-size:42px}
+.page-head h1{font-family:var(--font-heading);font-size:calc(42px * var(--scale-heading))}
 .page-head p{color:var(--text-dim);margin-top:10px}
 
 .about-block{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 @media(max-width:800px){.about-block{grid-template-columns:1fr;gap:30px}}
-.about-block h2{font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:18px}
-.about-block p{color:var(--text-dim);margin-bottom:16px;font-size:14.5px}
+.about-block h2{font-family:var(--font-heading);font-size:calc(32px * var(--scale-heading));margin-bottom:18px}
+.about-block p{color:var(--text-dim);margin-bottom:16px;font-size:calc(14.5px * var(--scale-body))}
 .about-visual{aspect-ratio:4/5;background:var(--bg-card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
 
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px}
 @media(max-width:800px){.contact-grid{grid-template-columns:1fr}}
 .contact-info-item{display:flex;gap:16px;margin-bottom:26px}
 .contact-info-item svg{flex:none;color:var(--gold)}
-.contact-info-item h4{font-size:14.5px;margin-bottom:4px}
-.contact-info-item p{color:var(--text-faint);font-size:13px}
+.contact-info-item h4{font-size:calc(14.5px * var(--scale-body));margin-bottom:4px}
+.contact-info-item p{color:var(--text-faint);font-size:calc(13px * var(--scale-body))}
 
 .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -386,9 +515,9 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 <header class="site">
   <div class="container header-row">
     <a href="#/" class="logo" data-link>
-      <svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <span id="siteLogoSlot"><svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/>
-      </svg>
+      </svg></span>
       <span class="wordmark">WHITE RAVEN<small>UNDERWEAR ATELIER</small></span>
     </a>
     <nav class="main-nav" id="mainNav">
@@ -444,7 +573,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
   <div class="container">
     <div class="foot-grid">
       <div class="foot-col">
-        <h5 class="serif" style="font-size:20px;letter-spacing:.15em">WHITE RAVEN</h5>
+        <h5 class="serif" style="font-family:var(--font-footer);font-size:calc(20px * var(--scale-footer));letter-spacing:.15em">WHITE RAVEN</h5>
         <p style="margin-top:10px">زیبایی در جزئیات، اعتماد به نفس در هر لحظه. لباس زیر زنانه و مردانه با کیفیت برتر و طراحی خاص.</p>
       </div>
       <div class="foot-col">
@@ -485,6 +614,25 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
   <div class="cart-items" id="cartItemsWrap"></div>
   <div class="cart-foot" id="cartFoot"></div>
 </aside>
+
+
+<!-- ============ IMAGE LIGHTBOX (click-to-zoom viewer) ============ -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <div class="lightbox-top">
+    <span class="lightbox-count" id="lightboxCount"></span>
+    <button class="lightbox-close" id="lightboxCloseBtn">✕</button>
+  </div>
+  <div class="lightbox-stage" id="lightboxStage">
+    <img id="lightboxImg" alt="">
+    <button class="lightbox-arrow next" id="lightboxNextBtn" title="بعدی">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="lightbox-arrow prev" id="lightboxPrevBtn" title="قبلی">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div class="lightbox-hint">برای بزرگ‌نمایی کلیک کنید — برای جابجایی بکشید</div>
+</div>
 
 <!-- ============ ADMIN ============ -->
 <div id="adminApp" class="hidden"></div>
@@ -542,8 +690,8 @@ async function sSet(key, value, shared=false){
    "اتصال به Supabase" for the exact steps and the SQL to create the tables.
    Left as placeholders, the site automatically falls back to the
    browser-only localStorage mode from before (per-browser catalog). */
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://feqrgkbfnlefjcrilnqj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlcXJna2JmbmxlZmpjcmlsbnFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwNTAzNjIsImV4cCI6MjEwMTYyNjM2Mn0.Obwr7YMRvKn2wtiaeZCC5j7I7VvSPCeArAiZ-oTqsZ4';
 
 let supabaseClient = null;
 if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY' && window.supabase) {
@@ -552,19 +700,25 @@ if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE
 }
 
 function rowToProduct(row){
+  const images = Array.isArray(row.images) && row.images.length ? row.images : (row.image ? [row.image] : []);
   return {
     id: row.id, name: row.name, category: row.category,
     price: Number(row.price)||0, compareAt: Number(row.compare_at)||0,
-    stock: Number(row.stock)||0, image: row.image||'',
+    stock: Number(row.stock)||0, image: images[0]||'', images,
     desc: row.desc||'', sizes: row.sizes||[]
   };
 }
 function productToRow(p){
+  const images = normalizeImages(p);
   return {
     id: p.id, name: p.name, category: p.category, price: p.price,
-    compare_at: p.compareAt||0, stock: p.stock, image: p.image||'',
+    compare_at: p.compareAt||0, stock: p.stock, image: images[0]||'', images,
     desc: p.desc||'', sizes: p.sizes||[]
   };
+}
+function normalizeImages(p){
+  if(Array.isArray(p.images) && p.images.length) return p.images;
+  return p.image ? [p.image] : [];
 }
 function rowToOrder(row){
   return {
@@ -633,6 +787,94 @@ async function updateOrderStatusRemote(id, status){
   }
 }
 
+/* ---------------- appearance settings (logo / fonts / sizes / buy link) ----------------
+   Editable from admin ▸ تنظیمات ظاهری. Stored shared so the change applies to every
+   visitor (same shared-storage mechanism as products/orders — see loadSettings below). */
+const FONT_OPTIONS = [
+  {id:"Vazirmatn", label:"وزیرمتن — Vazirmatn (فارسی)"},
+  {id:"Estedad", label:"استعداد — Estedad (فارسی)"},
+  {id:"Noto Naskh Arabic", label:"نوتو نسخ — Noto Naskh (فارسی)"},
+  {id:"Noto Kufi Arabic", label:"نوتو کوفی — Noto Kufi (فارسی)"},
+  {id:"Cairo", label:"کایرو — Cairo (فارسی)"},
+  {id:"Mada", label:"مدا — Mada (فارسی)"},
+  {id:"Cormorant Garamond", label:"Cormorant Garamond (انگلیسی)"},
+  {id:"Inter", label:"Inter (انگلیسی)"},
+  {id:"Poppins", label:"Poppins (انگلیسی)"},
+  {id:"Playfair Display", label:"Playfair Display (انگلیسی)"},
+  {id:"Montserrat", label:"Montserrat (انگلیسی)"},
+  {id:"Roboto", label:"Roboto (انگلیسی)"}
+];
+const FONT_SECTIONS = [
+  {key:'header', label:'سربرگ و منوی سایت'},
+  {key:'hero', label:'عنوان اصلی صفحه نخست (Hero)'},
+  {key:'heading', label:'عنوان بخش‌ها (در همه صفحات)'},
+  {key:'product', label:'متن محصولات (کارت و صفحه محصول)'},
+  {key:'body', label:'متن عمومی و توضیحات'},
+  {key:'footer', label:'فوتر'}
+];
+function defaultSettings(){
+  return {
+    logo:'',
+    heroImage:'',
+    fonts:{
+      header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
+      product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
+    },
+    scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 }
+  };
+}
+function rowToSettings(row){
+  const d = defaultSettings();
+  let data = {};
+  try{ data = typeof row.data === 'string' ? JSON.parse(row.data) : (row.data||{}); }catch(e){ data = {}; }
+  return {
+    logo: data.logo ?? d.logo,
+    heroImage: data.heroImage ?? d.heroImage,
+    fonts: {...d.fonts, ...(data.fonts||{})},
+    scales: {...d.scales, ...(data.scales||{})}
+  };
+}
+async function loadSettings(){
+  if(supabaseClient){
+    const {data, error} = await supabaseClient.from('settings').select('*').eq('id','site').maybeSingle();
+    if(error){ console.error(error); return null; }
+    return data ? rowToSettings(data) : null;
+  }
+  const s = await sGet('settings', true);
+  return s ? {...defaultSettings(), ...s, fonts:{...defaultSettings().fonts,...(s.fonts||{})}, scales:{...defaultSettings().scales,...(s.scales||{})}} : null;
+}
+async function saveSettingsRemote(settings){
+  if(supabaseClient){
+    const {error} = await supabaseClient.from('settings').upsert({id:'site', data: JSON.stringify(settings)});
+    if(error) console.error(error);
+  } else {
+    await sSet('settings', settings, true);
+  }
+}
+function applySettingsToDOM(settings){
+  const root = document.documentElement.style;
+  FONT_SECTIONS.forEach(s=>{
+    const fam = settings.fonts?.[s.key] || defaultSettings().fonts[s.key];
+    root.setProperty(`--font-${s.key}`, `'${fam}', ${/garamond|playfair/i.test(fam)?'serif':'sans-serif'}`);
+    const scale = (settings.scales?.[s.key] ?? 100)/100;
+    root.setProperty(`--scale-${s.key}`, scale);
+  });
+  const slot = $('#siteLogoSlot');
+  if(slot){
+    if(settings.logo){
+      slot.innerHTML = `<img class="logo-img" src="${settings.logo}" alt="لوگو">`;
+    } else {
+      slot.innerHTML = `<svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
+    }
+  }
+  const adminSlot = $('#adminLogoSlot');
+  if(adminSlot){
+    adminSlot.innerHTML = settings.logo
+      ? `<img class="logo-img" style="height:26px" src="${settings.logo}" alt="لوگو">`
+      : `<svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
+  }
+}
+
 /* ---------------- seed data ---------------- */
 const SEED_PRODUCTS = [
   {id:uid(),name:'ست دنتل مشکی مورگان',category:'women',price:1290000,compareAt:1590000,stock:12,image:'',desc:'ست لباس زیر دنتل با پارچه نرم و قابل تنفس، دوخت ظریف فرانسوی، مناسب استفاده روزانه و مجالس خاص.',sizes:['S','M','L']},
@@ -652,7 +894,8 @@ let STATE = {
   account: null,
   route: '/',
   filters:{category:'all', q:''},
-  admin: {loggedIn:false}
+  admin: {loggedIn:false},
+  settings: defaultSettings()
 };
 
 /* ---------------- init ---------------- */
@@ -667,11 +910,15 @@ async function init(){
       await sSet('products', products, true);
     }
   }
-  STATE.products = products;
+  STATE.products = products.map(p=>({...p, images: normalizeImages(p), image: normalizeImages(p)[0]||''}));
 
   STATE.orders = await loadOrders();
   STATE.cart = (await sGet('cart', false)) || [];
   STATE.account = await sGet('account', false);
+
+  const settings = await loadSettings();
+  STATE.settings = settings || defaultSettings();
+  applySettingsToDOM(STATE.settings);
 
   bindGlobalUI();
   window.addEventListener('hashchange', router);
@@ -768,6 +1015,175 @@ function productImgHtml(p, cls='ph'){
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* ---------------- product gallery (multiple images, drag/swipe + zoom) ---------------- */
+function productGalleryHtml(p){
+  const imgs = normalizeImages(p);
+  if(!imgs.length){
+    return `<div class="pd-img">${productImgHtml(p,'ph')}</div>`;
+  }
+  return `
+  <div class="pd-gallery" id="pdGallery" data-count="${imgs.length}">
+    <div class="pd-gallery-main" id="pdGalleryMain" dir="ltr">
+      <div class="pd-gallery-track" id="pdGalleryTrack">
+        ${imgs.map((src,i)=>`<div class="pd-gallery-slide"><img src="${src}" alt="${escapeHtml(p.name)} ${i+1}" draggable="false"></div>`).join('')}
+      </div>
+      ${imgs.length>1?`
+      <button type="button" class="pd-gallery-arrow next" id="pdGalNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button type="button" class="pd-gallery-arrow prev" id="pdGalPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      <div class="pd-gallery-dots" id="pdGalDots">${imgs.map((_,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"></button>`).join('')}</div>`:''}
+      <span class="pd-gallery-hint">برای بزرگ‌نمایی کلیک کنید</span>
+    </div>
+    ${imgs.length>1?`<div class="pd-gallery-thumbs" id="pdGalThumbs">
+      ${imgs.map((src,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"><img src="${src}" alt=""></button>`).join('')}
+    </div>`:''}
+  </div>`;
+}
+
+function bindProductGallery(p){
+  const wrap = $('#pdGallery');
+  if(!wrap) return;
+  const imgs = normalizeImages(p);
+  const track = $('#pdGalleryTrack');
+  const main = $('#pdGalleryMain');
+  let idx = 0;
+  let dragging = false, dragStartX = 0, dragDeltaX = 0, moved = false;
+
+  function goTo(i){
+    idx = (i+imgs.length)%imgs.length;
+    track.style.transform = `translateX(${-idx*100}%)`;
+    $$('#pdGalDots button').forEach((d,di)=>d.classList.toggle('active', di===idx));
+    $$('#pdGalThumbs button').forEach((d,di)=>d.classList.toggle('active', di===idx));
+  }
+  $('#pdGalNext') && ($('#pdGalNext').onclick = ()=> goTo(idx+1));
+  $('#pdGalPrev') && ($('#pdGalPrev').onclick = ()=> goTo(idx-1));
+  $$('#pdGalDots button').forEach(d=> d.onclick = ()=> goTo(Number(d.dataset.i)));
+  $$('#pdGalThumbs button').forEach(d=> d.onclick = ()=> goTo(Number(d.dataset.i)));
+
+  main.addEventListener('pointerdown', e=>{
+    if(imgs.length<2) return;
+    if(e.target.closest('.pd-gallery-arrow, .pd-gallery-dots')) return;
+    dragging = true; moved = false; dragStartX = e.clientX; dragDeltaX = 0;
+    track.classList.add('dragging');
+    main.setPointerCapture(e.pointerId);
+  });
+  main.addEventListener('pointermove', e=>{
+    if(!dragging) return;
+    dragDeltaX = e.clientX - dragStartX;
+    if(Math.abs(dragDeltaX) > 5) moved = true;
+    track.style.transform = `translateX(calc(${-idx*100}% + ${dragDeltaX}px))`;
+  });
+  function endDrag(){
+    if(!dragging) return;
+    dragging = false;
+    track.classList.remove('dragging');
+    const threshold = main.clientWidth * 0.16;
+    if(dragDeltaX > threshold) goTo(idx-1);
+    else if(dragDeltaX < -threshold) goTo(idx+1);
+    else goTo(idx);
+  }
+  main.addEventListener('pointerup', endDrag);
+  main.addEventListener('pointercancel', endDrag);
+  main.addEventListener('pointerleave', ()=>{ if(dragging) endDrag(); });
+
+  main.addEventListener('click', e=>{
+    if(moved) return; // ignore click that was really a drag/swipe
+    if(e.target.closest('.pd-gallery-arrow, .pd-gallery-dots')) return; // controls, not the image
+    openLightbox(imgs, idx);
+  });
+
+  goTo(0);
+}
+
+/* ---------------- lightbox: click-to-zoom image viewer with blurred backdrop ---------------- */
+const LB = {images:[], index:0, zoomed:false, panX:0, panY:0, dragging:false, startX:0, startY:0, swipeStartX:0};
+function openLightbox(images, index=0){
+  LB.images = images; LB.index = index; LB.zoomed = false; LB.panX = 0; LB.panY = 0;
+  renderLightbox();
+  $('#lightboxOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  $('#lightboxOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function renderLightbox(){
+  const img = $('#lightboxImg');
+  img.src = LB.images[LB.index];
+  img.classList.toggle('zoomed', LB.zoomed);
+  img.style.transform = LB.zoomed ? `scale(2.2) translate(${LB.panX}px, ${LB.panY}px)` : 'scale(1)';
+  $('#lightboxCount').textContent = LB.images.length>1 ? `${LB.index+1} / ${LB.images.length}` : '';
+  const multi = LB.images.length>1;
+  $('#lightboxNextBtn').style.display = multi?'flex':'none';
+  $('#lightboxPrevBtn').style.display = multi?'flex':'none';
+}
+function lbGoTo(i){
+  LB.index = (i+LB.images.length)%LB.images.length;
+  LB.zoomed = false; LB.panX=0; LB.panY=0;
+  renderLightbox();
+}
+(function initLightboxBindings(){
+  document.addEventListener('DOMContentLoaded', wireLightbox);
+  if(document.readyState !== 'loading') wireLightbox();
+})();
+function wireLightbox(){
+  const overlay = $('#lightboxOverlay');
+  if(!overlay || overlay.dataset.wired) return;
+  overlay.dataset.wired = '1';
+  const stage = $('#lightboxStage');
+  const img = $('#lightboxImg');
+
+  $('#lightboxCloseBtn').onclick = closeLightbox;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay || e.target===stage) closeLightbox(); });
+  $('#lightboxNextBtn').onclick = ()=> lbGoTo(LB.index+1);
+  $('#lightboxPrevBtn').onclick = ()=> lbGoTo(LB.index-1);
+
+  document.addEventListener('keydown', e=>{
+    if(!overlay.classList.contains('open')) return;
+    if(e.key==='Escape') closeLightbox();
+    else if(e.key==='ArrowLeft') lbGoTo(LB.index+1);
+    else if(e.key==='ArrowRight') lbGoTo(LB.index-1);
+  });
+
+  // click toggles zoom in/out; when zoomed, drag pans the image
+  img.addEventListener('pointerdown', e=>{
+    if(!LB.zoomed) return;
+    LB.dragging = true;
+    LB.startX = e.clientX - LB.panX;
+    LB.startY = e.clientY - LB.panY;
+    img.classList.add('panning');
+    img.setPointerCapture(e.pointerId);
+  });
+  img.addEventListener('pointermove', e=>{
+    if(LB.dragging){
+      LB.panX = e.clientX - LB.startX;
+      LB.panY = e.clientY - LB.startY;
+      img.style.transform = `scale(2.2) translate(${LB.panX}px, ${LB.panY}px)`;
+    }
+  });
+  function endImgDrag(){ LB.dragging=false; img.classList.remove('panning'); }
+  img.addEventListener('pointerup', endImgDrag);
+  img.addEventListener('pointercancel', endImgDrag);
+
+  img.addEventListener('click', e=>{
+    e.stopPropagation();
+    if(LB.dragging) return;
+    LB.zoomed = !LB.zoomed;
+    LB.panX = 0; LB.panY = 0;
+    renderLightbox();
+  });
+
+  // swipe left/right on the (non-zoomed) stage to move between images
+  stage.addEventListener('pointerdown', e=>{
+    if(LB.zoomed) return;
+    LB.swipeStartX = e.clientX;
+  });
+  stage.addEventListener('pointerup', e=>{
+    if(LB.zoomed || LB.images.length<2) return;
+    const dx = e.clientX - LB.swipeStartX;
+    if(Math.abs(dx) > 60){ dx > 0 ? lbGoTo(LB.index-1) : lbGoTo(LB.index+1); }
+  });
+}
+
 function productCard(p){
   const off = p.compareAt && p.compareAt > p.price;
   return `
@@ -800,10 +1216,11 @@ function productCard(p){
 function pageHome(){
   const women = STATE.products.filter(p=>p.category==='women').slice(0,4);
   const featured = STATE.products.slice(0,8);
+  const heroImg = STATE.settings.heroImage;
   return `
   <section class="hero">
-    <div class="hero-bg"></div>
-    <svg class="hero-feather-svg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="hero-bg${heroImg?' has-photo':''}"${heroImg?` style="--hero-photo:url('${heroImg}')"`:''}></div>
+    <svg class="hero-feather-svg" style="${heroImg?'opacity:.25':''}" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M420 60c-70 10-160 60-210 130-15 20-25 45-20 70 30-5 60-20 80-45-10 45-45 85-90 105 45 10 95 0 130-30-15 50-55 90-100 110 55 5 105-20 135-60 5 40 25 75 60 95-20-40-30-85-25-125 25 20 55 30 85 25-30-15-55-40-65-70 30 5 60-5 80-30-30 0-60-10-80-30 30-5 55-25 70-50-30 5-60 15-80 35 5-35 20-70 45-95-30 10-55 30-70 55 5-30 15-60 35-85-25 5-45 20-60 40 5-25 10-50 5-75z" fill="#e8e2d5" opacity=".92"/>
     </svg>
     <div class="container">
@@ -930,7 +1347,7 @@ function pageProduct(id){
         <a href="#/" data-link>خانه</a> / <a href="#/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
       </div>
       <div class="pd-wrap">
-        <div class="pd-img">${productImgHtml(p,'ph')}</div>
+        <div>${productGalleryHtml(p)}</div>
         <div class="pd-info">
           <span class="cat-tag">${catLabel(p.category)}</span>
           <h1 class="serif">${escapeHtml(p.name)}</h1>
@@ -1158,6 +1575,7 @@ function bindPageUI(){
       const activeSize = $('.size-opt.active');
       addToCart(id, qty, activeSize?activeSize.dataset.size:null);
     };
+    if(prod) bindProductGallery(prod);
   }
 
   const contactForm = $('#contactForm');
@@ -1333,7 +1751,12 @@ window.closeCartUI = closeCart;
 /* ======================================================================
    ADMIN PANEL
 ====================================================================== */
-const ADMIN_PASSWORD = 'iwillNeverf0rg0tthis@';
+/* رمز پنل مدیریت دیگر اینجا نوشته نمی‌شود. اگر Supabase وصل باشد، رمز به‌صورت
+   هش‌شده در دیتابیس بررسی می‌شود (تابع verify_admin_password) و هیچ‌گاه در کدی
+   که برای بازدیدکننده‌ها ارسال می‌شود ظاهر نمی‌شود. اگر Supabase وصل نباشد، این
+   قابلیت غیرفعال است — چون بدون یک بک‌اند واقعی، هیچ راهی برای مخفی نگه‌داشتن
+   رمز از کسی که کد را ببیند وجود ندارد. جزئیات و SQL لازم در README.md بخش
+   «محافظت واقعی از رمز پنل مدیریت» آمده است. */
 let adminSection = 'dashboard';
 let editingProductId = null;
 
@@ -1354,13 +1777,16 @@ async function renderAdmin(path){
 
   if(path==='/admin/orders') adminSection='orders';
   else if(path==='/admin/products' || path.startsWith('/admin/products')) adminSection='products';
+  else if(path==='/admin/settings') adminSection='settings';
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
   const freshProducts = await loadProducts();
-  if(freshProducts) STATE.products = freshProducts;
+  if(freshProducts) STATE.products = freshProducts.map(p=>({...p, images: normalizeImages(p), image: normalizeImages(p)[0]||''}));
   const freshOrders = await loadOrders();
   if(freshOrders) STATE.orders = freshOrders;
+  const freshSettings = await loadSettings();
+  if(freshSettings){ STATE.settings = freshSettings; applySettingsToDOM(STATE.settings); }
 
   box.innerHTML = adminShell();
   bindAdminShell();
@@ -1388,11 +1814,23 @@ function bindAdminLogin(){
   if(!btn) return;
   btn.onclick = async ()=>{
     const val = $('#adminPass').value;
-    if(val === ADMIN_PASSWORD){
-      await sSet('admin_session', {loggedIn:true}, false);
-      navigate('/admin');
-    } else {
-      $('#adminErr').textContent = 'رمز عبور اشتباه است.';
+    const errBox = $('#adminErr');
+    if(!supabaseClient){
+      errBox.textContent = 'ورود به پنل نیاز به اتصال Supabase دارد — به README.md بخش «محافظت واقعی از رمز پنل مدیریت» مراجعه کنید.';
+      return;
+    }
+    btn.disabled = true;
+    try{
+      const {data, error} = await supabaseClient.rpc('verify_admin_password', {input_password: val});
+      if(error){ console.error(error); errBox.textContent = 'خطا در بررسی رمز عبور. دوباره تلاش کنید.'; return; }
+      if(data === true){
+        await sSet('admin_session', {loggedIn:true}, false);
+        navigate('/admin');
+      } else {
+        errBox.textContent = 'رمز عبور اشتباه است.';
+      }
+    } finally {
+      btn.disabled = false;
     }
   };
   $('#adminPass').addEventListener('keydown', e=>{ if(e.key==='Enter') btn.click(); });
@@ -1403,7 +1841,7 @@ function adminShell(){
   <div class="admin-wrap">
     <div class="admin-bar">
       <a href="#/" data-link class="logo">
-        <svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>
+        <span id="adminLogoSlot"><svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg></span>
         <span style="font-family:'Cormorant Garamond',serif;letter-spacing:.15em;font-size:17px">WHITE RAVEN ADMIN</span>
       </a>
       <div style="display:flex;gap:14px;align-items:center">
@@ -1416,9 +1854,10 @@ function adminShell(){
         <a href="#/admin" data-link class="${adminSection==='dashboard'?'active':''}">داشبورد</a>
         <a href="#/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
         <a href="#/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
+        <a href="#/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='settings'?adminSettings():adminOrders()}
       </div>
     </div>
   </div>
@@ -1428,11 +1867,13 @@ function adminShell(){
       <h3 id="modalTitle">افزودن محصول</h3>
       <form id="productForm">
         <div class="form-field">
-          <label>تصویر محصول</label>
-          <div class="upload-box" id="uploadBox">
-            <span id="uploadPlaceholder">برای آپلود تصویر کلیک کنید<br><span style="color:var(--text-faint)">JPG, PNG — حداکثر ۲ مگابایت</span></span>
-            <img id="uploadPreview" class="hidden">
-            <input type="file" accept="image/*" id="productImageInput">
+          <label>تصاویر محصول <span style="color:var(--text-faint);font-weight:400">(هر تعداد که بخواهید — اولین تصویر، تصویر اصلی است)</span></label>
+          <div class="multi-upload-grid" id="multiUploadGrid">
+            <div class="multi-upload-add">
+              <span>+ افزودن تصویر</span>
+              <span style="color:var(--text-faint)">JPG, PNG</span>
+              <input type="file" accept="image/*" id="productImageInput" multiple>
+            </div>
           </div>
         </div>
         <div class="form-row2">
@@ -1543,6 +1984,64 @@ window.updateOrderStatus = async (id, status)=>{
   if(o){ o.status = status; await updateOrderStatusRemote(id, status); showToast('وضعیت سفارش بروزرسانی شد'); }
 };
 
+function adminSettings(){
+  const s = STATE.settings;
+  const fontOptionsHtml = (selected)=> FONT_OPTIONS.map(f=>`<option value="${f.id}" ${f.id===selected?'selected':''}>${f.label}</option>`).join('');
+  return `
+  <h2 class="admin-title">تنظیمات ظاهری</h2>
+
+  <div class="settings-card">
+    <h3 class="serif">لوگوی سایت</h3>
+    <p class="settings-desc">تصویری که در سربرگ فروشگاه و پنل مدیریت به‌جای نماد پیش‌فرض نمایش داده می‌شود. برای بازگشت به حالت پیش‌فرض، آن را حذف کنید.</p>
+    <div class="logo-upload-row">
+      <div class="logo-upload-box" id="logoUploadBox">
+        ${s.logo ? `<img src="${s.logo}" alt="لوگو">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون لوگوی سفارشی</span>`}
+        <input type="file" accept="image/*" id="logoInput">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:12.5px;color:var(--text-faint)">روی کادر کلیک کنید تا تصویر جدید آپلود شود (فرمت PNG با پس‌زمینه شفاف پیشنهاد می‌شود).</span>
+        ${s.logo ? `<button type="button" class="btn btn-ghost" id="removeLogoBtn" style="align-self:flex-start;padding:8px 16px;font-size:12.5px">حذف لوگوی سفارشی</button>` : ''}
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">تصویر پس‌زمینه صفحه نخست</h3>
+    <p class="settings-desc">تصویری که در بخش اصلی (Hero) صفحه نخست، پشت عنوان سایت نمایش داده می‌شود. برای بازگشت به حالت پیش‌فرض (بدون تصویر)، آن را حذف کنید.</p>
+    <div class="logo-upload-row">
+      <div class="logo-upload-box" id="heroImageBox" style="width:220px;height:130px">
+        ${s.heroImage ? `<img src="${s.heroImage}" alt="تصویر صفحه نخست" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+        <input type="file" accept="image/*" id="heroImageInput">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:12.5px;color:var(--text-faint)">پیشنهاد می‌شود تصویری افقی (مثلاً ۱۶۰۰×۹۰۰) و با کیفیت بالا انتخاب کنید.</span>
+        ${s.heroImage ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtn" style="align-self:flex-start;padding:8px 16px;font-size:12.5px">حذف تصویر</button>` : ''}
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">فونت و اندازه متن هر بخش</h3>
+    <p class="settings-desc">برای هر بخش از سایت، فونت و اندازهٔ متن را جداگانه انتخاب کنید. تغییرات بلافاصله برای همهٔ بازدیدکننده‌ها اعمال می‌شود.</p>
+    ${FONT_SECTIONS.map(sec=>`
+      <div class="font-section-row">
+        <span class="fs-label">${sec.label}</span>
+        <div class="form-field" style="margin-bottom:0">
+          <label>فونت</label>
+          <select class="font-select" data-section="${sec.key}">${fontOptionsHtml(s.fonts[sec.key])}</select>
+        </div>
+        <div class="range-field">
+          <label style="font-size:12.5px;color:var(--text-dim)">اندازه متن</label>
+          <input type="range" class="scale-range" data-section="${sec.key}" min="70" max="160" step="5" value="${s.scales[sec.key]}">
+          <span class="range-val" data-section-val="${sec.key}">${s.scales[sec.key]}٪</span>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <button class="btn btn-solid" id="saveSettingsBtn">ذخیره تنظیمات</button>
+  `;
+}
+
 function bindAdminShell(){
   document.addEventListener('click', function handler(e){
     const link = e.target.closest('[data-link]');
@@ -1561,20 +2060,7 @@ function bindAdminShell(){
   if(modalOverlay) modalOverlay.onclick = e=>{ if(e.target===modalOverlay) modalOverlay.classList.remove('open'); };
 
   const imgInput = $('#productImageInput');
-  if(imgInput){
-    imgInput.onchange = ()=>{
-      const file = imgInput.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        $('#uploadPreview').src = reader.result;
-        $('#uploadPreview').classList.remove('hidden');
-        $('#uploadPlaceholder').classList.add('hidden');
-        $('#uploadPreview').dataset.b64 = reader.result;
-      };
-      reader.readAsDataURL(file);
-    };
-  }
+  if(imgInput) bindMultiUploadInput();
 
   const pForm = $('#productForm');
   if(pForm){
@@ -1588,13 +2074,13 @@ function bindAdminShell(){
         stock: Number($('#pStock').value)||0,
         sizes: $('#pSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
         desc: $('#pDesc').value.trim(),
-        image: $('#uploadPreview').dataset.b64 || ''
+        images: editingImages.slice(),
+        image: editingImages[0] || ''
       };
       let savedProduct;
       if(editingProductId){
         const idx = STATE.products.findIndex(p=>p.id===editingProductId);
         if(idx>-1){
-          if(!data.image) data.image = STATE.products[idx].image;
           STATE.products[idx] = {...STATE.products[idx], ...data};
           savedProduct = STATE.products[idx];
         }
@@ -1609,6 +2095,137 @@ function bindAdminShell(){
       bindAdminShell();
     };
   }
+
+  bindAdminSettingsUI();
+}
+
+let editingImages = [];
+function renderMultiUploadGrid(){
+  const grid = $('#multiUploadGrid');
+  if(!grid) return;
+  grid.innerHTML = editingImages.map((src,i)=>`
+    <div class="multi-upload-thumb">
+      ${i===0?'<span class="mu-main-tag">اصلی</span>':''}
+      <img src="${src}" alt="">
+      <button type="button" class="mu-remove" data-i="${i}" title="حذف">✕</button>
+    </div>`).join('') + `
+    <div class="multi-upload-add">
+      <span>+ افزودن تصویر</span>
+      <span style="color:var(--text-faint)">JPG, PNG</span>
+      <input type="file" accept="image/*" id="productImageInput" multiple>
+    </div>`;
+  $$('#multiUploadGrid .mu-remove').forEach(btn=>{
+    btn.onclick = ()=>{ editingImages.splice(Number(btn.dataset.i),1); renderMultiUploadGrid(); };
+  });
+  bindMultiUploadInput();
+}
+function bindMultiUploadInput(){
+  const input = $('#productImageInput');
+  if(!input) return;
+  input.onchange = ()=>{
+    [...input.files].forEach(file=>{
+      const reader = new FileReader();
+      reader.onload = ()=>{ editingImages.push(reader.result); renderMultiUploadGrid(); };
+      reader.readAsDataURL(file);
+    });
+  };
+}
+
+function bindAdminSettingsUI(){
+  const saveBtn = $('#saveSettingsBtn');
+  if(!saveBtn) return; // not on the settings page
+
+  $$('.font-select').forEach(sel=>{
+    sel.onchange = ()=>{
+      const key = sel.dataset.section;
+      document.documentElement.style.setProperty(`--font-${key}`, `'${sel.value}', ${/garamond|playfair/i.test(sel.value)?'serif':'sans-serif'}`);
+    };
+  });
+  $$('.scale-range').forEach(range=>{
+    range.oninput = ()=>{
+      const key = range.dataset.section;
+      document.documentElement.style.setProperty(`--scale-${key}`, Number(range.value)/100);
+      const label = $(`[data-section-val="${key}"]`);
+      if(label) label.textContent = range.value + '٪';
+    };
+  });
+
+  const logoBox = $('#logoUploadBox');
+  if(logoBox && !logoBox.dataset.pendingInit){
+    logoBox.dataset.pendingInit = '1';
+    pendingLogo = STATE.settings.logo;
+  }
+  bindLogoInput();
+  const removeLogoBtn = $('#removeLogoBtn');
+  if(removeLogoBtn) removeLogoBtn.onclick = ()=>{
+    pendingLogo = '';
+    $('#adminMain').innerHTML = adminSettings();
+    STATE.settings = {...STATE.settings, logo:''};
+    bindAdminShell();
+  };
+
+  const heroBox = $('#heroImageBox');
+  if(heroBox && !heroBox.dataset.pendingInit){
+    heroBox.dataset.pendingInit = '1';
+    pendingHeroImage = STATE.settings.heroImage;
+  }
+  bindHeroImageInput();
+  const removeHeroBtn = $('#removeHeroImageBtn');
+  if(removeHeroBtn) removeHeroBtn.onclick = ()=>{
+    pendingHeroImage = '';
+    $('#adminMain').innerHTML = adminSettings();
+    STATE.settings = {...STATE.settings, heroImage:''};
+    bindAdminShell();
+  };
+
+  saveBtn.onclick = async ()=>{
+    const fonts = {}, scales = {};
+    $$('.font-select').forEach(sel=> fonts[sel.dataset.section] = sel.value);
+    $$('.scale-range').forEach(range=> scales[range.dataset.section] = Number(range.value));
+    const newSettings = {
+      logo: pendingLogo || '',
+      heroImage: pendingHeroImage || '',
+      fonts, scales
+    };
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await saveSettingsRemote(newSettings);
+    showToast('تنظیمات ذخیره شد ✓');
+  };
+}
+let pendingLogo = '';
+function bindLogoInput(){
+  const logoBox = $('#logoUploadBox');
+  const logoInput = $('#logoInput');
+  if(!logoInput) return;
+  logoInput.onchange = ()=>{
+    const file = logoInput.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      pendingLogo = reader.result;
+      logoBox.innerHTML = `<img src="${pendingLogo}" alt="لوگو"><input type="file" accept="image/*" id="logoInput">`;
+      bindLogoInput(); // rebind the freshly-inserted file input only (keeps pendingLogo intact)
+    };
+    reader.readAsDataURL(file);
+  };
+}
+let pendingHeroImage = '';
+function bindHeroImageInput(){
+  const heroBox = $('#heroImageBox');
+  const heroInput = $('#heroImageInput');
+  if(!heroInput) return;
+  heroInput.onchange = ()=>{
+    const file = heroInput.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      pendingHeroImage = reader.result;
+      heroBox.innerHTML = `<img src="${pendingHeroImage}" alt="تصویر صفحه نخست" style="object-fit:cover"><input type="file" accept="image/*" id="heroImageInput">`;
+      bindHeroImageInput(); // rebind the freshly-inserted file input only (keeps pendingHeroImage intact)
+    };
+    reader.readAsDataURL(file);
+  };
 }
 
 function openProductModal(id){
@@ -1622,9 +2239,8 @@ function openProductModal(id){
   $('#pStock').value = p?.stock ?? '';
   $('#pSizes').value = p?.sizes?.join(',') || '';
   $('#pDesc').value = p?.desc || '';
-  const preview = $('#uploadPreview');
-  if(p?.image){ preview.src = p.image; preview.classList.remove('hidden'); preview.dataset.b64 = p.image; $('#uploadPlaceholder').classList.add('hidden'); }
-  else { preview.classList.add('hidden'); preview.removeAttribute('src'); delete preview.dataset.b64; $('#uploadPlaceholder').classList.remove('hidden'); }
+  editingImages = p ? normalizeImages(p).slice() : [];
+  renderMultiUploadGrid();
   $('#productModalOverlay').classList.add('open');
 }
 window.editProduct = openProductModal;
