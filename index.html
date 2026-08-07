@@ -1823,13 +1823,20 @@ function bindAdminLogin(){
     btn.disabled = true;
     try{
       const {data, error} = await supabaseClient.rpc('verify_admin_password', {input_password: val});
-      if(error){ console.error(error); errBox.textContent = 'خطا در بررسی رمز عبور. دوباره تلاش کنید.'; return; }
+      if(error){
+        console.error(error);
+        errBox.textContent = 'خطا: ' + (error.message || JSON.stringify(error));
+        return;
+      }
       if(data === true){
         await sSet('admin_session', {loggedIn:true}, false);
         navigate('/admin');
       } else {
-        errBox.textContent = 'رمز عبور اشتباه است.';
+        errBox.textContent = 'رمز عبور اشتباه است. (پاسخ سرور: ' + JSON.stringify(data) + ')';
       }
+    } catch(ex){
+      console.error(ex);
+      errBox.textContent = 'خطای غیرمنتظره: ' + (ex && ex.message ? ex.message : String(ex));
     } finally {
       btn.disabled = false;
     }
