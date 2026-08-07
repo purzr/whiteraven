@@ -1584,10 +1584,10 @@ if(contactForm) contactForm.onsubmit = async e => {
         });
 
     if(error){
-        console.error(error);
-        showToast('ارسال پیام ناموفق بود');
-        return;
-    }
+    console.error('SUPABASE ERROR:', error);
+    showToast('خطا: ' + error.message);
+    return;
+}
 
     showToast('پیام شما با موفقیت ارسال شد ✓');
     contactForm.reset();
