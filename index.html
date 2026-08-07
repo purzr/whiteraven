@@ -124,16 +124,6 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
   nav.main-nav{display:none}
   .hamburger{display:block}
 }
-@media(max-width:520px){
-  .header-row{height:auto;min-height:64px;padding:14px 0}
-  .logo{gap:9px}
-  .logo img.logo-img{height:26px}
-  .logo .wordmark{font-size:15px;letter-spacing:.12em;white-space:nowrap}
-  .logo .wordmark small{font-size:8px;letter-spacing:.16em;margin-top:3px}
-  .header-icons{gap:15px}
-  .icon-btn svg{width:18px;height:18px}
-  .icon-btn,.hamburger{min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center}
-}
 
 /* mobile drawer */
 .mobile-nav{
@@ -176,7 +166,9 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
       var(--hero-photo) center/cover no-repeat;
   }
 }
-.hero-feather-svg{position:absolute;left:2%;top:8%;width:56%;max-width:760px;opacity:.95;filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.hero-feather-svg{
+    display:none !important;
+}
 @media(max-width:900px){.hero-feather-svg{opacity:.16;left:-10%;top:0;width:120%}}
 .hero-inner{position:relative;z-index:2;padding:90px 0}
 .hero h1{
@@ -189,25 +181,12 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 }
 .hero p.lede{color:var(--text-dim);font-family:var(--font-body);font-size:calc(17px * var(--scale-body));max-width:440px;margin-bottom:32px}
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
-@media(max-width:640px){
-  .hero{min-height:auto}
-  .hero-inner{padding:64px 0 56px}
-  .hero h1{font-size:calc(clamp(40px,13vw,58px) * var(--scale-hero))}
-  .hero p.lede{font-size:calc(15px * var(--scale-body));max-width:100%}
-  .hero-cta{width:100%}
-  .hero-cta .btn{flex:1;min-width:0}
-}
 
 /* ===== Section heading ===== */
 .section{padding:96px 0}
 .section-head{text-align:center;margin-bottom:56px}
 .section-head h2{font-family:var(--font-heading);font-size:calc(38px * var(--scale-heading));font-weight:600}
 .section-head .divider{margin:16px auto}
-@media(max-width:640px){
-  .section{padding:56px 0}
-  .section-head{margin-bottom:36px}
-  .section-head h2{font-size:calc(28px * var(--scale-heading))}
-}
 
 /* ===== Category split ===== */
 .cat-split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
@@ -223,7 +202,6 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
 .cat-content .eyebrow{margin-bottom:14px;display:block}
 @media(max-width:760px){.cat-split{grid-template-columns:1fr}.cat-panel{min-height:280px}}
-@media(max-width:520px){.cat-panel{min-height:220px;padding:26px}.cat-content h3{font-size:calc(26px * var(--scale-heading))}}
 
 /* ===== Features bar ===== */
 .features{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-alt)}
@@ -590,14 +568,14 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
       </div>
       <div class="foot-col">
         <h5>تماس</h5>
-        <p>تهران، ایران</p>
-        <p dir="ltr" style="text-align:right">+98 21 0000 0000</p>
-        <p>info@whiteraven.shop</p>
+        <p>آذربایجان شرقی، ایران</p>
+        <p dir="ltr" style="text-align:right">Tel: Purzr22</p>
+        <p>Purzrshop@gmail.com</p>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© ۱۴۰۴ White Raven — تمامی حقوق محفوظ است.</span>
-      <a href="#/admin-login" data-link style="color:var(--text-faint)">پنل مدیریت</a>
+      <span>© 1405 White Raven — تمامی حقوق محفوظ است.</span>
+      <a href="#/admin-login" data-link style="color:var(--text-faint)">پنل مدیریت </a>
     </div>
   </div>
 </footer>
@@ -690,8 +668,8 @@ async function sSet(key, value, shared=false){
    "اتصال به Supabase" for the exact steps and the SQL to create the tables.
    Left as placeholders, the site automatically falls back to the
    browser-only localStorage mode from before (per-browser catalog). */
-const SUPABASE_URL = 'https://feqrgkbfnlefjcrilnqj.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlcXJna2JmbmxlZmpjcmlsbnFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwNTAzNjIsImV4cCI6MjEwMTYyNjM2Mn0.Obwr7YMRvKn2wtiaeZCC5j7I7VvSPCeArAiZ-oTqsZ4';
+const SUPABASE_URL = 'https://zcnfhjjzzhfqvhbmkiqnh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjbmZoamp6aGZxdmhibWtpcW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDY0MjMsImV4cCI6MjEwMTY4MjQyM30.jHwlq7o5kM0thdhLgdXQW3YJ6jAnq2qOrPvPyHhq2lQ';
 
 let supabaseClient = null;
 if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY' && window.supabase) {
@@ -793,16 +771,16 @@ async function updateOrderStatusRemote(id, status){
 const FONT_OPTIONS = [
   {id:"Vazirmatn", label:"وزیرمتن — Vazirmatn (فارسی)"},
   {id:"Estedad", label:"استعداد — Estedad (فارسی)"},
-  {id:"Noto Naskh Arabic", label:"نوتو نسخ — Noto Naskh (فارسی)"},
-  {id:"Noto Kufi Arabic", label:"نوتو کوفی — Noto Kufi (فارسی)"},
+  {id:"Dima Shekasteh Free", label:"دیما شکسته — Dima Shekasteh Free (فارسی)"},
+  {id:"A Shekari", label:" آ شکاری — A Shekari (فارسی)"},
   {id:"Cairo", label:"کایرو — Cairo (فارسی)"},
   {id:"Mada", label:"مدا — Mada (فارسی)"},
-  {id:"Cormorant Garamond", label:"Cormorant Garamond (انگلیسی)"},
-  {id:"Inter", label:"Inter (انگلیسی)"},
+  {id:"Adobe Arabic", label:"آدوب عربی — Adobe Arabic (فارسی)"},
+  {id:"Far.Diplomaat", label:"دیپلومات — Far Diplomaat Medium (فارسی)"},
+  {id:"Cooper Black", label:"زغال سیاه — Cooper Black Bold (انگلیسی)"},
+  {id:"Brush Script MT", label:" قلمو روان نویس — Brush Script Bold (انگلیسی)"},
   {id:"Poppins", label:"Poppins (انگلیسی)"},
   {id:"Playfair Display", label:"Playfair Display (انگلیسی)"},
-  {id:"Montserrat", label:"Montserrat (انگلیسی)"},
-  {id:"Roboto", label:"Roboto (انگلیسی)"}
 ];
 const FONT_SECTIONS = [
   {key:'header', label:'سربرگ و منوی سایت'},
@@ -1428,21 +1406,21 @@ function pageContact(){
         </div>
         <div class="contact-info-item">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.2 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 3a2 2 0 0 1-.5 2.1L8 10.3a16 16 0 0 0 6 6l1.5-1.5a2 2 0 0 1 2.1-.5c1 .3 2 .5 3 .7a2 2 0 0 1 1.7 2Z"/></svg>
-          <div><h4>تماس تلفنی</h4><p dir="ltr" style="text-align:right">+98 21 0000 0000</p></div>
+          <div><h4>تماس تلفنی</h4><p dir="ltr" style="text-align:right">Tel: Purzr22</p></div>
         </div>
         <div class="contact-info-item">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg>
-          <div><h4>ایمیل</h4><p>info@whiteraven.shop</p></div>
+          <div><h4>ایمیل</h4><p>purzrshop@gmail.com</p></div>
         </div>
         <div class="contact-info-item">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-          <div><h4>آدرس</h4><p>تهران، ایران</p></div>
+          <div><h4>آدرس</h4><p>ایران، آذربایجان شرقی</p></div>
         </div>
       </div>
       <form id="contactForm">
         <div class="form-row2">
           <div class="form-field"><label>نام</label><input required placeholder="نام شما"></div>
-          <div class="form-field"><label>ایمیل</label><input required type="email" placeholder="you@example.com"></div>
+          <div class="form-field"><label>ایمیل</label><input required type="email" placeholder="example@gmail.com"></div>
         </div>
         <div class="form-field"><label>موضوع</label><input placeholder="موضوع پیام"></div>
         <div class="form-field"><label>پیام</label><textarea required placeholder="پیام خود را بنویسید..."></textarea></div>
@@ -1471,7 +1449,7 @@ function pageAccount(){
       <div class="form-field"><label>نام</label><input id="accName" required placeholder="نام و نام خانوادگی"></div>
       <div class="form-field"><label>ایمیل</label><input id="accEmail" required type="email" placeholder="you@example.com"></div>
       <button class="btn btn-solid btn-block" type="submit">ورود</button>
-      <p style="font-size:11.5px;color:var(--text-faint);margin-top:14px;text-align:center">این یک ورود نمایشی است — فقط برای شخصی‌سازی سبد خرید شما.</p>
+      <p style="font-size:11.5px;color:var(--text-faint);margin-top:14px;text-align:center">  این بخش در حال حاضر در دسترس نیست.!</p>
     </form>
   </div></div>`;
 }
@@ -1579,7 +1557,41 @@ function bindPageUI(){
   }
 
   const contactForm = $('#contactForm');
-  if(contactForm) contactForm.onsubmit = e=>{ e.preventDefault(); showToast('پیام شما با موفقیت ارسال شد ✓'); contactForm.reset(); };
+
+if(contactForm) contactForm.onsubmit = async e => {
+    e.preventDefault();
+
+    const inputs = contactForm.querySelectorAll('input');
+    const textarea = contactForm.querySelector('textarea');
+
+    const name = inputs[0].value.trim();
+    const email = inputs[1].value.trim();
+    const subject = inputs[2].value.trim();
+    const message = textarea.value.trim();
+
+    if(!supabaseClient){
+        showToast('اتصال به دیتابیس برقرار نیست');
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from('messages')
+        .insert({
+            name: name,
+            email: email,
+            subject: subject,
+            message: message
+        });
+
+    if(error){
+        console.error(error);
+        showToast('ارسال پیام ناموفق بود');
+        return;
+    }
+
+    showToast('پیام شما با موفقیت ارسال شد ✓');
+    contactForm.reset();
+};
 
   const loginForm = $('#loginForm');
   if(loginForm) loginForm.onsubmit = async e=>{
@@ -1751,12 +1763,7 @@ window.closeCartUI = closeCart;
 /* ======================================================================
    ADMIN PANEL
 ====================================================================== */
-/* رمز پنل مدیریت دیگر اینجا نوشته نمی‌شود. اگر Supabase وصل باشد، رمز به‌صورت
-   هش‌شده در دیتابیس بررسی می‌شود (تابع verify_admin_password) و هیچ‌گاه در کدی
-   که برای بازدیدکننده‌ها ارسال می‌شود ظاهر نمی‌شود. اگر Supabase وصل نباشد، این
-   قابلیت غیرفعال است — چون بدون یک بک‌اند واقعی، هیچ راهی برای مخفی نگه‌داشتن
-   رمز از کسی که کد را ببیند وجود ندارد. جزئیات و SQL لازم در README.md بخش
-   «محافظت واقعی از رمز پنل مدیریت» آمده است. */
+const ADMIN_PASSWORD = 'iwillNeverf0rg0tthis@';
 let adminSection = 'dashboard';
 let editingProductId = null;
 
@@ -1796,9 +1803,9 @@ function adminLoginScreen(){
   return `
   <div class="login-screen">
     <div class="login-card">
-      <h2 class="serif">ورود به پنل مدیریت</h2>
+      <h2 class="serif">ورود به پنل </h2>
       <p class="sub">WHITE RAVEN ADMIN</p>
-      <div class="form-field"><label>رمز عبور</label><input type="password" id="adminPass" placeholder="رمز عبور مدیریت" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div>
+      <div class="form-field"><label>رمز عبور</label><input type="password" id="adminPass" placeholder="رمز عبور مدیریت"></div>
       <div class="err-msg" id="adminErr"></div>
       <button class="btn btn-solid btn-block" id="adminLoginBtn">ورود</button>
       <a href="#/" data-link class="btn btn-ghost btn-block" style="margin-top:10px">بازگشت به فروشگاه</a>
@@ -1813,32 +1820,12 @@ function bindAdminLogin(){
   const btn = $('#adminLoginBtn');
   if(!btn) return;
   btn.onclick = async ()=>{
-    const val = $('#adminPass').value.trim();
-    const errBox = $('#adminErr');
-    errBox.textContent = '';
-    if(!supabaseClient){
-      errBox.textContent = 'ورود به پنل نیاز به اتصال Supabase دارد — به README.md بخش «محافظت واقعی از رمز پنل مدیریت» مراجعه کنید.';
-      return;
-    }
-    btn.disabled = true;
-    try{
-      const {data, error} = await supabaseClient.rpc('verify_admin_password', {input_password: val});
-      if(error){
-        console.error(error);
-        errBox.textContent = 'خطا: ' + (error.message || JSON.stringify(error));
-        return;
-      }
-      if(data === true){
-        await sSet('admin_session', {loggedIn:true}, false);
-        navigate('/admin');
-      } else {
-        errBox.textContent = 'رمز عبور اشتباه است. (پاسخ سرور: ' + JSON.stringify(data) + ')';
-      }
-    } catch(ex){
-      console.error(ex);
-      errBox.textContent = 'خطای غیرمنتظره: ' + (ex && ex.message ? ex.message : String(ex));
-    } finally {
-      btn.disabled = false;
+    const val = $('#adminPass').value;
+    if(val === ADMIN_PASSWORD){
+      await sSet('admin_session', {loggedIn:true}, false);
+      navigate('/admin');
+    } else {
+      $('#adminErr').textContent = 'رمز عبور اشتباه است.';
     }
   };
   $('#adminPass').addEventListener('keydown', e=>{ if(e.key==='Enter') btn.click(); });
