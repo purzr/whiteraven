@@ -2118,7 +2118,7 @@ function adminOrders(){
   <h2 class="admin-title">سفارش‌ها</h2>
   <div class="table-wrap">
     <table class="admin-table">
-      <thead><tr><th>شماره سفارش</th><th>مشتری</th><th>اقلام</th><th>مبلغ نهایی</th><th>وضعیت</th><th>تاریخ</th></tr></thead>
+      <thead><tr><th>شماره سفارش</th><th>مشتری</th><th>اقلام</th><th>مبلغ نهایی</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th></tr></thead>
       <tbody>
         ${rev.map(o=>`<tr>
           <td style="color:var(--gold-light)">${o.id}</td>
@@ -2131,7 +2131,24 @@ function adminOrders(){
             </select>
           </td>
           <td>${new Date(o.createdAt).toLocaleDateString('fa-IR')}</td>
-        </tr>`).join('') || `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</td></tr>`}
+<td>
+  <button
+    type="button"
+    onclick="deleteOrder('${o.id}')"
+    style="
+      background:#5c1717;
+      color:#fff;
+      border:0;
+      border-radius:8px;
+      padding:5px 9px;
+      font-size:11px;
+      cursor:pointer;
+    "
+  >
+    حذف
+  </button>
+</td>
+        </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</td></tr>`}
       </tbody>
     </table>
   </div>`;
@@ -2141,6 +2158,33 @@ window.updateOrderStatus = async (id, status)=>{
   const o = STATE.orders.find(x=>x.id===id);
   if(o){ o.status = status; await updateOrderStatusRemote(id, status); showToast('وضعیت سفارش بروزرسانی شد'); }
 };
+async function deleteOrder(id) {
+  const ok = confirm('آیا از حذف این سفارش مطمئن هستید؟');
+
+  if (!ok) return;
+
+  if (!supabaseClient) {
+    alert('اتصال به سرور برقرار نیست');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('orders')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('DELETE ORDER ERROR:', error);
+    alert('حذف سفارش انجام نشد');
+    return;
+  }
+
+  STATE.orders = STATE.orders.filter(o => o.id !== id);
+
+  alert('سفارش با موفقیت حذف شد ✓');
+
+  router();
+}
 
 function adminSettings(){
   const s = STATE.settings;
