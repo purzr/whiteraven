@@ -1064,15 +1064,15 @@ function productImgHtml(p, cls='ph'){
 }
 
 function escapeHtml(s){
-if (s === null || s === undefined) return '';
-if (typeof s !== 'string') s = String(s);
+if (s === null || s === undefined) return "";
+s = String(s);
 
 return s.replace(/[&<>"']/g, function(c){
-if (c === '&') return '&';
-if (c === '<') return '<';
-if (c === '>') return '>';
-if (c === '"') return '"';
-if (c === "'") return ''';
+if (c === "&") return "&";
+if (c === "<") return "<";
+if (c === ">") return ">";
+if (c === '"') return """;
+if (c === "'") return "'";
 return c;
 });
 }
