@@ -2190,6 +2190,22 @@ function adminOrders(){
 <td>
   <button
     type="button"
+    onclick="showOrderDetails('${o.id}')"
+    style="
+      background:var(--bg-card);
+      color:var(--gold-light);
+      border:1px solid var(--gold-dim);
+      border-radius:8px;
+      padding:5px 9px;
+      font-size:11px;
+      cursor:pointer;
+    "
+  >
+    جزئیات
+  </button>
+
+  <button
+    type="button"
     onclick="deleteOrder('${o.id}')"
     style="
       background:#5c1717;
@@ -2209,6 +2225,100 @@ function adminOrders(){
     </table>
   </div>`;
 }
+
+function showOrderDetails(orderId){
+  const order = STATE.orders.find(o => o.id === orderId);
+
+  if(!order){
+    showToast('سفارش پیدا نشد');
+    return;
+  }
+
+  const customer = typeof order.customer === 'object'
+    ? order.customer
+    : { name: order.customer || 'مهمان' };
+
+  const items = (order.items || []).map(item => `
+    <div style="padding:10px 0;border-bottom:1px solid var(--line)">
+      <b>${escapeHtml(item.name || 'محصول')}</b>
+      <div style="font-size:12px;color:var(--text-faint);margin-top:5px">
+        سایز: ${escapeHtml(item.size || '-')}
+        · تعداد: ${item.qty || 0}
+        · قیمت: ${RIAL(item.unitPrice || 0)}
+      </div>
+    </div>
+  `).join('');
+
+  const box = document.createElement('div');
+
+  box.style.cssText = `
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:rgba(0,0,0,.7);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  `;
+
+  box.innerHTML = `
+    <div style="
+      background:var(--bg-card);
+      border:1px solid var(--line);
+      padding:25px;
+      border-radius:12px;
+      width:min(600px,100%);
+      max-height:90vh;
+      overflow:auto;
+    ">
+
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 class="serif">جزئیات سفارش</h3>
+        <button id="closeOrderDetails"
+          style="background:none;border:0;color:var(--text);font-size:20px">
+          ✕
+        </button>
+      </div>
+
+      <hr style="border-color:var(--line);margin:15px 0">
+
+      <h4>اطلاعات مشتری</h4>
+
+      <p>نام: ${escapeHtml(customer.name || '-')}</p>
+      <p>شماره همراه: ${escapeHtml(customer.phone || '-')}</p>
+      <p>شهر: ${escapeHtml(customer.city || '-')}</p>
+      <p>کد پستی: ${escapeHtml(customer.postalCode || '-')}</p>
+      <p>آدرس: ${escapeHtml(customer.address || '-')}</p>
+
+      <hr style="border-color:var(--line);margin:20px 0">
+
+      <h4>محصولات سفارش</h4>
+
+      ${items || '<p>محصولی ثبت نشده</p>'}
+
+      <hr style="border-color:var(--line);margin:20px 0">
+
+      <p>جمع محصولات: ${RIAL(order.subtotal || 0)}</p>
+      <p>هزینه ارسال: ${order.shipping ? RIAL(order.shipping) : 'رایگان'}</p>
+      <strong>مبلغ نهایی: ${RIAL(order.total || 0)}</strong>
+
+    </div>
+  `;
+
+  document.body.appendChild(box);
+
+  document.getElementById('closeOrderDetails').onclick = () => {
+    box.remove();
+  };
+
+  box.onclick = e => {
+    if(e.target === box) box.remove();
+  };
+}
+
+window.showOrderDetails = showOrderDetails;
+
 
 window.updateOrderStatus = async (id, status)=>{
   const o = STATE.orders.find(x=>x.id===id);
