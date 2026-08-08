@@ -715,7 +715,9 @@ function rowToOrder(row){
 
 async function loadProducts(){
   if(supabaseClient){
-    const {data, error} = await supabaseClient.from('products').select('*').order('created_at',{ascending:true});
+    const {data, error} = await supabaseClient.from('products').select('*').order('created_at',{ascending:true})
+.limit(100);
+
     if(error){ console.error(error); return null; }
     return data.map(rowToProduct);
   }
