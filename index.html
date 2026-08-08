@@ -2579,40 +2579,105 @@ function bindAdminSettingsUI(){
     showToast('تنظیمات ذخیره شد ✓');
   };
 }
+
 let pendingLogo = '';
+let pendingHeroImage = '';
+
+async function uploadSettingImage(file, prefix){
+  if(!supabaseClient) {
+    throw new Error('Supabase در دسترس نیست');
+  }
+
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `settings/${prefix}-${Date.now()}.${ext}`;
+
+  const { error } = await supabaseClient
+    .storage
+    .from('site-assets')
+    .upload(path, file, {
+      cacheControl: '31536000',
+      contentType: file.type || 'image/jpeg',
+      upsert: false
+    });
+
+  if(error) throw error;
+
+  const { data } = supabaseClient
+    .storage
+    .from('site-assets')
+    .getPublicUrl(path);
+
+  if(!data?.publicUrl) {
+    throw new Error('URL تصویر ساخته نشد');
+  }
+
+  return data.publicUrl;
+}
+
 function bindLogoInput(){
   const logoBox = $('#logoUploadBox');
   const logoInput = $('#logoInput');
   if(!logoInput) return;
-  logoInput.onchange = ()=>{
+
+  logoInput.onchange = async ()=>{
     const file = logoInput.files[0];
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = ()=>{
-      pendingLogo = reader.result;
-      logoBox.innerHTML = `<img src="${pendingLogo}" alt="لوگو"><input type="file" accept="image/*" id="logoInput">`;
-      bindLogoInput(); // rebind the freshly-inserted file input only (keeps pendingLogo intact)
-    };
-    reader.readAsDataURL(file);
+
+    try{
+      logoInput.disabled = true;
+
+      const url = await uploadSettingImage(file, 'logo');
+      pendingLogo = url;
+
+      logoBox.innerHTML = `
+        <img src="${pendingLogo}" alt="لوگو">
+        <input type="file" accept="image/*" id="logoInput">
+      `;
+
+      bindLogoInput();
+    }catch(error){
+      console.error('Logo upload error:', error);
+      showToast('آپلود لوگو انجام نشد');
+    }finally{
+      logoInput.disabled = false;
+    }
   };
 }
-let pendingHeroImage = '';
+
 function bindHeroImageInput(){
   const heroBox = $('#heroImageBox');
   const heroInput = $('#heroImageInput');
   if(!heroInput) return;
-  heroInput.onchange = ()=>{
+
+  heroInput.onchange = async ()=>{
     const file = heroInput.files[0];
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = ()=>{
-      pendingHeroImage = reader.result;
-      heroBox.innerHTML = `<img src="${pendingHeroImage}" alt="تصویر صفحه نخست" style="object-fit:cover"><input type="file" accept="image/*" id="heroImageInput">`;
-      bindHeroImageInput(); // rebind the freshly-inserted file input only (keeps pendingHeroImage intact)
-    };
-    reader.readAsDataURL(file);
+
+    try{
+      heroInput.disabled = true;
+
+      const url = await uploadSettingImage(file, 'hero');
+      pendingHeroImage = url;
+
+      heroBox.innerHTML = `
+        <img
+          src="${pendingHeroImage}"
+          alt="تصویر صفحه نخست"
+          style="object-fit:cover"
+        >
+        <input type="file" accept="image/*" id="heroImageInput">
+      `;
+
+      bindHeroImageInput();
+    }catch(error){
+      console.error('Hero upload error:', error);
+      showToast('آپلود تصویر صفحه نخست انجام نشد');
+    }finally{
+      heroInput.disabled = false;
+    }
   };
 }
+
 
 function openProductModal(id){
   editingProductId = id;
