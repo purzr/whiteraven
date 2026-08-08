@@ -869,13 +869,28 @@ let STATE = {
   products: [],
   cart: [],
   orders: [],
+  messages: [],
   account: null,
   route: '/',
   filters:{category:'all', q:''},
   admin: {loggedIn:false},
   settings: defaultSettings()
 };
+async function loadMessagesRemote(){
+  if(!supabaseClient) return [];
 
+  const { data, error } = await supabaseClient
+    .from('messages')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if(error){
+    console.error('MESSAGES ERROR:', error);
+    return [];
+  }
+
+  return data || [];
+}
 /* ---------------- init ---------------- */
 async function init(){
   let products = await loadProducts();
@@ -891,6 +906,7 @@ async function init(){
   STATE.products = products.map(p=>({...p, images: normalizeImages(p), image: normalizeImages(p)[0]||''}));
 
   STATE.orders = await loadOrders();
+  STATE.messages = await loadMessagesRemote();
   STATE.cart = (await sGet('cart', false)) || [];
   STATE.account = await sGet('account', false);
 
@@ -1929,6 +1945,7 @@ function adminDashboard(){
   const totalOrders = STATE.orders.length;
   const totalRevenue = STATE.orders.reduce((s,o)=>s+o.total,0);
   const lowStock = STATE.products.filter(p=>p.stock<=3).length;
+   const totalMessages = STATE.messages ? STATE.messages.length : 0;
   const recentOrders = STATE.orders.slice(-5).reverse();
   return `
   <h2 class="admin-title">داشبورد</h2>
@@ -1938,6 +1955,10 @@ function adminDashboard(){
     <div class="stat-card"><div class="num">${RIAL(totalRevenue)}</div><div class="lbl">مجموع فروش</div></div>
     <div class="stat-card"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام</div></div>
   </div>
+<div class="stat-card">
+  <div class="num">${totalMessages}</div>
+  <div class="lbl">پیام‌های دریافتی</div>
+</div>
   <h3 style="font-size:15px;margin-bottom:14px;color:var(--text-dim)">آخرین سفارش‌ها</h3>
   <div class="table-wrap">
     <table class="admin-table">
