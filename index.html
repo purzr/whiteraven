@@ -2182,7 +2182,12 @@ function adminOrders(){
       <tbody>
         ${rev.map(o=>`<tr>
           <td style="color:var(--gold-light)">${o.id}</td>
-          <td>${escapeHtml(o.customer)}</td>
+<td>${escapeHtml(
+  typeof o.customer === 'object' && o.customer !== null
+    ? (o.customer.name || 'مهمان')
+    : (o.customer || 'مهمان')
+)}</td>
+
           <td>${o.items.reduce((s,i)=>s+i.qty,0)} قلم</td>
           <td>${RIAL(o.total)}</td>
           <td>
