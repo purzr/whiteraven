@@ -1062,12 +1062,10 @@ function productImgHtml(p, cls='ph'){
     <span>WHITE RAVEN<br>تصویر ثبت نشده</span>
   </div>`;
 }
+
 function escapeHtml(s){
 if (s === null || s === undefined) return '';
-
-if (typeof s !== 'string') {
-s = String(s);
-}
+if (typeof s !== 'string') s = String(s);
 
 return s.replace(/[&<>"']/g, c => ({
 '&':'&',
