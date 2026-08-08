@@ -142,8 +142,10 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 
 /* ===== Hero ===== */
 .hero{
-  position:relative;min-height:640px;
-  display:flex;align-items:center;
+  position:relative;
+  height:clamp(560px, 78vh, 760px);
+  display:flex;
+  align-items:center;
   overflow:hidden;
   border-bottom:1px solid var(--line);
 }
