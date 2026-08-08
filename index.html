@@ -891,6 +891,28 @@ async function loadMessagesRemote(){
 
   return data || [];
 }
+async function deleteMessage(id) {
+  const confirmDelete = confirm('آیا از حذف این پیام مطمئن هستید؟');
+
+  if (!confirmDelete) return;
+
+  const { error } = await supabaseClient
+    .from('messages')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('DELETE MESSAGE ERROR:', error);
+    alert('حذف پیام انجام نشد');
+    return;
+  }
+
+  STATE.messages = STATE.messages.filter(msg => msg.id !== id);
+
+  alert('پیام با موفقیت حذف شد ✓');
+
+  router();
+}
 /* ---------------- init ---------------- */
 async function init(){
   let products = await loadProducts();
