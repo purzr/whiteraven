@@ -2051,13 +2051,20 @@ function adminDashboard(){
           </p>
 
           <button
-            class="btn"
-            type="button"
-            onclick="deleteMessage('${msg.id}')"
-            style="margin-top:8px;background:#d9534f;color:white;"
-          >
-            حذف پیام
-          </button>
+  class="btn"
+  type="button"
+  onclick="deleteMessage('${msg.id}')"
+  style="
+    margin-top:8px;
+    background:#7a1f1f;
+    color:white;
+    padding:6px 12px;
+    font-size:12px;
+    border-radius:7px;
+  "
+>
+  حذف پیام
+</button>
 
         </div>
       `).join('') || `
