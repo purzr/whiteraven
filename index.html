@@ -1062,20 +1062,7 @@ function productImgHtml(p, cls='ph'){
     <span>WHITE RAVEN<br>تصویر ثبت نشده</span>
   </div>`;
 }
-
-function escapeHtml(s){
-if (s === null || s === undefined) return "";
-s = String(s);
-
-return s.replace(/[&<>"']/g, function(c){
-if (c === "&") return "&";
-if (c === "<") return "<";
-if (c === ">") return ">";
-if (c === '"') return """;
-if (c === "'") return "'";
-return c;
-});
-}
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ---------------- product gallery (multiple images, drag/swipe + zoom) ---------------- */
 function productGalleryHtml(p){
@@ -2092,8 +2079,8 @@ function adminDashboard(){
       <tbody>
         ${recentOrders.map(o=>`<tr>
           <td style="color:var(--gold-light)">${o.id}</td>
-          <td>${escapeHtml(
-  typeof o.customer === 'object'
+           <td>${escapeHtml(
+  typeof o.customer === 'object' && o.customer !== null
     ? (o.customer.name || 'مهمان')
     : (o.customer || 'مهمان')
 )}</td>
@@ -2195,12 +2182,7 @@ function adminOrders(){
       <tbody>
         ${rev.map(o=>`<tr>
           <td style="color:var(--gold-light)">${o.id}</td>
-          <td>${escapeHtml(
-  typeof o.customer === 'object' && o.customer !== null
-    ? (o.customer.name || 'مهمان')
-    : (o.customer || 'مهمان')
-)}</td>
-
+          <td>${escapeHtml(o.customer)}</td>
           <td>${o.items.reduce((s,i)=>s+i.qty,0)} قلم</td>
           <td>${RIAL(o.total)}</td>
           <td>
