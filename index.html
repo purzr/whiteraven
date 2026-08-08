@@ -2079,7 +2079,11 @@ function adminDashboard(){
       <tbody>
         ${recentOrders.map(o=>`<tr>
           <td style="color:var(--gold-light)">${o.id}</td>
-          <td>${escapeHtml(o.customer)}</td>
+          <td>${escapeHtml(
+  typeof o.customer === 'object'
+    ? (o.customer.name || 'مهمان')
+    : (o.customer || 'مهمان')
+)}</td>
           <td>${RIAL(o.total)}</td>
           <td><span class="badge ok">${o.status}</span></td>
         </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</td></tr>`}
