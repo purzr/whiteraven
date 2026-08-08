@@ -1971,7 +1971,49 @@ function adminDashboard(){
           <td><span class="badge ok">${o.status}</span></td>
         </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</td></tr>`}
       </tbody>
-    </table>
+        </table>
+  </div>
+
+  <h3 style="font-size:15px;margin:25px 0 14px;color:var(--text-dim)">
+    📩 پیام‌های دریافتی
+  </h3>
+
+  <div class="messages-admin">
+    ${
+      STATE.messages.map(msg => `
+        <div class="message" style="background:var(--card);padding:18px;margin-bottom:12px;border-radius:10px;">
+
+          ${!msg.is_read ? '<span style="color:#d9534f;font-size:12px;">● جدید</span>' : ''}
+
+          <p><strong>نام:</strong> ${escapeHtml(msg.name || '-')}</p>
+
+          <p><strong>ایمیل:</strong> ${escapeHtml(msg.email || '-')}</p>
+
+          <p><strong>موضوع:</strong> ${escapeHtml(msg.subject || '-')}</p>
+
+          <p><strong>پیام:</strong> ${escapeHtml(msg.message || '-')}</p>
+
+          <p style="font-size:12px;color:var(--text-faint);">
+            <strong>تاریخ:</strong>
+            ${new Date(msg.created_at).toLocaleString('fa-IR')}
+          </p>
+
+          <button
+            class="btn"
+            type="button"
+            onclick="deleteMessage('${msg.id}')"
+            style="margin-top:8px;background:#d9534f;color:white;"
+          >
+            حذف پیام
+          </button>
+
+        </div>
+      `).join('') || `
+        <div style="text-align:center;padding:30px;color:var(--text-faint);">
+          هنوز پیامی دریافت نشده است
+        </div>
+      `
+    }
   </div>`;
 }
 
