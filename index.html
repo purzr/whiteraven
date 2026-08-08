@@ -163,15 +163,17 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .hero-bg.has-photo{
   background:
     linear-gradient(90deg, rgba(10,9,8,.92) 0%, rgba(10,9,8,.55) 42%, rgba(10,9,8,.25) 100%),
-    var(--hero-photo) center/cover no-repeat;
+    var(--hero-photo) center/contain no-repeat;
 }
+
 @media(max-width:900px){
   .hero-bg.has-photo{
     background:
       linear-gradient(180deg, rgba(10,9,8,.55) 0%, rgba(10,9,8,.88) 78%),
-      var(--hero-photo) center/cover no-repeat;
+      var(--hero-photo) center/contain no-repeat;
   }
 }
+
 .hero-feather-svg{
     display:none !important;
 }
