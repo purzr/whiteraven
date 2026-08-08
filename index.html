@@ -932,9 +932,12 @@ async function markMessageAsRead(id) {
     msg.is_read = true;
   }
 
+STATE.messages = STATE.messages.map(msg =>
+  msg.id === id ? {...msg, is_read:true} : msg
+);
+
   router();
 }
-
 /* ---------------- init ---------------- */
 async function init(){
   let products = await loadProducts();
@@ -1989,7 +1992,9 @@ function adminDashboard(){
   const totalOrders = STATE.orders.length;
   const totalRevenue = STATE.orders.reduce((s,o)=>s+o.total,0);
   const lowStock = STATE.products.filter(p=>p.stock<=3).length;
-   const totalMessages = STATE.messages ? STATE.messages.length : 0;
+   const totalMessages = STATE.messages
+  ? STATE.messages.filter(msg => !msg.is_read).length
+  : 0;
   const recentOrders = STATE.orders.slice(-5).reverse();
   return `
   <h2 class="admin-title">داشبورد</h2>
