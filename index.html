@@ -913,6 +913,28 @@ async function deleteMessage(id) {
 
   router();
 }
+async function markMessageAsRead(id) {
+  if (!supabaseClient) return;
+
+  const { error } = await supabaseClient
+    .from('messages')
+    .update({ is_read: true })
+    .eq('id', id);
+
+  if (error) {
+    console.error('MARK READ ERROR:', error);
+    return;
+  }
+
+  const msg = STATE.messages.find(msg => msg.id === id);
+
+  if (msg) {
+    msg.is_read = true;
+  }
+
+  router();
+}
+
 /* ---------------- init ---------------- */
 async function init(){
   let products = await loadProducts();
@@ -2003,8 +2025,11 @@ function adminDashboard(){
   <div class="messages-admin">
     ${
       STATE.messages.map(msg => `
-        <div class="message" style="background:var(--card);padding:18px;margin-bottom:12px;border-radius:10px;">
-
+        <div
+  class="message"
+  style="background:var(--card);padding:18px;margin-bottom:12px;border-radius:10px;cursor:pointer;"
+  onclick="markMessageAsRead('${msg.id}')"
+>
           ${!msg.is_read ? '<span style="color:#d9534f;font-size:12px;">● جدید</span>' : ''}
 
           <p><strong>نام:</strong> ${escapeHtml(msg.name || '-')}</p>
