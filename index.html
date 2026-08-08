@@ -1559,19 +1559,45 @@ function pageCheckout(){
       <form id="checkoutForm">
         <h3 class="serif" style="font-size:22px;margin-bottom:20px">اطلاعات ارسال</h3>
         <div class="form-row2">
-          <div class="form-field"><label>نام</label><input required placeholder="نام"></div>
-          <div class="form-field"><label>نام خانوادگی</label><input required placeholder="نام خانوادگی"></div>
-        </div>
-        <div class="form-field"><label>شماره تماس</label><input required placeholder="09xxxxxxxxx"></div>
-        <div class="form-field"><label>آدرس کامل</label><textarea required placeholder="استان، شهر، خیابان، پلاک..."></textarea></div>
-        <div class="form-row2">
-          <div class="form-field"><label>شهر</label><input required placeholder="شهر"></div>
-          <div class="form-field"><label>کد پستی</label><input placeholder="کد پستی"></div>
-        </div>
-        <div class="form-field">
-          <label>روش پرداخت</label>
-          <select><option>پرداخت آنلاین (درگاه بانکی)</option><option>پرداخت در محل</option></select>
-        </div>
+  <div class="form-field">
+    <label>نام</label>
+    <input required id="checkoutFirstName" placeholder="نام">
+  </div>
+  <div class="form-field">
+    <label>نام خانوادگی</label>
+    <input required id="checkoutLastName" placeholder="نام خانوادگی">
+  </div>
+</div>
+
+<div class="form-field">
+  <label>شماره تماس</label>
+  <input required id="checkoutPhone" type="tel" placeholder="09xxxxxxxxx">
+</div>
+
+<div class="form-field">
+  <label>آدرس کامل</label>
+  <textarea required id="checkoutAddress" placeholder="استان، شهر، خیابان، پلاک..."></textarea>
+</div>
+
+<div class="form-row2">
+  <div class="form-field">
+    <label>شهر</label>
+    <input required id="checkoutCity" placeholder="شهر">
+  </div>
+  <div class="form-field">
+    <label>کد پستی</label>
+    <input id="checkoutPostalCode" inputmode="numeric" placeholder="کد پستی">
+  </div>
+</div>
+
+<div class="form-field">
+  <label>روش پرداخت</label>
+  <select id="checkoutPaymentMethod">
+    <option>پرداخت آنلاین (درگاه بانکی)</option>
+    <option>پرداخت در محل</option>
+  </select>
+</div>
+
         <button class="btn btn-solid btn-block" type="submit">ثبت نهایی سفارش</button>
       </form>
       <div>
@@ -1736,17 +1762,47 @@ if (messageInput && messageCounter) {
       navigate('/checkout');
       return;
     }
+const subtotal = cartSubtotal();
+const shipping = subtotal >= 1000000 ? 0 : 45000;
+const total = subtotal + shipping;
 
-    const subtotal = cartSubtotal();
-    const shipping = subtotal >= 1000000 ? 0 : 45000;
-    const order = {
-      id: uid(),
-      items: STATE.cart.map(ci=>({...ci})),
-      subtotal, shipping, total: subtotal+shipping,
-      status:'در حال پردازش',
-      createdAt: new Date().toISOString(),
-      customer: STATE.account?.name || 'مهمان'
-    };
+// اطلاعات مشتری
+const customer = {
+  firstName: $('#checkoutFirstName').value.trim(),
+  lastName: $('#checkoutLastName').value.trim(),
+  name: `${$('#checkoutFirstName').value.trim()} ${$('#checkoutLastName').value.trim()}`.trim(),
+  phone: $('#checkoutPhone').value.trim(),
+  address: $('#checkoutAddress').value.trim(),
+  city: $('#checkoutCity').value.trim(),
+  postalCode: $('#checkoutPostalCode').value.trim(),
+  paymentMethod: $('#checkoutPaymentMethod').value
+};
+
+// ذخیره یک snapshot از محصولات در زمان ثبت سفارش
+// تا اگر بعداً محصول ویرایش یا حذف شد، سفارش قبلی همچنان جزئیاتش را داشته باشد.
+const orderItems = STATE.cart.map(ci=>{
+  const p = findProduct(ci.productId);
+
+  return {
+    productId: ci.productId,
+    name: p?.name || 'محصول حذف شده',
+    size: ci.size || '',
+    qty: ci.qty,
+    unitPrice: p?.price || 0,
+    totalPrice: (p?.price || 0) * ci.qty
+  };
+});
+
+const order = {
+  id: uid(),
+  items: orderItems,
+  subtotal,
+  shipping,
+  total,
+  status: 'در حال پردازش',
+  createdAt: new Date().toISOString(),
+  customer
+};
     STATE.orders.unshift(order);
     await insertOrderRemote(order);
     // decrement stock
