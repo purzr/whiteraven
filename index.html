@@ -1062,7 +1062,22 @@ function productImgHtml(p, cls='ph'){
     <span>WHITE RAVEN<br>تصویر ثبت نشده</span>
   </div>`;
 }
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeHtml(s){
+if (s === null || s === undefined) return '';
+
+if (typeof s !== 'string') {
+s = String(s);
+}
+
+return s.replace(/[&<>"']/g, c => ({
+'&':'&',
+'<':'<',
+'>':'>',
+'"':'"',
+"'":'''
+}[c]));
+}
+
 
 /* ---------------- product gallery (multiple images, drag/swipe + zoom) ---------------- */
 function productGalleryHtml(p){
