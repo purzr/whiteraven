@@ -833,12 +833,19 @@ async function loadSettings(){
 }
 async function saveSettingsRemote(settings){
   if(supabaseClient){
-    const {error} = await supabaseClient.from('settings').upsert({id:'site', data: JSON.stringify(settings)});
+    const {error} = await supabaseClient
+      .from('settings')
+      .upsert({
+        id: 'site',
+        data: settings
+      });
+
     if(error) console.error(error);
   } else {
     await sSet('settings', settings, true);
   }
 }
+
 function applySettingsToDOM(settings){
   const root = document.documentElement.style;
   FONT_SECTIONS.forEach(s=>{
