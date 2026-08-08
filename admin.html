@@ -246,7 +246,7 @@
         data.map(msg => `
 
           <div class="message">
-
+                   ${!msg.is_read ? '<span style="color:#d9534f;font-size:12px;">● جدید</span>' : ''}
             <p>
               <strong>نام:</strong>
               ${msg.name}
@@ -282,7 +282,17 @@
           </div>
 
         `).join('');
-    }
+const unreadIds = data
+  .filter(msg => !msg.is_read)
+  .map(msg => msg.id);
+
+if (unreadIds.length > 0) {
+  await supabaseClient
+    .from('messages')
+    .update({ is_read: true })
+   .in('id', unreadIds);
+  }
+}
 
 async function deleteMessage(id) {
   const confirmDelete = confirm('آیا از حذف این پیام مطمئن هستید؟');
