@@ -489,6 +489,9 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .toggle-row .tr-label{font-size:13.5px}
 .logo-upload-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .logo-upload-box{width:110px;height:110px;border:1px dashed var(--line);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;background:#0d0d0e}
+.theme-asset-row{display:flex;gap:32px;flex-wrap:wrap;margin-top:8px}
+.theme-asset-col{display:flex;flex-direction:column;gap:12px}
+.theme-asset-label{font-size:13px;color:var(--text-dim)}
 .logo-upload-box img{width:100%;height:100%;object-fit:contain;padding:10px}
 .logo-upload-box input{position:absolute;inset:0;opacity:0;cursor:pointer}
 .logo-upload-box:hover{border-color:var(--gold)}
@@ -928,8 +931,10 @@ const FONT_SECTIONS = [
 ];
 function defaultSettings(){
   return {
-    logo:'',
-    heroImage:'',
+    logoDark:'',
+    logoLight:'',
+    heroImageDark:'',
+    heroImageLight:'',
     fonts:{
       header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
@@ -937,13 +942,17 @@ function defaultSettings(){
     scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 }
   };
 }
+/* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
+   برای تم مشکی (تم پیش‌فرض) بود؛ اگر داده قدیمی پیدا شود، به‌عنوان نسخهٔ "تم مشکی" منتقل می‌شود. */
 function rowToSettings(row){
   const d = defaultSettings();
   let data = {};
   try{ data = typeof row.data === 'string' ? JSON.parse(row.data) : (row.data||{}); }catch(e){ data = {}; }
   return {
-    logo: data.logo ?? d.logo,
-    heroImage: data.heroImage ?? d.heroImage,
+    logoDark: data.logoDark ?? data.logo ?? d.logoDark,
+    logoLight: data.logoLight ?? d.logoLight,
+    heroImageDark: data.heroImageDark ?? data.heroImage ?? d.heroImageDark,
+    heroImageLight: data.heroImageLight ?? d.heroImageLight,
     fonts: {...d.fonts, ...(data.fonts||{})},
     scales: {...d.scales, ...(data.scales||{})}
   };
@@ -973,6 +982,10 @@ async function loadSettings(){
     ? {
         ...defaultSettings(),
         ...s,
+        logoDark: s.logoDark ?? s.logo ?? defaultSettings().logoDark,
+        logoLight: s.logoLight ?? defaultSettings().logoLight,
+        heroImageDark: s.heroImageDark ?? s.heroImage ?? defaultSettings().heroImageDark,
+        heroImageLight: s.heroImageLight ?? defaultSettings().heroImageLight,
         fonts:{
           ...defaultSettings().fonts,
           ...(s.fonts||{})
@@ -1000,6 +1013,21 @@ async function saveSettingsRemote(settings){
   }
 }
 
+/* ---------------- theme-aware logo / hero-image helpers ---------------- */
+function themeMode(){
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
+function getLogoForTheme(settings){
+  return themeMode()==='light'
+    ? (settings.logoLight || settings.logoDark || '')
+    : (settings.logoDark || settings.logoLight || '');
+}
+function getHeroForTheme(settings){
+  return themeMode()==='light'
+    ? (settings.heroImageLight || settings.heroImageDark || '')
+    : (settings.heroImageDark || settings.heroImageLight || '');
+}
+
 function applySettingsToDOM(settings){
   const root = document.documentElement.style;
   FONT_SECTIONS.forEach(s=>{
@@ -1008,19 +1036,33 @@ function applySettingsToDOM(settings){
     const scale = (settings.scales?.[s.key] ?? 100)/100;
     root.setProperty(`--scale-${s.key}`, scale);
   });
+  const logoSrc = getLogoForTheme(settings);
   const slot = $('#siteLogoSlot');
   if(slot){
-    if(settings.logo){
-      slot.innerHTML = `<img class="logo-img" src="${settings.logo}" alt="لوگو">`;
+    if(logoSrc){
+      slot.innerHTML = `<img class="logo-img" src="${logoSrc}" alt="لوگو">`;
     } else {
       slot.innerHTML = `<svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
     }
   }
   const adminSlot = $('#adminLogoSlot');
   if(adminSlot){
-    adminSlot.innerHTML = settings.logo
-      ? `<img class="logo-img" style="height:26px" src="${settings.logo}" alt="لوگو">`
+    adminSlot.innerHTML = logoSrc
+      ? `<img class="logo-img" style="height:26px" src="${logoSrc}" alt="لوگو">`
       : `<svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
+  }
+  // تصویر پس‌زمینه هیرو (صفحه نخست) را هم بلافاصله با تم فعلی هماهنگ می‌کند،
+  // بدون نیاز به رفرش صفحه — کاربرد اصلی: تعویض تم توسط مشتری
+  const heroSrc = getHeroForTheme(settings);
+  const heroBg = document.querySelector('.hero-bg');
+  if(heroBg){
+    if(heroSrc){
+      heroBg.classList.add('has-photo');
+      heroBg.style.setProperty('--hero-photo', `url('${heroSrc}')`);
+    } else {
+      heroBg.classList.remove('has-photo');
+      heroBg.style.removeProperty('--hero-photo');
+    }
   }
 }
 
@@ -1222,6 +1264,7 @@ function bindGlobalUI(){
         document.documentElement.setAttribute('data-theme','light');
         try{ localStorage.setItem('wr-theme','light'); }catch(e){}
       }
+      applySettingsToDOM(STATE.settings);
     };
   }
   $('#hamburgerBtn').onclick = ()=>{ $('#mobileNav').classList.add('open'); $('#mobileOverlay').classList.add('open'); };
@@ -1471,7 +1514,7 @@ function productCard(p){
 function pageHome(){
   const women = STATE.products.filter(p=>p.category==='women').slice(0,4);
   const featured = STATE.products.slice(0,8);
-  const heroImg = STATE.settings.heroImage;
+  const heroImg = getHeroForTheme(STATE.settings);
   return `
   <section class="hero">
     <div class="hero-bg${heroImg?' has-photo':''}"${heroImg?` style="--hero-photo:url('${heroImg}')"`:''}></div>
@@ -2650,32 +2693,58 @@ function adminSettings(){
 
   <div class="settings-card">
     <h3 class="serif">لوگوی سایت</h3>
-    <p class="settings-desc">تصویری که در سربرگ فروشگاه و پنل مدیریت به‌جای نماد پیش‌فرض نمایش داده می‌شود. برای بازگشت به حالت پیش‌فرض، آن را حذف کنید.</p>
-    <div class="logo-upload-row">
-      <div class="logo-upload-box" id="logoUploadBox">
-        ${s.logo ? `<img src="${s.logo}" alt="لوگو">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون لوگوی سفارشی</span>`}
-        <input type="file" accept="image/*" id="logoInput">
+    <p class="settings-desc">برای هر تم سایت می‌توانید یک لوگوی جداگانه بگذارید؛ با تعویض تم توسط مشتری، لوگوی متناسب با همان تم نمایش داده می‌شود. اگر برای یکی از تم‌ها لوگو نگذارید، همان لوگوی تم دیگر استفاده می‌شود.</p>
+    <div class="theme-asset-row">
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🌙 لوگو برای تم مشکی</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="logoUploadBoxDark">
+            ${s.logoDark ? `<img src="${s.logoDark}" alt="لوگو تم مشکی">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون لوگوی سفارشی</span>`}
+            <input type="file" accept="image/*" id="logoInputDark">
+          </div>
+          ${s.logoDark ? `<button type="button" class="btn btn-ghost" id="removeLogoBtnDark" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <span style="font-size:12.5px;color:var(--text-faint)">روی کادر کلیک کنید تا تصویر جدید آپلود شود (فرمت PNG با پس‌زمینه شفاف پیشنهاد می‌شود).</span>
-        ${s.logo ? `<button type="button" class="btn btn-ghost" id="removeLogoBtn" style="align-self:flex-start;padding:8px 16px;font-size:12.5px">حذف لوگوی سفارشی</button>` : ''}
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">☀️ لوگو برای تم روشن</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="logoUploadBoxLight">
+            ${s.logoLight ? `<img src="${s.logoLight}" alt="لوگو تم روشن">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون لوگوی سفارشی</span>`}
+            <input type="file" accept="image/*" id="logoInputLight">
+          </div>
+          ${s.logoLight ? `<button type="button" class="btn btn-ghost" id="removeLogoBtnLight" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
       </div>
     </div>
+    <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">فرمت PNG با پس‌زمینه شفاف پیشنهاد می‌شود.</span>
   </div>
 
   <div class="settings-card">
     <h3 class="serif">تصویر پس‌زمینه صفحه نخست</h3>
-    <p class="settings-desc">تصویری که در بخش اصلی (Hero) صفحه نخست، پشت عنوان سایت نمایش داده می‌شود. برای بازگشت به حالت پیش‌فرض (بدون تصویر)، آن را حذف کنید.</p>
-    <div class="logo-upload-row">
-      <div class="logo-upload-box" id="heroImageBox" style="width:220px;height:130px">
-        ${s.heroImage ? `<img src="${s.heroImage}" alt="تصویر صفحه نخست" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
-        <input type="file" accept="image/*" id="heroImageInput">
+    <p class="settings-desc">تصویری که در بخش اصلی (Hero) صفحه نخست، پشت عنوان سایت نمایش داده می‌شود؛ می‌توانید برای هر تم یک تصویر جدا بگذارید. اگر برای یکی از تم‌ها تصویر نگذارید، همان تصویر تم دیگر استفاده می‌شود.</p>
+    <div class="theme-asset-row">
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🌙 تصویر برای تم مشکی</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="heroImageBoxDark" style="width:220px;height:130px">
+            ${s.heroImageDark ? `<img src="${s.heroImageDark}" alt="تصویر صفحه نخست - تم مشکی" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="heroImageInputDark">
+          </div>
+          ${s.heroImageDark ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnDark" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <span style="font-size:12.5px;color:var(--text-faint)">پیشنهاد می‌شود تصویری افقی (مثلاً ۱۶۰۰×۹۰۰) و با کیفیت بالا انتخاب کنید.</span>
-        ${s.heroImage ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtn" style="align-self:flex-start;padding:8px 16px;font-size:12.5px">حذف تصویر</button>` : ''}
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">☀️ تصویر برای تم روشن</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="heroImageBoxLight" style="width:220px;height:130px">
+            ${s.heroImageLight ? `<img src="${s.heroImageLight}" alt="تصویر صفحه نخست - تم روشن" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="heroImageInputLight">
+          </div>
+          ${s.heroImageLight ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnLight" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
       </div>
     </div>
+    <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">پیشنهاد می‌شود تصویری افقی (مثلاً ۱۶۰۰×۹۰۰) و با کیفیت بالا انتخاب کنید.</span>
   </div>
 
   <div class="settings-card">
@@ -2858,41 +2927,47 @@ function bindAdminSettingsUI(){
     };
   });
 
-  const logoBox = $('#logoUploadBox');
-  if(logoBox && !logoBox.dataset.pendingInit){
-    logoBox.dataset.pendingInit = '1';
-    pendingLogo = STATE.settings.logo;
-  }
-  bindLogoInput();
-  const removeLogoBtn = $('#removeLogoBtn');
-  if(removeLogoBtn) removeLogoBtn.onclick = ()=>{
-    pendingLogo = '';
-    $('#adminMain').innerHTML = adminSettings();
-    STATE.settings = {...STATE.settings, logo:''};
-    bindAdminShell();
-  };
+  ['Dark','Light'].forEach(mode=>{
+    const logoBox = $(`#logoUploadBox${mode}`);
+    if(logoBox && !logoBox.dataset.pendingInit){
+      logoBox.dataset.pendingInit = '1';
+      if(mode==='Dark') pendingLogoDark = STATE.settings.logoDark;
+      else pendingLogoLight = STATE.settings.logoLight;
+    }
+    bindLogoInput(mode);
+    const removeLogoBtn = $(`#removeLogoBtn${mode}`);
+    if(removeLogoBtn) removeLogoBtn.onclick = ()=>{
+      if(mode==='Dark'){ pendingLogoDark = ''; STATE.settings = {...STATE.settings, logoDark:''}; }
+      else{ pendingLogoLight = ''; STATE.settings = {...STATE.settings, logoLight:''}; }
+      $('#adminMain').innerHTML = adminSettings();
+      bindAdminShell();
+    };
 
-  const heroBox = $('#heroImageBox');
-  if(heroBox && !heroBox.dataset.pendingInit){
-    heroBox.dataset.pendingInit = '1';
-    pendingHeroImage = STATE.settings.heroImage;
-  }
-  bindHeroImageInput();
-  const removeHeroBtn = $('#removeHeroImageBtn');
-  if(removeHeroBtn) removeHeroBtn.onclick = ()=>{
-    pendingHeroImage = '';
-    $('#adminMain').innerHTML = adminSettings();
-    STATE.settings = {...STATE.settings, heroImage:''};
-    bindAdminShell();
-  };
+    const heroBox = $(`#heroImageBox${mode}`);
+    if(heroBox && !heroBox.dataset.pendingInit){
+      heroBox.dataset.pendingInit = '1';
+      if(mode==='Dark') pendingHeroImageDark = STATE.settings.heroImageDark;
+      else pendingHeroImageLight = STATE.settings.heroImageLight;
+    }
+    bindHeroImageInput(mode);
+    const removeHeroBtn = $(`#removeHeroImageBtn${mode}`);
+    if(removeHeroBtn) removeHeroBtn.onclick = ()=>{
+      if(mode==='Dark'){ pendingHeroImageDark = ''; STATE.settings = {...STATE.settings, heroImageDark:''}; }
+      else{ pendingHeroImageLight = ''; STATE.settings = {...STATE.settings, heroImageLight:''}; }
+      $('#adminMain').innerHTML = adminSettings();
+      bindAdminShell();
+    };
+  });
 
   saveBtn.onclick = async ()=>{
     const fonts = {}, scales = {};
     $$('.font-select').forEach(sel=> fonts[sel.dataset.section] = sel.value);
     $$('.scale-range').forEach(range=> scales[range.dataset.section] = Number(range.value));
     const newSettings = {
-      logo: pendingLogo || '',
-      heroImage: pendingHeroImage || '',
+      logoDark: pendingLogoDark || '',
+      logoLight: pendingLogoLight || '',
+      heroImageDark: pendingHeroImageDark || '',
+      heroImageLight: pendingHeroImageLight || '',
       fonts, scales
     };
     STATE.settings = newSettings;
@@ -2902,8 +2977,10 @@ function bindAdminSettingsUI(){
   };
 }
 
-let pendingLogo = '';
-let pendingHeroImage = '';
+let pendingLogoDark = '';
+let pendingLogoLight = '';
+let pendingHeroImageDark = '';
+let pendingHeroImageLight = '';
 
 async function uploadSettingImage(file, prefix){
   if(!supabaseClient) {
@@ -2936,9 +3013,9 @@ async function uploadSettingImage(file, prefix){
   return data.publicUrl;
 }
 
-function bindLogoInput(){
-  const logoBox = $('#logoUploadBox');
-  const logoInput = $('#logoInput');
+function bindLogoInput(mode){
+  const logoBox = $(`#logoUploadBox${mode}`);
+  const logoInput = $(`#logoInput${mode}`);
   if(!logoInput) return;
 
   logoInput.onchange = async ()=>{
@@ -2948,15 +3025,15 @@ function bindLogoInput(){
     try{
       logoInput.disabled = true;
 
-      const url = await uploadSettingImage(file, 'logo');
-      pendingLogo = url;
+      const url = await uploadSettingImage(file, `logo-${mode.toLowerCase()}`);
+      if(mode==='Dark') pendingLogoDark = url; else pendingLogoLight = url;
 
       logoBox.innerHTML = `
-        <img src="${pendingLogo}" alt="لوگو">
-        <input type="file" accept="image/*" id="logoInput">
+        <img src="${url}" alt="لوگو">
+        <input type="file" accept="image/*" id="logoInput${mode}">
       `;
 
-      bindLogoInput();
+      bindLogoInput(mode);
     }catch(error){
       console.error('Logo upload error:', error);
       showToast('آپلود لوگو انجام نشد');
@@ -2966,9 +3043,9 @@ function bindLogoInput(){
   };
 }
 
-function bindHeroImageInput(){
-  const heroBox = $('#heroImageBox');
-  const heroInput = $('#heroImageInput');
+function bindHeroImageInput(mode){
+  const heroBox = $(`#heroImageBox${mode}`);
+  const heroInput = $(`#heroImageInput${mode}`);
   if(!heroInput) return;
 
   heroInput.onchange = async ()=>{
@@ -2978,19 +3055,19 @@ function bindHeroImageInput(){
     try{
       heroInput.disabled = true;
 
-      const url = await uploadSettingImage(file, 'hero');
-      pendingHeroImage = url;
+      const url = await uploadSettingImage(file, `hero-${mode.toLowerCase()}`);
+      if(mode==='Dark') pendingHeroImageDark = url; else pendingHeroImageLight = url;
 
       heroBox.innerHTML = `
         <img
-          src="${pendingHeroImage}"
+          src="${url}"
           alt="تصویر صفحه نخست"
           style="object-fit:cover"
         >
-        <input type="file" accept="image/*" id="heroImageInput">
+        <input type="file" accept="image/*" id="heroImageInput${mode}">
       `;
 
-      bindHeroImageInput();
+      bindHeroImageInput(mode);
     }catch(error){
       console.error('Hero upload error:', error);
       showToast('آپلود تصویر صفحه نخست انجام نشد');
