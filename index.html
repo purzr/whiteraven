@@ -1990,13 +1990,19 @@ window.closeCartUI = closeCart;
 /* ======================================================================
    ADMIN PANEL
 ====================================================================== */
-const ADMIN_PASSWORD = 'iwillNeverf0rg0tthis@';
 let adminSection = 'dashboard';
 let editingProductId = null;
 
 async function isAdminLoggedIn(){
-  const s = await sGet('admin_session', false);
-  return !!(s && s.loggedIn);
+  if(!supabaseClient) return false;
+
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if(error || !data?.user){
+    return false;
+  }
+
+  return data.user.email === 'purzrshop@gmail.com';
 }
 
 async function renderAdmin(path){
