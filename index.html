@@ -1062,33 +1062,63 @@ STATE.messages = STATE.messages.map(msg =>
   router();
 }
 /* ---------------- init ---------------- */
+
 async function init(){
-  let products = await loadProducts();
-  if(!products || !products.length){
-    // first run — seed demo products (also pushes them to Supabase if configured)
-    products = SEED_PRODUCTS;
+  const [
+    products,
+    orders,
+    messages,
+    settings,
+    cart,
+    account
+  ] = await Promise.all([
+    loadProducts(),
+    loadOrders(),
+    loadMessagesRemote(),
+    loadSettings(),
+    sGet('cart', false),
+    sGet('account', false)
+  ]);
+
+  let finalProducts = products;
+
+  if(!finalProducts || !finalProducts.length){
+    // first run — seed demo products
+    finalProducts = SEED_PRODUCTS;
+
     if(supabaseClient){
-      for(const p of products){ await upsertProductRemote(p); }
-    } else {
-      await sSet('products', products, true);
+      await Promise.all(
+        finalProducts.map(p => upsertProductRemote(p))
+      );
+    }else{
+      await sSet('products', finalProducts, true);
     }
   }
-  STATE.products = products.map(p=>({...p, images: normalizeImages(p), image: normalizeImages(p)[0]||''}));
 
-  STATE.orders = await loadOrders();
-  STATE.messages = await loadMessagesRemote();
-  STATE.cart = (await sGet('cart', false)) || [];
-  STATE.account = await sGet('account', false);
+  STATE.products = finalProducts.map(p => ({
+    ...p,
+    images: normalizeImages(p),
+    image: normalizeImages(p)[0] || ''
+  }));
 
-  const settings = await loadSettings();
+  STATE.orders = orders || [];
+  STATE.messages = messages || [];
+  STATE.cart = cart || [];
+  STATE.account = account || [];
+
   STATE.settings = settings || defaultSettings();
+
   applySettingsToDOM(STATE.settings);
 
   bindGlobalUI();
+
   window.addEventListener('hashchange', router);
+
   router();
+
   renderCart();
 }
+
 init();
 
 /* ---------------- routing ---------------- */
