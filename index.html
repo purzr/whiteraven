@@ -773,14 +773,34 @@ function rowToOrder(row){
 
 async function loadProducts(){
   if(supabaseClient){
-    const {data, error} = await supabaseClient.from('products').select('*').order('created_at',{ascending:true})
-.limit(100);
+    const {data, error} = await supabaseClient
+      .from('products')
+      .select(`
+        id,
+        name,
+        category,
+        price,
+        compare_at,
+        stock,
+        image,
+        images,
+        desc,
+        sizes
+      `)
+      .order('created_at', {ascending:true})
+      .limit(200);
 
-    if(error){ console.error(error); return null; }
+    if(error){
+      console.error(error);
+      return null;
+    }
+
     return data.map(rowToProduct);
   }
+
   return await sGet('products', true);
 }
+
 async function upsertProductRemote(p){
   if(supabaseClient){
     const {error} = await supabaseClient.from('products').upsert(productToRow(p));
