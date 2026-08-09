@@ -209,7 +209,7 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
   .hero-bg.has-photo{
     background:
       linear-gradient(180deg, rgba(10,9,8,.55) 0%, rgba(10,9,8,.88) 78%),
-      var(--hero-photo) center/contain no-repeat;
+      var(--hero-photo-mobile, var(--hero-photo)) center/contain no-repeat;
   }
 }
 
@@ -983,6 +983,8 @@ function defaultSettings(){
     logoLight:'',
     heroImageDark:'',
     heroImageLight:'',
+    heroImageDarkMobile:'',
+    heroImageLightMobile:'',
     fonts:{
       header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
@@ -1001,6 +1003,8 @@ function rowToSettings(row){
     logoLight: data.logoLight ?? d.logoLight,
     heroImageDark: data.heroImageDark ?? data.heroImage ?? d.heroImageDark,
     heroImageLight: data.heroImageLight ?? d.heroImageLight,
+    heroImageDarkMobile: data.heroImageDarkMobile ?? d.heroImageDarkMobile,
+    heroImageLightMobile: data.heroImageLightMobile ?? d.heroImageLightMobile,
     fonts: {...d.fonts, ...(data.fonts||{})},
     scales: {...d.scales, ...(data.scales||{})}
   };
@@ -1034,6 +1038,8 @@ async function loadSettings(){
         logoLight: s.logoLight ?? defaultSettings().logoLight,
         heroImageDark: s.heroImageDark ?? s.heroImage ?? defaultSettings().heroImageDark,
         heroImageLight: s.heroImageLight ?? defaultSettings().heroImageLight,
+        heroImageDarkMobile: s.heroImageDarkMobile ?? defaultSettings().heroImageDarkMobile,
+        heroImageLightMobile: s.heroImageLightMobile ?? defaultSettings().heroImageLightMobile,
         fonts:{
           ...defaultSettings().fonts,
           ...(s.fonts||{})
@@ -1075,6 +1081,11 @@ function getHeroForTheme(settings){
     ? (settings.heroImageLight || settings.heroImageDark || '')
     : (settings.heroImageDark || settings.heroImageLight || '');
 }
+function getHeroForThemeMobile(settings){
+  return themeMode()==='light'
+    ? (settings.heroImageLightMobile || settings.heroImageDarkMobile || '')
+    : (settings.heroImageDarkMobile || settings.heroImageLightMobile || '');
+}
 
 function applySettingsToDOM(settings){
   const root = document.documentElement.style;
@@ -1102,6 +1113,7 @@ function applySettingsToDOM(settings){
   // تصویر پس‌زمینه هیرو (صفحه نخست) را هم بلافاصله با تم فعلی هماهنگ می‌کند،
   // بدون نیاز به رفرش صفحه — کاربرد اصلی: تعویض تم توسط مشتری
   const heroSrc = getHeroForTheme(settings);
+  const heroSrcMobile = getHeroForThemeMobile(settings);
   const heroBg = document.querySelector('.hero-bg');
   if(heroBg){
     if(heroSrc){
@@ -1110,6 +1122,11 @@ function applySettingsToDOM(settings){
     } else {
       heroBg.classList.remove('has-photo');
       heroBg.style.removeProperty('--hero-photo');
+    }
+    if(heroSrcMobile){
+      heroBg.style.setProperty('--hero-photo-mobile', `url('${heroSrcMobile}')`);
+    } else {
+      heroBg.style.removeProperty('--hero-photo-mobile');
     }
   }
 }
@@ -1571,9 +1588,10 @@ function pageHome(){
   const women = STATE.products.filter(p=>p.category==='women').slice(0,4);
   const featured = STATE.products.slice(0,8);
   const heroImg = getHeroForTheme(STATE.settings);
+  const heroImgMobile = getHeroForThemeMobile(STATE.settings);
   return `
   <section class="hero">
-    <div class="hero-bg${heroImg?' has-photo':''}"${heroImg?` style="--hero-photo:url('${heroImg}')"`:''}></div>
+    <div class="hero-bg${heroImg?' has-photo':''}" style="${heroImg?`--hero-photo:url('${heroImg}');`:''}${heroImgMobile?`--hero-photo-mobile:url('${heroImgMobile}');`:''}"></div>
     <svg class="hero-feather-svg" style="${heroImg?'opacity:.25':''}" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M420 60c-70 10-160 60-210 130-15 20-25 45-20 70 30-5 60-20 80-45-10 45-45 85-90 105 45 10 95 0 130-30-15 50-55 90-100 110 55 5 105-20 135-60 5 40 25 75 60 95-20-40-30-85-25-125 25 20 55 30 85 25-30-15-55-40-65-70 30 5 60-5 80-30-30 0-60-10-80-30 30-5 55-25 70-50-30 5-60 15-80 35 5-35 20-70 45-95-30 10-55 30-70 55 5-30 15-60 35-85-25 5-45 20-60 40 5-25 10-50 5-75z" fill="#e8e2d5" opacity=".92"/>
     </svg>
@@ -2936,6 +2954,34 @@ function adminSettings(){
   </div>
 
   <div class="settings-card">
+    <h3 class="serif">تصویر پس‌زمینه صفحه نخست — مخصوص موبایل</h3>
+    <p class="settings-desc">اختیاری. اگر می‌خواهید مشتری‌هایی که با گوشی وارد سایت می‌شوند تصویر متفاوتی نسبت به دسکتاپ ببینند (مثلاً نسخه عمودی از همان عکس)، اینجا بگذارید. اگر خالی بماند، همان تصویر بالا (نسخه دسکتاپ) در گوشی هم نمایش داده می‌شود.</p>
+    <div class="theme-asset-row">
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🌙 موبایل — تم مشکی</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="heroImageBoxDarkMobile" style="width:130px;height:220px">
+            ${s.heroImageDarkMobile ? `<img src="${s.heroImageDarkMobile}" alt="تصویر صفحه نخست موبایل - تم مشکی" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="heroImageInputDarkMobile">
+          </div>
+          ${s.heroImageDarkMobile ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnDarkMobile" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">☀️ موبایل — تم روشن</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="heroImageBoxLightMobile" style="width:130px;height:220px">
+            ${s.heroImageLightMobile ? `<img src="${s.heroImageLightMobile}" alt="تصویر صفحه نخست موبایل - تم روشن" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="heroImageInputLightMobile">
+          </div>
+          ${s.heroImageLightMobile ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnLightMobile" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+      </div>
+    </div>
+    <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">پیشنهاد می‌شود تصویری عمودی (مثلاً ۹۰۰×۱۶۰۰) انتخاب کنید تا در گوشی بهتر جا بیفتد.</span>
+  </div>
+
+  <div class="settings-card">
     <h3 class="serif">فونت و اندازه متن هر بخش</h3>
     <p class="settings-desc">برای هر بخش از سایت، فونت و اندازهٔ متن را جداگانه انتخاب کنید. تغییرات بلافاصله برای همهٔ بازدیدکننده‌ها اعمال می‌شود.</p>
     ${FONT_SECTIONS.map(sec=>`
@@ -3130,18 +3176,19 @@ function bindAdminSettingsUI(){
       $('#adminMain').innerHTML = adminSettings();
       bindAdminShell();
     };
+  });
 
+  ['Dark','Light','DarkMobile','LightMobile'].forEach(mode=>{
     const heroBox = $(`#heroImageBox${mode}`);
     if(heroBox && !heroBox.dataset.pendingInit){
       heroBox.dataset.pendingInit = '1';
-      if(mode==='Dark') pendingHeroImageDark = STATE.settings.heroImageDark;
-      else pendingHeroImageLight = STATE.settings.heroImageLight;
+      pendingHeroImage[mode] = STATE.settings[`heroImage${mode}`];
     }
     bindHeroImageInput(mode);
     const removeHeroBtn = $(`#removeHeroImageBtn${mode}`);
     if(removeHeroBtn) removeHeroBtn.onclick = ()=>{
-      if(mode==='Dark'){ pendingHeroImageDark = ''; STATE.settings = {...STATE.settings, heroImageDark:''}; }
-      else{ pendingHeroImageLight = ''; STATE.settings = {...STATE.settings, heroImageLight:''}; }
+      pendingHeroImage[mode] = '';
+      STATE.settings = {...STATE.settings, [`heroImage${mode}`]:''};
       $('#adminMain').innerHTML = adminSettings();
       bindAdminShell();
     };
@@ -3154,8 +3201,10 @@ function bindAdminSettingsUI(){
     const newSettings = {
       logoDark: pendingLogoDark || '',
       logoLight: pendingLogoLight || '',
-      heroImageDark: pendingHeroImageDark || '',
-      heroImageLight: pendingHeroImageLight || '',
+      heroImageDark: pendingHeroImage.Dark || '',
+      heroImageLight: pendingHeroImage.Light || '',
+      heroImageDarkMobile: pendingHeroImage.DarkMobile || '',
+      heroImageLightMobile: pendingHeroImage.LightMobile || '',
       fonts, scales
     };
     STATE.settings = newSettings;
@@ -3167,8 +3216,7 @@ function bindAdminSettingsUI(){
 
 let pendingLogoDark = '';
 let pendingLogoLight = '';
-let pendingHeroImageDark = '';
-let pendingHeroImageLight = '';
+let pendingHeroImage = {Dark:'', Light:'', DarkMobile:'', LightMobile:''};
 
 async function uploadSettingImage(file, prefix){
   if(!supabaseClient) {
@@ -3244,7 +3292,7 @@ function bindHeroImageInput(mode){
       heroInput.disabled = true;
 
       const url = await uploadSettingImage(file, `hero-${mode.toLowerCase()}`);
-      if(mode==='Dark') pendingHeroImageDark = url; else pendingHeroImageLight = url;
+      pendingHeroImage[mode] = url;
 
       heroBox.innerHTML = `
         <img
