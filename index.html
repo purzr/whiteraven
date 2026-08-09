@@ -279,7 +279,16 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}}
 @media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 
-.card{background:var(--bg-card);border:1px solid var(--line);transition:border-color .25s;display:flex;flex-direction:column}
+.card{background:var(--bg-card);border:1px solid var(--line);transition:border-color .25s;display:flex;flex-direction:column;position:relative}
+.wishlist-btn{color:var(--text-dim);transition:color .2s,transform .15s}
+.wishlist-btn:hover{color:var(--gold-light)}
+.wishlist-btn.active{color:var(--danger)}
+.wishlist-btn.active svg{transform:scale(1.05)}
+.wishlist-btn:active{transform:scale(.9)}
+.card-wishlist{position:absolute;top:10px;left:10px;z-index:3;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(10,10,11,.55);border-radius:50%;backdrop-filter:blur(2px)}
+html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
+.pd-wishlist-btn{width:52px;height:52px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.pd-wishlist-btn svg{width:20px;height:20px}
 .card:hover{border-color:var(--gold-dim)}
 .card-img{aspect-ratio:3/4;background:#0d0d0e;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .card-img img{width:100%;height:100%;object-fit:cover}
@@ -298,6 +307,17 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 .icon-sq:hover{border-color:var(--gold);color:var(--gold-light)}
 
 .empty-state{padding:80px 20px;text-align:center;color:var(--text-faint)}
+
+/* ===== Order tracking timeline ===== */
+.track-steps{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 4px}
+.track-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:none;width:90px;text-align:center}
+.track-step span{font-size:11.5px;color:var(--text-faint)}
+.track-step.done span{color:var(--text)}
+.track-dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-faint);background:var(--bg-card);flex:none}
+.track-step.done .track-dot{border-color:var(--gold);color:#0a0a0b;background:var(--gold)}
+.track-line{flex:1;height:1px;background:var(--line);margin-top:15px}
+.track-line.done{background:var(--gold)}
+@media(max-width:520px){.track-step{width:64px}.track-step span{font-size:10px}}
 .empty-state svg{margin-bottom:18px;color:var(--gold-dim)}
 
 /* ===== Product detail ===== */
@@ -560,6 +580,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
       <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
       <a href="#/about" data-link data-route="/about">درباره ما</a>
       <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
+      <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
     </nav>
     <div class="header-icons">
       <button class="icon-btn theme-toggle" id="themeToggleBtn" title="تغییر تم سایت">
@@ -571,6 +592,10 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
       </button>
       <a href="#/account" data-link class="icon-btn" title="حساب کاربری">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </a>
+      <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7.5-4.6-10.2-9.2C.1 8.7 1.4 5 5 4.1c2.2-.6 4.4.4 5.8 2.2C12.2 4.5 14.4 3.5 16.6 4.1c3.6.9 4.9 4.6 3.2 7.7C19.5 16.4 12 21 12 21Z"/></svg>
+        <span class="cart-badge hidden" id="wishlistBadge">0</span>
       </a>
       <button class="icon-btn" id="cartOpenBtn" title="سبد خرید">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h2l2.4 12.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L22 8H7"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
@@ -601,6 +626,8 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
   <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
   <a href="#/about" data-link data-route="/about">درباره ما</a>
   <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
+  <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
+  <a href="#/wishlist" data-link data-route="/wishlist">علاقه‌مندی‌ها</a>
   <a href="#/account" data-link data-route="/account">حساب کاربری</a>
 </div>
 
@@ -895,6 +922,27 @@ async function insertOrderRemote(order){
     await sSet('orders', STATE.orders, true);
   }
 }
+async function findOrderByIdAndPhone(orderId, phone){
+  const cleanId = (orderId||'').trim();
+  const cleanPhone = (phone||'').trim();
+  if(!cleanId || !cleanPhone) return {error:'لطفاً شماره سفارش و شماره تماس را وارد کنید'};
+
+  let order = null;
+  if(supabaseClient){
+    const {data, error} = await supabaseClient.from('orders').select('*').eq('id', cleanId).maybeSingle();
+    if(error){ console.error(error); return {error:'خطا در ارتباط با سرور، دوباره تلاش کنید'}; }
+    if(data) order = rowToOrder(data);
+  }else{
+    order = STATE.orders.find(o=>o.id===cleanId) || null;
+  }
+
+  if(!order) return {error:'سفارشی با این شماره پیدا نشد'};
+  if(!order.customer || (order.customer.phone||'').trim() !== cleanPhone){
+    return {error:'شماره تماس با این سفارش مطابقت ندارد'};
+  }
+  return {order};
+}
+
 async function updateOrderStatusRemote(id, status){
   if(supabaseClient){
     const {error} = await supabaseClient.from('orders').update({status}).eq('id', id);
@@ -1084,6 +1132,7 @@ let STATE = {
   orders: [],
   messages: [],
   account: null,
+  wishlist: [],
   route: '/',
   filters:{category:'all', q:''},
   admin: {loggedIn:false},
@@ -1160,14 +1209,16 @@ async function init(){
     messages,
     settings,
     cart,
-    account
+    account,
+    wishlist
   ] = await Promise.all([
     loadProducts(),
     loadOrders(),
     loadMessagesRemote(),
     loadSettings(),
     sGet('cart', false),
-    sGet('account', false)
+    sGet('account', false),
+    sGet('wishlist', false)
   ]);
 
   let finalProducts = products;
@@ -1195,6 +1246,7 @@ async function init(){
   STATE.messages = messages || [];
   STATE.cart = cart || [];
   STATE.account = account || [];
+  STATE.wishlist = wishlist || [];
 
   STATE.settings = settings || defaultSettings();
 
@@ -1207,6 +1259,7 @@ async function init(){
   router();
 
   renderCart();
+  renderWishlistBadge();
 }
 
 init();
@@ -1245,6 +1298,8 @@ function router(){
   else if(path==='/account') app.innerHTML = pageAccount();
   else if(path==='/checkout') app.innerHTML = pageCheckout();
   else if(path.startsWith('/order-confirmed/')) app.innerHTML = pageOrderConfirmed(path.split('/order-confirmed/')[1]);
+  else if(path==='/wishlist') app.innerHTML = pageWishlist();
+  else if(path.startsWith('/track-order')) app.innerHTML = pageTrackOrder(path.split('/track-order/')[1]);
   else app.innerHTML = page404();
 
   window.scrollTo(0,0);
@@ -1493,6 +1548,7 @@ function productCard(p){
         ${p.stock<=0 ? `<div class="card-out">ناموجود</div>` : ''}
       </div>
     </a>
+    ${wishlistBtnHtml(p, 'wishlist-btn card-wishlist')}
     <div class="card-body">
       <span class="cat-tag">${catLabel(p.category)}</span>
       <a href="#/product/${p.id}" data-link><h3>${escapeHtml(p.name)}</h3></a>
@@ -1676,6 +1732,7 @@ function pageProduct(id){
             <button class="btn btn-solid ${p.stock<=0?'':''}" id="addToCartBtn" ${p.stock<=0?'disabled':''} style="flex:1;justify-content:center">
               ${p.stock<=0?'ناموجود':'افزودن به سبد خرید'}
             </button>
+            ${wishlistBtnHtml(p, 'wishlist-btn pd-wishlist-btn')}
           </div>
 
           <div class="pd-meta">
@@ -1877,8 +1934,87 @@ function pageOrderConfirmed(orderId){
     <h1 class="serif" style="font-size:30px;margin-bottom:12px">سفارش شما ثبت شد</h1>
     <p style="color:var(--text-dim);margin-bottom:6px">شماره سفارش: <span style="color:var(--gold-light)">${orderId}</span></p>
     ${order?`<p style="color:var(--text-dim);margin-bottom:30px">مبلغ نهایی: ${RIAL(order.total)}</p>`:''}
-    <a href="#/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="#/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
+      <a href="#/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
+    </div>
   </div></div>`;
+}
+
+const ORDER_STEPS = ['در حال پردازش','ارسال شده','تحویل داده شده'];
+function orderStatusTimelineHtml(status){
+  if(status==='لغو شده'){
+    return `<div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.1);border:1px solid var(--danger);color:var(--danger)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+      <span>این سفارش لغو شده است</span>
+    </div>`;
+  }
+  const idx = Math.max(0, ORDER_STEPS.indexOf(status));
+  return `<div class="track-steps">
+    ${ORDER_STEPS.map((s,i)=>`
+      <div class="track-step ${i<=idx?'done':''}">
+        <div class="track-dot">${i<idx?'✓':i+1}</div>
+        <span>${s}</span>
+      </div>
+      ${i<ORDER_STEPS.length-1?`<div class="track-line ${i<idx?'done':''}"></div>`:''}
+    `).join('')}
+  </div>`;
+}
+
+function pageTrackOrder(prefillId){
+  return `
+  <div class="page-head"><span class="eyebrow">TRACK ORDER</span><h1 class="serif">پیگیری سفارش</h1></div>
+  <div class="section" style="padding-top:40px">
+    <div class="container narrow">
+      <form id="trackOrderForm">
+        <div class="form-field"><label>شماره سفارش</label><input required id="trackOrderId" placeholder="مثلاً id_xxxxxxx" value="${escapeHtml(prefillId||'')}"></div>
+        <div class="form-field"><label>شماره تماسی که هنگام ثبت سفارش وارد کردید</label><input required id="trackOrderPhone" type="tel" placeholder="09xxxxxxxxx"></div>
+        <button class="btn btn-solid btn-block" type="submit">پیگیری سفارش</button>
+      </form>
+      <div id="trackOrderResult" style="margin-top:32px"></div>
+    </div>
+  </div>`;
+}
+
+function orderTrackResultHtml(order){
+  const dt = new Date(order.createdAt);
+  const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
+  return `
+  <div style="background:var(--bg-card);border:1px solid var(--line);padding:24px">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+      <div>
+        <p style="font-size:12px;color:var(--text-faint)">شماره سفارش</p>
+        <p style="color:var(--gold-light)">${escapeHtml(order.id)}</p>
+      </div>
+      ${dateStr?`<div style="text-align:left">
+        <p style="font-size:12px;color:var(--text-faint)">تاریخ ثبت</p>
+        <p>${dateStr}</p>
+      </div>`:''}
+    </div>
+    ${orderStatusTimelineHtml(order.status)}
+    <div style="margin-top:24px;border-top:1px solid var(--line);padding-top:16px">
+      ${(order.items||[]).map(it=>`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);padding:6px 0">
+        <span>${escapeHtml(it.name)} ${it.size?`(${it.size})`:''} × ${it.qty}</span>
+        <span>${RIAL(it.totalPrice)}</span>
+      </div>`).join('')}
+      <div class="cart-sum-row total" style="margin-top:10px"><span>مبلغ نهایی</span><span>${RIAL(order.total)}</span></div>
+    </div>
+  </div>`;
+}
+
+function pageWishlist(){
+  const items = STATE.wishlist.map(id=>findProduct(id)).filter(Boolean);
+  return `
+  <div class="page-head"><span class="eyebrow">WISHLIST</span><h1 class="serif">علاقه‌مندی‌های من</h1></div>
+  <div class="section" style="padding-top:40px">
+    <div class="container">
+      ${items.length ? `<div class="grid">${items.map(productCard).join('')}</div>` :
+      `<div style="text-align:center">
+        ${emptyState('هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید')}
+        <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+      </div>`}
+    </div>
+  </div>`;
 }
 
 function page404(){
@@ -1983,6 +2119,24 @@ if (messageInput && messageCounter) {
   };
   const logoutBtn = $('#logoutBtn');
   if(logoutBtn) logoutBtn.onclick = async ()=>{ STATE.account=null; await sSet('account', null, false); router(); };
+
+  const trackOrderForm = $('#trackOrderForm');
+  if(trackOrderForm){
+    trackOrderForm.onsubmit = async e=>{
+      e.preventDefault();
+      const resultBox = $('#trackOrderResult');
+      const submitBtn = trackOrderForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true; submitBtn.textContent = 'در حال جستجو...';
+      resultBox.innerHTML = '';
+      const { order, error } = await findOrderByIdAndPhone($('#trackOrderId').value, $('#trackOrderPhone').value);
+      submitBtn.disabled = false; submitBtn.textContent = 'پیگیری سفارش';
+      if(error){
+        resultBox.innerHTML = `<div style="padding:16px;border:1px solid var(--danger);color:var(--danger);text-align:center">${escapeHtml(error)}</div>`;
+        return;
+      }
+      resultBox.innerHTML = orderTrackResultHtml(order);
+    };
+  }
 
   const checkoutForm = $('#checkoutForm');
   if(checkoutForm) checkoutForm.onsubmit = async e=>{
@@ -2126,6 +2280,40 @@ async function removeCartItem(idx){
 }
 window.updateCartQty = updateCartQty;
 window.removeCartItem = removeCartItem;
+
+/* ---------------- wishlist ---------------- */
+function isWishlisted(productId){ return STATE.wishlist.includes(productId); }
+function renderWishlistBadge(){
+  const badge = $('#wishlistBadge');
+  if(!badge) return;
+  const count = STATE.wishlist.length;
+  badge.textContent = count;
+  badge.classList.toggle('hidden', count===0);
+}
+async function toggleWishlist(productId){
+  const idx = STATE.wishlist.indexOf(productId);
+  if(idx>-1){
+    STATE.wishlist.splice(idx,1);
+    showToast('از علاقه‌مندی‌ها حذف شد');
+  }else{
+    STATE.wishlist.push(productId);
+    showToast('به علاقه‌مندی‌ها اضافه شد ♥');
+  }
+  await sSet('wishlist', STATE.wishlist, false);
+  renderWishlistBadge();
+  $$('.wishlist-btn').forEach(btn=>{
+    if(btn.dataset.id === productId) btn.classList.toggle('active', isWishlisted(productId));
+  });
+  if(STATE.route === '/wishlist') router();
+}
+window.toggleWishlist = toggleWishlist;
+
+function wishlistBtnHtml(p, cls='wishlist-btn'){
+  const active = isWishlisted(p.id);
+  return `<button type="button" class="${cls}${active?' active':''}" data-id="${p.id}" title="${active?'حذف از علاقه‌مندی‌ها':'افزودن به علاقه‌مندی‌ها'}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist('${p.id}')">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="${active?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7.5-4.6-10.2-9.2C.1 8.7 1.4 5 5 4.1c2.2-.6 4.4.4 5.8 2.2C12.2 4.5 14.4 3.5 16.6 4.1c3.6.9 4.9 4.6 3.2 7.7C19.5 16.4 12 21 12 21Z"/></svg>
+  </button>`;
+}
 
 function renderCart(){
   const badge = $('#cartBadge');
