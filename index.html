@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>White Raven | فروشگاه لباس زیر</title>
+<!-- تم پیش‌فرض سایت "مشکی" است. این اسکریپت قبل از رندر صفحه اجرا می‌شود تا اگر
+     مشتری قبلاً تم روشن را انتخاب کرده، بدون فلش رنگی همان تم روشن نمایش داده شود. -->
+<script>
+(function(){
+  try{
+    if(localStorage.getItem('wr-theme') === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+    }
+  }catch(e){}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Estedad:wght@300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&family=Mada:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <!-- Supabase client — used for the shared product catalog & orders. See README.md "اتصال به Supabase" section. -->
@@ -11,6 +22,7 @@
 <style>
 :root{
   --bg:#0a0a0b;
+  --bg-rgb:10,10,11;
   --bg-alt:#131315;
   --bg-card:#17171a;
   --line:#2a2823;
@@ -40,6 +52,27 @@
   --scale-footer:1;
   --logo-h:34px;
 }
+
+/* ===== تم روشن (سفید) — با کلیک روی دکمه بالای سایت فعال می‌شود ===== */
+html[data-theme="light"]{
+  --bg:#faf9f6;
+  --bg-rgb:250,249,246;
+  --bg-alt:#f3f1ea;
+  --bg-card:#ffffff;
+  --line:#e3ddcf;
+  --text:#1c1a16;
+  --text-dim:#57524a;
+  --text-faint:#8b8578;
+  --gold:#a9814a;
+  --gold-light:#8a6a3c;
+  --gold-dim:#c7a876;
+  --danger:#b8412a;
+  --ok:#4f7a44;
+}
+html[data-theme="light"] .hero-feather-svg,
+html[data-theme="light"] .raven-mark path{fill:#1c1a16}
+
+*, *::before, *::after{transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
@@ -93,7 +126,7 @@ ul{list-style:none}
 /* ===== Header ===== */
 header.site{
   position:sticky;top:0;z-index:60;
-  background:rgba(10,10,11,.88);
+  background:rgba(var(--bg-rgb),.88);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
 }
@@ -124,6 +157,12 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
   nav.main-nav{display:none}
   .hamburger{display:block}
 }
+
+/* ===== دکمه تغییر تم (سفید/مشکی) ===== */
+.theme-toggle .icon-sun{display:none}
+.theme-toggle .icon-moon{display:block}
+html[data-theme="light"] .theme-toggle .icon-sun{display:block}
+html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 
 /* mobile drawer */
 .mobile-nav{
@@ -179,6 +218,11 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 }
 @media(max-width:900px){.hero-feather-svg{opacity:.16;left:-10%;top:0;width:120%}}
 .hero-inner{position:relative;z-index:2;padding:90px 0}
+/* وقتی روی هیرو عکس گذاشته شده، پس‌زمینه همیشه تیره می‌ماند تا متن خوانا بماند —
+   پس رنگ متن هیرو مستقل از تم روشن/تیره سایت، همیشه روشن باقی می‌ماند */
+.hero-bg.has-photo ~ .container .hero-inner h1{color:#f2efe8}
+.hero-bg.has-photo ~ .container .hero-inner p.lede{color:#c9c4b8}
+.hero-bg.has-photo ~ .container .hero-inner .eyebrow{color:#d9bc85}
 .hero h1{
   font-family:var(--font-hero);
   font-size:calc(clamp(48px,7vw,92px) * var(--scale-hero));
@@ -515,6 +559,10 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
       <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
     </nav>
     <div class="header-icons">
+      <button class="icon-btn theme-toggle" id="themeToggleBtn" title="تغییر تم سایت">
+        <svg class="icon-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
       <button class="icon-btn" id="searchOpenBtn" title="جستجو">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
@@ -972,7 +1020,7 @@ function applySettingsToDOM(settings){
   if(adminSlot){
     adminSlot.innerHTML = settings.logo
       ? `<img class="logo-img" style="height:26px" src="${settings.logo}" alt="لوگو">`
-      : `<svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
+      : `<svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
   }
 }
 
@@ -1163,6 +1211,19 @@ function router(){
 
 /* ---------------- shared UI bindings ---------------- */
 function bindGlobalUI(){
+  const themeBtn = $('#themeToggleBtn');
+  if(themeBtn){
+    themeBtn.onclick = ()=>{
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if(isLight){
+        document.documentElement.removeAttribute('data-theme');
+        try{ localStorage.setItem('wr-theme','dark'); }catch(e){}
+      }else{
+        document.documentElement.setAttribute('data-theme','light');
+        try{ localStorage.setItem('wr-theme','light'); }catch(e){}
+      }
+    };
+  }
   $('#hamburgerBtn').onclick = ()=>{ $('#mobileNav').classList.add('open'); $('#mobileOverlay').classList.add('open'); };
   $('#mobileCloseBtn').onclick = closeMobile;
   $('#mobileOverlay').onclick = closeMobile;
@@ -2216,7 +2277,7 @@ function adminShell(){
   <div class="admin-wrap">
     <div class="admin-bar">
       <a href="#/" data-link class="logo">
-        <span id="adminLogoSlot"><svg width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg></span>
+        <span id="adminLogoSlot"><svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg></span>
         <span style="font-family:'Cormorant Garamond',serif;letter-spacing:.15em;font-size:17px">WHITE RAVEN ADMIN</span>
       </a>
       <div style="display:flex;gap:14px;align-items:center">
