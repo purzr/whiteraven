@@ -204,11 +204,21 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
     linear-gradient(90deg, rgba(10,9,8,.92) 0%, rgba(10,9,8,.55) 42%, rgba(10,9,8,.25) 100%),
     var(--hero-photo) center/contain no-repeat;
 }
+html[data-theme="light"] .hero-bg.has-photo{
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.55) 42%, rgba(255,255,255,.25) 100%),
+    var(--hero-photo) center/contain no-repeat;
+}
 
 @media(max-width:900px){
   .hero-bg.has-photo{
     background:
       linear-gradient(180deg, rgba(10,9,8,.55) 0%, rgba(10,9,8,.88) 78%),
+      var(--hero-photo-mobile, var(--hero-photo)) center/contain no-repeat;
+  }
+  html[data-theme="light"] .hero-bg.has-photo{
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.88) 78%),
       var(--hero-photo-mobile, var(--hero-photo)) center/contain no-repeat;
   }
 }
@@ -218,11 +228,14 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 }
 @media(max-width:900px){.hero-feather-svg{opacity:.16;left:-10%;top:0;width:120%}}
 .hero-inner{position:relative;z-index:2;padding:90px 0}
-/* وقتی روی هیرو عکس گذاشته شده، پس‌زمینه همیشه تیره می‌ماند تا متن خوانا بماند —
-   پس رنگ متن هیرو مستقل از تم روشن/تیره سایت، همیشه روشن باقی می‌ماند */
+/* وقتی روی هیرو عکس گذاشته شده، پس‌زمینه سایه تیره (تم مشکی) یا سفید (تم روشن) می‌ماند
+   تا متن خوانا بماند — رنگ متن هیرو هم متناسب با همین سایه تنظیم می‌شود */
 .hero-bg.has-photo ~ .container .hero-inner h1{color:#f2efe8}
 .hero-bg.has-photo ~ .container .hero-inner p.lede{color:#c9c4b8}
 .hero-bg.has-photo ~ .container .hero-inner .eyebrow{color:#d9bc85}
+html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner h1{color:#1a1815}
+html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner p.lede{color:#4a453e}
+html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{color:#9c7a3a}
 .hero h1{
   font-family:var(--font-hero);
   font-size:calc(clamp(48px,7vw,92px) * var(--scale-hero));
@@ -241,7 +254,7 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 .section-head .divider{margin:16px auto}
 
 /* ===== Category split ===== */
-.cat-split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
+.cat-split{display:grid;grid-template-columns:repeat(var(--cat-cols,2),1fr);gap:2px;background:var(--line)}
 .cat-panel{
   position:relative;min-height:420px;background:var(--bg-card);
   display:flex;align-items:flex-end;padding:44px;
@@ -250,6 +263,7 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 .cat-panel .cat-bg{position:absolute;inset:0;opacity:.5;transition:transform .6s ease, opacity .4s}
 .cat-panel:hover .cat-bg{transform:scale(1.06);opacity:.7}
 .cat-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,.15) 60%)}
+html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba(255,255,255,.75), rgba(255,255,255,.15) 60%)}
 .cat-content{position:relative;z-index:2}
 .cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
 .cat-content .eyebrow{margin-bottom:14px;display:block}
@@ -575,8 +589,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
     </a>
     <nav class="main-nav" id="mainNav">
       <a href="#/" data-link data-route="/">خانه</a>
-      <a href="#/shop/women" data-link data-route="/shop/women">زنانه</a>
-      <a href="#/shop/men" data-link data-route="/shop/men">مردانه</a>
+      <span id="navCatLinks" style="display:contents"></span>
       <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
       <a href="#/about" data-link data-route="/about">درباره ما</a>
       <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
@@ -621,8 +634,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 <div class="mobile-nav" id="mobileNav">
   <div class="mobile-close" id="mobileCloseBtn">✕ بستن</div>
   <a href="#/" data-link data-route="/">خانه</a>
-  <a href="#/shop/women" data-link data-route="/shop/women">زنانه</a>
-  <a href="#/shop/men" data-link data-route="/shop/men">مردانه</a>
+  <span id="mobileNavCatLinks" style="display:contents"></span>
   <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
   <a href="#/about" data-link data-route="/about">درباره ما</a>
   <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
@@ -985,6 +997,10 @@ function defaultSettings(){
     heroImageLight:'',
     heroImageDarkMobile:'',
     heroImageLightMobile:'',
+    categories:[
+      {slug:'women', label:'زنانه', image:''},
+      {slug:'men', label:'مردانه', image:''}
+    ],
     fonts:{
       header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
@@ -1005,6 +1021,7 @@ function rowToSettings(row){
     heroImageLight: data.heroImageLight ?? d.heroImageLight,
     heroImageDarkMobile: data.heroImageDarkMobile ?? d.heroImageDarkMobile,
     heroImageLightMobile: data.heroImageLightMobile ?? d.heroImageLightMobile,
+    categories: (Array.isArray(data.categories) && data.categories.length) ? data.categories : d.categories,
     fonts: {...d.fonts, ...(data.fonts||{})},
     scales: {...d.scales, ...(data.scales||{})}
   };
@@ -1040,6 +1057,7 @@ async function loadSettings(){
         heroImageLight: s.heroImageLight ?? defaultSettings().heroImageLight,
         heroImageDarkMobile: s.heroImageDarkMobile ?? defaultSettings().heroImageDarkMobile,
         heroImageLightMobile: s.heroImageLightMobile ?? defaultSettings().heroImageLightMobile,
+        categories: (Array.isArray(s.categories) && s.categories.length) ? s.categories : defaultSettings().categories,
         fonts:{
           ...defaultSettings().fonts,
           ...(s.fonts||{})
@@ -1087,6 +1105,16 @@ function getHeroForThemeMobile(settings){
     : (settings.heroImageDarkMobile || settings.heroImageLightMobile || '');
 }
 
+function renderCategoryNavLinks(settings){
+  const cats = settings.categories || [];
+  const curPath = STATE.route;
+  const linkHtml = cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
+  const navSlot = document.getElementById('navCatLinks');
+  const mobileSlot = document.getElementById('mobileNavCatLinks');
+  if(navSlot) navSlot.innerHTML = linkHtml;
+  if(mobileSlot) mobileSlot.innerHTML = linkHtml;
+}
+
 function applySettingsToDOM(settings){
   const root = document.documentElement.style;
   FONT_SECTIONS.forEach(s=>{
@@ -1095,6 +1123,7 @@ function applySettingsToDOM(settings){
     const scale = (settings.scales?.[s.key] ?? 100)/100;
     root.setProperty(`--scale-${s.key}`, scale);
   });
+  renderCategoryNavLinks(settings);
   const logoSrc = getLogoForTheme(settings);
   const slot = $('#siteLogoSlot');
   if(slot){
@@ -1374,7 +1403,8 @@ function closeCart(){ $('#cartDrawer').classList.remove('open'); $('#cartOverlay
 
 /* ---------------- product helpers ---------------- */
 function findProduct(id){ return STATE.products.find(p=>p.id===id); }
-function catLabel(c){ return c==='women' ? 'زنانه' : c==='men' ? 'مردانه' : 'محصولات'; }
+function findCategory(slug){ return (STATE.settings.categories||[]).find(c=>c.slug===slug); }
+function catLabel(c){ const found = findCategory(c); return found ? found.label : (c==='all' ? 'محصولات' : (c||'محصولات')); }
 
 function productImgHtml(p, cls='ph'){
   if(p.image) return `<img src="${p.image}" alt="${escapeHtml(p.name)}">`;
@@ -1585,7 +1615,6 @@ function productCard(p){
 
 /* ---------------- PAGES ---------------- */
 function pageHome(){
-  const women = STATE.products.filter(p=>p.category==='women').slice(0,4);
   const featured = STATE.products.slice(0,8);
   const heroImg = getHeroForTheme(STATE.settings);
   const heroImgMobile = getHeroForThemeMobile(STATE.settings);
@@ -1616,23 +1645,16 @@ function pageHome(){
       <div class="divider"></div>
     </div>
   </section>
-  <div class="cat-split">
-    <a href="#/shop/women" data-link class="cat-panel">
-      <div class="cat-bg" style="background:linear-gradient(135deg,#2a2320,#0f0d0c)"></div>
+  <div class="cat-split" style="--cat-cols:${Math.max(1,(STATE.settings.categories||[]).length)}">
+    ${(STATE.settings.categories||[]).map((c,i)=>`
+    <a href="#/shop/${c.slug}" data-link class="cat-panel">
+      <div class="cat-bg" style="${c.image ? `background:url('${c.image}') center/cover no-repeat` : `background:linear-gradient(135deg,${i%2===0?'#2a2320,#0f0d0c':'#201f1e,#0c0c0d'})`}"></div>
       <div class="cat-content">
-        <span class="eyebrow">WOMEN</span>
-        <h3 class="serif">لباس زیر زنانه</h3>
+        <span class="eyebrow">${escapeHtml(c.label)}</span>
+        <h3 class="serif">${escapeHtml(c.label)}</h3>
         <div style="margin-top:16px"><span class="btn btn-ghost">مشاهده ‹</span></div>
       </div>
-    </a>
-    <a href="#/shop/men" data-link class="cat-panel">
-      <div class="cat-bg" style="background:linear-gradient(135deg,#201f1e,#0c0c0d)"></div>
-      <div class="cat-content">
-        <span class="eyebrow">MEN</span>
-        <h3 class="serif">لباس زیر مردانه</h3>
-        <div style="margin-top:16px"><span class="btn btn-ghost">مشاهده ‹</span></div>
-      </div>
-    </a>
+    </a>`).join('')}
   </div>
 
   <section class="features">
@@ -1683,10 +1705,11 @@ function pageShop(catRaw){
   if(cat!=='all') list = list.filter(p=>p.category===cat);
   if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
 
+  const cats = STATE.settings.categories||[];
   return `
   <div class="page-head">
     <span class="eyebrow">SHOP</span>
-    <h1 class="serif">${cat==='women'?'لباس زیر زنانه':cat==='men'?'لباس زیر مردانه':'همه محصولات'}</h1>
+    <h1 class="serif">${cat==='all'?'همه محصولات':catLabel(cat)}</h1>
     ${STATE.filters.q ? `<p>نتایج جستجو برای «${escapeHtml(STATE.filters.q)}»</p>` : `<p>مجموعه‌ای از باکیفیت‌ترین لباس‌های زیر</p>`}
   </div>
   <div class="section">
@@ -1694,8 +1717,7 @@ function pageShop(catRaw){
       <div class="toolbar">
         <div class="chip-row">
           <a href="#/shop/all" data-link class="chip ${cat==='all'?'active':''}">همه</a>
-          <a href="#/shop/women" data-link class="chip ${cat==='women'?'active':''}">زنانه</a>
-          <a href="#/shop/men" data-link class="chip ${cat==='men'?'active':''}">مردانه</a>
+          ${cats.map(c=>`<a href="#/shop/${c.slug}" data-link class="chip ${cat===c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')}
         </div>
         <div class="search-mini">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -2405,7 +2427,7 @@ async function renderAdmin(path){
 
   if(path==='/admin/orders') adminSection='orders';
   else if(path==='/admin/products' || path.startsWith('/admin/products')) adminSection='products';
-  else if(path==='/admin/settings') adminSection='settings';
+  else if(path==='/admin/settings'){ adminSection='settings'; pendingCategoriesInit=false; }
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
@@ -2564,7 +2586,7 @@ function adminShell(){
         <div class="form-row2">
           <div class="form-field"><label>نام محصول</label><input required id="pName"></div>
           <div class="form-field"><label>دسته‌بندی</label>
-            <select id="pCategory"><option value="women">زنانه</option><option value="men">مردانه</option></select>
+            <select id="pCategory">${(STATE.settings.categories||[]).map(c=>`<option value="${c.slug}">${escapeHtml(c.label)}</option>`).join('')}</select>
           </div>
         </div>
         <div class="form-row2">
@@ -2893,9 +2915,21 @@ async function deleteOrder(id) {
 
 function adminSettings(){
   const s = STATE.settings;
+  if(!pendingCategoriesInit){
+    pendingCategories = (s.categories||[]).map(c=>({...c}));
+    pendingCategoriesInit = true;
+  }
   const fontOptionsHtml = (selected)=> FONT_OPTIONS.map(f=>`<option value="${f.id}" ${f.id===selected?'selected':''}>${f.label}</option>`).join('');
   return `
   <h2 class="admin-title">تنظیمات ظاهری</h2>
+
+  <div class="settings-card">
+    <h3 class="serif">دسته‌بندی محصولات</h3>
+    <p class="settings-desc">نام هر دسته‌بندی را ویرایش کنید، برایش عکس بگذارید، یا دسته‌بندی جدید اضافه کنید. این دسته‌بندی‌ها همان‌هایی هستند که در فروشگاه، فرم محصولات و صفحه نخست نمایش داده می‌شوند.</p>
+    <div id="categoryListBox">${categoryListHtml()}</div>
+    <button type="button" class="btn btn-ghost" id="addCategoryBtn" style="margin-top:14px">+ افزودن دسته‌بندی</button>
+    <button type="button" class="btn btn-solid" id="saveCategoriesBtn" style="margin-top:14px;margin-right:10px">ذخیره دسته‌بندی‌ها</button>
+  </div>
 
   <div class="settings-card">
     <h3 class="serif">لوگوی سایت</h3>
@@ -3194,10 +3228,34 @@ function bindAdminSettingsUI(){
     };
   });
 
+  bindCategoryRowEvents();
+  const addCategoryBtn = $('#addCategoryBtn');
+  if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
+    pendingCategories.push({slug:'cat_'+uid(), label:'', image:''});
+    $('#categoryListBox').innerHTML = categoryListHtml();
+    bindCategoryRowEvents();
+    const inputs = $$('.cat-edit-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  };
+  const saveCategoriesBtn = $('#saveCategoriesBtn');
+  if(saveCategoriesBtn) saveCategoriesBtn.onclick = async ()=>{
+    const cleaned = pendingCategories.map(c=>({...c, label:(c.label||'').trim()})).filter(c=>c.label);
+    if(!cleaned.length){ showToast('حداقل یک دسته‌بندی باید داشته باشید'); return; }
+    pendingCategories = cleaned;
+    const newSettings = {...STATE.settings, categories: cleaned};
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await saveSettingsRemote(newSettings);
+    $('#categoryListBox').innerHTML = categoryListHtml();
+    bindCategoryRowEvents();
+    showToast('دسته‌بندی‌ها ذخیره شد ✓');
+  };
+
   saveBtn.onclick = async ()=>{
     const fonts = {}, scales = {};
     $$('.font-select').forEach(sel=> fonts[sel.dataset.section] = sel.value);
     $$('.scale-range').forEach(range=> scales[range.dataset.section] = Number(range.value));
+    const cleanedCategories = pendingCategories.map(c=>({...c, label:(c.label||'').trim()})).filter(c=>c.label);
     const newSettings = {
       logoDark: pendingLogoDark || '',
       logoLight: pendingLogoLight || '',
@@ -3205,6 +3263,7 @@ function bindAdminSettingsUI(){
       heroImageLight: pendingHeroImage.Light || '',
       heroImageDarkMobile: pendingHeroImage.DarkMobile || '',
       heroImageLightMobile: pendingHeroImage.LightMobile || '',
+      categories: cleanedCategories.length ? cleanedCategories : STATE.settings.categories,
       fonts, scales
     };
     STATE.settings = newSettings;
@@ -3217,6 +3276,75 @@ function bindAdminSettingsUI(){
 let pendingLogoDark = '';
 let pendingLogoLight = '';
 let pendingHeroImage = {Dark:'', Light:'', DarkMobile:'', LightMobile:''};
+let pendingCategories = [];
+let pendingCategoriesInit = false;
+
+function bindCategoryRowEvents(){
+  $$('.cat-edit-name').forEach(inp=>{
+    inp.oninput = ()=>{ pendingCategories[Number(inp.dataset.idx)].label = inp.value; };
+  });
+  $$('.cat-edit-delete').forEach(btn=>{
+    btn.onclick = ()=>{
+      const idx = Number(btn.dataset.idx);
+      const c = pendingCategories[idx];
+      const count = STATE.products.filter(p=>p.category===c.slug).length;
+      if(count>0 && !confirm(`${count} محصول در دسته «${c.label||'بدون نام'}» هستند. با حذف این دسته، آن محصولات بدون دسته‌بندی می‌مانند. ادامه می‌دهید؟`)) return;
+      pendingCategories.splice(idx,1);
+      $('#categoryListBox').innerHTML = categoryListHtml();
+      bindCategoryRowEvents();
+    };
+  });
+  $$('.cat-edit-remove-img').forEach(btn=>{
+    btn.onclick = ()=>{
+      pendingCategories[Number(btn.dataset.idx)].image = '';
+      $('#categoryListBox').innerHTML = categoryListHtml();
+      bindCategoryRowEvents();
+    };
+  });
+  $$('.cat-edit-img-input').forEach(input=>{
+    input.onchange = async ()=>{
+      const idx = Number(input.dataset.idx);
+      const file = input.files[0];
+      if(!file) return;
+      try{
+        input.disabled = true;
+        const url = await uploadSettingImage(file, `category-${pendingCategories[idx].slug}`);
+        pendingCategories[idx].image = url;
+        $('#categoryListBox').innerHTML = categoryListHtml();
+        bindCategoryRowEvents();
+      }catch(error){
+        console.error('Category image upload error:', error);
+        showToast('آپلود عکس دسته‌بندی انجام نشد');
+      }finally{
+        input.disabled = false;
+      }
+    };
+  });
+}
+
+function categoryListHtml(){
+  if(!pendingCategories.length){
+    return `<p style="color:var(--text-faint);font-size:13px">هنوز دسته‌بندی‌ای ثبت نشده — یکی اضافه کنید.</p>`;
+  }
+  return `<div style="display:flex;flex-direction:column;gap:14px">
+    ${pendingCategories.map((c,i)=>{
+      const count = STATE.products.filter(p=>p.category===c.slug).length;
+      return `
+      <div class="cat-edit-row" data-idx="${i}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px;border:1px solid var(--line)">
+        <div class="logo-upload-box cat-edit-img" data-idx="${i}" style="width:64px;height:64px;flex:none">
+          ${c.image ? `<img src="${c.image}" alt="${escapeHtml(c.label)}" style="object-fit:cover">` : `<span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span>`}
+          <input type="file" accept="image/*" class="cat-edit-img-input" data-idx="${i}">
+        </div>
+        <div style="flex:1;min-width:160px">
+          <input class="cat-edit-name" data-idx="${i}" value="${escapeHtml(c.label)}" placeholder="نام دسته‌بندی">
+          <span style="font-size:11.5px;color:var(--text-faint);display:block;margin-top:4px">${count} محصول در این دسته</span>
+        </div>
+        ${c.image ? `<button type="button" class="btn btn-ghost cat-edit-remove-img" data-idx="${i}" style="padding:6px 12px;font-size:11.5px">حذف عکس</button>` : ''}
+        <button type="button" class="btn btn-ghost cat-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف دسته</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
 
 async function uploadSettingImage(file, prefix){
   if(!supabaseClient) {
@@ -3319,7 +3447,7 @@ function openProductModal(id){
   const p = id ? findProduct(id) : null;
   $('#modalTitle').textContent = p ? 'ویرایش محصول' : 'افزودن محصول';
   $('#pName').value = p?.name || '';
-  $('#pCategory').value = p?.category || 'women';
+  $('#pCategory').value = p?.category || (STATE.settings.categories?.[0]?.slug || '');
   $('#pPrice').value = p?.price || '';
   $('#pCompareAt').value = p?.compareAt || '';
   $('#pStock').value = p?.stock ?? '';
