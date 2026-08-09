@@ -694,6 +694,64 @@ function rowToProduct(row){
     desc: row.desc||'', sizes: row.sizes||[]
   };
 }
+
+function base64ToBlob(dataUrl){
+  const parts = dataUrl.split(',');
+  if(parts.length < 2) throw new Error('Base64 نامعتبر است');
+
+  const mimeMatch = parts[0].match(/data:([^;]+);base64/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+
+  const binary = atob(parts[1]);
+  const bytes = new Uint8Array(binary.length);
+
+  for(let i = 0; i < binary.length; i++){
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return new Blob([bytes], {type:mime});
+}
+
+async function migrateProductImage(productId, base64, index = 0){
+  if(!supabaseClient) throw new Error('Supabase در دسترس نیست');
+
+  if(typeof base64 !== 'string' || !base64.startsWith('data:image/')){
+    return null;
+  }
+
+  const blob = base64ToBlob(base64);
+
+  const mime = blob.type || 'image/jpeg';
+  const ext =
+    mime === 'image/png' ? 'png' :
+    mime === 'image/webp' ? 'webp' :
+    'jpg';
+
+  const path = `products/${productId}-${index}-${Date.now()}.${ext}`;
+
+  const {error: uploadError} = await supabaseClient
+    .storage
+    .from('site-assets')
+    .upload(path, blob, {
+      cacheControl: '31536000',
+      contentType: mime,
+      upsert: false
+    });
+
+  if(uploadError) throw uploadError;
+
+  const {data} = supabaseClient
+    .storage
+    .from('site-assets')
+    .getPublicUrl(path);
+
+  if(!data?.publicUrl){
+    throw new Error('URL تصویر ساخته نشد');
+  }
+
+  return data.publicUrl;
+}
+
 function productToRow(p){
   const images = normalizeImages(p);
   return {
@@ -2451,36 +2509,75 @@ function bindAdminShell(){
   const pForm = $('#productForm');
   if(pForm){
     pForm.onsubmit = async e=>{
-      e.preventDefault();
-      const data = {
-        name: $('#pName').value.trim(),
-        category: $('#pCategory').value,
-        price: Number($('#pPrice').value)||0,
-        compareAt: Number($('#pCompareAt').value)||0,
-        stock: Number($('#pStock').value)||0,
-        sizes: $('#pSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
-        desc: $('#pDesc').value.trim(),
-        images: editingImages.slice(),
-        image: editingImages[0] || ''
-      };
-      let savedProduct;
-      if(editingProductId){
-        const idx = STATE.products.findIndex(p=>p.id===editingProductId);
-        if(idx>-1){
-          STATE.products[idx] = {...STATE.products[idx], ...data};
-          savedProduct = STATE.products[idx];
+  e.preventDefault();
+
+  const productId = editingProductId || uid();
+
+  if(supabaseClient){
+    try{
+      const uploadedImages = [];
+
+      for(let i = 0; i < editingImages.length; i++){
+        const img = editingImages[i];
+
+        if(typeof img === 'string' && img.startsWith('data:image/')){
+          const url = await migrateProductImage(productId, img, i);
+          if(url) uploadedImages.push(url);
+        }else if(img){
+          uploadedImages.push(img);
         }
-      } else {
-        savedProduct = {id:uid(), ...data};
-        STATE.products.push(savedProduct);
       }
-      await upsertProductRemote(savedProduct);
-      $('#productModalOverlay').classList.remove('open');
-      showToast('محصول ذخیره شد ✓');
-      $('#adminMain').innerHTML = adminProducts();
-      bindAdminShell();
-    };
+
+      editingImages = uploadedImages;
+        }catch(error){
+      console.error('Product image upload error:', error);
+      showToast('آپلود تصویر محصول انجام نشد');
+      return;
+    }
   }
+
+  const data = {
+    name: $('#pName').value.trim(),
+    category: $('#pCategory').value,
+    price: Number($('#pPrice').value)||0,
+    compareAt: Number($('#pCompareAt').value)||0,
+    stock: Number($('#pStock').value)||0,
+    sizes: $('#pSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
+    desc: $('#pDesc').value.trim(),
+    images: editingImages.slice(),
+    image: editingImages[0] || ''
+  };
+
+  let savedProduct;
+
+  if(editingProductId){
+    const idx = STATE.products.findIndex(p=>p.id===editingProductId);
+
+    if(idx>-1){
+      STATE.products[idx] = {
+        ...STATE.products[idx],
+        ...data
+      };
+
+      savedProduct = STATE.products[idx];
+    }
+  }else{
+    savedProduct = {
+      id: productId,
+      ...data
+    };
+
+    STATE.products.push(savedProduct);
+  }
+
+  await upsertProductRemote(savedProduct);
+
+  $('#productModalOverlay').classList.remove('open');
+  showToast('محصول ذخیره شد ✓');
+  $('#adminMain').innerHTML = adminProducts();
+  bindAdminShell();
+  };
+}
 
   bindAdminSettingsUI();
 }
