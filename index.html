@@ -2025,37 +2025,112 @@ async function renderAdmin(path){
   box.innerHTML = adminShell();
   bindAdminShell();
 }
-
 function adminLoginScreen(){
   return `
   <div class="login-screen">
     <div class="login-card">
-      <h2 class="serif">ورود به پنل مدیریت </h2>
+      <h2 class="serif">ورود به پنل مدیریت</h2>
       <p class="sub">WHITE RAVEN ADMIN</p>
-      <div class="form-field"><label>رمز عبور</label><input type="password" id="adminPass" placeholder="رمز عبور مدیریت"></div>
+
+      <div class="form-field">
+        <label>ایمیل</label>
+        <input
+          type="email"
+          id="adminEmail"
+          value="purzrshop@gmail.com"
+          autocomplete="username"
+          placeholder="ایمیل مدیریت"
+        >
+      </div>
+
+      <div class="form-field">
+        <label>رمز عبور</label>
+        <input
+          type="password"
+          id="adminPass"
+          autocomplete="current-password"
+          placeholder="رمز عبور مدیریت"
+        >
+      </div>
+
       <div class="err-msg" id="adminErr"></div>
-      <button class="btn btn-solid btn-block" id="adminLoginBtn">ورود</button>
-      <a href="#/" data-link class="btn btn-ghost btn-block" style="margin-top:10px">بازگشت به فروشگاه</a>
+
+      <button class="btn btn-solid btn-block" id="adminLoginBtn">
+        ورود
+      </button>
+
+      <a
+        href="#/"
+        data-link
+        class="btn btn-ghost btn-block"
+        style="margin-top:10px"
+      >بازگشت به فروشگاه</a>
     </div>
   </div>`;
 }
 function bindAdminLogin(){
   document.addEventListener('click', function handler(e){
     const link = e.target.closest('[data-link]');
-    if(link){ e.preventDefault(); navigate(link.getAttribute('href').replace('#','')); }
+
+    if(link){
+      e.preventDefault();
+      navigate(link.getAttribute('href').replace('#',''));
+    }
   });
+
   const btn = $('#adminLoginBtn');
   if(!btn) return;
+
   btn.onclick = async ()=>{
-    const val = $('#adminPass').value;
-    if(val === ADMIN_PASSWORD){
-      await sSet('admin_session', {loggedIn:true}, false);
+    const email = $('#adminEmail').value.trim();
+    const password = $('#adminPass').value;
+    const err = $('#adminErr');
+
+    err.textContent = '';
+
+    if(!email || !password){
+      err.textContent = 'ایمیل و رمز عبور را وارد کنید.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'در حال ورود...';
+
+    try{
+      const {data, error} = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if(error) throw error;
+
+      if(!data?.user){
+        throw new Error('ورود انجام نشد');
+      }
+
+      await sSet(
+        'admin_session',
+        {loggedIn:true},
+        false
+      );
+
       navigate('/admin');
-    } else {
-      $('#adminErr').textContent = 'رمز عبور اشتباه است.';
+
+    }catch(error){
+      console.error('Admin login error:', error);
+
+      err.textContent =
+        'ایمیل یا رمز عبور اشتباه است.';
+
+    }finally{
+      btn.disabled = false;
+      btn.textContent = 'ورود';
     }
   };
-  $('#adminPass').addEventListener('keydown', e=>{ if(e.key==='Enter') btn.click(); });
+
+  $('#adminPass').addEventListener('keydown', e=>{
+    if(e.key === 'Enter') btn.click();
+  });
 }
 
 function adminShell(){
