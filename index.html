@@ -2114,12 +2114,6 @@ function bindAdminLogin(){
         throw new Error('ورود انجام نشد');
       }
 
-      await sSet(
-        'admin_session',
-        {loggedIn:true},
-        false
-      );
-
       navigate('/admin');
 
     }catch(error){
@@ -2574,7 +2568,18 @@ function bindAdminShell(){
   });
 
   const logoutBtn = $('#adminLogoutBtn');
-  if(logoutBtn) logoutBtn.onclick = async ()=>{ await sSet('admin_session', {loggedIn:false}, false); navigate('/'); };
+  if(logoutBtn) logoutBtn.onclick = async ()=>{
+  const {error} = await supabaseClient.auth.signOut({
+    scope: 'local'
+  });
+
+  if(error){
+    console.error('Logout error:', error);
+    return;
+  }
+
+  navigate('/');
+};
 
   const addBtn = $('#addProductBtn');
   if(addBtn) addBtn.onclick = ()=> openProductModal(null);
