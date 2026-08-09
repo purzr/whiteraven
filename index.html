@@ -788,7 +788,7 @@ async function loadProducts(){
         sizes
       `)
       .order('created_at', {ascending:true})
-      .limit(200);
+      .limit(100);
 
     if(error){
       console.error(error);
@@ -901,14 +901,42 @@ function rowToSettings(row){
   };
 }
 async function loadSettings(){
+
   if(supabaseClient){
-    const {data, error} = await supabaseClient.from('settings').select('*').eq('id','site').maybeSingle();
-    if(error){ console.error(error); return null; }
+
+    const {data, error} = await supabaseClient
+      .from('settings')
+      .select('id,data')
+      .eq('id','site')
+      .maybeSingle();
+
+    if(error){
+      console.error(error);
+      return null;
+    }
+
     return data ? rowToSettings(data) : null;
+
   }
+
   const s = await sGet('settings', true);
-  return s ? {...defaultSettings(), ...s, fonts:{...defaultSettings().fonts,...(s.fonts||{})}, scales:{...defaultSettings().scales,...(s.scales||{})}} : null;
+
+  return s
+    ? {
+        ...defaultSettings(),
+        ...s,
+        fonts:{
+          ...defaultSettings().fonts,
+          ...(s.fonts||{})
+        },
+        scales:{
+          ...defaultSettings().scales,
+          ...(s.scales||{})
+        }
+      }
+    : null;
 }
+
 async function saveSettingsRemote(settings){
   if(supabaseClient){
     const {error} = await supabaseClient
