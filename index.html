@@ -132,12 +132,13 @@ header.site{
 }
 .header-row{
   display:flex;align-items:center;justify-content:space-between;
-  height:84px;
+  min-height:84px;
+  gap:10px;
 }
-.logo{display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:12px;min-width:0}
 .logo img.logo-img{height:var(--logo-h);width:auto;max-width:180px;object-fit:contain}
-.logo .wordmark{font-family:var(--font-header);font-size:calc(22px * var(--scale-header));letter-spacing:.22em;font-weight:600}
-.logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(9px * var(--scale-header));letter-spacing:.3em;color:var(--text-faint);margin-top:2px}
+.logo .wordmark{font-family:var(--font-header);font-size:calc(22px * var(--scale-header));letter-spacing:.22em;font-weight:600;white-space:nowrap}
+.logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(9px * var(--scale-header));letter-spacing:.3em;color:var(--text-faint);margin-top:2px;white-space:nowrap}
 nav.main-nav{display:flex;gap:36px}
 nav.main-nav a{font-family:var(--font-header);font-size:calc(14px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s}
 nav.main-nav a:hover,nav.main-nav a.active{color:var(--gold-light)}
@@ -156,6 +157,13 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 @media(max-width:900px){
   nav.main-nav{display:none}
   .hamburger{display:block}
+}
+@media(max-width:480px){
+  .header-row{min-height:64px}
+  .logo{gap:8px}
+  .logo .wordmark{font-size:calc(15px * var(--scale-header));letter-spacing:.12em}
+  .logo .wordmark small{display:none}
+  .header-icons{gap:14px}
 }
 
 /* ===== دکمه تغییر تم (سفید/مشکی) ===== */
@@ -260,10 +268,10 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
   display:flex;align-items:flex-end;padding:44px;
   overflow:hidden;
 }
-.cat-panel .cat-bg{position:absolute;inset:0;opacity:.5;transition:transform .6s ease, opacity .4s}
-.cat-panel:hover .cat-bg{transform:scale(1.06);opacity:.7}
-.cat-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,.15) 60%)}
-html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba(255,255,255,.75), rgba(255,255,255,.15) 60%)}
+.cat-panel .cat-bg{position:absolute;inset:0;opacity:.82;transition:transform .6s ease, opacity .4s}
+.cat-panel:hover .cat-bg{transform:scale(1.06);opacity:.92}
+.cat-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.42), rgba(0,0,0,.05) 60%)}
+html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba(255,255,255,.42), rgba(255,255,255,.05) 60%)}
 .cat-content{position:relative;z-index:2}
 .cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
 .cat-content .eyebrow{margin-bottom:14px;display:block}
@@ -569,12 +577,35 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 @keyframes spin{to{transform:rotate(360deg)}}
 .skeleton{background:linear-gradient(90deg,var(--bg-card) 25%,#1e1e21 37%,var(--bg-card) 63%);background-size:400% 100%;animation:sk 1.4s ease infinite}
 @keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+/* ===== Global loading overlay (shown during any network / async action) ===== */
+.gl-overlay{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(var(--bg-rgb),.45);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.gl-overlay.show{opacity:1;pointer-events:auto}
+.gl-spinner{
+  width:46px;height:46px;
+  border:3px solid rgba(var(--bg-rgb),0);
+  border-top-color:var(--gold);
+  border-right-color:var(--gold-dim);
+  border-radius:50%;
+  animation:gl-spin .75s linear infinite;
+}
+html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-color:var(--gold-dim)}
+@keyframes gl-spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
 <!-- ============ TOAST ============ -->
 <div class="toast" id="toast"></div>
+
+<!-- ============ GLOBAL LOADING OVERLAY ============ -->
+<div class="gl-overlay" id="glOverlay"><div class="gl-spinner"></div></div>
 
 <!-- ============ STOREFRONT ============ -->
 <div id="storefront">
@@ -723,6 +754,37 @@ const RIAL = n => new Intl.NumberFormat('fa-IR').format(Math.round(n)) + ' تو�
 const uid = () => 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 const $ = (sel,root=document) => root.querySelector(sel);
 const $$ = (sel,root=document) => [...root.querySelectorAll(sel)];
+
+/* ---- Global loading overlay: call showLoading() before any async action
+   and hideLoading() in a finally block. Counter-based so nested/overlapping
+   calls don't hide the overlay too early. ---- */
+let _glCount = 0;
+let _glSafetyTimer = null;
+function showLoading(){
+  _glCount++;
+  const el = $('#glOverlay');
+  if(el) el.classList.add('show');
+  clearTimeout(_glSafetyTimer);
+  // safety net: never let the overlay stay stuck forever if something
+  // forgets to call hideLoading() or a request hangs unexpectedly.
+  _glSafetyTimer = setTimeout(()=>{
+    _glCount = 0;
+    if(el) el.classList.remove('show');
+  }, 20000);
+}
+function hideLoading(){
+  _glCount = Math.max(0, _glCount - 1);
+  if(_glCount === 0){
+    const el = $('#glOverlay');
+    if(el) el.classList.remove('show');
+    clearTimeout(_glSafetyTimer);
+  }
+}
+async function withLoading(fn){
+  showLoading();
+  try{ return await fn(); }
+  finally{ hideLoading(); }
+}
 
 function showToast(msg){
   const t = $('#toast');
@@ -998,14 +1060,16 @@ function defaultSettings(){
     heroImageDarkMobile:'',
     heroImageLightMobile:'',
     categories:[
-      {slug:'women', label:'زنانه', image:''},
-      {slug:'men', label:'مردانه', image:''}
+      {slug:'women', label:'زنانه', tagline:'WOMEN', image:''},
+      {slug:'men', label:'مردانه', tagline:'MEN', image:''}
     ],
     fonts:{
       header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
     },
-    scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 }
+    scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 },
+    freeShippingThreshold: 1000000,
+    shippingCost: 45000
   };
 }
 /* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
@@ -1023,7 +1087,9 @@ function rowToSettings(row){
     heroImageLightMobile: data.heroImageLightMobile ?? d.heroImageLightMobile,
     categories: (Array.isArray(data.categories) && data.categories.length) ? data.categories : d.categories,
     fonts: {...d.fonts, ...(data.fonts||{})},
-    scales: {...d.scales, ...(data.scales||{})}
+    scales: {...d.scales, ...(data.scales||{})},
+    freeShippingThreshold: (typeof data.freeShippingThreshold === 'number') ? data.freeShippingThreshold : d.freeShippingThreshold,
+    shippingCost: (typeof data.shippingCost === 'number') ? data.shippingCost : d.shippingCost
   };
 }
 async function loadSettings(){
@@ -1249,6 +1315,8 @@ STATE.messages = STATE.messages.map(msg =>
 /* ---------------- init ---------------- */
 
 async function init(){
+  showLoading();
+  try{
   const [
     products,
     orders,
@@ -1306,6 +1374,9 @@ async function init(){
 
   renderCart();
   renderWishlistBadge();
+  }finally{
+    hideLoading();
+  }
 }
 
 init();
@@ -1381,7 +1452,14 @@ function bindGlobalUI(){
       STATE.filters.q = e.target.value.trim();
       STATE.filters.category='all';
       $('#searchOverlay').style.display='none';
-      navigate('/shop/all');
+      $('#searchInput').value='';
+      if(currentPath()==='/shop/all'){
+        // already on the shop page — changing the hash won't fire hashchange,
+        // so re-render directly to reflect the new search term immediately.
+        router();
+      }else{
+        navigate('/shop/all');
+      }
     }
   });
 
@@ -1650,7 +1728,7 @@ function pageHome(){
     <a href="#/shop/${c.slug}" data-link class="cat-panel">
       <div class="cat-bg" style="${c.image ? `background:url('${c.image}') center/cover no-repeat` : `background:linear-gradient(135deg,${i%2===0?'#2a2320,#0f0d0c':'#201f1e,#0c0c0d'})`}"></div>
       <div class="cat-content">
-        <span class="eyebrow">${escapeHtml(c.label)}</span>
+        <span class="eyebrow">${escapeHtml(c.tagline || c.label)}</span>
         <h3 class="serif">${escapeHtml(c.label)}</h3>
         <div style="margin-top:16px"><span class="btn btn-ghost">مشاهده ‹</span></div>
       </div>
@@ -1665,7 +1743,7 @@ function pageHome(){
       </div>
       <div class="feature">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 16V6a1 1 0 0 1 1-1h9v11"/><path d="M13 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-        <div><h4>ارسال سریع و رایگان</h4><p>برای خریدهای بالای ۱,۰۰۰,۰۰۰ تومان</p></div>
+        <div><h4>ارسال سریع و رایگان</h4><p>برای خریدهای بالای ${RIAL(STATE.settings.freeShippingThreshold ?? 1000000)}</p></div>
       </div>
       <div class="feature">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="m21 8-9-6-9 6 9 6 9-6Z"/><path d="M3 8v8l9 6 9-6V8"/></svg>
@@ -1777,7 +1855,7 @@ function pageProduct(id){
 
           <div class="pd-meta">
             <span>موجودی: ${p.stock>0?p.stock+' عدد':'ناموجود'}</span>
-            <span>ارسال رایگان برای خریدهای بالای ۱,۰۰۰,۰۰۰ تومان</span>
+            <span>ارسال رایگان برای خریدهای بالای ${RIAL(STATE.settings.freeShippingThreshold ?? 1000000)}</span>
             <span>امکان بازگشت تا ۷ روز پس از خرید</span>
           </div>
         </div>
@@ -1896,7 +1974,7 @@ function pageCheckout(){
     </div></div>`;
   }
   const subtotal = cartSubtotal();
-  const shipping = subtotal >= 1000000 ? 0 : 45000;
+  const shipping = computeShipping(subtotal);
   const total = subtotal + shipping;
   return `
   <div class="page-head"><span class="eyebrow">CHECKOUT</span><h1 class="serif">تکمیل خرید</h1></div>
@@ -1958,7 +2036,7 @@ function pageCheckout(){
             </div>`;
           }).join('')}
           <div class="cart-sum-row" style="margin-top:16px"><span>جمع کل</span><span>${RIAL(subtotal)}</span></div>
-          <div class="cart-sum-row"><span>هزینه ارسال</span><span>${shipping===0?'رایگان':RIAL(shipping)}</span></div>
+          <div class="cart-sum-row"><span>هزینه ارسال</span>${shippingLineHtml(subtotal)}</div>
           <div class="cart-sum-row total"><span>مبلغ نهایی</span><span>${RIAL(total)}</span></div>
         </div>
       </div>
@@ -2113,6 +2191,7 @@ if(contactForm) contactForm.onsubmit = async e => {
         return;
     }
 
+    showLoading();
     const { error } = await supabaseClient
         .from('messages')
         .insert({
@@ -2121,6 +2200,7 @@ if(contactForm) contactForm.onsubmit = async e => {
             subject: subject,
             message: message
         });
+    hideLoading();
 
     if(error){
     console.error('SUPABASE ERROR:', error);
@@ -2153,12 +2233,12 @@ if (messageInput && messageCounter) {
     e.preventDefault();
     const acc = {name:$('#accName').value.trim(), email:$('#accEmail').value.trim()};
     STATE.account = acc;
-    await sSet('account', acc, false);
+    await withLoading(()=>sSet('account', acc, false));
     showToast('ورود موفقیت‌آمیز بود ✓');
     router();
   };
   const logoutBtn = $('#logoutBtn');
-  if(logoutBtn) logoutBtn.onclick = async ()=>{ STATE.account=null; await sSet('account', null, false); router(); };
+  if(logoutBtn) logoutBtn.onclick = async ()=>{ STATE.account=null; await withLoading(()=>sSet('account', null, false)); router(); };
 
   const trackOrderForm = $('#trackOrderForm');
   if(trackOrderForm){
@@ -2168,7 +2248,9 @@ if (messageInput && messageCounter) {
       const submitBtn = trackOrderForm.querySelector('button[type="submit"]');
       submitBtn.disabled = true; submitBtn.textContent = 'در حال جستجو...';
       resultBox.innerHTML = '';
+      showLoading();
       const { order, error } = await findOrderByIdAndPhone($('#trackOrderId').value, $('#trackOrderPhone').value);
+      hideLoading();
       submitBtn.disabled = false; submitBtn.textContent = 'پیگیری سفارش';
       if(error){
         resultBox.innerHTML = `<div style="padding:16px;border:1px solid var(--danger);color:var(--danger);text-align:center">${escapeHtml(error)}</div>`;
@@ -2183,6 +2265,7 @@ if (messageInput && messageCounter) {
     e.preventDefault();
     const submitBtn = checkoutForm.querySelector('button[type="submit"]');
     if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'در حال بررسی موجودی...'; }
+    showLoading();
 
     // re-check live stock right before placing the order — someone else may have
     // bought the last units since this page loaded.
@@ -2199,6 +2282,7 @@ if (messageInput && messageCounter) {
     await sSet('cart', STATE.cart, false);
 
     if(adjusted || !STATE.cart.length){
+      hideLoading();
       renderCart();
       if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'ثبت نهایی سفارش'; }
       showToast('موجودی برخی محصولات تغییر کرد — سبد خرید بروزرسانی شد، لطفاً بررسی کنید');
@@ -2206,7 +2290,7 @@ if (messageInput && messageCounter) {
       return;
     }
 const subtotal = cartSubtotal();
-const shipping = subtotal >= 1000000 ? 0 : 45000;
+const shipping = computeShipping(subtotal);
 const total = subtotal + shipping;
 
 // اطلاعات مشتری
@@ -2259,6 +2343,7 @@ const order = {
     STATE.cart = [];
     await sSet('cart', STATE.cart, false);
     renderCart();
+    hideLoading();
     navigate('/order-confirmed/'+order.id);
   };
 }
@@ -2279,6 +2364,24 @@ function cartSubtotal(){
   },0);
 }
 function cartCount(){ return STATE.cart.reduce((s,ci)=>s+ci.qty,0); }
+
+/* ---------------- shipping helpers (uses admin ▸ توضیحات settings) ---------------- */
+function computeShipping(subtotal){
+  const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
+  const cost = STATE.settings.shippingCost ?? 45000;
+  return (subtotal >= threshold) ? 0 : cost;
+}
+// renders the shipping-cost line; when the order qualifies for free shipping,
+// the normal cost is shown struck-through next to "رایگان".
+function shippingLineHtml(subtotal){
+  const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
+  const cost = STATE.settings.shippingCost ?? 45000;
+  const free = subtotal >= threshold;
+  if(free && cost > 0){
+    return `<span><s style="color:var(--text-faint);opacity:.7;margin-left:6px">${RIAL(cost)}</s><span style="color:var(--ok)">رایگان</span></span>`;
+  }
+  return `<span>${free ? 'رایگان' : RIAL(cost)}</span>`;
+}
 
 async function addToCart(productId, qty=1, size=null){
   const p = findProduct(productId);
@@ -2389,9 +2492,15 @@ function renderCart(){
   }
 
   const subtotal = cartSubtotal();
+  const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
+  const remaining = threshold - subtotal;
+  const shippingNote = subtotal>0 && remaining>0
+    ? `<div class="cart-sum-row" style="font-size:11.5px;color:var(--text-faint)">تا ${RIAL(remaining)} دیگر خرید کنید تا ارسال رایگان شود</div>`
+    : '';
   $('#cartFoot').innerHTML = `
     <div class="cart-sum-row"><span>جمع جزء</span><span>${RIAL(subtotal)}</span></div>
-    <div class="cart-sum-row" style="font-size:11.5px;color:var(--text-faint)">هزینه ارسال در مرحله بعد محاسبه می‌شود</div>
+    <div class="cart-sum-row"><span>هزینه ارسال</span>${shippingLineHtml(subtotal)}</div>
+    ${shippingNote}
     <a href="#/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''} onclick="closeCartUI()">تکمیل خرید ‹</a>
   `;
 }
@@ -2428,15 +2537,18 @@ async function renderAdmin(path){
   if(path==='/admin/orders') adminSection='orders';
   else if(path==='/admin/products' || path.startsWith('/admin/products')) adminSection='products';
   else if(path==='/admin/settings'){ adminSection='settings'; pendingCategoriesInit=false; }
+  else if(path==='/admin/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
+  showLoading();
   const freshProducts = await loadProducts();
   if(freshProducts) STATE.products = freshProducts.map(p=>({...p, images: normalizeImages(p), image: normalizeImages(p)[0]||''}));
   const freshOrders = await loadOrders();
   if(freshOrders) STATE.orders = freshOrders;
   const freshSettings = await loadSettings();
   if(freshSettings){ STATE.settings = freshSettings; applySettingsToDOM(STATE.settings); }
+  hideLoading();
 
   box.innerHTML = adminShell();
   bindAdminShell();
@@ -2511,6 +2623,7 @@ function bindAdminLogin(){
 
     btn.disabled = true;
     btn.textContent = 'در حال ورود...';
+    showLoading();
 
     try{
       const {data, error} = await supabaseClient.auth.signInWithPassword({
@@ -2533,6 +2646,7 @@ function bindAdminLogin(){
         'ایمیل یا رمز عبور اشتباه است.';
 
     }finally{
+      hideLoading();
       btn.disabled = false;
       btn.textContent = 'ورود';
     }
@@ -2562,9 +2676,10 @@ function adminShell(){
         <a href="#/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
         <a href="#/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
         <a href="#/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
+        <a href="#/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='settings'?adminSettings():adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminOrders()}
       </div>
     </div>
   </div>
@@ -2883,7 +2998,7 @@ window.showOrderDetails = showOrderDetails;
 
 window.updateOrderStatus = async (id, status)=>{
   const o = STATE.orders.find(x=>x.id===id);
-  if(o){ o.status = status; await updateOrderStatusRemote(id, status); showToast('وضعیت سفارش بروزرسانی شد'); }
+  if(o){ o.status = status; await withLoading(()=>updateOrderStatusRemote(id, status)); showToast('وضعیت سفارش بروزرسانی شد'); }
 };
 async function deleteOrder(id) {
   const ok = confirm('آیا از حذف این سفارش مطمئن هستید؟');
@@ -2895,10 +3010,12 @@ async function deleteOrder(id) {
     return;
   }
 
+  showLoading();
   const { error } = await supabaseClient
     .from('orders')
     .delete()
     .eq('id', id);
+  hideLoading();
 
   if (error) {
     console.error('DELETE ORDER ERROR:', error);
@@ -3037,6 +3154,37 @@ function adminSettings(){
   `;
 }
 
+function adminDescriptions(){
+  const s = STATE.settings;
+  if(!pendingDescriptionsInit){
+    pendingShipping = {
+      freeShippingThreshold: s.freeShippingThreshold ?? 1000000,
+      shippingCost: s.shippingCost ?? 45000
+    };
+    pendingDescriptionsInit = true;
+  }
+  return `
+  <h2 class="admin-title">توضیحات</h2>
+
+  <div class="settings-card">
+    <h3 class="serif">هزینه و ارسال رایگان</h3>
+    <p class="settings-desc">حداقل مبلغ خرید برای ارسال رایگان و هزینه ارسال عادی را اینجا تنظیم کنید. اگر مبلغ سبد خرید مشتری به عدد ارسال رایگان برسد، در خلاصه سفارش و صفحه تسویه‌حساب، هزینه ارسال به‌صورت خودکار خط‌خورده نمایش داده می‌شود و کنارش «رایگان» نوشته می‌شود.</p>
+    <div class="form-row2">
+      <div class="form-field">
+        <label>حداقل مبلغ برای ارسال رایگان (تومان)</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="freeShippingThresholdInput" value="${pendingShipping.freeShippingThreshold}">
+      </div>
+      <div class="form-field">
+        <label>هزینه ارسال عادی (تومان)</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="shippingCostInput" value="${pendingShipping.shippingCost}">
+      </div>
+    </div>
+    <p class="settings-desc" style="margin-top:-4px">مثال با مقادیر فعلی: اگر مشتری بیش از ${RIAL(pendingShipping.freeShippingThreshold)} خرید کند، به‌جای ${RIAL(pendingShipping.shippingCost)} هزینه ارسال، عبارت «رایگان» نمایش داده می‌شود.</p>
+    <button type="button" class="btn btn-solid" id="saveShippingBtn" style="margin-top:6px">ذخیره</button>
+  </div>
+  `;
+}
+
 function bindAdminShell(){
   document.addEventListener('click', function handler(e){
     const link = e.target.closest('[data-link]');
@@ -3045,9 +3193,11 @@ function bindAdminShell(){
 
   const logoutBtn = $('#adminLogoutBtn');
   if(logoutBtn) logoutBtn.onclick = async ()=>{
+  showLoading();
   const {error} = await supabaseClient.auth.signOut({
     scope: 'local'
   });
+  hideLoading();
 
   if(error){
     console.error('Logout error:', error);
@@ -3074,6 +3224,7 @@ function bindAdminShell(){
   e.preventDefault();
 
   const productId = editingProductId || uid();
+  showLoading();
 
   if(supabaseClient){
     try{
@@ -3093,6 +3244,7 @@ function bindAdminShell(){
       editingImages = uploadedImages;
         }catch(error){
       console.error('Product image upload error:', error);
+      hideLoading();
       showToast('آپلود تصویر محصول انجام نشد');
       return;
     }
@@ -3133,6 +3285,7 @@ function bindAdminShell(){
   }
 
   await upsertProductRemote(savedProduct);
+  hideLoading();
 
   $('#productModalOverlay').classList.remove('open');
   showToast('محصول ذخیره شد ✓');
@@ -3142,6 +3295,7 @@ function bindAdminShell(){
 }
 
   bindAdminSettingsUI();
+  bindDescriptionsUI();
 }
 
 let editingImages = [];
@@ -3231,7 +3385,7 @@ function bindAdminSettingsUI(){
   bindCategoryRowEvents();
   const addCategoryBtn = $('#addCategoryBtn');
   if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
-    pendingCategories.push({slug:'cat_'+uid(), label:'', image:''});
+    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', image:''});
     $('#categoryListBox').innerHTML = categoryListHtml();
     bindCategoryRowEvents();
     const inputs = $$('.cat-edit-name');
@@ -3245,7 +3399,7 @@ function bindAdminSettingsUI(){
     const newSettings = {...STATE.settings, categories: cleaned};
     STATE.settings = newSettings;
     applySettingsToDOM(newSettings);
-    await saveSettingsRemote(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
     $('#categoryListBox').innerHTML = categoryListHtml();
     bindCategoryRowEvents();
     showToast('دسته‌بندی‌ها ذخیره شد ✓');
@@ -3268,7 +3422,7 @@ function bindAdminSettingsUI(){
     };
     STATE.settings = newSettings;
     applySettingsToDOM(newSettings);
-    await saveSettingsRemote(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
     showToast('تنظیمات ذخیره شد ✓');
   };
 }
@@ -3278,10 +3432,15 @@ let pendingLogoLight = '';
 let pendingHeroImage = {Dark:'', Light:'', DarkMobile:'', LightMobile:''};
 let pendingCategories = [];
 let pendingCategoriesInit = false;
+let pendingDescriptionsInit = false;
+let pendingShipping = {freeShippingThreshold:1000000, shippingCost:45000};
 
 function bindCategoryRowEvents(){
   $$('.cat-edit-name').forEach(inp=>{
     inp.oninput = ()=>{ pendingCategories[Number(inp.dataset.idx)].label = inp.value; };
+  });
+  $$('.cat-edit-tagline').forEach(inp=>{
+    inp.oninput = ()=>{ pendingCategories[Number(inp.dataset.idx)].tagline = inp.value; };
   });
   $$('.cat-edit-delete').forEach(btn=>{
     btn.onclick = ()=>{
@@ -3308,6 +3467,7 @@ function bindCategoryRowEvents(){
       if(!file) return;
       try{
         input.disabled = true;
+        showLoading();
         const url = await uploadSettingImage(file, `category-${pendingCategories[idx].slug}`);
         pendingCategories[idx].image = url;
         $('#categoryListBox').innerHTML = categoryListHtml();
@@ -3317,9 +3477,30 @@ function bindCategoryRowEvents(){
         showToast('آپلود عکس دسته‌بندی انجام نشد');
       }finally{
         input.disabled = false;
+        hideLoading();
       }
     };
   });
+}
+
+function bindDescriptionsUI(){
+  const saveShippingBtn = $('#saveShippingBtn');
+  if(!saveShippingBtn) return; // not on the descriptions page
+
+  saveShippingBtn.onclick = async ()=>{
+    const thresholdInput = $('#freeShippingThresholdInput');
+    const costInput = $('#shippingCostInput');
+    const freeShippingThreshold = Math.max(0, Number(thresholdInput.value) || 0);
+    const shippingCost = Math.max(0, Number(costInput.value) || 0);
+
+    pendingShipping = {freeShippingThreshold, shippingCost};
+    const newSettings = {...STATE.settings, freeShippingThreshold, shippingCost};
+    STATE.settings = newSettings;
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('توضیحات ذخیره شد ✓');
+    $('#adminMain').innerHTML = adminDescriptions();
+    bindDescriptionsUI();
+  };
 }
 
 function categoryListHtml(){
@@ -3335,9 +3516,10 @@ function categoryListHtml(){
           ${c.image ? `<img src="${c.image}" alt="${escapeHtml(c.label)}" style="object-fit:cover">` : `<span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span>`}
           <input type="file" accept="image/*" class="cat-edit-img-input" data-idx="${i}">
         </div>
-        <div style="flex:1;min-width:160px">
-          <input class="cat-edit-name" data-idx="${i}" value="${escapeHtml(c.label)}" placeholder="نام دسته‌بندی">
-          <span style="font-size:11.5px;color:var(--text-faint);display:block;margin-top:4px">${count} محصول در این دسته</span>
+        <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px">
+          <input class="cat-edit-name" data-idx="${i}" value="${escapeHtml(c.label)}" placeholder="نام دسته‌بندی (مثلاً: زنانه)">
+          <input class="cat-edit-tagline" data-idx="${i}" value="${escapeHtml(c.tagline||'')}" placeholder="متن کنار اسم (مثلاً: WOMEN)">
+          <span style="font-size:11.5px;color:var(--text-faint)">${count} محصول در این دسته</span>
         </div>
         ${c.image ? `<button type="button" class="btn btn-ghost cat-edit-remove-img" data-idx="${i}" style="padding:6px 12px;font-size:11.5px">حذف عکس</button>` : ''}
         <button type="button" class="btn btn-ghost cat-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف دسته</button>
@@ -3388,6 +3570,7 @@ function bindLogoInput(mode){
 
     try{
       logoInput.disabled = true;
+      showLoading();
 
       const url = await uploadSettingImage(file, `logo-${mode.toLowerCase()}`);
       if(mode==='Dark') pendingLogoDark = url; else pendingLogoLight = url;
@@ -3403,6 +3586,7 @@ function bindLogoInput(mode){
       showToast('آپلود لوگو انجام نشد');
     }finally{
       logoInput.disabled = false;
+      hideLoading();
     }
   };
 }
@@ -3418,6 +3602,7 @@ function bindHeroImageInput(mode){
 
     try{
       heroInput.disabled = true;
+      showLoading();
 
       const url = await uploadSettingImage(file, `hero-${mode.toLowerCase()}`);
       pendingHeroImage[mode] = url;
@@ -3437,6 +3622,7 @@ function bindHeroImageInput(mode){
       showToast('آپلود تصویر صفحه نخست انجام نشد');
     }finally{
       heroInput.disabled = false;
+      hideLoading();
     }
   };
 }
@@ -3461,7 +3647,7 @@ window.editProduct = openProductModal;
 window.deleteProduct = async (id)=>{
   if(!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
   STATE.products = STATE.products.filter(p=>p.id!==id);
-  await deleteProductRemote(id);
+  await withLoading(()=>deleteProductRemote(id));
   showToast('محصول حذف شد');
   $('#adminMain').innerHTML = adminProducts();
   bindAdminShell();
