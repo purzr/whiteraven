@@ -36,6 +36,11 @@
   --ok:#7a9b6e;
   --radius:2px;
   --maxw:1320px;
+  --shadow-color:0,0,0;
+  --shadow-sm:0 2px 10px rgba(var(--shadow-color),.28);
+  --shadow-md:0 14px 34px rgba(var(--shadow-color),.38);
+  --shadow-gold:0 10px 26px rgba(185,151,94,.22);
+  --ph-bg:linear-gradient(160deg,#131315,#0b0b0c);
 
   /* ===== customizable typography (editable from admin ▸ تنظیمات ظاهری) ===== */
   --font-header:'Vazirmatn',sans-serif;
@@ -68,6 +73,11 @@ html[data-theme="light"]{
   --gold-dim:#c7a876;
   --danger:#b8412a;
   --ok:#4f7a44;
+  --shadow-color:120,100,60;
+  --shadow-sm:0 2px 14px rgba(var(--shadow-color),.10);
+  --shadow-md:0 18px 40px rgba(var(--shadow-color),.16);
+  --shadow-gold:0 10px 24px rgba(169,129,74,.20);
+  --ph-bg:linear-gradient(160deg,#f2eee2,#e8e2d2);
 }
 html[data-theme="light"] .hero-feather-svg,
 html[data-theme="light"] .raven-mark path{fill:#1c1a16}
@@ -83,7 +93,27 @@ body{
   line-height:1.7;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+  position:relative;
 }
+body::before{
+  content:"";
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(185,151,94,.05), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(185,151,94,.045), transparent 55%);
+}
+html[data-theme="light"] body::before{
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(169,129,74,.07), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(169,129,74,.05), transparent 55%);
+}
+::selection{background:var(--gold);color:#0a0a0b}
+:focus-visible{outline:1px solid var(--gold);outline-offset:2px}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line);border:3px solid var(--bg);border-radius:20px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dim)}
+* {scrollbar-color:var(--line) var(--bg); scrollbar-width:thin}
 .serif{font-family:'Cormorant Garamond',serif;}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
@@ -102,6 +132,7 @@ ul{list-style:none}
   width:52px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);
   margin:18px 0;
 }
+.section-head .divider{width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px auto}
 .btn{
   display:inline-flex;align-items:center;gap:10px;
   padding:13px 28px;
@@ -112,13 +143,14 @@ ul{list-style:none}
   transition:all .25s ease;
   white-space:nowrap;
 }
-.btn:hover{background:var(--gold);border-color:var(--gold);color:#0a0a0b}
-.btn-solid{background:var(--gold);color:#0a0a0b;border-color:var(--gold)}
+.btn:hover{background:var(--gold);border-color:var(--gold);color:#0a0a0b;transform:translateY(-2px);box-shadow:var(--shadow-gold)}
+.btn:active{transform:translateY(0)}
+.btn-solid{background:var(--gold);color:#0a0a0b;border-color:var(--gold);box-shadow:var(--shadow-gold)}
 .btn-solid:hover{background:var(--gold-light);border-color:var(--gold-light)}
 .btn-block{width:100%;justify-content:center}
-.btn-ghost{border-color:var(--line);color:var(--text-dim)}
-.btn-ghost:hover{background:var(--bg-card);color:var(--text);border-color:var(--text-dim)}
-.btn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none}
+.btn-ghost{border-color:var(--line);color:var(--text-dim);box-shadow:none}
+.btn-ghost:hover{background:var(--bg-card);color:var(--text);border-color:var(--text-dim);box-shadow:var(--shadow-sm)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none;box-shadow:none;transform:none}
 
 /* ===== Feather icon (signature motif) ===== */
 .raven-mark{display:inline-block}
@@ -129,6 +161,7 @@ header.site{
   background:rgba(var(--bg-rgb),.88);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
+  box-shadow:0 4px 20px rgba(var(--shadow-color),.06);
 }
 .header-row{
   display:flex;align-items:center;justify-content:space-between;
@@ -143,6 +176,36 @@ nav.main-nav{display:flex;gap:36px}
 nav.main-nav a{font-family:var(--font-header);font-size:calc(14px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s}
 nav.main-nav a:hover,nav.main-nav a.active{color:var(--gold-light)}
 nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:0;height:1px;background:var(--gold)}
+
+/* ---- Products dropdown (mega menu) ---- */
+.nav-item-drop{position:relative}
+.nav-item-drop>.nav-drop-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;background:none;border:none;font:inherit;padding:6px 0}
+.nav-drop-caret{width:9px;height:9px;transition:transform .25s ease}
+.nav-item-drop:hover .nav-drop-caret,.nav-item-drop.drop-open .nav-drop-caret{transform:rotate(180deg)}
+.nav-megamenu{
+  position:absolute;top:100%;right:50%;transform:translate(50%,10px);
+  min-width:280px;padding:18px;margin-top:14px;
+  background:rgba(var(--bg-rgb),.98);backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 20px 50px rgba(var(--shadow-color),.18);
+  display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:8px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s;
+  z-index:70;
+}
+.nav-item-drop:hover .nav-megamenu,.nav-item-drop.drop-open .nav-megamenu{
+  opacity:1;visibility:visible;pointer-events:auto;transform:translate(50%,0);
+  transition:opacity .28s ease,transform .28s ease,visibility 0s linear 0s;
+}
+.nav-megamenu a{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:9px;
+  font-family:var(--font-header);font-size:13.5px;color:var(--text-dim);
+  white-space:nowrap;transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.nav-megamenu a:hover{background:rgba(197,164,101,.1);color:var(--gold-light)}
+.nav-megamenu .nav-mega-empty{grid-column:1/-1;font-size:12.5px;color:var(--text-faint);padding:8px 12px}
+.nav-megamenu .nav-mega-all{grid-column:1/-1;border-top:1px solid var(--line);margin-top:6px;padding-top:12px;color:var(--gold-light);font-weight:600}
 .header-icons{display:flex;align-items:center;gap:22px}
 .icon-btn{position:relative;color:var(--text-dim);transition:color .2s}
 .icon-btn:hover{color:var(--gold-light)}
@@ -203,30 +266,27 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
   height:100%;
   overflow:hidden;
   background:
-    radial-gradient(ellipse 60% 55% at 78% 45%, rgba(185,151,94,.10), transparent 60%),
+    radial-gradient(ellipse 60% 55% at 78% 45%, rgba(185,151,94,.14), transparent 60%),
     radial-gradient(ellipse 70% 80% at 90% 30%, rgba(255,255,255,.05), transparent 55%),
+    radial-gradient(ellipse 45% 60% at 10% 90%, rgba(185,151,94,.06), transparent 60%),
     var(--bg);
 }
 .hero-bg.has-photo{
   background:
-    linear-gradient(90deg, rgba(10,9,8,.92) 0%, rgba(10,9,8,.55) 42%, rgba(10,9,8,.25) 100%),
     var(--hero-photo) center/contain no-repeat;
 }
 html[data-theme="light"] .hero-bg.has-photo{
   background:
-    linear-gradient(90deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.55) 42%, rgba(255,255,255,.25) 100%),
     var(--hero-photo) center/contain no-repeat;
 }
 
 @media(max-width:900px){
   .hero-bg.has-photo{
     background:
-      linear-gradient(180deg, rgba(10,9,8,.55) 0%, rgba(10,9,8,.88) 78%),
       var(--hero-photo-mobile, var(--hero-photo)) center/contain no-repeat;
   }
   html[data-theme="light"] .hero-bg.has-photo{
     background:
-      linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.88) 78%),
       var(--hero-photo-mobile, var(--hero-photo)) center/contain no-repeat;
   }
 }
@@ -258,7 +318,7 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 /* ===== Section heading ===== */
 .section{padding:96px 0}
 .section-head{text-align:center;margin-bottom:56px}
-.section-head h2{font-family:var(--font-heading);font-size:calc(38px * var(--scale-heading));font-weight:600}
+.section-head h2{font-family:var(--font-heading);font-size:calc(38px * var(--scale-heading));font-weight:600;background:linear-gradient(90deg,var(--text),var(--gold-light) 55%,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
 .section-head .divider{margin:16px auto}
 
 /* ===== Category split ===== */
@@ -266,12 +326,11 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 .cat-panel{
   position:relative;min-height:420px;background:var(--bg-card);
   display:flex;align-items:flex-end;padding:44px;
-  overflow:hidden;
+  overflow:hidden;transition:box-shadow .35s ease;
 }
-.cat-panel .cat-bg{position:absolute;inset:0;opacity:.82;transition:transform .6s ease, opacity .4s}
-.cat-panel:hover .cat-bg{transform:scale(1.06);opacity:.92}
-.cat-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(0,0,0,.42), rgba(0,0,0,.05) 60%)}
-html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba(255,255,255,.42), rgba(255,255,255,.05) 60%)}
+.cat-panel:hover{box-shadow:inset 0 0 0 1px var(--gold-dim)}
+.cat-panel .cat-bg{position:absolute;inset:0;opacity:1;transition:transform .6s ease}
+.cat-panel:hover .cat-bg{transform:scale(1.06)}
 .cat-content{position:relative;z-index:2}
 .cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
 .cat-content .eyebrow{margin-bottom:14px;display:block}
@@ -280,9 +339,10 @@ html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba
 /* ===== Features bar ===== */
 .features{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-alt)}
 .features .container{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
-.feature{display:flex;align-items:center;gap:16px;padding:34px 20px;border-left:1px solid var(--line)}
+.feature{display:flex;align-items:center;gap:16px;padding:34px 20px;border-left:1px solid var(--line);transition:background-color .3s}
+.feature:hover{background:rgba(185,151,94,.04)}
 .feature:last-child{border-left:none}
-.feature svg{flex:none;color:var(--gold)}
+.feature svg{flex:none;color:var(--gold);width:20px;height:20px;padding:12px;box-sizing:content-box;border-radius:50%;background:rgba(185,151,94,.08);border:1px solid rgba(185,151,94,.18)}
 .feature h4{font-size:calc(14px * var(--scale-body));margin-bottom:4px}
 .feature p{font-size:calc(12.5px * var(--scale-body));color:var(--text-faint)}
 @media(max-width:760px){.features .container{grid-template-columns:1fr 1fr}.feature{border-left:none;border-bottom:1px solid var(--line)}}
@@ -291,7 +351,7 @@ html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba
 .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px;flex-wrap:wrap}
 .chip-row{display:flex;gap:10px;flex-wrap:wrap}
 .chip{padding:8px 18px;border:1px solid var(--line);font-size:calc(13px * var(--scale-body));color:var(--text-dim);border-radius:30px;transition:.2s}
-.chip.active,.chip:hover{border-color:var(--gold);color:var(--gold-light)}
+.chip.active,.chip:hover{border-color:var(--gold);color:var(--gold-light);box-shadow:0 3px 10px rgba(185,151,94,.12)}
 .search-mini{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:6px 2px;min-width:200px}
 .search-mini input{background:none;border:none;color:var(--text);font-size:calc(13px * var(--scale-body));flex:1;font-family:inherit}
 .search-mini input:focus{outline:none}
@@ -301,7 +361,7 @@ html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}}
 @media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 
-.card{background:var(--bg-card);border:1px solid var(--line);transition:border-color .25s;display:flex;flex-direction:column;position:relative}
+.card{background:var(--bg-card);border:1px solid var(--line);border-top:2px solid transparent;transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow-sm)}
 .wishlist-btn{color:var(--text-dim);transition:color .2s,transform .15s}
 .wishlist-btn:hover{color:var(--gold-light)}
 .wishlist-btn.active{color:var(--danger)}
@@ -311,12 +371,15 @@ html[data-theme="light"] .cat-panel::after{background:linear-gradient(0deg, rgba
 html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .pd-wishlist-btn{width:52px;height:52px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
 .pd-wishlist-btn svg{width:20px;height:20px}
-.card:hover{border-color:var(--gold-dim)}
-.card-img{aspect-ratio:3/4;background:#0d0d0e;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.card-img img{width:100%;height:100%;object-fit:cover}
+.card:hover{border-color:var(--gold-dim);border-top-color:var(--gold);transform:translateY(-5px);box-shadow:var(--shadow-md)}
+.card-img{aspect-ratio:3/4;background:var(--ph-bg);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.card:hover .card-img img{transform:scale(1.06)}
 .card-img .ph{color:var(--text-faint);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.1em;text-align:center;padding:20px}
-.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:calc(10px * var(--scale-product));padding:4px 9px;letter-spacing:.05em}
-.card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
+.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:calc(10px * var(--scale-product));padding:4px 9px;letter-spacing:.05em;box-shadow:0 4px 10px rgba(185,151,94,.3)}
+.card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(1px);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
+.card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:rgba(192,86,63,.92);color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px}
+.pd-lowstock{color:var(--danger);font-weight:600}
 .card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product)}
 .card-body .cat-tag{font-size:calc(10.5px * var(--scale-product));letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
 .card-body h3{font-size:calc(15.5px * var(--scale-product));font-weight:500}
@@ -399,7 +462,33 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .size-row{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
 .size-opt{width:44px;height:40px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:calc(13px * var(--scale-body));transition:.2s}
 .size-opt.active,.size-opt:hover{border-color:var(--gold);color:var(--gold-light)}
+.size-opt.out{opacity:.35;color:var(--text-faint);text-decoration:line-through;cursor:not-allowed;pointer-events:none;border-color:var(--line);background:none}
+.size-qty-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.size-qty-row input{flex:none}
+.size-qty-row input.sq-name{width:90px}
+.size-qty-row input.sq-qty{width:80px}
+.size-qty-row .sq-remove{width:32px;height:32px;flex:none;border:1px solid var(--line);color:var(--text-faint);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;background:none}
 .pd-meta{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
+
+/* ===== نشان‌های اطمینان کنار دکمه خرید (اصالت کالا / گارانتی بازگشت) ===== */
+.pd-trust-badges{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.pd-trust-badge{display:flex;align-items:center;gap:8px;flex:1;min-width:150px;padding:10px 12px;border:1px solid var(--line);background:var(--bg-card);border-radius:var(--radius)}
+.pd-trust-badge svg{flex:none;color:var(--gold)}
+.pd-trust-badge span{font-size:11.5px;line-height:1.5;color:var(--text-dim)}
+@media(max-width:480px){.pd-trust-badge{min-width:100%}}
+
+/* ===== سوالات متداول محصول (FAQ) ===== */
+.pd-faq{margin-top:28px;border-top:1px solid var(--line);padding-top:22px}
+.pd-faq-title{font-size:13px;color:var(--text-dim);letter-spacing:.03em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.pd-faq-item{border-bottom:1px solid var(--line)}
+.pd-faq-item:first-of-type{border-top:1px solid var(--line)}
+.pd-faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 2px;text-align:right;font-size:13.5px;color:var(--text)}
+.pd-faq-q:hover{color:var(--gold-light)}
+.pd-faq-q .pd-faq-icon{flex:none;width:16px;height:16px;color:var(--gold-dim);transition:transform .25s ease}
+.pd-faq-item.open .pd-faq-q .pd-faq-icon{transform:rotate(45deg)}
+.pd-faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.pd-faq-item.open .pd-faq-a{max-height:220px}
+.pd-faq-a p{padding:0 2px 16px;font-size:12.5px;line-height:1.9;color:var(--text-faint)}
 
 /* ===== Cart drawer ===== */
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -432,6 +521,28 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 
 /* ===== Auth / account ===== */
 .narrow{max-width:420px;margin:0 auto}
+/* ===== تخمین هزینه ارسال (صفحه محصول و سبد خرید) ===== */
+.ship-estimate{
+  margin-top:18px;padding:16px;border:1px solid var(--line);background:var(--bg-card);
+}
+.ship-estimate-head{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);margin-bottom:10px}
+.ship-estimate-head svg{color:var(--gold);flex:none}
+.ship-estimate select{
+  width:100%;padding:10px 12px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
+  font-family:inherit;font-size:13px;
+}
+.ship-estimate select:focus{outline:none;border-color:var(--gold)}
+.ship-estimate-result{margin-top:10px;font-size:13px;color:var(--text-dim)}
+.ship-estimate-result b{color:var(--text)}
+.ship-estimate-note{font-size:11.5px;color:var(--text-faint);margin-top:4px}
+.cart-ship-row{margin-bottom:14px}
+.cart-ship-row label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:6px}
+.cart-ship-row select{
+  width:100%;padding:9px 10px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
+  font-family:inherit;font-size:12.5px;
+}
+.cart-ship-row select:focus{outline:none;border-color:var(--gold)}
+
 .form-field{margin-bottom:18px}
 .form-field label{display:block;font-size:calc(12.5px * var(--scale-body));color:var(--text-dim);margin-bottom:8px}
 .form-field input,.form-field textarea,.form-field select{
@@ -442,9 +553,13 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .form-field textarea{min-height:100px;resize:vertical}
 .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:520px){.form-row2{grid-template-columns:1fr}}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end}
+@media(max-width:760px){.form-row3{grid-template-columns:1fr}}
+.form-row3 .btn{height:44px}
 
 /* ===== Footer ===== */
-footer.site{border-top:1px solid var(--line);background:var(--bg-alt);padding:70px 0 26px}
+footer.site{position:relative;border-top:1px solid var(--line);background:var(--bg-alt);padding:70px 0 26px}
+footer.site::before{content:"";position:absolute;top:-1px;right:0;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 50%,transparent);opacity:.75}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
 @media(max-width:760px){.foot-grid{grid-template-columns:1fr 1fr;gap:30px}}
 footer.site{font-family:var(--font-footer)}
@@ -620,7 +735,13 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
     </a>
     <nav class="main-nav" id="mainNav">
       <a href="#/" data-link data-route="/">خانه</a>
-      <span id="navCatLinks" style="display:contents"></span>
+      <div class="nav-item-drop" id="navProductsDrop">
+        <button type="button" class="nav-drop-trigger" id="navProductsTrigger">
+          <span>محصولات</span>
+          <svg class="nav-drop-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-megamenu" id="navCatLinks"></div>
+      </div>
       <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
       <a href="#/about" data-link data-route="/about">درباره ما</a>
       <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
@@ -681,7 +802,7 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
     <div class="foot-grid">
       <div class="foot-col">
         <h5 class="serif" style="font-family:var(--font-footer);font-size:calc(20px * var(--scale-footer));letter-spacing:.15em">WHITE RAVEN</h5>
-        <p style="margin-top:10px">زیبایی در جزئیات، اعتماد به نفس در هر لحظه. لباس زیر زنانه و مردانه با کیفیت برتر و طراحی خاص.</p>
+        <p style="margin-top:10px" id="footerTaglineText">زیبایی در جزئیات، اعتماد به نفس در هر لحظه. لباس زیر زنانه و مردانه با کیفیت برتر و طراحی خاص.</p>
       </div>
       <div class="foot-col">
         <h5>فروشگاه</h5>
@@ -753,6 +874,51 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
 const RIAL = n => new Intl.NumberFormat('fa-IR').format(Math.round(n)) + ' تومان';
 const uid = () => 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 const $ = (sel,root=document) => root.querySelector(sel);
+
+// ===== لیست استان‌ها و شهرهای ایران — برای تکمیل خودکار (autocomplete) فرم آدرس =====
+const IRAN_PROVINCES_CITIES = {
+  'آذربایجان شرقی':['تبریز','مراغه','میانه','مرند','اهر','بناب','سراب','شبستر','اسکو','ملکان','هریس','آذرشهر','بستان‌آباد','جلفا','کلیبر','ورزقان'],
+  'آذربایجان غربی':['ارومیه','خوی','مهاباد','بوکان','میاندوآب','سلماس','پیرانشهر','نقده','ماکو','شاهین‌دژ','تکاب','سردشت','چایپاره'],
+  'اردبیل':['اردبیل','مشگین‌شهر','خلخال','پارس‌آباد','بیله‌سوار','گرمی','نمین','نیر','کوثر'],
+  'اصفهان':['اصفهان','کاشان','نجف‌آباد','خمینی‌شهر','شاهین‌شهر','فولادشهر','گلپایگان','نطنز','آران و بیدگل','مبارکه','لنجان','شهرضا','نائین','اردستان','فریدن','سمیرم','خوانسار','تیران'],
+  'البرز':['کرج','فردیس','نظرآباد','هشتگرد','ساوجبلاغ','اشتهارد','طالقان','چهارباغ'],
+  'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران','چرداول','بدره','سیروان'],
+  'بوشهر':['بوشهر','برازجان','گناوه','کنگان','دیر','دیلم','دشتی','دشتستان','جم','تنگستان'],
+  'تهران':['تهران','ری','شهریار','اسلامشهر','ورامین','پاکدشت','پردیس','رباط‌کریم','بهارستان','پیشوا','دماوند','فیروزکوه','قدس','ملارد','شمیرانات','لواسان'],
+  'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','فرخ‌شهر','سامان','کوهرنگ','اردل','کیار'],
+  'خراسان جنوبی':['بیرجند','قاین','فردوس','طبس','نهبندان','سربیشه','بشرویه','درمیان'],
+  'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت‌حیدریه','کاشمر','قوچان','تربت‌جام','چناران','گناباد','فریمان','سرخس','تایباد','درگز','خواف','بردسکن'],
+  'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','فاروج','جاجرم','رازوجرگلان'],
+  'خوزستان':['اهواز','آبادان','خرمشهر','دزفول','ماهشهر','بهبهان','اندیمشک','شوشتر','ایذه','رامهرمز','شوش','مسجدسلیمان','هویزه','باغ‌ملک','امیدیه','هندیجان'],
+  'زنجان':['زنجان','ابهر','خرمدره','قیدار','ماهنشان','طارم','ایجرود'],
+  'سمنان':['سمنان','شاهرود','دامغان','گرمسار','مهدی‌شهر','ایوانکی','میامی'],
+  'سیستان و بلوچستان':['زاهدان','زابل','ایرانشهر','چابهار','خاش','سراوان','کنارک','نیک‌شهر','سرباز','زهک'],
+  'فارس':['شیراز','مرودشت','جهرم','کازرون','فسا','لار','آباده','داراب','لامرد','فیروزآباد','استهبان','اقلید','نی‌ریز','گراش','سپیدان','زرقان'],
+  'قزوین':['قزوین','تاکستان','آبیک','البرز','بوئین‌زهرا','آوج'],
+  'قم':['قم'],
+  'کردستان':['سنندج','سقز','بانه','مریوان','قروه','بیجار','کامیاران','دیواندره','دهگلان'],
+  'کرمان':['کرمان','رفسنجان','سیرجان','جیرفت','بم','زرند','کهنوج','بردسیر','شهربابک','بافت','رودبار جنوب'],
+  'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','سنقر','کنگاور','هرسین','پاوه','جوانرود','سرپل‌ذهاب','قصرشیرین','گیلانغرب'],
+  'کهگیلویه و بویراحمد':['یاسوج','گچساران','دوگنبدان','دهدشت','لیکک','باشت'],
+  'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','آق‌قلا','بندر ترکمن','کردکوی','مینودشت','آزادشهر','رامیان','کلاله'],
+  'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','صومعه‌سرا','فومن','رودبار','املش','ماسال','آستانه اشرفیه'],
+  'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا','نورآباد','الشتر','پلدختر'],
+  'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','چالوس','نوشهر','تنکابن','رامسر','بهشهر','نور','فریدونکنار','جویبار','نکا','گلوگاه'],
+  'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','تفرش','آشتیان','شازند','خنداب'],
+  'هرمزگان':['بندرعباس','قشم','میناب','بندرلنگه','رودان','حاجی‌آباد','جاسک','بستک','ابوموسی'],
+  'همدان':['همدان','ملایر','نهاوند','تویسرکان','اسدآباد','کبودراهنگ','بهار','رزن','فامنین'],
+  'یزد':['یزد','میبد','اردکان','بافق','ابرکوه','مهریز','تفت','خاتم']
+};
+function iranAllProvinces(){ return Object.keys(IRAN_PROVINCES_CITIES).sort((a,b)=>a.localeCompare(b,'fa')); }
+function iranCitiesFor(province){ return IRAN_PROVINCES_CITIES[province] || []; }
+function iranAllCities(){
+  return [...new Set(Object.values(IRAN_PROVINCES_CITIES).flat())].sort((a,b)=>a.localeCompare(b,'fa'));
+}
+function fillDatalist(id, items){
+  const dl = document.getElementById(id);
+  if(!dl) return;
+  dl.innerHTML = items.map(v=>`<option value="${escapeHtml(v)}"></option>`).join('');
+}
 const $$ = (sel,root=document) => [...root.querySelectorAll(sel)];
 
 /* ---- Global loading overlay: call showLoading() before any async action
@@ -1063,13 +1229,26 @@ function defaultSettings(){
       {slug:'women', label:'زنانه', tagline:'WOMEN', image:''},
       {slug:'men', label:'مردانه', tagline:'MEN', image:''}
     ],
+    heroEyebrow:'WOMEN & MEN UNDERWEAR',
+    heroTitle:'WHITE\nRAVEN',
+    heroLede:'زیبایی در جزئیات، اعتماد به نفس در هر لحظه',
+    heroCtaPrimary:'مشاهده محصولات ‹',
+    heroCtaSecondary:'درباره برند',
+    footerTagline:'زیبایی در جزئیات، اعتماد به نفس در هر لحظه. لباس زیر زنانه و مردانه با کیفیت برتر و طراحی خاص.',
+    aboutEyebrow:'OUR STORY',
+    aboutTitle:'درباره White Raven',
+    aboutHeading:'داستان برند',
+    aboutText:'White Raven با هدف ارائه لباس زیر باکیفیت، راحت و شیک برای زنان و مردان شکل گرفت. ما معتقدیم که آنچه نزدیک‌ترین لایه به بدن شماست، باید بهترین کیفیت را داشته باشد.\nهر قطعه از محصولات ما با دقت در انتخاب پارچه، دوخت و طراحی تولید می‌شود تا حسی از اعتماد به نفس و آرامش را در هر لحظه به شما هدیه دهد.\nکلاغ سفید، نماد تمایز و اصالت است؛ همان‌طور که برند ما تلاش می‌کند در میان انبوه گزینه‌های بازار، انتخابی متفاوت و قابل اعتماد باشد.',
+    aboutImage:'',
     fonts:{
       header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
     },
     scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 },
     freeShippingThreshold: 1000000,
-    shippingCost: 45000
+    shippingCost: 45000,
+    shippingRates: [],
+    coupons: []
   };
 }
 /* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
@@ -1086,10 +1265,23 @@ function rowToSettings(row){
     heroImageDarkMobile: data.heroImageDarkMobile ?? d.heroImageDarkMobile,
     heroImageLightMobile: data.heroImageLightMobile ?? d.heroImageLightMobile,
     categories: (Array.isArray(data.categories) && data.categories.length) ? data.categories : d.categories,
+    heroEyebrow: data.heroEyebrow ?? d.heroEyebrow,
+    heroTitle: data.heroTitle ?? d.heroTitle,
+    heroLede: data.heroLede ?? d.heroLede,
+    heroCtaPrimary: data.heroCtaPrimary ?? d.heroCtaPrimary,
+    heroCtaSecondary: data.heroCtaSecondary ?? d.heroCtaSecondary,
+    footerTagline: data.footerTagline ?? d.footerTagline,
+    aboutEyebrow: data.aboutEyebrow ?? d.aboutEyebrow,
+    aboutTitle: data.aboutTitle ?? d.aboutTitle,
+    aboutHeading: data.aboutHeading ?? d.aboutHeading,
+    aboutText: data.aboutText ?? d.aboutText,
+    aboutImage: data.aboutImage ?? d.aboutImage,
     fonts: {...d.fonts, ...(data.fonts||{})},
     scales: {...d.scales, ...(data.scales||{})},
     freeShippingThreshold: (typeof data.freeShippingThreshold === 'number') ? data.freeShippingThreshold : d.freeShippingThreshold,
-    shippingCost: (typeof data.shippingCost === 'number') ? data.shippingCost : d.shippingCost
+    shippingCost: (typeof data.shippingCost === 'number') ? data.shippingCost : d.shippingCost,
+    shippingRates: Array.isArray(data.shippingRates) ? data.shippingRates : d.shippingRates,
+    coupons: Array.isArray(data.coupons) ? data.coupons : d.coupons
   };
 }
 async function loadSettings(){
@@ -1124,6 +1316,17 @@ async function loadSettings(){
         heroImageDarkMobile: s.heroImageDarkMobile ?? defaultSettings().heroImageDarkMobile,
         heroImageLightMobile: s.heroImageLightMobile ?? defaultSettings().heroImageLightMobile,
         categories: (Array.isArray(s.categories) && s.categories.length) ? s.categories : defaultSettings().categories,
+        heroEyebrow: s.heroEyebrow ?? defaultSettings().heroEyebrow,
+        heroTitle: s.heroTitle ?? defaultSettings().heroTitle,
+        heroLede: s.heroLede ?? defaultSettings().heroLede,
+        heroCtaPrimary: s.heroCtaPrimary ?? defaultSettings().heroCtaPrimary,
+        heroCtaSecondary: s.heroCtaSecondary ?? defaultSettings().heroCtaSecondary,
+        footerTagline: s.footerTagline ?? defaultSettings().footerTagline,
+        aboutEyebrow: s.aboutEyebrow ?? defaultSettings().aboutEyebrow,
+        aboutTitle: s.aboutTitle ?? defaultSettings().aboutTitle,
+        aboutHeading: s.aboutHeading ?? defaultSettings().aboutHeading,
+        aboutText: s.aboutText ?? defaultSettings().aboutText,
+        aboutImage: s.aboutImage ?? defaultSettings().aboutImage,
         fonts:{
           ...defaultSettings().fonts,
           ...(s.fonts||{})
@@ -1131,7 +1334,8 @@ async function loadSettings(){
         scales:{
           ...defaultSettings().scales,
           ...(s.scales||{})
-        }
+        },
+        coupons: Array.isArray(s.coupons) ? s.coupons : defaultSettings().coupons
       }
     : null;
 }
@@ -1174,11 +1378,18 @@ function getHeroForThemeMobile(settings){
 function renderCategoryNavLinks(settings){
   const cats = settings.categories || [];
   const curPath = STATE.route;
-  const linkHtml = cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
-  const navSlot = document.getElementById('navCatLinks');
+  const plainLinkHtml = cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
   const mobileSlot = document.getElementById('mobileNavCatLinks');
-  if(navSlot) navSlot.innerHTML = linkHtml;
-  if(mobileSlot) mobileSlot.innerHTML = linkHtml;
+  if(mobileSlot) mobileSlot.innerHTML = plainLinkHtml;
+
+  // Desktop mega-menu: category links (each with a small icon dot) + a link to "all"
+  const megaSlot = document.getElementById('navCatLinks');
+  if(megaSlot){
+    const megaLinks = cats.length
+      ? cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')
+      : `<span class="nav-mega-empty">دسته‌بندی‌ای ثبت نشده</span>`;
+    megaSlot.innerHTML = megaLinks + `<a href="#/shop/all" data-link data-route="/shop/all" class="nav-mega-all">مشاهده همه محصولات ‹</a>`;
+  }
 }
 
 function applySettingsToDOM(settings){
@@ -1190,6 +1401,15 @@ function applySettingsToDOM(settings){
     root.setProperty(`--scale-${s.key}`, scale);
   });
   renderCategoryNavLinks(settings);
+  const footTag = $('#footerTaglineText');
+  if(footTag){
+    if(settings.footerTagline){
+      footTag.textContent = settings.footerTagline;
+      footTag.style.display = '';
+    } else {
+      footTag.style.display = 'none';
+    }
+  }
   const logoSrc = getLogoForTheme(settings);
   const slot = $('#siteLogoSlot');
   if(slot){
@@ -1228,14 +1448,14 @@ function applySettingsToDOM(settings){
 
 /* ---------------- seed data ---------------- */
 const SEED_PRODUCTS = [
-  {id:uid(),name:'ست دنتل مشکی مورگان',category:'women',price:1290000,compareAt:1590000,stock:12,image:'',desc:'ست لباس زیر دنتل با پارچه نرم و قابل تنفس، دوخت ظریف فرانسوی، مناسب استفاده روزانه و مجالس خاص.',sizes:['S','M','L']},
-  {id:uid(),name:'باکسر پنبه‌ای پریمیوم',category:'men',price:490000,compareAt:0,stock:30,image:'',desc:'باکسر مردانه از پنبه ارگانیک ۱۰۰٪ با کش عریض راحت، مناسب پوست حساس و استفاده روزمره.',sizes:['M','L','XL']},
-  {id:uid(),name:'سوتین بی‌درز سیلک',category:'women',price:980000,compareAt:0,stock:8,image:'',desc:'سوتین بدون درز با روکش ابریشمی، فرم‌دهی طبیعی و راحتی کامل برای پوشش زیر لباس.',sizes:['70B','75B','80B']},
-  {id:uid(),name:'تریانگل مینیمال زنانه',category:'women',price:650000,compareAt:790000,stock:0,image:'',desc:'شورت تریانگل مینیمال با طراحی ساده و شیک، پارچه میکرومدال فوق‌العاده نرم.',sizes:['S','M','L']},
-  {id:uid(),name:'باکسر بریف مدرن',category:'men',price:520000,compareAt:0,stock:20,image:'',desc:'بریف مردانه با برش آناتومیک، تهویه بهتر و دوخت بدون درز جانبی.',sizes:['S','M','L','XL']},
-  {id:uid(),name:'رب ابریشمی شب',category:'women',price:2190000,compareAt:2490000,stock:5,image:'',desc:'رب بلند ابریشمی با طراحی لوکس، مناسب هدیه و استفاده در منزل.',sizes:['Free Size']},
-  {id:uid(),name:'ست ورزشی مردانه پرفورمنس',category:'men',price:760000,compareAt:0,stock:15,image:'',desc:'زیرپوش و باکسر ورزشی با پارچه خنک‌کننده مخصوص فعالیت‌های بدنی.',sizes:['M','L','XL']},
-  {id:uid(),name:'شورت لیس بدون درز',category:'women',price:410000,compareAt:0,stock:25,image:'',desc:'شورت لیز بدون درز، نامرئی زیر لباس تنگ، پارچه لطیف مایکروفایبر.',sizes:['S','M','L','XL']},
+  {id:uid(),name:'ست دنتل مشکی مورگان',category:'women',price:1290000,compareAt:1590000,stock:12,image:'',desc:'ست لباس زیر دنتل با پارچه نرم و قابل تنفس، دوخت ظریف فرانسوی، مناسب استفاده روزانه و مجالس خاص.',sizes:[{size:'S',qty:5},{size:'M',qty:0},{size:'L',qty:7}]},
+  {id:uid(),name:'باکسر پنبه‌ای پریمیوم',category:'men',price:490000,compareAt:0,stock:30,image:'',desc:'باکسر مردانه از پنبه ارگانیک ۱۰۰٪ با کش عریض راحت، مناسب پوست حساس و استفاده روزمره.',sizes:[{size:'M',qty:10},{size:'L',qty:12},{size:'XL',qty:8}]},
+  {id:uid(),name:'سوتین بی‌درز سیلک',category:'women',price:980000,compareAt:0,stock:8,image:'',desc:'سوتین بدون درز با روکش ابریشمی، فرم‌دهی طبیعی و راحتی کامل برای پوشش زیر لباس.',sizes:[{size:'70B',qty:3},{size:'75B',qty:0},{size:'80B',qty:5}]},
+  {id:uid(),name:'تریانگل مینیمال زنانه',category:'women',price:650000,compareAt:790000,stock:0,image:'',desc:'شورت تریانگل مینیمال با طراحی ساده و شیک، پارچه میکرومدال فوق‌العاده نرم.',sizes:[{size:'S',qty:0},{size:'M',qty:0},{size:'L',qty:0}]},
+  {id:uid(),name:'باکسر بریف مدرن',category:'men',price:520000,compareAt:0,stock:20,image:'',desc:'بریف مردانه با برش آناتومیک، تهویه بهتر و دوخت بدون درز جانبی.',sizes:[{size:'S',qty:4},{size:'M',qty:6},{size:'L',qty:0},{size:'XL',qty:10}]},
+  {id:uid(),name:'رب ابریشمی شب',category:'women',price:2190000,compareAt:2490000,stock:5,image:'',desc:'رب بلند ابریشمی با طراحی لوکس، مناسب هدیه و استفاده در منزل.',sizes:[{size:'Free Size',qty:5}]},
+  {id:uid(),name:'ست ورزشی مردانه پرفورمنس',category:'men',price:760000,compareAt:0,stock:15,image:'',desc:'زیرپوش و باکسر ورزشی با پارچه خنک‌کننده مخصوص فعالیت‌های بدنی.',sizes:[{size:'M',qty:5},{size:'L',qty:0},{size:'XL',qty:10}]},
+  {id:uid(),name:'شورت لیس بدون درز',category:'women',price:410000,compareAt:0,stock:25,image:'',desc:'شورت لیز بدون درز، نامرئی زیر لباس تنگ، پارچه لطیف مایکروفایبر.',sizes:[{size:'S',qty:8},{size:'M',qty:9},{size:'L',qty:0},{size:'XL',qty:8}]},
 ];
 
 let STATE = {
@@ -1368,7 +1588,7 @@ async function init(){
 
   bindGlobalUI();
 
-  window.addEventListener('hashchange', router);
+  window.addEventListener('hashchange', ()=> router());
 
   router();
 
@@ -1387,7 +1607,7 @@ function currentPath(){
 }
 function navigate(path){ location.hash = '#'+path; }
 
-function router(){
+function router(preserveScroll){
   const path = currentPath();
   STATE.route = path;
 
@@ -1396,7 +1616,7 @@ function router(){
     $('#storefront').classList.add('hidden');
     $('#adminApp').classList.remove('hidden');
     renderAdmin(path);
-    window.scrollTo(0,0);
+    if(!preserveScroll) window.scrollTo({top:0,left:0,behavior:'smooth'});
     return;
   }
   $('#storefront').classList.remove('hidden');
@@ -1419,7 +1639,7 @@ function router(){
   else if(path.startsWith('/track-order')) app.innerHTML = pageTrackOrder(path.split('/track-order/')[1]);
   else app.innerHTML = page404();
 
-  window.scrollTo(0,0);
+  if(!preserveScroll) window.scrollTo({top:0,left:0,behavior:'smooth'});
   bindPageUI();
 }
 
@@ -1441,6 +1661,24 @@ function bindGlobalUI(){
   }
   $('#hamburgerBtn').onclick = ()=>{ $('#mobileNav').classList.add('open'); $('#mobileOverlay').classList.add('open'); };
   $('#mobileCloseBtn').onclick = closeMobile;
+
+  // Products mega-menu: hover works via CSS; this adds click/tap support
+  // (touch laptops, keyboard users) and closes the panel on outside click
+  // or route change.
+  const navProductsDrop = $('#navProductsDrop');
+  const navProductsTrigger = $('#navProductsTrigger');
+  if(navProductsDrop && navProductsTrigger){
+    navProductsTrigger.onclick = (e)=>{
+      e.stopPropagation();
+      navProductsDrop.classList.toggle('drop-open');
+    };
+    document.addEventListener('click', (e)=>{
+      if(!navProductsDrop.contains(e.target)) navProductsDrop.classList.remove('drop-open');
+    });
+    navProductsDrop.addEventListener('click', (e)=>{
+      if(e.target.closest('a')) navProductsDrop.classList.remove('drop-open');
+    });
+  }
   $('#mobileOverlay').onclick = closeMobile;
   function closeMobile(){ $('#mobileNav').classList.remove('open'); $('#mobileOverlay').classList.remove('open'); }
   $$('#mobileNav a').forEach(a=>a.addEventListener('click', closeMobile));
@@ -1451,15 +1689,18 @@ function bindGlobalUI(){
     if(e.key==='Enter'){
       STATE.filters.q = e.target.value.trim();
       STATE.filters.category='all';
-      $('#searchOverlay').style.display='none';
-      $('#searchInput').value='';
       if(currentPath()==='/shop/all'){
         // already on the shop page — changing the hash won't fire hashchange,
         // so re-render directly to reflect the new search term immediately.
-        router();
+        // preserveScroll keeps the page where it is so the top search bar
+        // (which stays open) doesn't visually "jump" away from the user.
+        router(true);
       }else{
         navigate('/shop/all');
       }
+      // keep the search box open and focused so typing a new term and
+      // pressing Enter again keeps searching from this same, top search bar.
+      $('#searchInput').focus();
     }
   });
 
@@ -1485,7 +1726,7 @@ function findCategory(slug){ return (STATE.settings.categories||[]).find(c=>c.sl
 function catLabel(c){ const found = findCategory(c); return found ? found.label : (c==='all' ? 'محصولات' : (c||'محصولات')); }
 
 function productImgHtml(p, cls='ph'){
-  if(p.image) return `<img src="${p.image}" alt="${escapeHtml(p.name)}">`;
+  if(p.image) return `<img src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async">`;
   return `<div class="${cls}">
     <svg width="30" height="30" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#555"/></svg>
     <span>WHITE RAVEN<br>تصویر ثبت نشده</span>
@@ -1503,7 +1744,7 @@ function productGalleryHtml(p){
   <div class="pd-gallery" id="pdGallery" data-count="${imgs.length}">
     <div class="pd-gallery-main" id="pdGalleryMain" dir="ltr">
       <div class="pd-gallery-track" id="pdGalleryTrack">
-        ${imgs.map((src,i)=>`<div class="pd-gallery-slide"><img src="${src}" alt="${escapeHtml(p.name)} ${i+1}" draggable="false"></div>`).join('')}
+        ${imgs.map((src,i)=>`<div class="pd-gallery-slide"><img src="${src}" alt="${escapeHtml(p.name)} ${i+1}" draggable="false" ${i===0?'loading="eager"':'loading="lazy"'} decoding="async"></div>`).join('')}
       </div>
       ${imgs.length>1?`
       <button type="button" class="pd-gallery-arrow next" id="pdGalNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -1512,7 +1753,7 @@ function productGalleryHtml(p){
       <span class="pd-gallery-hint">برای بزرگ‌نمایی کلیک کنید</span>
     </div>
     ${imgs.length>1?`<div class="pd-gallery-thumbs" id="pdGalThumbs">
-      ${imgs.map((src,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"><img src="${src}" alt=""></button>`).join('')}
+      ${imgs.map((src,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"><img src="${src}" alt="" loading="lazy" decoding="async"></button>`).join('')}
     </div>`:''}
   </div>`;
 }
@@ -1670,7 +1911,7 @@ function productCard(p){
       <div class="card-img">
         ${productImgHtml(p)}
         ${off ? `<span class="card-badge">تخفیف</span>` : ''}
-        ${p.stock<=0 ? `<div class="card-out">ناموجود</div>` : ''}
+        ${p.stock<=0 ? `<div class="card-out">ناموجود</div>` : (p.stock>0 && p.stock<=2 ? `<div class="card-lowstock">تنها ${p.stock} عدد باقی مانده</div>` : '')}
       </div>
     </a>
     ${wishlistBtnHtml(p, 'wishlist-btn card-wishlist')}
@@ -1704,13 +1945,13 @@ function pageHome(){
     </svg>
     <div class="container">
       <div class="hero-inner">
-        <span class="eyebrow">WOMEN &amp; MEN UNDERWEAR</span>
-        <h1 class="serif">WHITE<br>RAVEN</h1>
+        ${STATE.settings.heroEyebrow ? `<span class="eyebrow">${escapeHtml(STATE.settings.heroEyebrow)}</span>` : ''}
+        ${STATE.settings.heroTitle ? `<h1 class="serif">${(STATE.settings.heroTitle||'').split('\n').map(escapeHtml).join('<br>')}</h1>` : ''}
         <div class="divider"></div>
-        <p class="lede">زیبایی در جزئیات، اعتماد به نفس در هر لحظه</p>
+        ${STATE.settings.heroLede ? `<p class="lede">${escapeHtml(STATE.settings.heroLede)}</p>` : ''}
         <div class="hero-cta">
-          <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات ‹</a>
-          <a href="#/about" data-link class="btn">درباره برند</a>
+          ${STATE.settings.heroCtaPrimary ? `<a href="#/shop/all" data-link class="btn btn-solid">${escapeHtml(STATE.settings.heroCtaPrimary)}</a>` : ''}
+          ${STATE.settings.heroCtaSecondary ? `<a href="#/about" data-link class="btn">${escapeHtml(STATE.settings.heroCtaSecondary)}</a>` : ''}
         </div>
       </div>
     </div>
@@ -1807,6 +2048,36 @@ function pageShop(catRaw){
   </div>`;
 }
 
+// ===== سوالات متداول کوچک در صفحه محصول (ارسال، مرجوعی، پرداخت...) =====
+// مقادیر پیش‌فرض — اگر مدیر از پنل (بخش توضیحات) چیزی ثبت نکرده باشد، همین‌ها نمایش داده می‌شوند.
+function defaultFaqItems(){
+  const freeShip = RIAL(STATE.settings.freeShippingThreshold ?? 1000000);
+  return [
+    { q:'ارسال سفارش چقدر طول می‌کشد؟', a:`سفارش‌ها معمولاً طی ۱ تا ۳ روز کاری آماده و از طریق پست/تیپاکس ارسال می‌شوند. زمان رسیدن به مقصد بسته به شهر شما بین ۱ تا ۵ روز کاری متغیر است.` },
+    { q:'هزینه ارسال چقدر است؟', a:`هزینه ارسال بر اساس استان و شهر شما محاسبه می‌شود و در صفحه تسویه‌حساب نمایش داده می‌شود. برای خریدهای بالای ${freeShip} ارسال رایگان است.` },
+    { q:'آیا امکان مرجوع کردن کالا وجود دارد؟', a:`بله، در صورتی که کالا استفاده نشده و با برچسب اصلی باشد، تا ۷ روز پس از دریافت امکان مرجوع کردن یا تعویض آن وجود دارد.` },
+    { q:'روش‌های پرداخت کدام‌اند؟', a:`می‌توانید از طریق درگاه بانکی آنلاین پرداخت کنید یا در صورت فعال بودن، هزینه را هنگام تحویل کالا به پیک پرداخت نمایید.` }
+  ];
+}
+function productFaqHtml(){
+  const items = (STATE.settings.faqItems && STATE.settings.faqItems.length) ? STATE.settings.faqItems : defaultFaqItems();
+  return `
+  <div class="pd-faq" id="pdFaq">
+    <div class="pd-faq-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2 1.7-2.3 3.2M12 17h.01"/></svg>
+      سوالات متداول
+    </div>
+    ${items.map((it,i)=>`
+    <div class="pd-faq-item${i===0?' open':''}" data-i="${i}">
+      <button type="button" class="pd-faq-q">
+        <span>${escapeHtml(it.q)}</span>
+        <svg class="pd-faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div class="pd-faq-a"><p>${escapeHtml(it.a)}</p></div>
+    </div>`).join('')}
+  </div>`;
+}
+
 function pageProduct(id){
   const p = findProduct(id);
   if(!p) return page404();
@@ -1829,13 +2100,20 @@ function pageProduct(id){
           </div>
           <p class="pd-desc">${escapeHtml(p.desc||'')}</p>
 
-          ${p.sizes && p.sizes.length ? `
+          ${p.sizes && p.sizes.length ? (()=>{
+            const normSizes = p.sizes.map(s=> typeof s==='string' ? {size:s, qty:null} : s);
+            const firstAvailable = normSizes.findIndex(s=> !(s.qty!=null && s.qty<=0));
+            return `
           <div>
             <label style="font-size:12.5px;color:var(--text-dim);display:block;margin-bottom:10px">سایز</label>
             <div class="size-row" id="sizeRow">
-              ${p.sizes.map((s,i)=>`<button type="button" class="size-opt ${i===0?'active':''}" data-size="${s}">${s}</button>`).join('')}
+              ${normSizes.map((s,i)=>{
+                const isOut = s.qty!=null && s.qty<=0;
+                return `<button type="button" class="size-opt ${(!isOut && i===firstAvailable)?'active':''} ${isOut?'out':''}" data-size="${escapeHtml(s.size)}" ${isOut?'disabled title="ناموجود"':''}>${escapeHtml(s.size)}</button>`;
+              }).join('')}
             </div>
-          </div>`:''}
+          </div>`;
+          })():''}
 
           <div class="qty-row">
             <span style="font-size:13px;color:var(--text-dim)">تعداد</span>
@@ -1853,11 +2131,26 @@ function pageProduct(id){
             ${wishlistBtnHtml(p, 'wishlist-btn pd-wishlist-btn')}
           </div>
 
+          <div class="pd-trust-badges">
+            <div class="pd-trust-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+              <span>ضمانت بازگشت کالا<br>تا ۷ روز پس از خرید</span>
+            </div>
+            <div class="pd-trust-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3.5v5c0 4.6-3 8.4-7 9.5-4-1.1-7-4.9-7-9.5v-5L12 3z"/><path d="M9.5 12l1.8 1.8L14.8 10"/></svg>
+              <span>ضمانت اصالت کالا<br>۱۰۰٪ اورجینال</span>
+            </div>
+          </div>
+
           <div class="pd-meta">
-            <span>موجودی: ${p.stock>0?p.stock+' عدد':'ناموجود'}</span>
+            <span${p.stock>0 && p.stock<=2 ? ' class="pd-lowstock"' : ''}>موجودی: ${p.stock>0?p.stock+' عدد':'ناموجود'}${p.stock>0 && p.stock<=2 ? ' — تنها '+p.stock+' عدد باقی مانده!' : ''}</span>
             <span>ارسال رایگان برای خریدهای بالای ${RIAL(STATE.settings.freeShippingThreshold ?? 1000000)}</span>
             <span>امکان بازگشت تا ۷ روز پس از خرید</span>
           </div>
+
+          ${shippingEstimateWidgetHtml('pdShip')}
+
+          ${productFaqHtml()}
         </div>
       </div>
 
@@ -1871,19 +2164,19 @@ function pageProduct(id){
 }
 
 function pageAbout(){
+  const s = STATE.settings;
+  const paragraphs = (s.aboutText||'').split('\n').filter(p=>p.trim()).map(p=>`<p>${escapeHtml(p)}</p>`).join('');
   return `
-  <div class="page-head"><span class="eyebrow">OUR STORY</span><h1 class="serif">درباره White Raven</h1></div>
+  <div class="page-head">${s.aboutEyebrow?`<span class="eyebrow">${escapeHtml(s.aboutEyebrow)}</span>`:''}${s.aboutTitle?`<h1 class="serif">${escapeHtml(s.aboutTitle)}</h1>`:''}</div>
   <div class="section">
     <div class="container about-block">
       <div>
-        <h2 class="serif">داستان برند</h2>
-        <p>White Raven با هدف ارائه لباس زیر باکیفیت، راحت و شیک برای زنان و مردان شکل گرفت. ما معتقدیم که آنچه نزدیک‌ترین لایه به بدن شماست، باید بهترین کیفیت را داشته باشد.</p>
-        <p>هر قطعه از محصولات ما با دقت در انتخاب پارچه، دوخت و طراحی تولید می‌شود تا حسی از اعتماد به نفس و آرامش را در هر لحظه به شما هدیه دهد.</p>
-        <p>کلاغ سفید، نماد تمایز و اصالت است؛ همان‌طور که برند ما تلاش می‌کند در میان انبوه گزینه‌های بازار، انتخابی متفاوت و قابل اعتماد باشد.</p>
+        ${s.aboutHeading?`<h2 class="serif">${escapeHtml(s.aboutHeading)}</h2>`:''}
+        ${paragraphs}
         <a href="#/shop/all" data-link class="btn btn-solid" style="margin-top:10px">مشاهده محصولات ‹</a>
       </div>
       <div class="about-visual">
-        <svg width="140" height="140" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#b9975e"/></svg>
+        ${s.aboutImage ? `<img src="${s.aboutImage}" alt="${escapeHtml(s.aboutTitle||'')}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="140" height="140" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#b9975e"/></svg>`}
       </div>
     </div>
   </div>`;
@@ -1974,8 +2267,9 @@ function pageCheckout(){
     </div></div>`;
   }
   const subtotal = cartSubtotal();
-  const shipping = computeShipping(subtotal);
-  const total = subtotal + shipping;
+  const shipping = computeShipping(subtotal, getSavedShippingProvince());
+  const discount = computeDiscount(subtotal, appliedCoupon);
+  const total = Math.max(0, subtotal + shipping - discount);
   return `
   <div class="page-head"><span class="eyebrow">CHECKOUT</span><h1 class="serif">تکمیل خرید</h1></div>
   <div class="section"><div class="container">
@@ -1998,20 +2292,39 @@ function pageCheckout(){
   <input required id="checkoutPhone" type="tel" placeholder="09xxxxxxxxx">
 </div>
 
-<div class="form-field">
-  <label>آدرس کامل</label>
-  <textarea required id="checkoutAddress" placeholder="استان، شهر، خیابان، پلاک..."></textarea>
-</div>
-
-<div class="form-row2">
+${(()=>{
+  const rates = STATE.settings.shippingRates || [];
+  const provinces = [...new Set(rates.map(r=>r.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
+  const savedProvince = getSavedShippingProvince();
+  return `<div class="form-row2">
+  <div class="form-field">
+    <label>استان</label>
+    ${provinces.length ? `<select required id="checkoutProvince">
+        <option value="">انتخاب کنید</option>
+        ${provinces.map(p=>`<option value="${escapeHtml(p)}" ${p===savedProvince?'selected':''}>${escapeHtml(p)}</option>`).join('')}
+      </select>` : `<input required id="checkoutProvince" placeholder="استان را تایپ کنید..." value="${escapeHtml(savedProvince)}" list="checkoutProvinceList" autocomplete="off">
+      <datalist id="checkoutProvinceList">
+        ${iranAllProvinces().map(p=>`<option value="${escapeHtml(p)}"></option>`).join('')}
+      </datalist>`}
+  </div>
   <div class="form-field">
     <label>شهر</label>
-    <input required id="checkoutCity" placeholder="شهر">
+    <input required id="checkoutCity" placeholder="شهر را تایپ کنید..." list="checkoutCityList" autocomplete="off">
+    <datalist id="checkoutCityList">
+      ${(iranCitiesFor(savedProvince).length ? iranCitiesFor(savedProvince) : iranAllCities()).map(c=>`<option value="${escapeHtml(c)}"></option>`).join('')}
+    </datalist>
   </div>
-  <div class="form-field">
-    <label>کد پستی</label>
-    <input id="checkoutPostalCode" inputmode="numeric" placeholder="کد پستی">
-  </div>
+</div>`;
+})()}
+
+<div class="form-field">
+  <label>آدرس کامل</label>
+  <textarea required id="checkoutAddress" placeholder="خیابان، کوچه، پلاک، واحد..."></textarea>
+</div>
+
+<div class="form-field">
+  <label>کد پستی</label>
+  <input id="checkoutPostalCode" inputmode="numeric" placeholder="کد پستی">
 </div>
 
 <div class="form-field">
@@ -2036,8 +2349,23 @@ function pageCheckout(){
             </div>`;
           }).join('')}
           <div class="cart-sum-row" style="margin-top:16px"><span>جمع کل</span><span>${RIAL(subtotal)}</span></div>
-          <div class="cart-sum-row"><span>هزینه ارسال</span>${shippingLineHtml(subtotal)}</div>
-          <div class="cart-sum-row total"><span>مبلغ نهایی</span><span>${RIAL(total)}</span></div>
+          <div class="cart-sum-row"><span>هزینه ارسال</span><span id="checkoutShippingLine">${shippingLineHtml(subtotal, getSavedShippingProvince())}</span></div>
+          <div class="cart-sum-row" id="checkoutDiscountRow" style="${discount>0?'':'display:none'}"><span>تخفیف ${appliedCoupon?`(${escapeHtml(appliedCoupon.code)})`:''}</span><span id="checkoutDiscountLine" style="color:var(--ok)">${discount>0?'-'+RIAL(discount):''}</span></div>
+          <div class="cart-sum-row total"><span>مبلغ نهایی</span><span id="checkoutTotalLine">${RIAL(total)}</span></div>
+
+          <div style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)">
+            <label style="font-size:12.5px;color:var(--text-dim);display:block;margin-bottom:8px">کد تخفیف</label>
+            ${appliedCoupon ? `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--ok);font-size:13px">
+              <span style="color:var(--ok)">کد «${escapeHtml(appliedCoupon.code)}» اعمال شد ✓</span>
+              <button type="button" id="removeCouponBtn" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px">حذف</button>
+            </div>` : `
+            <div style="display:flex;gap:10px">
+              <input id="couponCodeInput" placeholder="کد تخفیف را وارد کنید" style="flex:1;text-transform:uppercase">
+              <button type="button" id="applyCouponBtn" class="btn btn-ghost" style="white-space:nowrap">اعمال کد</button>
+            </div>
+            <p id="couponMsg" style="font-size:12px;margin-top:8px;color:var(--danger)"></p>`}
+          </div>
         </div>
       </div>
     </div>
@@ -2051,7 +2379,8 @@ function pageOrderConfirmed(orderId){
     <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#b9975e" stroke-width="1.4" style="margin:0 auto 20px"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>
     <h1 class="serif" style="font-size:30px;margin-bottom:12px">سفارش شما ثبت شد</h1>
     <p style="color:var(--text-dim);margin-bottom:6px">شماره سفارش: <span style="color:var(--gold-light)">${orderId}</span></p>
-    ${order?`<p style="color:var(--text-dim);margin-bottom:30px">مبلغ نهایی: ${RIAL(order.total)}</p>`:''}
+    ${order?`<p style="color:var(--text-dim);margin-bottom:6px">مبلغ نهایی: ${RIAL(order.total)}</p>`:''}
+    ${order?.couponCode?`<p style="color:var(--ok);margin-bottom:30px;font-size:13px">کد تخفیف «${escapeHtml(order.couponCode)}» اعمال شد (${RIAL(order.discount||0)}- تومان)</p>`:(order?`<div style="margin-bottom:30px"></div>`:'')}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="#/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
       <a href="#/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
@@ -2159,17 +2488,22 @@ function bindPageUI(){
     const prod = findProduct(pid);
     const maxStock = prod ? prod.stock : 99;
     let qty = 1;
-    $('#qtyMinus').onclick = ()=>{ qty=Math.max(1,qty-1); qtyVal.textContent=qty; };
+    const shipRecalc = prod ? bindShippingEstimateWidget('pdShip', ()=> prod.price*qty) : null;
+    $('#qtyMinus').onclick = ()=>{ qty=Math.max(1,qty-1); qtyVal.textContent=qty; if(shipRecalc) shipRecalc(); };
     $('#qtyPlus').onclick = ()=>{
       if(qty>=maxStock){ showToast(`فقط ${maxStock} عدد از این محصول موجود است`); return; }
       qty=qty+1; qtyVal.textContent=qty;
+      if(shipRecalc) shipRecalc();
     };
-    $$('.size-opt').forEach(b=> b.onclick=()=> { $$('.size-opt').forEach(x=>x.classList.remove('active')); b.classList.add('active'); });
+    $$('.size-opt').forEach(b=> { if(b.classList.contains('out')) return; b.onclick=()=> { $$('.size-opt').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }; });
     $('#addToCartBtn').onclick = ()=>{
       const id = STATE.route.split('/product/')[1];
       const activeSize = $('.size-opt.active');
       addToCart(id, qty, activeSize?activeSize.dataset.size:null);
     };
+    $$('#pdFaq .pd-faq-item').forEach(item=>{
+      item.querySelector('.pd-faq-q').onclick = ()=> item.classList.toggle('open');
+    });
     if(prod) bindProductGallery(prod);
   }
 
@@ -2260,6 +2594,62 @@ if (messageInput && messageCounter) {
     };
   }
 
+  const checkoutProvinceEl = $('#checkoutProvince');
+  const checkoutCityEl = $('#checkoutCity');
+  const updateCheckoutShipping = ()=>{
+    const subtotal = cartSubtotal();
+    const province = checkoutProvinceEl ? checkoutProvinceEl.value.trim() : '';
+    const city = checkoutCityEl ? checkoutCityEl.value.trim() : '';
+    if(province) saveShippingProvince(province);
+    const shipping = computeShipping(subtotal, province, city);
+    const discount = computeDiscount(subtotal, appliedCoupon);
+    const shippingLineEl = $('#checkoutShippingLine');
+    const totalLineEl = $('#checkoutTotalLine');
+    const discountRowEl = $('#checkoutDiscountRow');
+    const discountLineEl = $('#checkoutDiscountLine');
+    if(shippingLineEl) shippingLineEl.innerHTML = shippingLineHtml(subtotal, province, city);
+    if(discountRowEl) discountRowEl.style.display = discount>0 ? '' : 'none';
+    if(discountLineEl) discountLineEl.textContent = discount>0 ? '-'+RIAL(discount) : '';
+    if(totalLineEl) totalLineEl.textContent = RIAL(Math.max(0, subtotal + shipping - discount));
+  };
+  // با انتخاب/تایپ استان، لیست پیشنهادی شهرها (datalist) همان استان را نشان می‌دهد
+  // تا کاربر با چند حرف اول سریع‌تر شهر خودش را پیدا و انتخاب کند.
+  const updateCityDatalist = ()=>{
+    const province = checkoutProvinceEl ? checkoutProvinceEl.value.trim() : '';
+    const cities = iranCitiesFor(province);
+    fillDatalist('checkoutCityList', cities.length ? cities : iranAllCities());
+  };
+  if(checkoutProvinceEl){
+    checkoutProvinceEl.onchange = ()=>{ updateCityDatalist(); updateCheckoutShipping(); };
+    if(checkoutProvinceEl.tagName === 'INPUT'){
+      checkoutProvinceEl.oninput = updateCityDatalist;
+    }
+    updateCityDatalist();
+  }
+  if(checkoutCityEl) checkoutCityEl.oninput = updateCheckoutShipping;
+
+  const applyCouponBtn = $('#applyCouponBtn');
+  if(applyCouponBtn) applyCouponBtn.onclick = ()=>{
+    const input = $('#couponCodeInput');
+    const msgEl = $('#couponMsg');
+    const code = input.value.trim();
+    if(!code){ if(msgEl) msgEl.textContent = 'کد تخفیف را وارد کنید'; return; }
+    const coupon = findCoupon(code);
+    if(!coupon){ if(msgEl) msgEl.textContent = 'کد تخفیف نامعتبر است'; return; }
+    appliedCoupon = coupon;
+    const app = $('#app');
+    if(app) app.innerHTML = pageCheckout();
+    bindPageUI();
+    showToast('کد تخفیف اعمال شد ✓');
+  };
+  const removeCouponBtn = $('#removeCouponBtn');
+  if(removeCouponBtn) removeCouponBtn.onclick = ()=>{
+    appliedCoupon = null;
+    const app = $('#app');
+    if(app) app.innerHTML = pageCheckout();
+    bindPageUI();
+  };
+
   const checkoutForm = $('#checkoutForm');
   if(checkoutForm) checkoutForm.onsubmit = async e=>{
     e.preventDefault();
@@ -2289,10 +2679,6 @@ if (messageInput && messageCounter) {
       navigate('/checkout');
       return;
     }
-const subtotal = cartSubtotal();
-const shipping = computeShipping(subtotal);
-const total = subtotal + shipping;
-
 // اطلاعات مشتری
 const customer = {
   firstName: $('#checkoutFirstName').value.trim(),
@@ -2300,10 +2686,19 @@ const customer = {
   name: `${$('#checkoutFirstName').value.trim()} ${$('#checkoutLastName').value.trim()}`.trim(),
   phone: $('#checkoutPhone').value.trim(),
   address: $('#checkoutAddress').value.trim(),
+  province: $('#checkoutProvince') ? $('#checkoutProvince').value.trim() : '',
   city: $('#checkoutCity').value.trim(),
   postalCode: $('#checkoutPostalCode').value.trim(),
   paymentMethod: $('#checkoutPaymentMethod').value
 };
+
+const subtotal = cartSubtotal();
+const shipping = computeShipping(subtotal, customer.province, customer.city);
+// re-validate the coupon right before placing the order — it may have been
+// deactivated or removed by the admin since the page loaded.
+const validCoupon = appliedCoupon ? findCoupon(appliedCoupon.code) : null;
+const discount = computeDiscount(subtotal, validCoupon);
+const total = Math.max(0, subtotal + shipping - discount);
 
 // ذخیره یک snapshot از محصولات در زمان ثبت سفارش
 // تا اگر بعداً محصول ویرایش یا حذف شد، سفارش قبلی همچنان جزئیاتش را داشته باشد.
@@ -2325,6 +2720,8 @@ const order = {
   items: orderItems,
   subtotal,
   shipping,
+  couponCode: validCoupon ? validCoupon.code : '',
+  discount,
   total,
   status: 'در حال پردازش',
   createdAt: new Date().toISOString(),
@@ -2332,6 +2729,7 @@ const order = {
 };
     STATE.orders.unshift(order);
     await insertOrderRemote(order);
+    appliedCoupon = null;
     // decrement stock
     for(const ci of order.items){
       const p = findProduct(ci.productId);
@@ -2365,22 +2763,116 @@ function cartSubtotal(){
 }
 function cartCount(){ return STATE.cart.reduce((s,ci)=>s+ci.qty,0); }
 
-/* ---------------- shipping helpers (uses admin ▸ توضیحات settings) ---------------- */
-function computeShipping(subtotal){
+/* ---------------- shipping helpers (uses admin ▸ ارسال سفارشات settings) ---------------- */
+// finds a matching province/city shipping rate entered by the admin. an exact
+// province+city match wins; otherwise a province-only rate (city left blank
+// by the admin) applies to every city in that province.
+function findShippingRate(province, city){
+  const rates = STATE.settings.shippingRates || [];
+  if(!province) return null;
+  const exact = rates.find(r=>r.province===province && r.city && r.city===city);
+  if(exact) return exact;
+  return rates.find(r=>r.province===province && !r.city) || null;
+}
+function shippingCostFor(province, city){
+  const rate = findShippingRate(province, city);
+  return rate ? rate.amount : (STATE.settings.shippingCost ?? 45000);
+}
+function computeShipping(subtotal, province, city){
   const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
-  const cost = STATE.settings.shippingCost ?? 45000;
-  return (subtotal >= threshold) ? 0 : cost;
+  if(subtotal >= threshold) return 0;
+  return shippingCostFor(province, city);
+}
+
+/* ---------------- coupon helpers ---------------- */
+let appliedCoupon = null; // {id, code, type, value} — reset on cart change / order placement
+function findCoupon(code){
+  const norm = (code||'').trim().toUpperCase();
+  if(!norm) return null;
+  return (STATE.settings.coupons||[]).find(c=> c.code.toUpperCase()===norm && c.active!==false) || null;
+}
+function computeDiscount(subtotal, coupon){
+  if(!coupon || subtotal<=0) return 0;
+  if(coupon.type==='fixed') return Math.min(coupon.value, subtotal);
+  return Math.round(subtotal * (coupon.value/100));
 }
 // renders the shipping-cost line; when the order qualifies for free shipping,
 // the normal cost is shown struck-through next to "رایگان".
-function shippingLineHtml(subtotal){
+function shippingLineHtml(subtotal, province, city){
   const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
-  const cost = STATE.settings.shippingCost ?? 45000;
+  const cost = shippingCostFor(province, city);
   const free = subtotal >= threshold;
   if(free && cost > 0){
     return `<span><s style="color:var(--text-faint);opacity:.7;margin-left:6px">${RIAL(cost)}</s><span style="color:var(--ok)">رایگان</span></span>`;
   }
   return `<span>${free ? 'رایگان' : RIAL(cost)}</span>`;
+}
+
+/* ---------------- shipping estimate widget (product page / cart) ----------------
+   Lets a customer see an approximate shipping cost by picking their province
+   BEFORE reaching checkout — e.g. on the product page or inside the cart drawer.
+   Remembers the last-picked province in localStorage so it carries over between
+   the product page, the cart drawer, and pre-fills the checkout form. */
+function getSavedShippingProvince(){
+  try{ return localStorage.getItem('wr-ship-province') || ''; }catch(e){ return ''; }
+}
+function saveShippingProvince(province){
+  try{
+    if(province) localStorage.setItem('wr-ship-province', province);
+    else localStorage.removeItem('wr-ship-province');
+  }catch(e){}
+}
+function shippingProvinceList(){
+  const rates = STATE.settings.shippingRates || [];
+  return [...new Set(rates.map(r=>r.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
+}
+// result line shown once a province is selected — mirrors shippingLineHtml's
+// free-shipping logic but labeled for a pre-checkout estimate context.
+function shippingEstimateResultHtml(province, subtotal){
+  if(!province) return '';
+  const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
+  const cost = shippingCostFor(province, '');
+  const free = subtotal >= threshold && subtotal > 0;
+  if(free && cost > 0){
+    return `هزینه ارسال به <b>${escapeHtml(province)}</b>: <s style="color:var(--text-faint);opacity:.7;margin-left:6px">${RIAL(cost)}</s><span style="color:var(--ok)">رایگان</span>`;
+  }
+  return `هزینه ارسال به <b>${escapeHtml(province)}</b>: <b style="color:var(--gold-light)">${free ? 'رایگان' : RIAL(cost)}</b>`;
+}
+// standalone widget markup (used on the product page). idPrefix must be unique
+// per instance on the page so multiple widgets can coexist without clashing ids.
+function shippingEstimateWidgetHtml(idPrefix){
+  const provinces = shippingProvinceList();
+  const saved = getSavedShippingProvince();
+  if(!provinces.length) return '';
+  return `
+  <div class="ship-estimate">
+    <div class="ship-estimate-head">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>
+      <span>تخمین هزینه ارسال</span>
+    </div>
+    <select id="${idPrefix}Select">
+      <option value="">استان خود را انتخاب کنید</option>
+      ${provinces.map(p=>`<option value="${escapeHtml(p)}" ${p===saved?'selected':''}>${escapeHtml(p)}</option>`).join('')}
+    </select>
+    <div class="ship-estimate-result" id="${idPrefix}Result">${saved ? shippingEstimateResultHtml(saved, cartSubtotal()) : ''}</div>
+  </div>`;
+}
+// binds a widget rendered by shippingEstimateWidgetHtml. extraFn (optional) returns
+// an extra amount (e.g. the product being viewed × its selected quantity) to add to
+// the current cart subtotal, so the free-shipping check reflects "if I buy this too".
+function bindShippingEstimateWidget(idPrefix, extraFn){
+  const select = $(`#${idPrefix}Select`);
+  const resultEl = $(`#${idPrefix}Result`);
+  if(!select || !resultEl) return;
+  const recalc = ()=>{
+    const province = select.value;
+    saveShippingProvince(province);
+    if(!province){ resultEl.innerHTML=''; return; }
+    const extra = extraFn ? extraFn() : 0;
+    resultEl.innerHTML = shippingEstimateResultHtml(province, cartSubtotal()+extra);
+  };
+  select.onchange = recalc;
+  return recalc;
 }
 
 async function addToCart(productId, qty=1, size=null){
@@ -2497,12 +2989,31 @@ function renderCart(){
   const shippingNote = subtotal>0 && remaining>0
     ? `<div class="cart-sum-row" style="font-size:11.5px;color:var(--text-faint)">تا ${RIAL(remaining)} دیگر خرید کنید تا ارسال رایگان شود</div>`
     : '';
+  const provinces = shippingProvinceList();
+  const savedProvince = getSavedShippingProvince();
+  const provinceRow = provinces.length ? `
+    <div class="cart-ship-row">
+      <label for="cartShipSelect">تخمین هزینه ارسال — استان</label>
+      <select id="cartShipSelect">
+        <option value="">انتخاب استان...</option>
+        ${provinces.map(p=>`<option value="${escapeHtml(p)}" ${p===savedProvince?'selected':''}>${escapeHtml(p)}</option>`).join('')}
+      </select>
+    </div>` : '';
   $('#cartFoot').innerHTML = `
+    ${provinceRow}
     <div class="cart-sum-row"><span>جمع جزء</span><span>${RIAL(subtotal)}</span></div>
-    <div class="cart-sum-row"><span>هزینه ارسال</span>${shippingLineHtml(subtotal)}</div>
+    <div class="cart-sum-row"><span>هزینه ارسال</span><span id="cartShippingLine">${shippingLineHtml(subtotal, savedProvince)}</span></div>
     ${shippingNote}
     <a href="#/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''} onclick="closeCartUI()">تکمیل خرید ‹</a>
   `;
+  const cartShipSelect = $('#cartShipSelect');
+  if(cartShipSelect){
+    cartShipSelect.onchange = ()=>{
+      saveShippingProvince(cartShipSelect.value);
+      const line = $('#cartShippingLine');
+      if(line) line.innerHTML = shippingLineHtml(cartSubtotal(), cartShipSelect.value);
+    };
+  }
 }
 window.closeCartUI = closeCart;
 
@@ -2510,6 +3021,7 @@ window.closeCartUI = closeCart;
    ADMIN PANEL
 ====================================================================== */
 let adminSection = 'dashboard';
+let adminProductCategoryFilter = 'all';
 let editingProductId = null;
 
 async function isAdminLoggedIn(){
@@ -2535,9 +3047,10 @@ async function renderAdmin(path){
   }
 
   if(path==='/admin/orders') adminSection='orders';
-  else if(path==='/admin/products' || path.startsWith('/admin/products')) adminSection='products';
+  else if(path==='/admin/products' || path.startsWith('/admin/products')){ adminSection='products'; adminProductCategoryFilter='all'; }
   else if(path==='/admin/settings'){ adminSection='settings'; pendingCategoriesInit=false; }
   else if(path==='/admin/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
+  else if(path==='/admin/content'){ adminSection='content'; pendingContentInit=false; pendingFaqInit=false; }
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
@@ -2676,10 +3189,11 @@ function adminShell(){
         <a href="#/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
         <a href="#/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
         <a href="#/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
-        <a href="#/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">توضیحات</a>
+        <a href="#/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
+        <a href="#/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminOrders()}
       </div>
     </div>
   </div>
@@ -2709,8 +3223,12 @@ function adminShell(){
           <div class="form-field"><label>قیمت قبل تخفیف (اختیاری)</label><input type="number" id="pCompareAt" min="0"></div>
         </div>
         <div class="form-row2">
-          <div class="form-field"><label>موجودی</label><input required type="number" id="pStock" min="0"></div>
-          <div class="form-field"><label>سایزها (با کاما جدا کنید)</label><input id="pSizes" placeholder="S,M,L"></div>
+          <div class="form-field"><label>موجودی کل</label><input required type="number" id="pStock" min="0"></div>
+        </div>
+        <div class="form-field">
+          <label>سایزها و تعداد موجودی هر سایز <span style="color:var(--text-faint);font-weight:400">(سایزی که تعدادش صفر شود به‌صورت کمرنگ و خط‌خورده نمایش داده می‌شود)</span></label>
+          <div id="sizeQtyRows"></div>
+          <button type="button" id="addSizeRowBtn" class="btn btn-ghost" style="margin-top:4px;padding:8px 16px;font-size:12.5px">+ افزودن سایز</button>
         </div>
         <div class="form-field"><label>توضیحات</label><textarea id="pDesc"></textarea></div>
         <button class="btn btn-solid btn-block" type="submit">ذخیره محصول</button>
@@ -2812,18 +3330,25 @@ function adminDashboard(){
 }
 
 function adminProducts(){
+  const cats = STATE.settings.categories||[];
+  const activeCat = adminProductCategoryFilter || 'all';
+  const list = activeCat==='all' ? STATE.products : STATE.products.filter(p=>p.category===activeCat);
   return `
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
     <h2 class="admin-title" style="margin:0">مدیریت محصولات</h2>
     <button class="btn btn-solid" id="addProductBtn">+ افزودن محصول جدید</button>
   </div>
+  <div class="chip-row" style="margin-bottom:18px">
+    <button type="button" class="chip admin-cat-chip ${activeCat==='all'?'active':''}" data-cat="all">همه (${STATE.products.length})</button>
+    ${cats.map(c=>`<button type="button" class="chip admin-cat-chip ${activeCat===c.slug?'active':''}" data-cat="${c.slug}">${escapeHtml(c.label)} (${STATE.products.filter(p=>p.category===c.slug).length})</button>`).join('')}
+  </div>
   <div class="table-wrap">
     <table class="admin-table">
       <thead><tr><th>تصویر</th><th>نام</th><th>دسته</th><th>قیمت</th><th>موجودی</th><th>وضعیت</th><th></th></tr></thead>
       <tbody>
-        ${STATE.products.map(p=>`
+        ${list.map(p=>`
         <tr>
-          <td>${p.image?`<img src="${p.image}">`:`<div style="width:44px;height:54px;background:#0d0d0e;border:1px solid var(--line)"></div>`}</td>
+          <td>${p.image?`<img src="${p.image}" loading="lazy" decoding="async">`:`<div style="width:44px;height:54px;background:#0d0d0e;border:1px solid var(--line)"></div>`}</td>
           <td style="color:var(--text)">${escapeHtml(p.name)}</td>
           <td>${catLabel(p.category)}</td>
           <td>${RIAL(p.price)}</td>
@@ -2833,7 +3358,7 @@ function adminProducts(){
             <button onclick="editProduct('${p.id}')">ویرایش</button>
             <button class="danger" onclick="deleteProduct('${p.id}')">حذف</button>
           </div></td>
-        </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-faint)">محصولی ثبت نشده است</td></tr>`}
+        </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-faint)">${activeCat==='all'?'محصولی ثبت نشده است':'محصولی در این دسته ثبت نشده است'}</td></tr>`}
       </tbody>
     </table>
   </div>`;
@@ -2856,7 +3381,7 @@ function adminOrders(){
 )}</td>
 
           <td>${o.items.reduce((s,i)=>s+i.qty,0)} قلم</td>
-          <td>${RIAL(o.total)}</td>
+          <td>${RIAL(o.total)}${o.couponCode?`<div style="font-size:11px;color:var(--ok);margin-top:3px">کد: ${escapeHtml(o.couponCode)} (${RIAL(o.discount||0)}-)</div>`:''}</td>
           <td>
             <select onchange="updateOrderStatus('${o.id}',this.value)" style="background:var(--bg-card);border:1px solid var(--line);color:var(--text);padding:5px 8px;font-size:12px">
               ${['در حال پردازش','ارسال شده','تحویل داده شده','لغو شده'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
@@ -2963,6 +3488,7 @@ function showOrderDetails(orderId){
 
       <p>نام: ${escapeHtml(customer.name || '-')}</p>
       <p>شماره همراه: ${escapeHtml(customer.phone || '-')}</p>
+      <p>استان: ${escapeHtml(customer.province || '-')}</p>
       <p>شهر: ${escapeHtml(customer.city || '-')}</p>
       <p>کد پستی: ${escapeHtml(customer.postalCode || '-')}</p>
       <p>آدرس: ${escapeHtml(customer.address || '-')}</p>
@@ -3154,6 +3680,104 @@ function adminSettings(){
   `;
 }
 
+function adminContent(){
+  const s = STATE.settings;
+  if(!pendingContentInit){
+    pendingContent = {
+      heroEyebrow: s.heroEyebrow ?? '',
+      heroTitle: s.heroTitle ?? '',
+      heroLede: s.heroLede ?? '',
+      heroCtaPrimary: s.heroCtaPrimary ?? '',
+      heroCtaSecondary: s.heroCtaSecondary ?? '',
+      footerTagline: s.footerTagline ?? '',
+      aboutEyebrow: s.aboutEyebrow ?? '',
+      aboutTitle: s.aboutTitle ?? '',
+      aboutHeading: s.aboutHeading ?? '',
+      aboutText: s.aboutText ?? ''
+    };
+    pendingAboutImage = s.aboutImage ?? '';
+    pendingContentInit = true;
+  }
+  if(!pendingFaqInit){
+    pendingFaq = (s.faqItems && s.faqItems.length) ? s.faqItems.map(it=>({...it})) : defaultFaqItems().map(it=>({...it}));
+    pendingFaqInit = true;
+  }
+  return `
+  <h2 class="admin-title">توضیحات</h2>
+
+  <div class="settings-card">
+    <h3 class="serif">نوشته‌های صفحه اصلی (Hero)</h3>
+    <p class="settings-desc">تمام متن‌های بخش اصلی صفحه نخست را از اینجا ویرایش یا حذف کنید. برای حذف یک متن، فیلد آن را خالی بگذارید.</p>
+    <div class="form-field"><label>عنوان کوچک بالای تیتر</label><input id="contHeroEyebrow" value="${escapeHtml(pendingContent.heroEyebrow)}"></div>
+    <div class="form-field"><label>تیتر اصلی (برای شکستن خط، Enter بزنید)</label><textarea id="contHeroTitle" style="min-height:70px">${escapeHtml(pendingContent.heroTitle)}</textarea></div>
+    <div class="form-field"><label>توضیح زیر تیتر</label><textarea id="contHeroLede">${escapeHtml(pendingContent.heroLede)}</textarea></div>
+    <div class="form-row2">
+      <div class="form-field"><label>متن دکمه اول</label><input id="contHeroCtaPrimary" value="${escapeHtml(pendingContent.heroCtaPrimary)}"></div>
+      <div class="form-field"><label>متن دکمه دوم</label><input id="contHeroCtaSecondary" value="${escapeHtml(pendingContent.heroCtaSecondary)}"></div>
+    </div>
+    <button type="button" class="btn btn-solid" id="saveHeroContentBtn">ذخیره نوشته‌های Hero</button>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">نوشته فوتر سایت</h3>
+    <p class="settings-desc">این متن زیر نام White Raven در فوتر (پایین همه صفحات) نمایش داده می‌شود و با ذخیره کردن، در همه‌جا به‌روز می‌شود. برای حذف، خالی بگذارید.</p>
+    <div class="form-field"><label>متن فوتر</label><textarea id="contFooterTagline">${escapeHtml(pendingContent.footerTagline)}</textarea></div>
+    <button type="button" class="btn btn-solid" id="saveFooterContentBtn">ذخیره نوشته فوتر</button>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">نوشته‌ها و عکس صفحه «درباره ما»</h3>
+    <p class="settings-desc">متن‌های صفحه درباره ما و تصویر کنار آن را ویرایش یا حذف کنید. هر پاراگراف را در یک خط جدید بنویسید.</p>
+    <div class="form-field"><label>عنوان کوچک بالای تیتر</label><input id="contAboutEyebrow" value="${escapeHtml(pendingContent.aboutEyebrow)}"></div>
+    <div class="form-field"><label>تیتر صفحه</label><input id="contAboutTitle" value="${escapeHtml(pendingContent.aboutTitle)}"></div>
+    <div class="form-field"><label>زیرعنوان (داستان برند)</label><input id="contAboutHeading" value="${escapeHtml(pendingContent.aboutHeading)}"></div>
+    <div class="form-field"><label>متن اصلی (هر پاراگراف در یک خط)</label><textarea id="contAboutText" style="min-height:160px">${escapeHtml(pendingContent.aboutText)}</textarea></div>
+    <div class="theme-asset-col" style="margin-top:6px">
+      <span class="theme-asset-label">تصویر بخش درباره ما</span>
+      <div class="logo-upload-row">
+        <div class="logo-upload-box" id="aboutImageBox" style="width:180px;height:180px">
+          ${pendingAboutImage ? `<img src="${pendingAboutImage}" alt="تصویر درباره ما" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+          <input type="file" accept="image/*" id="aboutImageInput">
+        </div>
+        ${pendingAboutImage ? `<button type="button" class="btn btn-ghost" id="removeAboutImageBtn" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+      </div>
+    </div>
+    <button type="button" class="btn btn-solid" id="saveAboutContentBtn" style="margin-top:14px">ذخیره نوشته‌های درباره ما</button>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">سوالات متداول (صفحه محصول)</h3>
+    <p class="settings-desc">این سوال و جواب‌ها در پایین هر صفحه محصول نمایش داده می‌شوند. می‌توانید سوال‌ها را ویرایش، حذف یا اضافه کنید و ترتیب آن‌ها را با دکمه‌های جابه‌جایی تغییر دهید.</p>
+    <div id="faqListBox">${faqListHtml()}</div>
+    <div class="settings-card" style="background:transparent;border:1px dashed var(--line);margin-top:16px">
+      <h4 style="font-size:13px;color:var(--text-dim);margin-bottom:10px">افزودن سوال جدید</h4>
+      <div class="form-field"><label>سوال</label><input id="newFaqQ" placeholder="مثلاً: آیا امکان تعویض سایز هست؟"></div>
+      <div class="form-field"><label>جواب</label><textarea id="newFaqA" placeholder="متن پاسخ..."></textarea></div>
+      <button type="button" class="btn btn-ghost" id="addFaqBtn">+ افزودن سوال</button>
+    </div>
+    <button type="button" class="btn btn-solid" id="saveFaqBtn" style="margin-top:14px">ذخیره سوالات متداول</button>
+  </div>
+  `;
+}
+
+function faqListHtml(){
+  if(!pendingFaq.length){
+    return `<p style="color:var(--text-faint);font-size:13px">هنوز سوالی ثبت نشده — یکی اضافه کنید.</p>`;
+  }
+  return `<div style="display:flex;flex-direction:column;gap:14px">
+    ${pendingFaq.map((it,i)=>`
+      <div class="faq-edit-row" data-idx="${i}" style="display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--line)">
+        <div class="form-field" style="margin:0"><label>سوال</label><input class="faq-edit-q" data-idx="${i}" value="${escapeHtml(it.q)}"></div>
+        <div class="form-field" style="margin:0"><label>جواب</label><textarea class="faq-edit-a" data-idx="${i}">${escapeHtml(it.a)}</textarea></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+          <button type="button" class="btn btn-ghost faq-edit-up" data-idx="${i}" ${i===0?'disabled':''} style="padding:6px 12px;font-size:11.5px">▲ بالا</button>
+          <button type="button" class="btn btn-ghost faq-edit-down" data-idx="${i}" ${i===pendingFaq.length-1?'disabled':''} style="padding:6px 12px;font-size:11.5px">▼ پایین</button>
+          <button type="button" class="btn btn-ghost faq-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف</button>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+
 function adminDescriptions(){
   const s = STATE.settings;
   if(!pendingDescriptionsInit){
@@ -3161,10 +3785,16 @@ function adminDescriptions(){
       freeShippingThreshold: s.freeShippingThreshold ?? 1000000,
       shippingCost: s.shippingCost ?? 45000
     };
+    pendingShippingRates = (s.shippingRates||[]).map(r=>({...r}));
+    editingShippingRateId = null;
+    previewPercentValue = 0;
+    previewPercentSign = 1;
+    pendingCoupons = (s.coupons||[]).map(c=>({...c}));
+    editingCouponId = null;
     pendingDescriptionsInit = true;
   }
   return `
-  <h2 class="admin-title">توضیحات</h2>
+  <h2 class="admin-title">ارسال سفارشات</h2>
 
   <div class="settings-card">
     <h3 class="serif">هزینه و ارسال رایگان</h3>
@@ -3182,7 +3812,366 @@ function adminDescriptions(){
     <p class="settings-desc" style="margin-top:-4px">مثال با مقادیر فعلی: اگر مشتری بیش از ${RIAL(pendingShipping.freeShippingThreshold)} خرید کند، به‌جای ${RIAL(pendingShipping.shippingCost)} هزینه ارسال، عبارت «رایگان» نمایش داده می‌شود.</p>
     <button type="button" class="btn btn-solid" id="saveShippingBtn" style="margin-top:6px">ذخیره</button>
   </div>
+
+  <div class="settings-card">
+    <h3 class="serif">هزینه ارسال بر اساس استان و شهر</h3>
+    <p class="settings-desc">برای هر استان (و در صورت نیاز، هر شهر) یک هزینه ارسال جداگانه ثبت کنید. نوشتن نام شهر اختیاری است — اگر شهر را خالی بگذارید، این مبلغ برای همهٔ شهرهای آن استان اعمال می‌شود. با وارد کردن استان و شهر توسط مشتری در صفحهٔ تسویه‌حساب، هزینهٔ ارسال به‌صورت خودکار همین‌جا محاسبه و نمایش داده می‌شود.</p>
+    <div class="form-row3">
+      <div class="form-field">
+        <label>نام استان</label>
+        <input id="newRateProvince" placeholder="مثلاً تهران">
+      </div>
+      <div class="form-field">
+        <label>نام شهر (اختیاری)</label>
+        <input id="newRateCity" placeholder="مثلاً کرج">
+      </div>
+      <div class="form-field">
+        <label>مبلغ ارسال (تومان)</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="newRateAmount" placeholder="مثلاً 60000">
+      </div>
+      <button type="button" class="btn btn-solid" id="addShippingRateBtn">+ افزودن</button>
+    </div>
+    <div id="shippingRateListBox" style="margin-top:18px">${shippingRateListHtml()}</div>
+
+    ${pendingShippingRates.length ? `
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)">
+      <p class="settings-desc" style="margin-top:0">می‌توانید همهٔ هزینه‌های ارسال ثبت‌شده در بالا را یک‌جا به‌صورت درصدی افزایش یا کاهش دهید.</p>
+      <div style="display:flex;align-items:end;gap:14px;flex-wrap:wrap">
+        <div class="form-field" style="margin-bottom:0;flex:1;min-width:180px">
+          <label>افزایش همهٔ مبالغ (درصد مثبت)</label>
+          <input type="number" min="0" step="1" id="percentIncreaseInput" placeholder="مثلاً 10">
+        </div>
+        <button type="button" class="btn btn-solid" id="percentIncreaseBtn">تایید افزایش</button>
+      </div>
+      <div style="display:flex;align-items:end;gap:14px;flex-wrap:wrap">
+        <div class="form-field" style="margin-bottom:0;flex:1;min-width:180px">
+          <label>کاهش همهٔ مبالغ (درصد منفی)</label>
+          <input type="number" min="0" step="1" id="percentDecreaseInput" placeholder="مثلاً 10">
+        </div>
+        <button type="button" class="btn btn-ghost" id="percentDecreaseBtn" style="color:var(--danger);border-color:var(--danger)">تایید کاهش</button>
+      </div>
+    </div>` : ''}
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">کدهای تخفیف (Coupon)</h3>
+    <p class="settings-desc">کد تخفیف بسازید تا مشتری بتواند آن را در صفحه تسویه‌حساب وارد کند. نوع تخفیف می‌تواند درصدی (مثلاً ۱۰٪) یا مبلغ ثابت (مثلاً ۵۰,۰۰۰ تومان) باشد. کدهای غیرفعال در تسویه‌حساب پذیرفته نمی‌شوند.</p>
+    <div class="form-row3">
+      <div class="form-field">
+        <label>کد تخفیف</label>
+        <input id="newCouponCode" placeholder="مثلاً WELCOME10" style="text-transform:uppercase">
+      </div>
+      <div class="form-field">
+        <label>نوع تخفیف</label>
+        <select id="newCouponType">
+          <option value="percent">درصدی (٪)</option>
+          <option value="fixed">مبلغ ثابت (تومان)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label id="newCouponValueLabel">مقدار (٪)</label>
+        <input type="number" inputmode="numeric" min="0" step="1" id="newCouponValue" placeholder="مثلاً 10">
+      </div>
+      <button type="button" class="btn btn-solid" id="addCouponBtn">+ افزودن</button>
+    </div>
+    <div id="couponListBox" style="margin-top:18px">${couponListHtml()}</div>
+  </div>
   `;
+}
+
+function couponListHtml(){
+  if(!pendingCoupons.length){
+    return `<p style="color:var(--text-faint);font-size:13px">هنوز کد تخفیفی ثبت نشده.</p>`;
+  }
+  return `<div style="display:flex;flex-direction:column;gap:12px">
+    ${pendingCoupons.map(c=>{
+      if(c.id===editingCouponId){
+        return `
+        <div class="coupon-row" data-id="${c.id}" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--gold-dim)">
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>کد</label><input class="coupon-edit-code" data-id="${c.id}" value="${escapeHtml(c.code)}" style="text-transform:uppercase"></div>
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>نوع</label>
+            <select class="coupon-edit-type" data-id="${c.id}">
+              <option value="percent" ${c.type==='percent'?'selected':''}>درصدی (٪)</option>
+              <option value="fixed" ${c.type==='fixed'?'selected':''}>مبلغ ثابت (تومان)</option>
+            </select>
+          </div>
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>مقدار</label><input type="number" min="0" step="1" class="coupon-edit-value" data-id="${c.id}" value="${c.value}"></div>
+          <button type="button" class="btn btn-solid coupon-save" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">ذخیره</button>
+          <button type="button" class="btn btn-ghost coupon-cancel" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">انصراف</button>
+        </div>`;
+      }
+      return `
+      <div class="coupon-row" data-id="${c.id}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px;border:1px solid var(--line)">
+        <div style="flex:1;min-width:160px">
+          <div style="font-size:14px;letter-spacing:.04em">${escapeHtml(c.code)} ${c.active===false ? '<span style="color:var(--text-faint);font-size:11.5px">(غیرفعال)</span>' : ''}</div>
+          <div style="font-size:12.5px;color:var(--gold-light);margin-top:4px">${c.type==='fixed' ? RIAL(c.value)+' تخفیف' : c.value+'٪ تخفیف'}</div>
+        </div>
+        <button type="button" class="btn btn-ghost coupon-toggle" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px">${c.active===false?'فعال‌سازی':'غیرفعال‌سازی'}</button>
+        <button type="button" class="btn btn-ghost coupon-edit" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px">ویرایش</button>
+        <button type="button" class="btn btn-ghost coupon-delete" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+async function persistCoupons(){
+  const newSettings = {...STATE.settings, coupons: pendingCoupons};
+  STATE.settings = newSettings;
+  await withLoading(()=>saveSettingsRemote(newSettings));
+}
+
+function bindCouponsUI(){
+  const addBtn = $('#addCouponBtn');
+  if(!addBtn) return; // not on the descriptions page
+
+  const typeSelect = $('#newCouponType');
+  const valueLabel = $('#newCouponValueLabel');
+  if(typeSelect) typeSelect.onchange = ()=>{
+    valueLabel.textContent = typeSelect.value==='fixed' ? 'مقدار (تومان)' : 'مقدار (٪)';
+  };
+
+  addBtn.onclick = async ()=>{
+    const codeInput = $('#newCouponCode');
+    const valueInput = $('#newCouponValue');
+    const code = codeInput.value.trim().toUpperCase();
+    const type = typeSelect ? typeSelect.value : 'percent';
+    const value = Math.max(0, Number(valueInput.value) || 0);
+    if(!code){ showToast('کد تخفیف را وارد کنید'); return; }
+    if(pendingCoupons.some(c=>c.code.toUpperCase()===code)){ showToast('این کد قبلاً ثبت شده'); return; }
+    if(!valueInput.value || value<=0){ showToast('مقدار تخفیف را وارد کنید'); return; }
+    if(type==='percent' && value>100){ showToast('درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد'); return; }
+    pendingCoupons.push({id:uid(), code, type, value, active:true});
+    await persistCoupons();
+    showToast('کد تخفیف ثبت شد ✓');
+    codeInput.value=''; valueInput.value='';
+    $('#couponListBox').innerHTML = couponListHtml();
+    bindCouponRowEvents();
+    codeInput.focus();
+  };
+
+  bindCouponRowEvents();
+}
+
+function bindCouponRowEvents(){
+  $$('.coupon-edit').forEach(btn=>{
+    btn.onclick = ()=>{
+      editingCouponId = btn.dataset.id;
+      $('#couponListBox').innerHTML = couponListHtml();
+      bindCouponRowEvents();
+    };
+  });
+  $$('.coupon-cancel').forEach(btn=>{
+    btn.onclick = ()=>{
+      editingCouponId = null;
+      $('#couponListBox').innerHTML = couponListHtml();
+      bindCouponRowEvents();
+    };
+  });
+  $$('.coupon-delete').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.dataset.id;
+      const c = pendingCoupons.find(x=>x.id===id);
+      if(!confirm(`کد تخفیف «${c?.code||''}» حذف شود؟`)) return;
+      pendingCoupons = pendingCoupons.filter(x=>x.id!==id);
+      await persistCoupons();
+      showToast('حذف شد');
+      $('#couponListBox').innerHTML = couponListHtml();
+      bindCouponRowEvents();
+    };
+  });
+  $$('.coupon-toggle').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.dataset.id;
+      const c = pendingCoupons.find(x=>x.id===id);
+      if(c) c.active = c.active===false ? true : false;
+      await persistCoupons();
+      $('#couponListBox').innerHTML = couponListHtml();
+      bindCouponRowEvents();
+    };
+  });
+  $$('.coupon-save').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.dataset.id;
+      const row = document.querySelector(`.coupon-row[data-id="${id}"]`);
+      const code = row.querySelector('.coupon-edit-code').value.trim().toUpperCase();
+      const type = row.querySelector('.coupon-edit-type').value;
+      const value = Math.max(0, Number(row.querySelector('.coupon-edit-value').value) || 0);
+      if(!code){ showToast('کد تخفیف را وارد کنید'); return; }
+      if(pendingCoupons.some(c=>c.id!==id && c.code.toUpperCase()===code)){ showToast('این کد قبلاً ثبت شده'); return; }
+      if(type==='percent' && value>100){ showToast('درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد'); return; }
+      const c = pendingCoupons.find(x=>x.id===id);
+      if(c){ c.code=code; c.type=type; c.value=value; }
+      editingCouponId = null;
+      await persistCoupons();
+      showToast('ذخیره شد ✓');
+      $('#couponListBox').innerHTML = couponListHtml();
+      bindCouponRowEvents();
+    };
+  });
+}
+
+function shippingRateListHtml(){
+  if(!pendingShippingRates.length){
+    return `<p style="color:var(--text-faint);font-size:13px">هنوز هزینه ارسالی برای هیچ استانی ثبت نشده.</p>`;
+  }
+  return `<div style="display:flex;flex-direction:column;gap:12px">
+    ${pendingShippingRates.map(r=>{
+      if(r.id===editingShippingRateId){
+        return `
+        <div class="shipping-rate-row" data-id="${r.id}" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--gold-dim)">
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>استان</label><input class="rate-edit-province" data-id="${r.id}" value="${escapeHtml(r.province)}"></div>
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>شهر (اختیاری)</label><input class="rate-edit-city" data-id="${r.id}" value="${escapeHtml(r.city||'')}"></div>
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>مبلغ (تومان)</label><input type="number" min="0" step="1000" class="rate-edit-amount" data-id="${r.id}" value="${r.amount}"></div>
+          <button type="button" class="btn btn-solid rate-save" data-id="${r.id}" style="padding:9px 16px;font-size:12.5px">ذخیره</button>
+          <button type="button" class="btn btn-ghost rate-cancel" data-id="${r.id}" style="padding:9px 16px;font-size:12.5px">انصراف</button>
+        </div>`;
+      }
+      return `
+      <div class="shipping-rate-row" data-id="${r.id}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px;border:1px solid var(--line)">
+        <div style="flex:1;min-width:160px">
+          <div style="font-size:14px">${escapeHtml(r.province)}${r.city ? ` — ${escapeHtml(r.city)}` : ' <span style="color:var(--text-faint);font-size:12px">(همه شهرها)</span>'}</div>
+          <div style="font-size:12.5px;color:var(--gold-light);margin-top:4px">${RIAL(r.amount)}${previewPercentValue ? `<span style="color:var(--text-faint);margin-right:10px">◂ بعد از اعمال: ${RIAL(previewAmount(r.amount))}</span>` : ''}</div>
+        </div>
+        <button type="button" class="btn btn-ghost rate-edit" data-id="${r.id}" style="padding:6px 12px;font-size:11.5px">ویرایش</button>
+        <button type="button" class="btn btn-ghost rate-delete" data-id="${r.id}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function previewAmount(amount){
+  if(!previewPercentValue) return amount;
+  const delta = amount * (previewPercentValue/100) * previewPercentSign;
+  return Math.max(0, Math.round(amount + delta));
+}
+
+async function persistShippingRates(){
+  const newSettings = {...STATE.settings, shippingRates: pendingShippingRates};
+  STATE.settings = newSettings;
+  await withLoading(()=>saveSettingsRemote(newSettings));
+}
+
+function bindShippingRatesUI(){
+  const addBtn = $('#addShippingRateBtn');
+  if(!addBtn) return; // not on the descriptions page
+
+  addBtn.onclick = async ()=>{
+    const provinceInput = $('#newRateProvince');
+    const cityInput = $('#newRateCity');
+    const amountInput = $('#newRateAmount');
+    const province = provinceInput.value.trim();
+    const city = cityInput.value.trim();
+    const amount = Math.max(0, Number(amountInput.value) || 0);
+    if(!province){ showToast('نام استان را وارد کنید'); return; }
+    if(!amountInput.value){ showToast('مبلغ ارسال را وارد کنید'); return; }
+    pendingShippingRates.push({id:uid(), province, city, amount});
+    await persistShippingRates();
+    showToast('هزینه ارسال ثبت شد ✓');
+    provinceInput.value = ''; cityInput.value = ''; amountInput.value = '';
+    $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+    bindShippingRateRowEvents();
+    provinceInput.focus();
+  };
+
+  bindShippingRateRowEvents();
+
+  const incInput = $('#percentIncreaseInput');
+  const decInput = $('#percentDecreaseInput');
+  const incBtn = $('#percentIncreaseBtn');
+  const decBtn = $('#percentDecreaseBtn');
+
+  if(incInput) incInput.oninput = ()=>{
+    const v = Number(incInput.value);
+    if(incInput.value && v>0){
+      if(decInput) decInput.value = '';
+      previewPercentValue = v; previewPercentSign = 1;
+    } else if(!incInput.value){
+      previewPercentValue = 0;
+    }
+    $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+    bindShippingRateRowEvents();
+  };
+  if(decInput) decInput.oninput = ()=>{
+    const v = Number(decInput.value);
+    if(decInput.value && v>0){
+      if(incInput) incInput.value = '';
+      previewPercentValue = v; previewPercentSign = -1;
+    } else if(!decInput.value){
+      previewPercentValue = 0;
+    }
+    $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+    bindShippingRateRowEvents();
+  };
+  if(incBtn) incBtn.onclick = async ()=>{
+    const v = Number(incInput.value);
+    if(!incInput.value || v<=0){ showToast('درصد افزایش را وارد کنید'); return; }
+    pendingShippingRates.forEach(r=>{ r.amount = previewAmount(r.amount); });
+    previewPercentValue = 0;
+    if(incInput) incInput.value = '';
+    await persistShippingRates();
+    showToast('هزینه‌های ارسال افزایش یافت ✓');
+    $('#adminMain').innerHTML = adminDescriptions();
+    pendingDescriptionsInit = true;
+    bindDescriptionsUI();
+  };
+  if(decBtn) decBtn.onclick = async ()=>{
+    const v = Number(decInput.value);
+    if(!decInput.value || v<=0){ showToast('درصد کاهش را وارد کنید'); return; }
+    pendingShippingRates.forEach(r=>{ r.amount = previewAmount(r.amount); });
+    previewPercentValue = 0;
+    if(decInput) decInput.value = '';
+    await persistShippingRates();
+    showToast('هزینه‌های ارسال کاهش یافت ✓');
+    $('#adminMain').innerHTML = adminDescriptions();
+    pendingDescriptionsInit = true;
+    bindDescriptionsUI();
+  };
+}
+
+function bindShippingRateRowEvents(){
+  $$('.rate-edit').forEach(btn=>{
+    btn.onclick = ()=>{
+      editingShippingRateId = btn.dataset.id;
+      $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+      bindShippingRateRowEvents();
+    };
+  });
+  $$('.rate-cancel').forEach(btn=>{
+    btn.onclick = ()=>{
+      editingShippingRateId = null;
+      $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+      bindShippingRateRowEvents();
+    };
+  });
+  $$('.rate-delete').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.dataset.id;
+      const r = pendingShippingRates.find(x=>x.id===id);
+      if(!confirm(`هزینه ارسال «${(r?.province||'')}${r?.city?' — '+r.city:''}» حذف شود؟`)) return;
+      pendingShippingRates = pendingShippingRates.filter(x=>x.id!==id);
+      await persistShippingRates();
+      showToast('حذف شد');
+      $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+      bindShippingRateRowEvents();
+    };
+  });
+  $$('.rate-save').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.dataset.id;
+      const row = document.querySelector(`.shipping-rate-row[data-id="${id}"]`);
+      const province = row.querySelector('.rate-edit-province').value.trim();
+      const city = row.querySelector('.rate-edit-city').value.trim();
+      const amount = Math.max(0, Number(row.querySelector('.rate-edit-amount').value) || 0);
+      if(!province){ showToast('نام استان را وارد کنید'); return; }
+      const r = pendingShippingRates.find(x=>x.id===id);
+      if(r){ r.province = province; r.city = city; r.amount = amount; }
+      editingShippingRateId = null;
+      await persistShippingRates();
+      showToast('ذخیره شد ✓');
+      $('#shippingRateListBox').innerHTML = shippingRateListHtml();
+      bindShippingRateRowEvents();
+    };
+  });
 }
 
 function bindAdminShell(){
@@ -3210,6 +4199,14 @@ function bindAdminShell(){
   const addBtn = $('#addProductBtn');
   if(addBtn) addBtn.onclick = ()=> openProductModal(null);
 
+  $$('.admin-cat-chip').forEach(chip=>{
+    chip.onclick = ()=>{
+      adminProductCategoryFilter = chip.dataset.cat;
+      $('#adminMain').innerHTML = adminProducts();
+      bindAdminShell();
+    };
+  });
+
   const modalOverlay = $('#productModalOverlay');
   const closeModalBtn = $('#modalCloseBtn');
   if(closeModalBtn) closeModalBtn.onclick = ()=> modalOverlay.classList.remove('open');
@@ -3217,6 +4214,7 @@ function bindAdminShell(){
 
   const imgInput = $('#productImageInput');
   if(imgInput) bindMultiUploadInput();
+  bindSizeQtyUI();
 
   const pForm = $('#productForm');
   if(pForm){
@@ -3256,7 +4254,7 @@ function bindAdminShell(){
     price: Number($('#pPrice').value)||0,
     compareAt: Number($('#pCompareAt').value)||0,
     stock: Number($('#pStock').value)||0,
-    sizes: $('#pSizes').value.split(',').map(s=>s.trim()).filter(Boolean),
+    sizes: readSizeQtyRows(),
     desc: $('#pDesc').value.trim(),
     images: editingImages.slice(),
     image: editingImages[0] || ''
@@ -3296,8 +4294,37 @@ function bindAdminShell(){
 
   bindAdminSettingsUI();
   bindDescriptionsUI();
+  bindAdminContentUI();
 }
 
+let editingSizes = [];
+function renderSizeQtyRows(){
+  const wrap = $('#sizeQtyRows');
+  if(!wrap) return;
+  wrap.innerHTML = editingSizes.map((s,i)=>`
+    <div class="size-qty-row" data-i="${i}">
+      <input class="sq-name" placeholder="سایز (مثلاً M)" data-i="${i}" data-field="size" value="${escapeHtml(s.size||'')}">
+      <input class="sq-qty" type="number" min="0" placeholder="تعداد" data-i="${i}" data-field="qty" value="${s.qty ?? 0}">
+      <button type="button" class="sq-remove" data-i="${i}" title="حذف">✕</button>
+    </div>`).join('');
+  $$('#sizeQtyRows .sq-name, #sizeQtyRows .sq-qty').forEach(inp=>{
+    inp.oninput = ()=>{
+      const i = Number(inp.dataset.i);
+      const field = inp.dataset.field;
+      editingSizes[i][field] = field==='qty' ? Number(inp.value)||0 : inp.value;
+    };
+  });
+  $$('#sizeQtyRows .sq-remove').forEach(btn=>{
+    btn.onclick = ()=>{ editingSizes.splice(Number(btn.dataset.i),1); renderSizeQtyRows(); };
+  });
+}
+function readSizeQtyRows(){
+  return editingSizes.map(s=>({size:(s.size||'').trim(), qty:Number(s.qty)||0})).filter(s=>s.size);
+}
+function bindSizeQtyUI(){
+  const addBtn = $('#addSizeRowBtn');
+  if(addBtn) addBtn.onclick = ()=>{ editingSizes.push({size:'', qty:0}); renderSizeQtyRows(); };
+}
 let editingImages = [];
 function renderMultiUploadGrid(){
   const grid = $('#multiUploadGrid');
@@ -3433,7 +4460,18 @@ let pendingHeroImage = {Dark:'', Light:'', DarkMobile:'', LightMobile:''};
 let pendingCategories = [];
 let pendingCategoriesInit = false;
 let pendingDescriptionsInit = false;
+let pendingContent = {};
+let pendingContentInit = false;
+let pendingAboutImage = '';
+let pendingFaq = [];
+let pendingFaqInit = false;
 let pendingShipping = {freeShippingThreshold:1000000, shippingCost:45000};
+let pendingShippingRates = [];
+let editingShippingRateId = null;
+let previewPercentValue = 0;
+let previewPercentSign = 1;
+let pendingCoupons = [];
+let editingCouponId = null;
 
 function bindCategoryRowEvents(){
   $$('.cat-edit-name').forEach(inp=>{
@@ -3484,6 +4522,9 @@ function bindCategoryRowEvents(){
 }
 
 function bindDescriptionsUI(){
+  bindShippingRatesUI();
+  bindCouponsUI();
+
   const saveShippingBtn = $('#saveShippingBtn');
   if(!saveShippingBtn) return; // not on the descriptions page
 
@@ -3500,6 +4541,150 @@ function bindDescriptionsUI(){
     showToast('توضیحات ذخیره شد ✓');
     $('#adminMain').innerHTML = adminDescriptions();
     bindDescriptionsUI();
+  };
+}
+
+function bindAdminContentUI(){
+  const heroBtn = $('#saveHeroContentBtn');
+  if(!heroBtn) return; // not on the content page
+
+  heroBtn.onclick = async ()=>{
+    pendingContent.heroEyebrow = $('#contHeroEyebrow').value;
+    pendingContent.heroTitle = $('#contHeroTitle').value;
+    pendingContent.heroLede = $('#contHeroLede').value;
+    pendingContent.heroCtaPrimary = $('#contHeroCtaPrimary').value;
+    pendingContent.heroCtaSecondary = $('#contHeroCtaSecondary').value;
+    const newSettings = {...STATE.settings,
+      heroEyebrow: pendingContent.heroEyebrow,
+      heroTitle: pendingContent.heroTitle,
+      heroLede: pendingContent.heroLede,
+      heroCtaPrimary: pendingContent.heroCtaPrimary,
+      heroCtaSecondary: pendingContent.heroCtaSecondary
+    };
+    STATE.settings = newSettings;
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('نوشته‌های Hero ذخیره شد ✓');
+  };
+
+  const footerBtn = $('#saveFooterContentBtn');
+  if(footerBtn) footerBtn.onclick = async ()=>{
+    pendingContent.footerTagline = $('#contFooterTagline').value;
+    const newSettings = {...STATE.settings, footerTagline: pendingContent.footerTagline};
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('نوشته فوتر ذخیره شد ✓');
+  };
+
+  const aboutInput = $('#aboutImageInput');
+  if(aboutInput) aboutInput.onchange = async ()=>{
+    const file = aboutInput.files[0];
+    if(!file) return;
+    const box = $('#aboutImageBox');
+    try{
+      aboutInput.disabled = true;
+      showLoading();
+      const url = await uploadSettingImage(file, 'about-image');
+      pendingAboutImage = url;
+      $('#adminMain').innerHTML = adminContent();
+      bindAdminContentUI();
+    }catch(error){
+      console.error('About image upload error:', error);
+      showToast('آپلود تصویر انجام نشد');
+    }finally{
+      hideLoading();
+    }
+  };
+
+  const removeAboutBtn = $('#removeAboutImageBtn');
+  if(removeAboutBtn) removeAboutBtn.onclick = ()=>{
+    pendingAboutImage = '';
+    $('#adminMain').innerHTML = adminContent();
+    bindAdminContentUI();
+  };
+
+  const aboutBtn = $('#saveAboutContentBtn');
+  if(aboutBtn) aboutBtn.onclick = async ()=>{
+    pendingContent.aboutEyebrow = $('#contAboutEyebrow').value;
+    pendingContent.aboutTitle = $('#contAboutTitle').value;
+    pendingContent.aboutHeading = $('#contAboutHeading').value;
+    pendingContent.aboutText = $('#contAboutText').value;
+    const newSettings = {...STATE.settings,
+      aboutEyebrow: pendingContent.aboutEyebrow,
+      aboutTitle: pendingContent.aboutTitle,
+      aboutHeading: pendingContent.aboutHeading,
+      aboutText: pendingContent.aboutText,
+      aboutImage: pendingAboutImage
+    };
+    STATE.settings = newSettings;
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('نوشته‌های درباره ما ذخیره شد ✓');
+  };
+
+  bindFaqUI();
+}
+
+function refreshFaqListBox(){
+  const box = $('#faqListBox');
+  if(box) box.innerHTML = faqListHtml();
+  bindFaqUI();
+}
+
+function bindFaqUI(){
+  $$('.faq-edit-q').forEach(inp=>{
+    inp.oninput = ()=>{ pendingFaq[Number(inp.dataset.idx)].q = inp.value; };
+  });
+  $$('.faq-edit-a').forEach(ta=>{
+    ta.oninput = ()=>{ pendingFaq[Number(ta.dataset.idx)].a = ta.value; };
+  });
+  $$('.faq-edit-delete').forEach(btn=>{
+    btn.onclick = ()=>{
+      pendingFaq.splice(Number(btn.dataset.idx),1);
+      refreshFaqListBox();
+    };
+  });
+  $$('.faq-edit-up').forEach(btn=>{
+    btn.onclick = ()=>{
+      const i = Number(btn.dataset.idx);
+      if(i<=0) return;
+      [pendingFaq[i-1], pendingFaq[i]] = [pendingFaq[i], pendingFaq[i-1]];
+      refreshFaqListBox();
+    };
+  });
+  $$('.faq-edit-down').forEach(btn=>{
+    btn.onclick = ()=>{
+      const i = Number(btn.dataset.idx);
+      if(i>=pendingFaq.length-1) return;
+      [pendingFaq[i+1], pendingFaq[i]] = [pendingFaq[i], pendingFaq[i+1]];
+      refreshFaqListBox();
+    };
+  });
+
+  const addBtn = $('#addFaqBtn');
+  if(addBtn) addBtn.onclick = ()=>{
+    const qInp = $('#newFaqQ');
+    const aInp = $('#newFaqA');
+    const q = qInp.value.trim();
+    const a = aInp.value.trim();
+    if(!q || !a){
+      showToast('سوال و جواب را کامل وارد کنید');
+      return;
+    }
+    pendingFaq.push({q, a});
+    qInp.value = '';
+    aInp.value = '';
+    refreshFaqListBox();
+  };
+
+  const saveBtn = $('#saveFaqBtn');
+  if(saveBtn) saveBtn.onclick = async ()=>{
+    const cleaned = pendingFaq.map(it=>({q:(it.q||'').trim(), a:(it.a||'').trim()})).filter(it=>it.q && it.a);
+    pendingFaq = cleaned;
+    const newSettings = {...STATE.settings, faqItems: cleaned};
+    STATE.settings = newSettings;
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('سوالات متداول ذخیره شد ✓');
+    refreshFaqListBox();
   };
 }
 
@@ -3637,8 +4822,9 @@ function openProductModal(id){
   $('#pPrice').value = p?.price || '';
   $('#pCompareAt').value = p?.compareAt || '';
   $('#pStock').value = p?.stock ?? '';
-  $('#pSizes').value = p?.sizes?.join(',') || '';
   $('#pDesc').value = p?.desc || '';
+  editingSizes = p?.sizes?.length ? p.sizes.map(s=> typeof s==='string' ? {size:s, qty:0} : {size:s.size, qty:s.qty ?? 0}) : [];
+  renderSizeQtyRows();
   editingImages = p ? normalizeImages(p).slice() : [];
   renderMultiUploadGrid();
   $('#productModalOverlay').classList.add('open');
