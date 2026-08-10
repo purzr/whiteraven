@@ -84,7 +84,7 @@ html[data-theme="light"] .raven-mark path{fill:#1c1a16}
 
 *, *::before, *::after{transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%}
 body{
   background:var(--bg);
   color:var(--text);
@@ -216,6 +216,14 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
   width:17px;height:17px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
 }
+@keyframes cartBump{
+  0%{transform:scale(1)}
+  30%{transform:scale(1.5)}
+  55%{transform:scale(.9)}
+  100%{transform:scale(1)}
+}
+.icon-btn.bump svg{animation:cartBump .45s cubic-bezier(.4,0,.2,1)}
+.cart-badge.bump{animation:cartBump .45s cubic-bezier(.4,0,.2,1)}
 .hamburger{display:none}
 @media(max-width:900px){
   nav.main-nav{display:none}
@@ -318,6 +326,7 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 /* ===== Section heading ===== */
 .section{padding:96px 0}
 .section-head{text-align:center;margin-bottom:56px}
+.section-head .eyebrow{display:block;margin-bottom:12px}
 .section-head h2{font-family:var(--font-heading);font-size:calc(38px * var(--scale-heading));font-weight:600;background:linear-gradient(90deg,var(--text),var(--gold-light) 55%,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
 .section-head .divider{margin:16px auto}
 
@@ -408,6 +417,7 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 /* ===== Product detail ===== */
 .pd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:flex-start}
 @media(max-width:860px){.pd-wrap{grid-template-columns:1fr;gap:30px}}
+@media(min-width:861px){.pd-wrap>.pd-gallery-col{position:sticky;top:104px}}
 .pd-img{aspect-ratio:1/1;background:#0d0d0e;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .pd-img img{width:100%;height:100%;object-fit:cover}
 
@@ -432,11 +442,11 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .pd-gallery-hint{position:absolute;bottom:14px;left:14px;z-index:3;background:rgba(10,10,11,.55);color:var(--text-dim);font-size:10.5px;padding:5px 10px;border-radius:20px;letter-spacing:.03em;pointer-events:none}
 
 .pd-info .cat-tag{font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase}
-.pd-info h1{font-family:var(--font-product);font-size:calc(38px * var(--scale-product));margin:10px 0 14px}
-.pd-price{display:flex;align-items:baseline;gap:12px;margin-bottom:22px;font-family:var(--font-product)}
-.pd-price .now{font-size:calc(26px * var(--scale-product));color:var(--gold-light);font-weight:600}
-.pd-price .was{color:var(--text-faint);text-decoration:line-through;font-size:calc(15px * var(--scale-product))}
-.pd-desc{color:var(--text-dim);font-family:var(--font-product);font-size:calc(14.5px * var(--scale-product));margin-bottom:26px;line-height:1.9}
+.pd-info h1{font-family:var(--font-product);font-size:calc(32px * var(--scale-product));margin:8px 0 12px;line-height:1.25}
+.pd-price{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;font-family:var(--font-product)}
+.pd-price .now{font-size:calc(24px * var(--scale-product));color:var(--gold-light);font-weight:600}
+.pd-price .was{color:var(--text-faint);text-decoration:line-through;font-size:calc(14px * var(--scale-product))}
+.pd-desc{color:var(--text-dim);font-family:var(--font-product);font-size:calc(14px * var(--scale-product));margin-bottom:20px;line-height:1.8}
 
 /* ===== lightbox (click-to-zoom viewer) ===== */
 .lightbox-overlay{position:fixed;inset:0;background:rgba(6,6,7,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;align-items:center;justify-content:center}
@@ -455,11 +465,11 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .lightbox-arrow.prev{right:18px}
 .lightbox-hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:var(--text-faint);font-size:11.5px;letter-spacing:.05em;z-index:2}
 @media(max-width:640px){.lightbox-arrow{width:38px;height:38px}}
-.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
 .qty-box{display:flex;align-items:center;border:1px solid var(--line)}
 .qty-box button{width:38px;height:40px}
 .qty-box span{width:40px;text-align:center;font-size:calc(14px * var(--scale-body))}
-.size-row{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
+.size-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .size-opt{width:44px;height:40px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:calc(13px * var(--scale-body));transition:.2s}
 .size-opt.active,.size-opt:hover{border-color:var(--gold);color:var(--gold-light)}
 .size-opt.out{opacity:.35;color:var(--text-faint);text-decoration:line-through;cursor:not-allowed;pointer-events:none;border-color:var(--line);background:none}
@@ -468,17 +478,17 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .size-qty-row input.sq-name{width:90px}
 .size-qty-row input.sq-qty{width:80px}
 .size-qty-row .sq-remove{width:32px;height:32px;flex:none;border:1px solid var(--line);color:var(--text-faint);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;background:none}
-.pd-meta{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
+.pd-meta{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
 
 /* ===== نشان‌های اطمینان کنار دکمه خرید (اصالت کالا / گارانتی بازگشت) ===== */
-.pd-trust-badges{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.pd-trust-badges{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
 .pd-trust-badge{display:flex;align-items:center;gap:8px;flex:1;min-width:150px;padding:10px 12px;border:1px solid var(--line);background:var(--bg-card);border-radius:var(--radius)}
 .pd-trust-badge svg{flex:none;color:var(--gold)}
 .pd-trust-badge span{font-size:11.5px;line-height:1.5;color:var(--text-dim)}
 @media(max-width:480px){.pd-trust-badge{min-width:100%}}
 
 /* ===== سوالات متداول محصول (FAQ) ===== */
-.pd-faq{margin-top:28px;border-top:1px solid var(--line);padding-top:22px}
+.pd-faq{margin-top:20px;border-top:1px solid var(--line);padding-top:18px}
 .pd-faq-title{font-size:13px;color:var(--text-dim);letter-spacing:.03em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .pd-faq-item{border-bottom:1px solid var(--line)}
 .pd-faq-item:first-of-type{border-top:1px solid var(--line)}
@@ -560,11 +570,12 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 /* ===== Footer ===== */
 footer.site{position:relative;border-top:1px solid var(--line);background:var(--bg-alt);padding:70px 0 26px}
 footer.site::before{content:"";position:absolute;top:-1px;right:0;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 50%,transparent);opacity:.75}
-.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
-@media(max-width:760px){.foot-grid{grid-template-columns:1fr 1fr;gap:30px}}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:40px;margin-bottom:50px}
+@media(max-width:760px){.foot-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px}}
 footer.site{font-family:var(--font-footer)}
-.foot-col h5{font-size:calc(13px * var(--scale-footer));letter-spacing:.1em;color:var(--gold-light);margin-bottom:18px}
-.foot-col a,.foot-col p{display:block;font-size:calc(13px * var(--scale-footer));color:var(--text-dim);margin-bottom:10px}
+.foot-col{min-width:0}
+.foot-col h5{font-size:calc(13px * var(--scale-footer));letter-spacing:.1em;color:var(--gold-light);margin-bottom:18px;overflow-wrap:break-word}
+.foot-col a,.foot-col p{display:block;font-size:calc(13px * var(--scale-footer));color:var(--text-dim);margin-bottom:10px;overflow-wrap:break-word;word-break:break-word}
 .foot-bottom{border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:calc(12px * var(--scale-footer));color:var(--text-faint)}
 
 /* ===== Toast ===== */
@@ -1682,6 +1693,7 @@ function bindGlobalUI(){
   $('#mobileOverlay').onclick = closeMobile;
   function closeMobile(){ $('#mobileNav').classList.remove('open'); $('#mobileOverlay').classList.remove('open'); }
   $$('#mobileNav a').forEach(a=>a.addEventListener('click', closeMobile));
+  $('#mobileNav').addEventListener('click', (e)=>{ if(e.target.closest('a')) closeMobile(); });
 
   $('#searchOpenBtn').onclick = ()=>{ $('#searchOverlay').style.display='block'; $('#searchInput').focus(); };
   $('#searchCloseBtn').onclick = ()=>{ $('#searchOverlay').style.display='none'; };
@@ -2090,7 +2102,7 @@ function pageProduct(id){
         <a href="#/" data-link>خانه</a> / <a href="#/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
       </div>
       <div class="pd-wrap">
-        <div>${productGalleryHtml(p)}</div>
+        <div class="pd-gallery-col">${productGalleryHtml(p)}</div>
         <div class="pd-info">
           <span class="cat-tag">${catLabel(p.category)}</span>
           <h1 class="serif">${escapeHtml(p.name)}</h1>
@@ -2890,10 +2902,25 @@ async function addToCart(productId, qty=1, size=null){
   else STATE.cart.push({productId, qty:addQty, size});
   await sSet('cart', STATE.cart, false);
   renderCart();
+  bumpCartIcon();
   showToast(addQty < qty ? `فقط ${addQty} عدد به سبد اضافه شد (موجودی محدود)` : 'به سبد خرید اضافه شد ✓');
-  openCart();
 }
 window.quickAdd = (id)=> addToCart(id,1,null);
+
+function bumpCartIcon(){
+  const badge = $('#cartBadge');
+  const btn = $('#cartOpenBtn');
+  if(badge){
+    badge.classList.remove('bump');
+    void badge.offsetWidth; // restart animation
+    badge.classList.add('bump');
+  }
+  if(btn){
+    btn.classList.remove('bump');
+    void btn.offsetWidth;
+    btn.classList.add('bump');
+  }
+}
 
 async function updateCartQty(idx, delta){
   const ci = STATE.cart[idx];
