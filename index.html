@@ -155,25 +155,41 @@ ul{list-style:none}
 /* ===== Feather icon (signature motif) ===== */
 .raven-mark{display:inline-block}
 
+/* ===== Announcement bar ===== */
+.announcement-bar{
+  background:var(--announce-bg,#0a0a0b);
+  color:var(--announce-color,#f2efe8);
+  text-align:center;
+  padding:5px 14px;
+  font-family:var(--font-body);
+  font-size:calc(11.5px * var(--scale-body));
+  letter-spacing:.02em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  position:relative;z-index:61;
+}
+.announcement-bar.has-link{cursor:pointer}
+.announcement-bar.has-link:hover{opacity:.88}
+.announcement-bar img{width:16px;height:16px;object-fit:contain;flex:none}
+.announcement-bar span{overflow-wrap:break-word;word-break:break-word}
+
 /* ===== Header ===== */
 header.site{
   position:sticky;top:0;z-index:60;
-  background:rgba(var(--bg-rgb),.88);
-  backdrop-filter:blur(10px);
+  background:var(--bg);
   border-bottom:1px solid var(--line);
-  box-shadow:0 4px 20px rgba(var(--shadow-color),.06);
 }
 .header-row{
-  display:flex;align-items:center;justify-content:space-between;
-  min-height:84px;
-  gap:10px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  min-height:62px;
+  gap:14px;
 }
-.logo{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{display:flex;align-items:center;gap:10px;min-width:0;justify-self:center;grid-column:2}
 .logo img.logo-img{height:var(--logo-h);width:auto;max-width:180px;object-fit:contain}
-.logo .wordmark{font-family:var(--font-header);font-size:calc(22px * var(--scale-header));letter-spacing:.22em;font-weight:600;white-space:nowrap}
-.logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(9px * var(--scale-header));letter-spacing:.3em;color:var(--text-faint);margin-top:2px;white-space:nowrap}
-nav.main-nav{display:flex;gap:36px}
-nav.main-nav a{font-family:var(--font-header);font-size:calc(14px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s}
+.logo .wordmark{font-family:var(--font-header);font-size:calc(18px * var(--scale-header));letter-spacing:.18em;font-weight:600;white-space:nowrap;text-align:center}
+.logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(8px * var(--scale-header));letter-spacing:.28em;color:var(--text-faint);margin-top:2px;white-space:nowrap;text-align:center}
+.header-right{display:flex;align-items:center;gap:16px;grid-column:1;justify-self:start;min-width:0}
+nav.main-nav{display:flex;gap:18px;min-width:0;align-items:center}
+nav.main-nav a{font-family:var(--font-header);font-size:calc(11px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s;white-space:nowrap}
 nav.main-nav a:hover,nav.main-nav a.active{color:var(--gold-light)}
 nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:0;height:1px;background:var(--gold)}
 
@@ -183,18 +199,18 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .nav-drop-caret{width:9px;height:9px;transition:transform .25s ease}
 .nav-item-drop:hover .nav-drop-caret,.nav-item-drop.drop-open .nav-drop-caret{transform:rotate(180deg)}
 .nav-megamenu{
-  position:absolute;top:100%;right:50%;transform:translate(50%,10px);
-  min-width:280px;padding:18px;margin-top:14px;
-  background:rgba(var(--bg-rgb),.98);backdrop-filter:blur(14px);
+  position:absolute;top:100%;right:0;transform:translateY(10px);
+  min-width:280px;max-width:calc(100vw - 64px);padding:18px;margin-top:14px;
+  background:var(--bg-card);
   border:1px solid var(--line);border-radius:14px;
   box-shadow:0 20px 50px rgba(var(--shadow-color),.18);
-  display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:8px;
+  display:grid;grid-template-columns:repeat(2,minmax(130px,1fr));gap:8px;
   opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s;
   z-index:70;
 }
 .nav-item-drop:hover .nav-megamenu,.nav-item-drop.drop-open .nav-megamenu{
-  opacity:1;visibility:visible;pointer-events:auto;transform:translate(50%,0);
+  opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);
   transition:opacity .28s ease,transform .28s ease,visibility 0s linear 0s;
 }
 .nav-megamenu a{
@@ -206,8 +222,10 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .nav-megamenu a:hover{background:rgba(197,164,101,.1);color:var(--gold-light)}
 .nav-megamenu .nav-mega-empty{grid-column:1/-1;font-size:12.5px;color:var(--text-faint);padding:8px 12px}
 .nav-megamenu .nav-mega-all{grid-column:1/-1;border-top:1px solid var(--line);margin-top:6px;padding-top:12px;color:var(--gold-light);font-weight:600}
-.header-icons{display:flex;align-items:center;gap:22px}
+.header-icons{display:flex;align-items:center;gap:16px}
+.header-icons-left{grid-column:3;justify-self:end;gap:18px}
 .icon-btn{position:relative;color:var(--text-dim);transition:color .2s}
+.icon-btn svg{width:17px;height:17px}
 .icon-btn:hover{color:var(--gold-light)}
 .cart-badge{
   position:absolute;top:-8px;left:-10px;
@@ -225,16 +243,25 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .icon-btn.bump svg{animation:cartBump .45s cubic-bezier(.4,0,.2,1)}
 .cart-badge.bump{animation:cartBump .45s cubic-bezier(.4,0,.2,1)}
 .hamburger{display:none}
+.header-search-mobile{display:none}
+.header-theme-mobile{display:none}
 @media(max-width:900px){
   nav.main-nav{display:none}
   .hamburger{display:block}
+  .header-row{grid-template-columns:auto 1fr auto}
+  .wishlist-header-icon,.account-header-icon{display:none}
+  #searchOpenBtn{display:none}
+  .header-search-mobile{display:flex}
+  #themeToggleBtn{display:none}
+  .header-theme-mobile{display:flex}
 }
 @media(max-width:480px){
-  .header-row{min-height:64px}
+  .header-row{min-height:52px}
   .logo{gap:8px}
-  .logo .wordmark{font-size:calc(15px * var(--scale-header));letter-spacing:.12em}
+  .logo .wordmark{font-size:calc(14px * var(--scale-header));letter-spacing:.1em}
   .logo .wordmark small{display:none}
-  .header-icons{gap:14px}
+  .header-icons{gap:12px}
+  .header-icons-left{gap:12px}
 }
 
 /* ===== دکمه تغییر تم (سفید/مشکی) ===== */
@@ -247,6 +274,7 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 .mobile-nav{
   position:fixed;inset:0 0 0 auto;width:82%;max-width:340px;
   background:var(--bg-alt);z-index:200;
+  display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
   border-left:1px solid var(--line);
   padding:28px 26px;overflow-y:auto;
@@ -256,7 +284,21 @@ html[data-theme="light"] .theme-toggle .icon-moon{display:none}
 .mobile-overlay.open{opacity:1;pointer-events:auto}
 .mobile-nav a{display:block;padding:14px 0;font-family:var(--font-header);font-size:calc(16px * var(--scale-header));border-bottom:1px solid var(--line);color:var(--text-dim)}
 .mobile-nav a.active{color:var(--gold-light)}
-.mobile-close{margin-bottom:20px;color:var(--text-dim)}
+.mobile-close{color:var(--text-dim)}
+.mobile-nav-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mobile-nav-icons{display:flex;align-items:center;gap:16px}
+.mobile-nav-icons .icon-btn{position:relative;color:var(--text-dim)}
+.mobile-nav-icons .icon-btn svg{width:19px;height:19px}
+.mobile-nav-bottom{margin-top:auto;padding-top:8px}
+.mobile-nav-drop-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;
+  padding:14px 0;font-family:var(--font-header);font-size:calc(16px * var(--scale-header));border-bottom:1px solid var(--line);color:var(--text-dim)}
+.mobile-nav-drop-trigger .mnav-caret{width:11px;height:11px;transition:transform .25s ease;flex:none}
+.mobile-nav-drop.open .mobile-nav-drop-trigger .mnav-caret{transform:rotate(180deg)}
+.mobile-nav-drop.open .mobile-nav-drop-trigger{color:var(--gold-light)}
+.mobile-nav-submenu{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.mobile-nav-drop.open .mobile-nav-submenu{max-height:600px}
+.mobile-nav-submenu a{padding-right:16px;font-size:calc(14.5px * var(--scale-header));color:var(--text-faint)}
+.mobile-nav-submenu a.mnav-all{color:var(--gold-light)}
 
 /* ===== Hero ===== */
 .hero{
@@ -343,7 +385,20 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 .cat-content{position:relative;z-index:2}
 .cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
 .cat-content .eyebrow{margin-bottom:14px;display:block}
-@media(max-width:760px){.cat-split{grid-template-columns:1fr}.cat-panel{min-height:280px}}
+@media(max-width:760px){
+  .cat-split{
+    display:flex;grid-template-columns:none;background:none;gap:16px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:20px 22vw;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .cat-split::-webkit-scrollbar{display:none}
+  .cat-panel{
+    flex:0 0 74vw;min-height:340px;border-radius:20px;
+    scroll-snap-align:center;scroll-snap-stop:always;
+    will-change:transform,opacity;
+  }
+}
 
 /* ===== Features bar ===== */
 .features{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-alt)}
@@ -365,12 +420,13 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 .search-mini input{background:none;border:none;color:var(--text);font-size:calc(13px * var(--scale-body));flex:1;font-family:inherit}
 .search-mini input:focus{outline:none}
 
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;min-width:0}
+.grid>*{min-width:0}
 @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}}
 @media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 
-.card{background:var(--bg-card);border:1px solid var(--line);border-top:2px solid transparent;transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow-sm)}
+.card{background:var(--bg-card);border:1px solid var(--line);border-top:2px solid transparent;transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow-sm);min-width:0;max-width:100%;overflow:hidden;box-sizing:border-box}
 .wishlist-btn{color:var(--text-dim);transition:color .2s,transform .15s}
 .wishlist-btn:hover{color:var(--gold-light)}
 .wishlist-btn.active{color:var(--danger)}
@@ -389,13 +445,13 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(1px);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
 .card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:rgba(192,86,63,.92);color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px}
 .pd-lowstock{color:var(--danger);font-weight:600}
-.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product)}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product);min-width:0}
 .card-body .cat-tag{font-size:calc(10.5px * var(--scale-product));letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
-.card-body h3{font-size:calc(15.5px * var(--scale-product));font-weight:500}
-.card-price{display:flex;align-items:baseline;gap:8px;margin-top:auto}
-.card-price .now{color:var(--gold-light);font-size:calc(15px * var(--scale-product));font-weight:600}
-.card-price .was{color:var(--text-faint);font-size:calc(12.5px * var(--scale-product));text-decoration:line-through}
-.card-actions{display:flex;gap:8px;margin-top:10px}
+.card-body h3{font-size:calc(15.5px * var(--scale-product));font-weight:500;overflow-wrap:break-word;word-break:break-word}
+.card-price{display:flex;align-items:baseline;gap:8px;margin-top:auto;flex-wrap:wrap;min-width:0}
+.card-price .now{color:var(--gold-light);font-size:calc(15px * var(--scale-product));font-weight:600;white-space:nowrap}
+.card-price .was{color:var(--text-faint);font-size:calc(12.5px * var(--scale-product));text-decoration:line-through;white-space:nowrap}
+.card-actions{display:flex;gap:8px;margin-top:10px;min-width:0}
 .card-actions .btn{flex:1;padding:10px;font-size:12.5px;justify-content:center}
 .icon-sq{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--text-dim);transition:.2s}
 .icon-sq:hover{border-color:var(--gold);color:var(--gold-light)}
@@ -736,49 +792,61 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
 <!-- ============ STOREFRONT ============ -->
 <div id="storefront">
 
+<div class="announcement-bar" id="announcementBar" style="display:none">
+  <img id="announcementIconImg" src="" alt="" style="display:none">
+  <span id="announcementText"></span>
+</div>
+
 <header class="site">
   <div class="container header-row">
+    <div class="header-right">
+      <button class="icon-btn theme-toggle header-theme-mobile" id="themeToggleBtnMobile" title="تغییر تم سایت">
+        <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <button class="icon-btn header-search-mobile" id="searchOpenBtnMobile" title="جستجو">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="#/" data-link data-route="/">خانه</a>
+        <div class="nav-item-drop" id="navProductsDrop">
+          <button type="button" class="nav-drop-trigger" id="navProductsTrigger">
+            <span>محصولات</span>
+            <svg class="nav-drop-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="nav-megamenu" id="navCatLinks"></div>
+        </div>
+        <a href="#/about" data-link data-route="/about">درباره ما</a>
+        <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
+      </nav>
+    </div>
     <a href="#/" class="logo" data-link>
-      <span id="siteLogoSlot"><svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <span id="siteLogoSlot"><svg class="raven-mark" width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/>
       </svg></span>
-      <span class="wordmark">WHITE RAVEN<small>UNDERWEAR ATELIER</small></span>
+      <span class="wordmark">WHITE RAVEN<small id="logoSubtitleText">WOMEN'S WEAR</small></span>
     </a>
-    <nav class="main-nav" id="mainNav">
-      <a href="#/" data-link data-route="/">خانه</a>
-      <div class="nav-item-drop" id="navProductsDrop">
-        <button type="button" class="nav-drop-trigger" id="navProductsTrigger">
-          <span>محصولات</span>
-          <svg class="nav-drop-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="nav-megamenu" id="navCatLinks"></div>
-      </div>
-      <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
-      <a href="#/about" data-link data-route="/about">درباره ما</a>
-      <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
-      <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
-    </nav>
-    <div class="header-icons">
-      <button class="icon-btn theme-toggle" id="themeToggleBtn" title="تغییر تم سایت">
-        <svg class="icon-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="icon-sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      </button>
+    <div class="header-icons header-icons-left">
       <button class="icon-btn" id="searchOpenBtn" title="جستجو">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
-      <a href="#/account" data-link class="icon-btn" title="حساب کاربری">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-      </a>
-      <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7.5-4.6-10.2-9.2C.1 8.7 1.4 5 5 4.1c2.2-.6 4.4.4 5.8 2.2C12.2 4.5 14.4 3.5 16.6 4.1c3.6.9 4.9 4.6 3.2 7.7C19.5 16.4 12 21 12 21Z"/></svg>
+      <button class="icon-btn theme-toggle" id="themeToggleBtn" title="تغییر تم سایت">
+        <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
         <span class="cart-badge hidden" id="wishlistBadge">0</span>
       </a>
+      <a href="#/account" data-link class="icon-btn account-header-icon" title="حساب کاربری">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </a>
       <button class="icon-btn" id="cartOpenBtn" title="سبد خرید">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h2l2.4 12.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L22 8H7"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8.5 8.5V7C8.5 4.51 10.01 2.5 12 2.5C13.99 2.5 15.5 4.51 15.5 7V8.5"/><path d="M5 8.5H19L19.8 20.2C19.9 21.2 19.1 22 18.1 22H5.9C4.9 22 4.1 21.2 4.2 20.2L5 8.5Z"/></svg>
         <span class="cart-badge hidden" id="cartBadge">0</span>
       </button>
       <button class="icon-btn hamburger" id="hamburgerBtn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
     </div>
   </div>
@@ -795,15 +863,30 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
 
 <div class="mobile-overlay" id="mobileOverlay"></div>
 <div class="mobile-nav" id="mobileNav">
-  <div class="mobile-close" id="mobileCloseBtn">✕ بستن</div>
+  <div class="mobile-nav-top">
+    <div class="mobile-close" id="mobileCloseBtn">✕ بستن</div>
+    <div class="mobile-nav-icons">
+      <a href="#/account" data-link data-route="/account" class="icon-btn" title="حساب کاربری">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </a>
+      <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
+      </a>
+    </div>
+  </div>
   <a href="#/" data-link data-route="/">خانه</a>
-  <span id="mobileNavCatLinks" style="display:contents"></span>
-  <a href="#/shop/all" data-link data-route="/shop/all">جدیدترین ها</a>
-  <a href="#/about" data-link data-route="/about">درباره ما</a>
-  <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
-  <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
-  <a href="#/wishlist" data-link data-route="/wishlist">علاقه‌مندی‌ها</a>
-  <a href="#/account" data-link data-route="/account">حساب کاربری</a>
+  <div class="mobile-nav-drop" id="mobileProductsDrop">
+    <button type="button" class="mobile-nav-drop-trigger" id="mobileProductsTrigger">
+      <span>محصولات</span>
+      <svg class="mnav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="mobile-nav-submenu" id="mobileNavCatLinks"></div>
+  </div>
+  <div class="mobile-nav-bottom">
+    <a href="#/about" data-link data-route="/about">درباره ما</a>
+    <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
+    <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
+  </div>
 </div>
 
 <main id="app"></main>
@@ -1232,6 +1315,7 @@ function defaultSettings(){
   return {
     logoDark:'',
     logoLight:'',
+    logoSubtitle:"WOMEN'S WEAR",
     heroImageDark:'',
     heroImageLight:'',
     heroImageDarkMobile:'',
@@ -1259,7 +1343,13 @@ function defaultSettings(){
     freeShippingThreshold: 1000000,
     shippingCost: 45000,
     shippingRates: [],
-    coupons: []
+    coupons: [],
+    announcementEnabled: false,
+    announcementText: '',
+    announcementIcon: '',
+    announcementBg: '#0a0a0b',
+    announcementColor: '#f2efe8',
+    announcementLink: ''
   };
 }
 /* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
@@ -1271,6 +1361,7 @@ function rowToSettings(row){
   return {
     logoDark: data.logoDark ?? data.logo ?? d.logoDark,
     logoLight: data.logoLight ?? d.logoLight,
+    logoSubtitle: data.logoSubtitle ?? d.logoSubtitle,
     heroImageDark: data.heroImageDark ?? data.heroImage ?? d.heroImageDark,
     heroImageLight: data.heroImageLight ?? d.heroImageLight,
     heroImageDarkMobile: data.heroImageDarkMobile ?? d.heroImageDarkMobile,
@@ -1292,7 +1383,13 @@ function rowToSettings(row){
     freeShippingThreshold: (typeof data.freeShippingThreshold === 'number') ? data.freeShippingThreshold : d.freeShippingThreshold,
     shippingCost: (typeof data.shippingCost === 'number') ? data.shippingCost : d.shippingCost,
     shippingRates: Array.isArray(data.shippingRates) ? data.shippingRates : d.shippingRates,
-    coupons: Array.isArray(data.coupons) ? data.coupons : d.coupons
+    coupons: Array.isArray(data.coupons) ? data.coupons : d.coupons,
+    announcementEnabled: data.announcementEnabled ?? d.announcementEnabled,
+    announcementText: data.announcementText ?? d.announcementText,
+    announcementIcon: data.announcementIcon ?? d.announcementIcon,
+    announcementBg: data.announcementBg ?? d.announcementBg,
+    announcementColor: data.announcementColor ?? d.announcementColor,
+    announcementLink: data.announcementLink ?? d.announcementLink
   };
 }
 async function loadSettings(){
@@ -1346,7 +1443,13 @@ async function loadSettings(){
           ...defaultSettings().scales,
           ...(s.scales||{})
         },
-        coupons: Array.isArray(s.coupons) ? s.coupons : defaultSettings().coupons
+        coupons: Array.isArray(s.coupons) ? s.coupons : defaultSettings().coupons,
+        announcementEnabled: s.announcementEnabled ?? defaultSettings().announcementEnabled,
+        announcementText: s.announcementText ?? defaultSettings().announcementText,
+        announcementIcon: s.announcementIcon ?? defaultSettings().announcementIcon,
+        announcementBg: s.announcementBg ?? defaultSettings().announcementBg,
+        announcementColor: s.announcementColor ?? defaultSettings().announcementColor,
+        announcementLink: s.announcementLink ?? defaultSettings().announcementLink
       }
     : null;
 }
@@ -1389,9 +1492,13 @@ function getHeroForThemeMobile(settings){
 function renderCategoryNavLinks(settings){
   const cats = settings.categories || [];
   const curPath = STATE.route;
-  const plainLinkHtml = cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
   const mobileSlot = document.getElementById('mobileNavCatLinks');
-  if(mobileSlot) mobileSlot.innerHTML = plainLinkHtml;
+  if(mobileSlot){
+    const mobileCatLinks = cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
+    mobileSlot.innerHTML = mobileCatLinks
+      + `<a href="#/shop/all" data-link data-route="/shop/all">جدیدترین‌ها</a>`
+      + `<a href="#/shop/all" data-link data-route="/shop/all" class="mnav-all ${curPath==='/shop/all'?'active':''}">همه محصولات</a>`;
+  }
 
   // Desktop mega-menu: category links (each with a small icon dot) + a link to "all"
   const megaSlot = document.getElementById('navCatLinks');
@@ -1421,6 +1528,8 @@ function applySettingsToDOM(settings){
       footTag.style.display = 'none';
     }
   }
+  const subtitleEl = $('#logoSubtitleText');
+  if(subtitleEl) subtitleEl.textContent = settings.logoSubtitle ?? "WOMEN'S WEAR";
   const logoSrc = getLogoForTheme(settings);
   const slot = $('#siteLogoSlot');
   if(slot){
@@ -1453,6 +1562,45 @@ function applySettingsToDOM(settings){
       heroBg.style.setProperty('--hero-photo-mobile', `url('${heroSrcMobile}')`);
     } else {
       heroBg.style.removeProperty('--hero-photo-mobile');
+    }
+  }
+
+  // نوار اعلان بالای صفحه
+  const annBar = $('#announcementBar');
+  if(annBar){
+    const on = !!settings.announcementEnabled && !!(settings.announcementText||'').trim();
+    annBar.style.display = on ? 'flex' : 'none';
+    root.setProperty('--announce-bg', settings.announcementBg || '#0a0a0b');
+    root.setProperty('--announce-color', settings.announcementColor || '#f2efe8');
+    const annText = $('#announcementText');
+    if(annText) annText.textContent = settings.announcementText || '';
+    const annIcon = $('#announcementIconImg');
+    if(annIcon){
+      if(settings.announcementIcon){
+        annIcon.src = settings.announcementIcon;
+        annIcon.style.display = '';
+      } else {
+        annIcon.removeAttribute('src');
+        annIcon.style.display = 'none';
+      }
+    }
+    const link = (settings.announcementLink || '').trim();
+    if(link){
+      annBar.classList.add('has-link');
+      annBar.onclick = ()=>{
+        if(/^https?:\/\//i.test(link)){
+          window.open(link, '_blank', 'noopener');
+        } else if(link.startsWith('#')){
+          location.hash = link.slice(1);
+        } else if(link.startsWith('/')){
+          location.hash = link;
+        } else {
+          location.href = link;
+        }
+      };
+    } else {
+      annBar.classList.remove('has-link');
+      annBar.onclick = null;
     }
   }
 }
@@ -1656,20 +1804,21 @@ function router(preserveScroll){
 
 /* ---------------- shared UI bindings ---------------- */
 function bindGlobalUI(){
-  const themeBtn = $('#themeToggleBtn');
-  if(themeBtn){
-    themeBtn.onclick = ()=>{
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      if(isLight){
-        document.documentElement.removeAttribute('data-theme');
-        try{ localStorage.setItem('wr-theme','dark'); }catch(e){}
-      }else{
-        document.documentElement.setAttribute('data-theme','light');
-        try{ localStorage.setItem('wr-theme','light'); }catch(e){}
-      }
-      applySettingsToDOM(STATE.settings);
-    };
+  function toggleTheme(){
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if(isLight){
+      document.documentElement.removeAttribute('data-theme');
+      try{ localStorage.setItem('wr-theme','dark'); }catch(e){}
+    }else{
+      document.documentElement.setAttribute('data-theme','light');
+      try{ localStorage.setItem('wr-theme','light'); }catch(e){}
+    }
+    applySettingsToDOM(STATE.settings);
   }
+  const themeBtn = $('#themeToggleBtn');
+  if(themeBtn) themeBtn.onclick = toggleTheme;
+  const themeBtnMobile = $('#themeToggleBtnMobile');
+  if(themeBtnMobile) themeBtnMobile.onclick = toggleTheme;
   $('#hamburgerBtn').onclick = ()=>{ $('#mobileNav').classList.add('open'); $('#mobileOverlay').classList.add('open'); };
   $('#mobileCloseBtn').onclick = closeMobile;
 
@@ -1695,7 +1844,14 @@ function bindGlobalUI(){
   $$('#mobileNav a').forEach(a=>a.addEventListener('click', closeMobile));
   $('#mobileNav').addEventListener('click', (e)=>{ if(e.target.closest('a')) closeMobile(); });
 
+  const mobileProductsDrop = $('#mobileProductsDrop');
+  const mobileProductsTrigger = $('#mobileProductsTrigger');
+  if(mobileProductsDrop && mobileProductsTrigger){
+    mobileProductsTrigger.onclick = ()=>{ mobileProductsDrop.classList.toggle('open'); };
+  }
+
   $('#searchOpenBtn').onclick = ()=>{ $('#searchOverlay').style.display='block'; $('#searchInput').focus(); };
+  $('#searchOpenBtnMobile').onclick = ()=>{ $('#searchOverlay').style.display='block'; $('#searchInput').focus(); };
   $('#searchCloseBtn').onclick = ()=>{ $('#searchOverlay').style.display='none'; };
   $('#searchInput').addEventListener('keydown', e=>{
     if(e.key==='Enter'){
@@ -2485,7 +2641,41 @@ function page404(){
 }
 
 /* ---------------- page-level bindings ---------------- */
+/* ---------------- category carousel (mobile coverflow) ---------------- */
+function updateCatSplitTransforms(track){
+  const rect = track.getBoundingClientRect();
+  const centerX = rect.left + rect.width/2;
+  const panels = track.querySelectorAll('.cat-panel');
+  panels.forEach(p=>{
+    const pr = p.getBoundingClientRect();
+    const pCenter = pr.left + pr.width/2;
+    const dist = Math.abs(centerX - pCenter);
+    const norm = Math.min(1, dist / (rect.width/2));
+    const scale = 1 - norm*0.14;
+    const opacity = 1 - norm*0.45;
+    p.style.transform = `scale(${scale})`;
+    p.style.opacity = opacity;
+  });
+}
+let catCarouselRAF = null;
+function initCatSplitCarousel(){
+  if(catCarouselRAF){ cancelAnimationFrame(catCarouselRAF); catCarouselRAF = null; }
+  const track = document.querySelector('.cat-split');
+  if(!track) return;
+  function loop(){
+    if(!document.body.contains(track)) return;
+    if(window.matchMedia('(max-width:760px)').matches){
+      updateCatSplitTransforms(track);
+    } else {
+      track.querySelectorAll('.cat-panel').forEach(p=>{ p.style.transform=''; p.style.opacity=''; });
+    }
+    catCarouselRAF = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
 function bindPageUI(){
+  initCatSplitCarousel();
   const shopSearch = $('#shopSearch');
   if(shopSearch){
     shopSearch.addEventListener('input', e=>{
@@ -2973,7 +3163,7 @@ window.toggleWishlist = toggleWishlist;
 function wishlistBtnHtml(p, cls='wishlist-btn'){
   const active = isWishlisted(p.id);
   return `<button type="button" class="${cls}${active?' active':''}" data-id="${p.id}" title="${active?'حذف از علاقه‌مندی‌ها':'افزودن به علاقه‌مندی‌ها'}" onclick="event.preventDefault();event.stopPropagation();toggleWishlist('${p.id}')">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="${active?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7.5-4.6-10.2-9.2C.1 8.7 1.4 5 5 4.1c2.2-.6 4.4.4 5.8 2.2C12.2 4.5 14.4 3.5 16.6 4.1c3.6.9 4.9 4.6 3.2 7.7C19.5 16.4 12 21 12 21Z"/></svg>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="${active?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
   </button>`;
 }
 
@@ -3627,6 +3817,48 @@ function adminSettings(){
       </div>
     </div>
     <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">فرمت PNG با پس‌زمینه شفاف پیشنهاد می‌شود.</span>
+    <div style="margin-top:18px">
+      <label style="display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:8px">زیرنویس کوچک زیر نام برند (مثلاً: WOMEN'S WEAR)</label>
+      <input type="text" id="logoSubtitleInput" value="${escapeHtml(s.logoSubtitle ?? "WOMEN'S WEAR")}" placeholder="WOMEN'S WEAR">
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">نوار اعلان بالای صفحه</h3>
+    <p class="settings-desc">یک نوار نازک در بالاترین قسمت سایت، قبل از هدر، نمایش داده می‌شود. متن آن وسط‌چین است و می‌توانید کنارش یک آیکون کوچک بگذارید و رنگ نوار و رنگ نوشته را انتخاب کنید.</p>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer">
+      <input type="checkbox" id="announcementEnabledInput" ${s.announcementEnabled ? 'checked' : ''} style="width:16px;height:16px">
+      <span style="font-size:13.5px;color:var(--text-dim)">نمایش نوار اعلان در سایت</span>
+    </label>
+    <div class="form-field">
+      <label>متن نوار</label>
+      <input type="text" id="announcementTextInput" value="${s.announcementText || ''}" placeholder="مثلاً: ارسال رایگان برای خرید بالای ۱ میلیون تومان">
+    </div>
+    <div class="form-field">
+      <label>لینک نوار (اختیاری)</label>
+      <input type="text" id="announcementLinkInput" value="${s.announcementLink || ''}" placeholder="مثلاً: #/shop/all یا https://...">
+    </div>
+    <div class="theme-asset-row">
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">آیکون نوار (اختیاری)</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="announcementIconBox" style="width:56px;height:56px">
+            ${s.announcementIcon ? `<img src="${s.announcementIcon}" alt="آیکون نوار اعلان">` : `<span style="font-size:9.5px;color:var(--text-faint);text-align:center;padding:4px">بدون آیکون</span>`}
+            <input type="file" accept="image/*" id="announcementIconInput">
+          </div>
+          ${s.announcementIcon ? `<button type="button" class="btn btn-ghost" id="removeAnnouncementIconBtn" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">رنگ پس‌زمینه نوار</span>
+        <input type="color" id="announcementBgInput" value="${s.announcementBg || '#0a0a0b'}" style="width:56px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;padding:2px">
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">رنگ متن نوار</span>
+        <input type="color" id="announcementColorInput" value="${s.announcementColor || '#f2efe8'}" style="width:56px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;padding:2px">
+      </div>
+    </div>
+    <button type="button" class="btn btn-solid" id="saveAnnouncementBtn" style="margin-top:14px">ذخیره نوار اعلان</button>
   </div>
 
   <div class="settings-card">
@@ -4436,6 +4668,35 @@ function bindAdminSettingsUI(){
     };
   });
 
+  if(!$('#announcementIconBox')?.dataset.pendingInit){
+    const annBox = $('#announcementIconBox');
+    if(annBox){ annBox.dataset.pendingInit = '1'; pendingAnnouncementIcon = STATE.settings.announcementIcon || ''; }
+  }
+  bindAnnouncementIconInput();
+  const removeAnnIconBtn = $('#removeAnnouncementIconBtn');
+  if(removeAnnIconBtn) removeAnnIconBtn.onclick = ()=>{
+    pendingAnnouncementIcon = '';
+    STATE.settings = {...STATE.settings, announcementIcon:''};
+    $('#adminMain').innerHTML = adminSettings();
+    bindAdminShell();
+  };
+  const saveAnnouncementBtn = $('#saveAnnouncementBtn');
+  if(saveAnnouncementBtn) saveAnnouncementBtn.onclick = async ()=>{
+    const newSettings = {
+      ...STATE.settings,
+      announcementEnabled: !!$('#announcementEnabledInput')?.checked,
+      announcementText: $('#announcementTextInput')?.value || '',
+      announcementIcon: pendingAnnouncementIcon || '',
+      announcementBg: $('#announcementBgInput')?.value || '#0a0a0b',
+      announcementColor: $('#announcementColorInput')?.value || '#f2efe8',
+      announcementLink: $('#announcementLinkInput')?.value.trim() || ''
+    };
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('نوار اعلان ذخیره شد ✓');
+  };
+
   bindCategoryRowEvents();
   const addCategoryBtn = $('#addCategoryBtn');
   if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
@@ -4467,6 +4728,7 @@ function bindAdminSettingsUI(){
     const newSettings = {
       logoDark: pendingLogoDark || '',
       logoLight: pendingLogoLight || '',
+      logoSubtitle: $('#logoSubtitleInput')?.value.trim() || "WOMEN'S WEAR",
       heroImageDark: pendingHeroImage.Dark || '',
       heroImageLight: pendingHeroImage.Light || '',
       heroImageDarkMobile: pendingHeroImage.DarkMobile || '',
@@ -4499,6 +4761,39 @@ let previewPercentValue = 0;
 let previewPercentSign = 1;
 let pendingCoupons = [];
 let editingCouponId = null;
+let pendingAnnouncementIcon = '';
+
+function bindAnnouncementIconInput(){
+  const iconBox = $('#announcementIconBox');
+  const iconInput = $('#announcementIconInput');
+  if(!iconInput) return;
+
+  iconInput.onchange = async ()=>{
+    const file = iconInput.files[0];
+    if(!file) return;
+
+    try{
+      iconInput.disabled = true;
+      showLoading();
+
+      const url = await uploadSettingImage(file, 'announcement-icon');
+      pendingAnnouncementIcon = url;
+
+      iconBox.innerHTML = `
+        <img src="${url}" alt="آیکون نوار اعلان">
+        <input type="file" accept="image/*" id="announcementIconInput">
+      `;
+
+      bindAnnouncementIconInput();
+    }catch(error){
+      console.error('Announcement icon upload error:', error);
+      showToast('آپلود آیکون انجام نشد');
+    }finally{
+      iconInput.disabled = false;
+      hideLoading();
+    }
+  };
+}
 
 function bindCategoryRowEvents(){
   $$('.cat-edit-name').forEach(inp=>{
