@@ -9,10 +9,18 @@
 <script>
 (function(){
   try{
-    if(localStorage.getItem('wr-theme') === 'light'){
+    const t = localStorage.getItem('wr-theme');
+    if(t === 'classic'){
+      document.documentElement.setAttribute('data-theme','classic');
+    }else if(t === 'dark'){
+      // پیش‌فرض قدیمی — بدون attribute یعنی تم مشکی کامل
+    }else{
+      // تم پیش‌فرض جدید سایت: «روشن»
       document.documentElement.setAttribute('data-theme','light');
     }
-  }catch(e){}
+  }catch(e){
+    document.documentElement.setAttribute('data-theme','classic');
+  }
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +42,7 @@
   --gold-dim:#8a744c;
   --danger:#c0563f;
   --ok:#7a9b6e;
-  --radius:2px;
+  --radius:10px;
   --maxw:1320px;
   --shadow-color:0,0,0;
   --shadow-sm:0 2px 10px rgba(var(--shadow-color),.28);
@@ -58,29 +66,107 @@
   --logo-h:34px;
 }
 
-/* ===== تم روشن (سفید) — با کلیک روی دکمه بالای سایت فعال می‌شود ===== */
+/* ===== تم روشن (رنگارنگ و شاد) — با کلیک روی دکمه بالای سایت فعال می‌شود ===== */
 html[data-theme="light"]{
-  --bg:#faf9f6;
-  --bg-rgb:250,249,246;
-  --bg-alt:#f3f1ea;
+  --bg:#ffffff;
+  --bg-rgb:255,255,255;
+  --bg-alt:#f4f8fb;
   --bg-card:#ffffff;
-  --line:#e3ddcf;
-  --text:#1c1a16;
-  --text-dim:#57524a;
-  --text-faint:#8b8578;
-  --gold:#a9814a;
-  --gold-light:#8a6a3c;
-  --gold-dim:#c7a876;
-  --danger:#b8412a;
-  --ok:#4f7a44;
-  --shadow-color:120,100,60;
+  --line:#dde6f0;
+  --text:#171a20;
+  --text-dim:#4c5560;
+  --text-faint:#8792a0;
+  --gold:#1c6fe0;
+  --gold-light:#3f8cf5;
+  --gold-dim:#8fbaf5;
+  --danger:#ef3c4c;
+  --ok:#17a856;
+  --shadow-color:28,111,224;
   --shadow-sm:0 2px 14px rgba(var(--shadow-color),.10);
   --shadow-md:0 18px 40px rgba(var(--shadow-color),.16);
-  --shadow-gold:0 10px 24px rgba(169,129,74,.20);
-  --ph-bg:linear-gradient(160deg,#f2eee2,#e8e2d2);
+  --shadow-gold:0 10px 24px rgba(28,111,224,.24);
+  --ph-bg:linear-gradient(160deg,#eaf2ff,#dcebff);
 }
 html[data-theme="light"] .hero-feather-svg,
-html[data-theme="light"] .raven-mark path{fill:#1c1a16}
+html[data-theme="light"] .raven-mark path{fill:#fff;stroke:#171a20}
+
+/* پس‌زمینه صفحه با لکه‌های رنگی شاد سبز/قرمز/آبی */
+html[data-theme="light"] body::before{
+  background:
+    radial-gradient(ellipse 55% 38% at 8% 0%, rgba(239,60,76,.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 12%, rgba(23,168,86,.08), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 50% 100%, rgba(28,111,224,.07), transparent 60%);
+}
+html[data-theme="light"] .hero-bg{
+  background:
+    radial-gradient(ellipse 55% 55% at 80% 40%, rgba(28,111,224,.16), transparent 60%),
+    radial-gradient(ellipse 45% 55% at 12% 15%, rgba(239,60,76,.10), transparent 60%),
+    radial-gradient(ellipse 50% 60% at 30% 95%, rgba(23,168,86,.10), transparent 60%),
+    var(--bg);
+}
+/* خط تزئینی رنگین‌کمانی */
+html[data-theme="light"] .divider,
+html[data-theme="light"] .section-head .divider{
+  background:linear-gradient(90deg,#ef3c4c,#17a856,#1c6fe0);
+}
+html[data-theme="light"] footer.site::before{
+  background:linear-gradient(90deg,transparent,#ef3c4c 25%,#17a856 50%,#1c6fe0 75%,transparent);
+  opacity:.85;
+}
+/* آیکون‌های نوار ویژگی‌ها به‌ترتیب رنگی */
+html[data-theme="light"] .feature:nth-of-type(3n+1) svg{color:#1c6fe0;background:rgba(28,111,224,.10);border-color:rgba(28,111,224,.22)}
+html[data-theme="light"] .feature:nth-of-type(3n+2) svg{color:#ef3c4c;background:rgba(239,60,76,.10);border-color:rgba(239,60,76,.22)}
+html[data-theme="light"] .feature:nth-of-type(3n+3) svg{color:#17a856;background:rgba(23,168,86,.10);border-color:rgba(23,168,86,.22)}
+html[data-theme="light"] .feature:hover{background:rgba(28,111,224,.05)}
+html[data-theme="light"] .card-badge{box-shadow:0 4px 10px rgba(28,111,224,.32)}
+html[data-theme="light"] .chip.active,
+html[data-theme="light"] .chip:hover{box-shadow:0 3px 10px rgba(28,111,224,.16)}
+html[data-theme="light"] .color-preset-dot.selected{box-shadow:0 0 0 2px rgba(28,111,224,.35)}
+html[data-theme="light"] .admin-side a.active{background:rgba(28,111,224,.08)}
+/* نشان تخفیف قرمز پررنگ‌تر برای حس فروشگاهی شاد */
+html[data-theme="light"] .card-discount{box-shadow:0 4px 10px rgba(239,60,76,.35)}
+
+
+/* ===== تم «کلاسیک» — پالت گرم و متمایز (زرشکی‌ نارنجی + سبز کهربایی) با احساس شاد و شیک ===== */
+html[data-theme="classic"]{
+  --bg:#fdf6ee;
+  --bg-rgb:253,246,238;
+  --bg-alt:#f7ebde;
+  --bg-card:#ffffff;
+  --line:#ecd9c4;
+  --text:#2b2016;
+  --text-dim:#6e5d49;
+  --text-faint:#a6927a;
+  --gold:#c1602f;
+  --gold-light:#9c4a22;
+  --gold-dim:#e2a677;
+  --danger:#b23a5c;
+  --ok:#3f7d5c;
+  --shadow-color:150,90,40;
+  --shadow-sm:0 2px 14px rgba(var(--shadow-color),.10);
+  --shadow-md:0 18px 40px rgba(var(--shadow-color),.16);
+  --shadow-gold:0 10px 24px rgba(193,96,47,.22);
+  --ph-bg:linear-gradient(160deg,#f5e6d4,#ecd7bd);
+}
+html[data-theme="classic"] .hero-feather-svg,
+html[data-theme="classic"] .raven-mark path{fill:#fff;stroke:#2b2016}
+html[data-theme="classic"] body::before{
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(193,96,47,.09), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(63,125,92,.07), transparent 55%);
+}
+/* نوار ویژگی‌ها (ارسال سریع / پرداخت امن / پشتیبانی / ضمانت) همیشه مشکی */
+html[data-theme="classic"] .features{
+  --bg-alt:#211710; --line:#3a2c1f; --text:#f7ece0; --text-dim:#c9b299; --text-faint:#8c7862;
+  background:var(--bg-alt);
+}
+/* فوتر همیشه مشکی */
+html[data-theme="classic"] footer.site{
+  --bg-alt:#211710; --bg-card:#2a1e15; --line:#3a2c1f;
+  --text:#f7ece0; --text-dim:#c9b299; --text-faint:#8c7862;
+  background:var(--bg-alt);
+}
+html[data-theme="classic"] footer.site::before{opacity:.6}
 
 *, *::before, *::after{transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -101,11 +187,6 @@ body::before{
   background:
     radial-gradient(ellipse 60% 40% at 15% 0%, rgba(185,151,94,.05), transparent 60%),
     radial-gradient(ellipse 50% 40% at 100% 10%, rgba(185,151,94,.045), transparent 55%);
-}
-html[data-theme="light"] body::before{
-  background:
-    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(169,129,74,.07), transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(169,129,74,.05), transparent 55%);
 }
 ::selection{background:var(--gold);color:#0a0a0b}
 :focus-visible{outline:1px solid var(--gold);outline-offset:2px}
@@ -137,6 +218,7 @@ ul{list-style:none}
   display:inline-flex;align-items:center;gap:10px;
   padding:13px 28px;
   border:1px solid var(--gold-dim);
+  border-radius:9px;
   color:var(--gold-light);
   font-size:14px;
   letter-spacing:.03em;
@@ -267,8 +349,11 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 /* ===== دکمه تغییر تم (سفید/مشکی) ===== */
 .theme-toggle .icon-sun{display:none}
 .theme-toggle .icon-moon{display:block}
+.theme-toggle .icon-classic{display:none}
 html[data-theme="light"] .theme-toggle .icon-sun{display:block}
 html[data-theme="light"] .theme-toggle .icon-moon{display:none}
+html[data-theme="classic"] .theme-toggle .icon-classic{display:block}
+html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 
 /* mobile drawer */
 .mobile-nav{
@@ -354,6 +439,9 @@ html[data-theme="light"] .hero-bg.has-photo{
 html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner h1{color:#1a1815}
 html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner p.lede{color:#4a453e}
 html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{color:#9c7a3a}
+html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner h1{color:#1a1815}
+html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner p.lede{color:#4a453e}
+html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{color:#9c7a3a}
 .hero h1{
   font-family:var(--font-hero);
   font-size:calc(clamp(48px,7vw,92px) * var(--scale-hero));
@@ -373,31 +461,85 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 .section-head .divider{margin:16px auto}
 
 /* ===== Category split ===== */
-.cat-split{display:grid;grid-template-columns:repeat(var(--cat-cols,2),1fr);gap:2px;background:var(--line)}
-.cat-panel{
-  position:relative;min-height:420px;background:var(--bg-card);
-  display:flex;align-items:flex-end;padding:44px;
-  overflow:hidden;transition:box-shadow .35s ease;
+.cat-carousel-wrap{position:relative;overflow:hidden;direction:ltr}
+.cat-split{
+  display:flex;overflow:hidden;background:none;
+  direction:ltr;
 }
-.cat-panel:hover{box-shadow:inset 0 0 0 1px var(--gold-dim)}
-.cat-panel .cat-bg{position:absolute;inset:0;opacity:1;transition:transform .6s ease}
-.cat-panel:hover .cat-bg{transform:scale(1.06)}
-.cat-content{position:relative;z-index:2}
-.cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
-.cat-content .eyebrow{margin-bottom:14px;display:block}
+.cat-panel{
+  position:relative;min-height:460px;background:var(--bg-card);
+  display:flex;align-items:flex-end;padding:44px;
+  overflow:hidden;transition:box-shadow .45s ease;
+  border-radius:20px;
+  flex:0 0 100%;
+  direction:rtl;
+}
+.cat-panel .cat-bg{position:absolute;inset:0;opacity:1;transition:transform .8s cubic-bezier(.16,1,.3,1),filter .6s ease}
+.cat-panel .cat-bg-mobile{display:none}
 @media(max-width:760px){
+  .cat-panel .cat-bg-desktop{display:none}
+  .cat-panel .cat-bg-mobile{display:block}
+}
+.cat-panel::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.55) 100%);
+  opacity:.75;transition:opacity .5s ease;
+  border-radius:inherit;
+}
+.cat-panel::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(var(--shadow-color),0);
+  transition:box-shadow .45s ease;
+  border-radius:inherit;
+}
+@media(hover:hover){
+  .cat-panel:hover{box-shadow:0 20px 46px rgba(var(--shadow-color),.32)}
+  .cat-panel:hover::before{box-shadow:inset 0 0 0 1px var(--gold-dim)}
+  .cat-panel:hover::after{opacity:.9}
+  .cat-panel:hover .cat-bg{transform:scale(1.08);filter:brightness(.92)}
+  .cat-panel:hover .cat-content{transform:translateY(-6px)}
+  .cat-panel:hover .cat-content .eyebrow{color:var(--gold-light)}
+}
+.cat-content{position:relative;z-index:2;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.cat-content h3{font-family:var(--font-heading);font-size:calc(34px * var(--scale-heading));margin-bottom:2px}
+.cat-content .eyebrow{margin-bottom:14px;display:block;transition:color .35s ease}
+
+/* desktop prev/next arrows — used instead of scrolling */
+.cat-nav-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(10,10,11,.45);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.28);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;line-height:1;z-index:5;cursor:pointer;
+  transition:background .25s ease,border-color .25s ease,transform .25s ease;
+}
+.cat-nav-btn:hover{background:var(--gold);border-color:var(--gold);color:#0a0a0b;transform:translateY(-50%) scale(1.06)}
+.cat-nav-prev{left:24px}
+.cat-nav-next{right:24px}
+
+@media(max-width:760px){
+  .cat-carousel-wrap{-webkit-tap-highlight-color:transparent}
+  .cat-nav-btn{display:none}
   .cat-split{
-    display:flex;grid-template-columns:none;background:none;gap:16px;
+    display:flex;background:none;gap:16px;
     overflow-x:auto;scroll-snap-type:x mandatory;
-    padding:20px 22vw;-webkit-overflow-scrolling:touch;
+    padding:26px 22vw;-webkit-overflow-scrolling:touch;
     scrollbar-width:none;-ms-overflow-style:none;
+    perspective:1200px;
+    width:auto !important;transform:none !important;
   }
   .cat-split::-webkit-scrollbar{display:none}
   .cat-panel{
-    flex:0 0 74vw;min-height:340px;border-radius:20px;
+    flex:0 0 74vw !important;min-height:340px;border-radius:20px;
     scroll-snap-align:center;scroll-snap-stop:always;
-    will-change:transform,opacity;
   }
+}
+.cat-dots{display:none}
+@media(max-width:760px){
+  .cat-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:8px 0 6px}
+  .cat-dot{width:6px;height:6px;border-radius:50%;background:var(--line);border:none;padding:0;transition:background .35s cubic-bezier(.16,1,.3,1),transform .35s cubic-bezier(.16,1,.3,1),width .35s cubic-bezier(.16,1,.3,1)}
+  .cat-dot.active{background:var(--gold);width:20px;border-radius:4px;transform:scale(1)}
 }
 
 /* ===== Features bar ===== */
@@ -407,9 +549,9 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 .feature:hover{background:rgba(185,151,94,.04)}
 .feature:last-child{border-left:none}
 .feature svg{flex:none;color:var(--gold);width:20px;height:20px;padding:12px;box-sizing:content-box;border-radius:50%;background:rgba(185,151,94,.08);border:1px solid rgba(185,151,94,.18)}
-.feature h4{font-size:calc(14px * var(--scale-body));margin-bottom:4px}
+.feature h4{font-size:calc(14px * var(--scale-body));margin-bottom:4px;color:var(--text)}
 .feature p{font-size:calc(12.5px * var(--scale-body));color:var(--text-faint)}
-@media(max-width:760px){.features .container{grid-template-columns:1fr 1fr}.feature{border-left:none;border-bottom:1px solid var(--line)}}
+@media(max-width:760px){.features .container{grid-template-columns:1fr 1fr}.feature{border-left:none;border-bottom:1px solid var(--line);padding:26px 14px;gap:10px}.feature svg{width:16px;height:16px;padding:9px}.feature h4{font-size:calc(12.5px * var(--scale-body));line-height:1.35}.feature p{font-size:calc(11px * var(--scale-body));line-height:1.4}}
 
 /* ===== Product grid ===== */
 .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px;flex-wrap:wrap}
@@ -426,14 +568,12 @@ html[data-theme="light"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{co
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}}
 @media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 
-.card{background:var(--bg-card);border:1px solid var(--line);border-top:2px solid transparent;transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow-sm);min-width:0;max-width:100%;overflow:hidden;box-sizing:border-box}
+.card{background:var(--bg-card);border:1px solid var(--line);border-top:2px solid transparent;border-radius:12px;transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow-sm);min-width:0;max-width:100%;overflow:hidden;box-sizing:border-box}
 .wishlist-btn{color:var(--text-dim);transition:color .2s,transform .15s}
 .wishlist-btn:hover{color:var(--gold-light)}
 .wishlist-btn.active{color:var(--danger)}
 .wishlist-btn.active svg{transform:scale(1.05)}
 .wishlist-btn:active{transform:scale(.9)}
-.card-wishlist{position:absolute;top:10px;left:10px;z-index:3;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:rgba(10,10,11,.55);border-radius:50%;backdrop-filter:blur(2px)}
-html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .pd-wishlist-btn{width:52px;height:52px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
 .pd-wishlist-btn svg{width:20px;height:20px}
 .card:hover{border-color:var(--gold-dim);border-top-color:var(--gold);transform:translateY(-5px);box-shadow:var(--shadow-md)}
@@ -441,7 +581,63 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
 .card:hover .card-img img{transform:scale(1.06)}
 .card-img .ph{color:var(--text-faint);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.1em;text-align:center;padding:20px}
-.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:calc(10px * var(--scale-product));padding:4px 9px;letter-spacing:.05em;box-shadow:0 4px 10px rgba(185,151,94,.3)}
+.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:calc(10px * var(--scale-product));padding:4px 9px;border-radius:6px;letter-spacing:.05em;box-shadow:0 4px 10px rgba(185,151,94,.3)}
+.new-arrivals-scroll{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.new-arrivals-scroll::-webkit-scrollbar{display:none;height:0}
+.new-arrivals-scroll .card{flex:0 0 260px;scroll-snap-align:start}
+@media(max-width:640px){.new-arrivals-scroll .card{flex-basis:210px}}
+.bestsellers-scroll{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.bestsellers-scroll::-webkit-scrollbar{display:none;height:0}
+.bestsellers-scroll .card{flex:0 0 260px;scroll-snap-align:start}
+@media(max-width:640px){.bestsellers-scroll .card{flex-basis:210px}}
+
+/* ===== پنل‌های شیشه‌ای صفحه اصلی (جدیدترین‌ها / تخفیف‌های امروز / پرفروش‌ترین‌ها) ===== */
+.glass-band{position:relative;padding:28px 0 34px;margin-bottom:6px;overflow:hidden}
+.glass-band::before{content:"";position:absolute;inset:0;z-index:-1}
+.glass-band .container{position:relative}
+.glass-band .section-head .eyebrow{padding:4px 12px;border-radius:100px;display:inline-block;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+
+.glass-band.glass-new::before{background:linear-gradient(160deg,rgba(120,224,178,.22),rgba(120,224,178,.04) 55%,transparent);}
+.glass-band.glass-deals::before{background:linear-gradient(160deg,rgba(255,150,120,.22),rgba(255,150,120,.05) 55%,transparent);}
+.glass-band.glass-best::before{background:linear-gradient(160deg,rgba(120,170,255,.22),rgba(120,170,255,.05) 55%,transparent);}
+
+.glass-new .section-head .eyebrow{background:rgba(60,190,140,.14);color:#1c8f66}
+.glass-deals .section-head .eyebrow{background:rgba(255,120,80,.14);color:#e0562a}
+.glass-best .section-head .eyebrow{background:rgba(70,130,255,.14);color:#3568e0}
+
+.glass-scroll{display:flex;gap:18px;overflow-x:auto;padding:8px 2px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.glass-scroll::-webkit-scrollbar{display:none;height:0}
+.glass-scroll .card{flex:0 0 240px;scroll-snap-align:start;scroll-snap-stop:always}
+@media(max-width:640px){.glass-scroll .card{flex-basis:196px}}
+
+.glass-scroll .card{
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.55);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:0 8px 28px rgba(30,40,60,.10), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.glass-scroll .card-img{aspect-ratio:1/1;background:transparent;padding:10px}
+.glass-scroll .card-img img{object-fit:contain;border-radius:14px}
+.glass-scroll .card-body{padding:6px 16px 18px;text-align:center;align-items:center}
+.glass-scroll .card-body h3{font-size:14px}
+.glass-scroll .card-price{justify-content:center}
+
+.glass-new .glass-scroll .card{background:rgba(214,250,232,.5)}
+.glass-new .glass-scroll .card-img img{background:rgba(255,255,255,.55)}
+.glass-new .glass-scroll .card:hover{box-shadow:0 14px 34px rgba(60,190,140,.24), inset 0 1px 0 rgba(255,255,255,.6)}
+
+.glass-deals .glass-scroll .card{background:rgba(255,225,213,.5)}
+.glass-deals .glass-scroll .card-img img{background:rgba(255,255,255,.55)}
+.glass-deals .glass-scroll .card:hover{box-shadow:0 14px 34px rgba(255,120,80,.24), inset 0 1px 0 rgba(255,255,255,.6)}
+
+.glass-best .glass-scroll .card{background:rgba(219,235,255,.5)}
+.glass-best .glass-scroll .card-img img{background:rgba(255,255,255,.55)}
+.glass-best .glass-scroll .card:hover{box-shadow:0 14px 34px rgba(70,130,255,.24), inset 0 1px 0 rgba(255,255,255,.6)}
+.card-thumbs{display:flex;gap:6px;padding:8px 2px 0}
+.card-thumb{flex:1;aspect-ratio:1/1;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:var(--bg-alt)}
+.card-thumb img{width:100%;height:100%;object-fit:cover}
+.card-discount{position:absolute;top:10px;left:10px;z-index:3;background:var(--danger);color:#fff;font-size:calc(11px * var(--scale-product));font-weight:600;padding:4px 9px;border-radius:6px;letter-spacing:.02em;box-shadow:0 4px 10px rgba(0,0,0,.25)}
 .card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(1px);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
 .card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:rgba(192,86,63,.92);color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px}
 .pd-lowstock{color:var(--danger);font-weight:600}
@@ -453,7 +649,7 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .card-price .was{color:var(--text-faint);font-size:calc(12.5px * var(--scale-product));text-decoration:line-through;white-space:nowrap}
 .card-actions{display:flex;gap:8px;margin-top:10px;min-width:0}
 .card-actions .btn{flex:1;padding:10px;font-size:12.5px;justify-content:center}
-.icon-sq{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--text-dim);transition:.2s}
+.icon-sq{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;color:var(--text-dim);transition:.2s}
 .icon-sq:hover{border-color:var(--gold);color:var(--gold-light)}
 
 .empty-state{padding:80px 20px;text-align:center;color:var(--text-faint)}
@@ -473,7 +669,34 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 /* ===== Product detail ===== */
 .pd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:flex-start}
 @media(max-width:860px){.pd-wrap{grid-template-columns:1fr;gap:30px}}
-@media(min-width:861px){.pd-wrap>.pd-gallery-col{position:sticky;top:104px}}
+@media(min-width:861px){
+  .pd-wrap>.pd-gallery-col{position:sticky;top:104px}
+  /* Desktop only: bigger image on the right, info on the left, rounded corners */
+  .pd-wrap{grid-template-columns:1.15fr 1fr;gap:64px}
+  .pd-wrap>.pd-gallery-col{order:1}
+  .pd-wrap>.pd-info{order:2}
+  .pd-img{border-radius:18px}
+  .pd-gallery-main{border-radius:18px}
+  .pd-gallery-thumbs{justify-content:center}
+  .pd-gallery-thumbs button{border-radius:8px}
+  .pd-new-badge{display:flex}
+}
+/* ===== نشان «جدید» — فقط دسکتاپ، گوشه بالا چپ تصویر محصول، تا ۷۲ ساعت پس از افزودن ===== */
+.pd-new-badge{
+  display:none;
+  position:absolute;top:14px;left:14px;z-index:4;
+  align-items:center;
+  background:var(--bg-card);
+  color:var(--gold);
+  border:1px solid var(--gold-dim);
+  border-radius:8px;
+  padding:5px 12px;
+  font-family:var(--font-product);
+  font-size:6px;
+  font-weight:600;
+  letter-spacing:.05em;
+  box-shadow:var(--shadow-sm);
+}
 .pd-img{aspect-ratio:1/1;background:#0d0d0e;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .pd-img img{width:100%;height:100%;object-fit:cover}
 
@@ -498,11 +721,28 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .pd-gallery-hint{position:absolute;bottom:14px;left:14px;z-index:3;background:rgba(10,10,11,.55);color:var(--text-dim);font-size:10.5px;padding:5px 10px;border-radius:20px;letter-spacing:.03em;pointer-events:none}
 
 .pd-info .cat-tag{font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase}
+.pd-product-badge{display:block;width:fit-content;font-family:var(--font-product);font-size:calc(10.5px * var(--scale-product));letter-spacing:.05em;padding:4px 11px;border-radius:20px;background:var(--gold);color:#0a0a0b;font-weight:600;margin-bottom:10px}
 .pd-info h1{font-family:var(--font-product);font-size:calc(32px * var(--scale-product));margin:8px 0 12px;line-height:1.25}
 .pd-price{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;font-family:var(--font-product)}
 .pd-price .now{font-size:calc(24px * var(--scale-product));color:var(--gold-light);font-weight:600}
 .pd-price .was{color:var(--text-faint);text-decoration:line-through;font-size:calc(14px * var(--scale-product))}
 .pd-desc{color:var(--text-dim);font-family:var(--font-product);font-size:calc(14px * var(--scale-product));margin-bottom:20px;line-height:1.8}
+
+/* ===== ویژگی‌های پارچه (قابل تعریف در ادمین) ===== */
+.pd-fabric-features{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.pd-fabric-feature{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:84px;text-align:center;padding:12px 8px;border:1px solid var(--line);background:var(--bg-card);border-radius:var(--radius)}
+.pd-fabric-feature svg{color:var(--gold)}
+.pd-fabric-feature span{color:var(--text-dim);line-height:1.4}
+@media(max-width:480px){.pd-fabric-feature{min-width:80px}}
+
+/* ===== انتخاب رنگ (قابل تعریف در ادمین) ===== */
+.pd-color-section{margin-bottom:20px}
+.pd-color-label{font-size:12.5px;color:var(--text-dim);margin-bottom:10px}
+.pd-color-label b{color:var(--text);font-weight:600}
+.pd-color-row{display:flex;gap:10px;flex-wrap:wrap}
+.pd-color-dot{width:32px;height:32px;border-radius:50%;flex:none;border:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.15);transition:.2s;position:relative;padding:0}
+.pd-color-dot:hover{transform:translateY(-2px)}
+.pd-color-dot.active{outline:2px solid var(--gold);outline-offset:2px}
 
 /* ===== lightbox (click-to-zoom viewer) ===== */
 .lightbox-overlay{position:fixed;inset:0;background:rgba(6,6,7,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;align-items:center;justify-content:center}
@@ -522,18 +762,36 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .lightbox-hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:var(--text-faint);font-size:11.5px;letter-spacing:.05em;z-index:2}
 @media(max-width:640px){.lightbox-arrow{width:38px;height:38px}}
 .qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
-.qty-box{display:flex;align-items:center;border:1px solid var(--line)}
+.qty-box{display:flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden}
 .qty-box button{width:38px;height:40px}
 .qty-box span{width:40px;text-align:center;font-size:calc(14px * var(--scale-body))}
 .size-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.size-opt{width:44px;height:40px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:calc(13px * var(--scale-body));transition:.2s}
-.size-opt.active,.size-opt:hover{border-color:var(--gold);color:var(--gold-light)}
+.size-opt{width:46px;height:42px;border:1px solid var(--line);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:calc(13px * var(--scale-body));font-weight:500;transition:.2s}
+.size-opt.active{background:var(--gold);border-color:var(--gold);color:#0a0a0b}
+.size-opt:not(.active):not(.out):hover{border-color:var(--gold);color:var(--gold-light)}
 .size-opt.out{opacity:.35;color:var(--text-faint);text-decoration:line-through;cursor:not-allowed;pointer-events:none;border-color:var(--line);background:none}
 .size-qty-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
 .size-qty-row input{flex:none}
 .size-qty-row input.sq-name{width:90px}
 .size-qty-row input.sq-qty{width:80px}
 .size-qty-row .sq-remove{width:32px;height:32px;flex:none;border:1px solid var(--line);color:var(--text-faint);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;background:none}
+.fabric-feature-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding:10px;border:1px solid var(--line);border-radius:6px;flex-wrap:wrap}
+.fabric-feature-row .ff-preview{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;color:var(--gold)}
+.fabric-feature-row select.ff-icon{flex:1;min-width:130px}
+.fabric-feature-row input.ff-label{flex:1;min-width:110px}
+.fabric-feature-row input.ff-size{width:64px;flex:none}
+.fabric-feature-row .ff-clear{flex:none;font-size:11px;color:var(--text-faint);text-decoration:underline}
+.color-preset-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.color-preset-dot{width:30px;height:30px;border-radius:50%;flex:none;border:2px solid var(--line);padding:0;position:relative;transition:.15s}
+.color-preset-dot.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(185,151,94,.35)}
+.color-preset-dot.selected::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.8)}
+.dual-color-builder{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.dual-color-builder select{flex:1;min-width:110px}
+.selected-color-list{display:flex;flex-wrap:wrap;gap:10px}
+.selected-color-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.selected-color-item .sc-dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--line)}
+.selected-color-item span{font-size:10px;color:var(--text-faint);max-width:60px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.selected-color-item button{font-size:10px;color:var(--danger);text-decoration:underline}
 .pd-meta{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
 
 /* ===== نشان‌های اطمینان کنار دکمه خرید (اصالت کالا / گارانتی بازگشت) ===== */
@@ -570,13 +828,13 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .cart-head h3{font-family:var(--font-heading);font-size:calc(22px * var(--scale-heading))}
 .cart-items{flex:1;overflow-y:auto;padding:10px 24px;font-family:var(--font-body)}
 .cart-line{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
-.cart-line .thumb{width:76px;height:92px;background:#0d0d0e;flex:none;border:1px solid var(--line);overflow:hidden}
+.cart-line .thumb{width:76px;height:92px;background:#0d0d0e;flex:none;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:block}
 .cart-line .thumb img{width:100%;height:100%;object-fit:cover}
 .cart-line .ci-body{flex:1;display:flex;flex-direction:column;gap:6px}
 .cart-line h4{font-size:calc(14px * var(--scale-body))}
 .cart-line .ci-meta{font-size:calc(11.5px * var(--scale-body));color:var(--text-faint)}
 .cart-line .ci-row{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
-.cart-line .ci-qty{display:flex;align-items:center;border:1px solid var(--line)}
+.cart-line .ci-qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden}
 .cart-line .ci-qty button{width:26px;height:26px;font-size:calc(13px * var(--scale-body))}
 .cart-line .ci-qty span{width:26px;text-align:center;font-size:calc(12.5px * var(--scale-body))}
 .cart-line .ci-price{color:var(--gold-light);font-size:calc(13.5px * var(--scale-body))}
@@ -589,13 +847,13 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .narrow{max-width:420px;margin:0 auto}
 /* ===== تخمین هزینه ارسال (صفحه محصول و سبد خرید) ===== */
 .ship-estimate{
-  margin-top:18px;padding:16px;border:1px solid var(--line);background:var(--bg-card);
+  margin-top:18px;padding:16px;border:1px solid var(--line);background:var(--bg-card);border-radius:10px;
 }
 .ship-estimate-head{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);margin-bottom:10px}
 .ship-estimate-head svg{color:var(--gold);flex:none}
 .ship-estimate select{
   width:100%;padding:10px 12px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
-  font-family:inherit;font-size:13px;
+  font-family:inherit;font-size:13px;border-radius:8px;
 }
 .ship-estimate select:focus{outline:none;border-color:var(--gold)}
 .ship-estimate-result{margin-top:10px;font-size:13px;color:var(--text-dim)}
@@ -605,7 +863,7 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .cart-ship-row label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:6px}
 .cart-ship-row select{
   width:100%;padding:9px 10px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
-  font-family:inherit;font-size:12.5px;
+  font-family:inherit;font-size:12.5px;border-radius:8px;
 }
 .cart-ship-row select:focus{outline:none;border-color:var(--gold)}
 
@@ -613,7 +871,7 @@ html[data-theme="light"] .card-wishlist{background:rgba(255,255,255,.7)}
 .form-field label{display:block;font-size:calc(12.5px * var(--scale-body));color:var(--text-dim);margin-bottom:8px}
 .form-field input,.form-field textarea,.form-field select{
   width:100%;background:var(--bg-card);border:1px solid var(--line);color:var(--text);
-  padding:12px 14px;font-size:calc(14px * var(--scale-body));font-family:inherit;
+  padding:12px 14px;font-size:calc(14px * var(--scale-body));font-family:inherit;border-radius:8px;
 }
 .form-field input:focus,.form-field textarea:focus,.form-field select:focus{outline:none;border-color:var(--gold)}
 .form-field textarea{min-height:100px;resize:vertical}
@@ -657,13 +915,13 @@ footer.site{font-family:var(--font-footer)}
 .admin-title{font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:24px}
 .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
 @media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,1fr)}}
-.stat-card{background:var(--bg-card);border:1px solid var(--line);padding:20px}
+.stat-card{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px}
 .stat-card .num{font-size:26px;color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-weight:600}
 .stat-card .lbl{font-size:12px;color:var(--text-faint);margin-top:4px}
 table.admin-table{width:100%;border-collapse:collapse;font-size:13.5px}
 table.admin-table th{text-align:right;color:var(--text-faint);font-weight:500;font-size:11.5px;letter-spacing:.05em;padding:12px;border-bottom:1px solid var(--line)}
 table.admin-table td{padding:12px;border-bottom:1px solid var(--line);color:var(--text-dim);vertical-align:middle}
-table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid var(--line)}
+table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid var(--line);border-radius:6px}
 .table-wrap{overflow-x:auto;background:var(--bg-card);border:1px solid var(--line)}
 .tbl-actions{display:flex;gap:8px}
 .tbl-actions button{font-size:12px;color:var(--text-dim);text-decoration:underline}
@@ -683,7 +941,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 
 /* multi-image admin uploader */
 .multi-upload-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
-.multi-upload-thumb{position:relative;aspect-ratio:3/4;border:1px solid var(--line);overflow:hidden;background:var(--bg-card)}
+.multi-upload-thumb{position:relative;aspect-ratio:3/4;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg-card)}
 .multi-upload-thumb img{width:100%;height:100%;object-fit:cover}
 .multi-upload-thumb .mu-main-tag{position:absolute;top:4px;right:4px;background:var(--gold);color:#0a0a0b;font-size:9px;padding:2px 6px;letter-spacing:.03em}
 .multi-upload-thumb .mu-remove{position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
@@ -712,7 +970,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .toggle-row .tr-label{font-size:13.5px}
 .logo-upload-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.logo-upload-box{width:110px;height:110px;border:1px dashed var(--line);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;background:#0d0d0e}
+.logo-upload-box{width:110px;height:110px;border:1px dashed var(--line);border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;background:#0d0d0e}
 .theme-asset-row{display:flex;gap:32px;flex-wrap:wrap;margin-top:8px}
 .theme-asset-col{display:flex;flex-direction:column;gap:12px}
 .theme-asset-label{font-size:13px;color:var(--text-dim)}
@@ -721,7 +979,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .logo-upload-box:hover{border-color:var(--gold)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal-box{background:var(--bg-alt);border:1px solid var(--line);max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px}
+.modal-box{background:var(--bg-alt);border:1px solid var(--line);border-radius:14px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px}
 .modal-box h3{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:20px}
 .modal-close-row{display:flex;justify-content:flex-end;margin-bottom:6px}
 
@@ -737,6 +995,14 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 
 .breadcrumb{font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);margin-bottom:30px}
 .breadcrumb a:hover{color:var(--gold-light)}
+.breadcrumb-desktop-only{display:none}
+@media(min-width:861px){.breadcrumb-desktop-only{display:inline}}
+.pd-page-section{padding-top:28px}
+@media(min-width:861px){
+  .pd-page-section{padding-top:18px}
+  .pd-page-section .breadcrumb{font-size:4.5px;letter-spacing:.02em;margin-bottom:10px;color:var(--text-dim)}
+  .pd-page-section .pd-wrap>.pd-gallery-col{top:88px}
+}
 
 .page-head{padding:60px 0 40px;border-bottom:1px solid var(--line);text-align:center}
 .page-head h1{font-family:var(--font-heading);font-size:calc(42px * var(--scale-heading))}
@@ -778,6 +1044,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
   animation:gl-spin .75s linear infinite;
 }
 html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-color:var(--gold-dim)}
+html[data-theme="classic"] .gl-spinner{border-top-color:var(--gold);border-right-color:var(--gold-dim)}
 @keyframes gl-spin{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -803,6 +1070,7 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
       <button class="icon-btn theme-toggle header-theme-mobile" id="themeToggleBtnMobile" title="تغییر تم سایت">
         <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-classic" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
       </button>
       <button class="icon-btn header-search-mobile" id="searchOpenBtnMobile" title="جستجو">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -822,7 +1090,7 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
     </div>
     <a href="#/" class="logo" data-link>
       <span id="siteLogoSlot"><svg class="raven-mark" width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/>
+        <path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/>
       </svg></span>
       <span class="wordmark">WHITE RAVEN<small id="logoSubtitleText">WOMEN'S WEAR</small></span>
     </a>
@@ -833,6 +1101,7 @@ html[data-theme="light"] .gl-spinner{border-top-color:var(--gold);border-right-c
       <button class="icon-btn theme-toggle" id="themeToggleBtn" title="تغییر تم سایت">
         <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-classic" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
       </button>
       <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
@@ -1015,6 +1284,73 @@ function fillDatalist(id, items){
 }
 const $$ = (sel,root=document) => [...root.querySelectorAll(sel)];
 
+/* ===== ویژگی‌های پارچه — پیش‌فرض‌های آماده برای انتخاب در ادمین ===== */
+const FABRIC_FEATURE_PRESETS = [
+  {key:'breathable', label:'تنفس‌پذیر', svg:'<path d="M3 8c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 3 2"/><path d="M3 14c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 3 2"/><path d="M3 20c2 0 3-2 5-2s3 2 5 2 3-2 5-2 3 2 3 2"/>'},
+  {key:'soft', label:'لطیف و نرم', svg:'<path d="M17.5 12a5.5 5.5 0 0 0-11 0v1a3 3 0 0 0 0 6h11a3 3 0 0 0 0-6z"/>'},
+  {key:'shaping', label:'فرم‌دهی طبیعی', svg:'<path d="M12 3c-3 2-4 5-4 8s2 6 4 10c2-4 4-7 4-10s-1-6-4-8z"/>'},
+  {key:'hypoallergenic', label:'ضدحساسیت', svg:'<path d="M12 3l7 3.5v5c0 4.6-3 8.4-7 9.5-4-1.1-7-4.9-7-9.5v-5L12 3z"/><path d="M9.5 12l1.8 1.8L14.8 10"/>'},
+  {key:'quickdry', label:'سریع‌خشک‌شو', svg:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><circle cx="19" cy="6" r="1.4"/>'},
+  {key:'stretch', label:'ارتجاعی', svg:'<path d="M4 12h4M16 12h4M8 12a4 4 0 0 1 8 0"/><path d="M6 9l-2 3 2 3M18 9l2 3-2 3"/>'},
+  {key:'antibacterial', label:'ضدباکتری', svg:'<path d="M12 3l7 3.5v5c0 4.6-3 8.4-7 9.5-4-1.1-7-4.9-7-9.5v-5L12 3z"/><circle cx="12" cy="12" r="2.3"/>'},
+  {key:'durable', label:'دوام بالا', svg:'<path d="M6 7h2v10H6zM16 7h2v10h-2z"/><path d="M8 12h8M8 9v6M16 9v6"/>'},
+  {key:'invisible', label:'نامرئی زیر لباس', svg:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>'},
+  {key:'cooling', label:'خنک‌کننده', svg:'<path d="M12 2v20M5 6l14 12M19 6L5 18M2 12h20"/>'},
+  {key:'warming', label:'گرم‌کننده', svg:'<path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-1.7.8-3 1.7-4.2C9.5 9 10 10 10 10.8 10 8 10.5 5.5 12 3z"/>'},
+  {key:'seamless', label:'بدون درز', svg:'<path d="M8 12a4 4 0 1 1 0-.01M16 12a4 4 0 1 1 0-.01"/>'}
+];
+function fabricFeaturePreset(key){ return FABRIC_FEATURE_PRESETS.find(f=>f.key===key); }
+function fabricFeatureIconSvg(key, size=20){
+  const preset = fabricFeaturePreset(key);
+  if(!preset) return '';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${preset.svg}</svg>`;
+}
+
+/* ===== رنگ‌های موجود — پالت آماده برای انتخاب در ادمین ===== */
+const COLOR_PRESETS = [
+  {key:'black', name:'مشکی', hex:'#0a0a0b'},
+  {key:'white', name:'سفید', hex:'#f7f5f0'},
+  {key:'red', name:'قرمز', hex:'#dc2626'},
+  {key:'maroon', name:'زرشکی', hex:'#7f1d1d'},
+  {key:'pink', name:'صورتی', hex:'#ec4899'},
+  {key:'peach', name:'گلبهی', hex:'#fbc4ab'},
+  {key:'purple', name:'بنفش', hex:'#8b5cf6'},
+  {key:'lilac', name:'یاسی', hex:'#c4b5d4'},
+  {key:'blue', name:'آبی', hex:'#2563eb'},
+  {key:'navy', name:'سرمه‌ای', hex:'#1e3a5f'},
+  {key:'turquoise', name:'فیروزه‌ای', hex:'#14b8a6'},
+  {key:'green', name:'سبز', hex:'#16a34a'},
+  {key:'yellow', name:'زرد', hex:'#eab308'},
+  {key:'orange', name:'نارنجی', hex:'#f97316'},
+  {key:'brown', name:'قهوه‌ای', hex:'#92400e'},
+  {key:'beige', name:'بژ', hex:'#d6c7a1'},
+  {key:'cream', name:'کرم', hex:'#f5ecd7'},
+  {key:'gold', name:'طلایی', hex:'#b9975e'},
+  {key:'silver', name:'نقره‌ای', hex:'#9ca3af'},
+  {key:'gray', name:'خاکستری', hex:'#6b7280'}
+];
+function colorPreset(key){ return COLOR_PRESETS.find(c=>c.key===key); }
+function colorSwatchStyle(item){
+  const c1 = colorPreset(item.c1);
+  if(!c1) return '';
+  if(item.c2){
+    const c2 = colorPreset(item.c2);
+    if(c2) return `background:linear-gradient(90deg, ${c1.hex} 50%, ${c2.hex} 50%)`;
+  }
+  return `background:${c1.hex}`;
+}
+function colorLabel(item){
+  if(item.label) return item.label;
+  const c1 = colorPreset(item.c1);
+  if(item.c2){
+    const c2 = colorPreset(item.c2);
+    if(c1 && c2) return `${c1.name} و ${c2.name}`;
+  }
+  return c1 ? c1.name : '';
+}
+
+
+
 /* ---- Global loading overlay: call showLoading() before any async action
    and hideLoading() in a finally block. Counter-based so nested/overlapping
    calls don't hide the overlay too early. ---- */
@@ -1103,7 +1439,11 @@ function rowToProduct(row){
     id: row.id, name: row.name, category: row.category,
     price: Number(row.price)||0, compareAt: Number(row.compare_at)||0,
     stock: Number(row.stock)||0, image: images[0]||'', images,
-    desc: row.desc||'', sizes: row.sizes||[]
+    desc: row.desc||'', sizes: row.sizes||[], badge: row.badge||'',
+    nameSize: row.name_size||null, catSize: row.cat_size||null,
+    priceSize: row.price_size||null, descSize: row.desc_size||null,
+    createdAt: row.created_at||null, fabricFeatures: row.fabric_features||[], colors: row.colors||[],
+    discountUpdatedAt: row.discount_updated_at||null
   };
 }
 
@@ -1169,7 +1509,11 @@ function productToRow(p){
   return {
     id: p.id, name: p.name, category: p.category, price: p.price,
     compare_at: p.compareAt||0, stock: p.stock, image: images[0]||'', images,
-    desc: p.desc||'', sizes: p.sizes||[]
+    desc: p.desc||'', sizes: p.sizes||[], badge: p.badge||'',
+    name_size: p.nameSize||null, cat_size: p.catSize||null,
+    price_size: p.priceSize||null, desc_size: p.descSize||null,
+    fabric_features: p.fabricFeatures||[], colors: p.colors||[],
+    discount_updated_at: p.discountUpdatedAt||null
   };
 }
 function normalizeImages(p){
@@ -1197,7 +1541,11 @@ async function loadProducts(){
         image,
         images,
         desc,
-        sizes
+        sizes,
+        created_at,
+        fabric_features,
+        colors,
+        discount_updated_at
       `)
       .order('created_at', {ascending:true})
       .limit(100);
@@ -1315,11 +1663,14 @@ function defaultSettings(){
   return {
     logoDark:'',
     logoLight:'',
+    logoClassic:'',
     logoSubtitle:"WOMEN'S WEAR",
     heroImageDark:'',
     heroImageLight:'',
+    heroImageClassic:'',
     heroImageDarkMobile:'',
     heroImageLightMobile:'',
+    heroImageClassicMobile:'',
     categories:[
       {slug:'women', label:'زنانه', tagline:'WOMEN', image:''},
       {slug:'men', label:'مردانه', tagline:'MEN', image:''}
@@ -1335,6 +1686,9 @@ function defaultSettings(){
     aboutHeading:'داستان برند',
     aboutText:'White Raven با هدف ارائه لباس زیر باکیفیت، راحت و شیک برای زنان و مردان شکل گرفت. ما معتقدیم که آنچه نزدیک‌ترین لایه به بدن شماست، باید بهترین کیفیت را داشته باشد.\nهر قطعه از محصولات ما با دقت در انتخاب پارچه، دوخت و طراحی تولید می‌شود تا حسی از اعتماد به نفس و آرامش را در هر لحظه به شما هدیه دهد.\nکلاغ سفید، نماد تمایز و اصالت است؛ همان‌طور که برند ما تلاش می‌کند در میان انبوه گزینه‌های بازار، انتخابی متفاوت و قابل اعتماد باشد.',
     aboutImage:'',
+    aboutImageClassic:'',
+    aboutImageLight:'',
+    aboutImageDark:'',
     fonts:{
       header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
@@ -1361,11 +1715,14 @@ function rowToSettings(row){
   return {
     logoDark: data.logoDark ?? data.logo ?? d.logoDark,
     logoLight: data.logoLight ?? d.logoLight,
+    logoClassic: data.logoClassic ?? d.logoClassic,
     logoSubtitle: data.logoSubtitle ?? d.logoSubtitle,
     heroImageDark: data.heroImageDark ?? data.heroImage ?? d.heroImageDark,
     heroImageLight: data.heroImageLight ?? d.heroImageLight,
+    heroImageClassic: data.heroImageClassic ?? d.heroImageClassic,
     heroImageDarkMobile: data.heroImageDarkMobile ?? d.heroImageDarkMobile,
     heroImageLightMobile: data.heroImageLightMobile ?? d.heroImageLightMobile,
+    heroImageClassicMobile: data.heroImageClassicMobile ?? d.heroImageClassicMobile,
     categories: (Array.isArray(data.categories) && data.categories.length) ? data.categories : d.categories,
     heroEyebrow: data.heroEyebrow ?? d.heroEyebrow,
     heroTitle: data.heroTitle ?? d.heroTitle,
@@ -1378,6 +1735,9 @@ function rowToSettings(row){
     aboutHeading: data.aboutHeading ?? d.aboutHeading,
     aboutText: data.aboutText ?? d.aboutText,
     aboutImage: data.aboutImage ?? d.aboutImage,
+    aboutImageClassic: data.aboutImageClassic ?? d.aboutImageClassic,
+    aboutImageLight: data.aboutImageLight ?? d.aboutImageLight,
+    aboutImageDark: data.aboutImageDark ?? d.aboutImageDark,
     fonts: {...d.fonts, ...(data.fonts||{})},
     scales: {...d.scales, ...(data.scales||{})},
     freeShippingThreshold: (typeof data.freeShippingThreshold === 'number') ? data.freeShippingThreshold : d.freeShippingThreshold,
@@ -1419,10 +1779,13 @@ async function loadSettings(){
         ...s,
         logoDark: s.logoDark ?? s.logo ?? defaultSettings().logoDark,
         logoLight: s.logoLight ?? defaultSettings().logoLight,
+        logoClassic: s.logoClassic ?? defaultSettings().logoClassic,
         heroImageDark: s.heroImageDark ?? s.heroImage ?? defaultSettings().heroImageDark,
         heroImageLight: s.heroImageLight ?? defaultSettings().heroImageLight,
+        heroImageClassic: s.heroImageClassic ?? defaultSettings().heroImageClassic,
         heroImageDarkMobile: s.heroImageDarkMobile ?? defaultSettings().heroImageDarkMobile,
         heroImageLightMobile: s.heroImageLightMobile ?? defaultSettings().heroImageLightMobile,
+        heroImageClassicMobile: s.heroImageClassicMobile ?? defaultSettings().heroImageClassicMobile,
         categories: (Array.isArray(s.categories) && s.categories.length) ? s.categories : defaultSettings().categories,
         heroEyebrow: s.heroEyebrow ?? defaultSettings().heroEyebrow,
         heroTitle: s.heroTitle ?? defaultSettings().heroTitle,
@@ -1435,6 +1798,9 @@ async function loadSettings(){
         aboutHeading: s.aboutHeading ?? defaultSettings().aboutHeading,
         aboutText: s.aboutText ?? defaultSettings().aboutText,
         aboutImage: s.aboutImage ?? defaultSettings().aboutImage,
+        aboutImageClassic: s.aboutImageClassic ?? defaultSettings().aboutImageClassic,
+        aboutImageLight: s.aboutImageLight ?? defaultSettings().aboutImageLight,
+        aboutImageDark: s.aboutImageDark ?? defaultSettings().aboutImageDark,
         fonts:{
           ...defaultSettings().fonts,
           ...(s.fonts||{})
@@ -1471,22 +1837,42 @@ async function saveSettingsRemote(settings){
 
 /* ---------------- theme-aware logo / hero-image helpers ---------------- */
 function themeMode(){
-  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const t = document.documentElement.getAttribute('data-theme');
+  return (t === 'light' || t === 'classic') ? t : 'dark';
 }
 function getLogoForTheme(settings){
-  return themeMode()==='light'
-    ? (settings.logoLight || settings.logoDark || '')
-    : (settings.logoDark || settings.logoLight || '');
+  const m = themeMode();
+  if(m==='classic') return settings.logoClassic || settings.logoLight || settings.logoDark || '';
+  if(m==='light') return settings.logoLight || settings.logoDark || '';
+  return settings.logoDark || settings.logoLight || '';
 }
 function getHeroForTheme(settings){
-  return themeMode()==='light'
-    ? (settings.heroImageLight || settings.heroImageDark || '')
-    : (settings.heroImageDark || settings.heroImageLight || '');
+  const m = themeMode();
+  if(m==='classic') return settings.heroImageClassic || settings.heroImageLight || settings.heroImageDark || '';
+  if(m==='light') return settings.heroImageLight || settings.heroImageDark || '';
+  return settings.heroImageDark || settings.heroImageLight || '';
 }
 function getHeroForThemeMobile(settings){
-  return themeMode()==='light'
-    ? (settings.heroImageLightMobile || settings.heroImageDarkMobile || '')
-    : (settings.heroImageDarkMobile || settings.heroImageLightMobile || '');
+  const m = themeMode();
+  if(m==='classic') return settings.heroImageClassicMobile || settings.heroImageLightMobile || settings.heroImageDarkMobile || '';
+  if(m==='light') return settings.heroImageLightMobile || settings.heroImageDarkMobile || '';
+  return settings.heroImageDarkMobile || settings.heroImageLightMobile || '';
+}
+function getCategoryImageForTheme(c, mobile){
+  const m = themeMode();
+  const suffix = mobile ? 'Mobile' : '';
+  const order = m==='classic' ? ['Classic','Light','Dark'] : m==='light' ? ['Light','Classic','Dark'] : ['Dark','Classic','Light'];
+  for(const key of order){
+    const v = c[`image${suffix}${key}`];
+    if(v) return v;
+  }
+  return mobile ? (c.imageMobile || c.image || '') : (c.image || '');
+}
+function getAboutImageForTheme(settings){
+  const m = themeMode();
+  if(m==='classic') return settings.aboutImageClassic || settings.aboutImageLight || settings.aboutImageDark || settings.aboutImage || '';
+  if(m==='light') return settings.aboutImageLight || settings.aboutImageDark || settings.aboutImage || '';
+  return settings.aboutImageDark || settings.aboutImageLight || settings.aboutImage || '';
 }
 
 function renderCategoryNavLinks(settings){
@@ -1536,14 +1922,14 @@ function applySettingsToDOM(settings){
     if(logoSrc){
       slot.innerHTML = `<img class="logo-img" src="${logoSrc}" alt="لوگو">`;
     } else {
-      slot.innerHTML = `<svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
+      slot.innerHTML = `<svg class="raven-mark" width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg>`;
     }
   }
   const adminSlot = $('#adminLogoSlot');
   if(adminSlot){
     adminSlot.innerHTML = logoSrc
       ? `<img class="logo-img" style="height:26px" src="${logoSrc}" alt="لوگو">`
-      : `<svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg>`;
+      : `<svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg>`;
   }
   // تصویر پس‌زمینه هیرو (صفحه نخست) را هم بلافاصله با تم فعلی هماهنگ می‌کند،
   // بدون نیاز به رفرش صفحه — کاربرد اصلی: تعویض تم توسط مشتری
@@ -1805,14 +2191,15 @@ function router(preserveScroll){
 /* ---------------- shared UI bindings ---------------- */
 function bindGlobalUI(){
   function toggleTheme(){
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    if(isLight){
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    // چرخه: روشن (پیش‌فرض) ← کلاسیک ← مشکی کامل ← روشن
+    const next = cur === 'light' ? 'classic' : cur === 'classic' ? 'dark' : 'light';
+    if(next === 'dark'){
       document.documentElement.removeAttribute('data-theme');
-      try{ localStorage.setItem('wr-theme','dark'); }catch(e){}
-    }else{
-      document.documentElement.setAttribute('data-theme','light');
-      try{ localStorage.setItem('wr-theme','light'); }catch(e){}
+    } else {
+      document.documentElement.setAttribute('data-theme', next);
     }
+    try{ localStorage.setItem('wr-theme', next); }catch(e){}
     applySettingsToDOM(STATE.settings);
   }
   const themeBtn = $('#themeToggleBtn');
@@ -1896,20 +2283,58 @@ function catLabel(c){ const found = findCategory(c); return found ? found.label 
 function productImgHtml(p, cls='ph'){
   if(p.image) return `<img src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async">`;
   return `<div class="${cls}">
-    <svg width="30" height="30" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#555"/></svg>
+    <svg width="30" height="30" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg>
     <span>WHITE RAVEN<br>تصویر ثبت نشده</span>
   </div>`;
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* محصول تا ۷۲ ساعت پس از افزودن «جدید» محسوب می‌شود */
+function isNewProduct(p){
+  if(!p || !p.createdAt) return false;
+  const created = new Date(p.createdAt).getTime();
+  if(isNaN(created)) return false;
+  return (Date.now() - created) <= 72*60*60*1000;
+}
+function newBadgeHtml(p){
+  return isNewProduct(p) ? `<span class="pd-new-badge">جدید</span>` : '';
+}
+function fabricFeaturesHtml(p){
+  const feats = (p.fabricFeatures||[]).filter(f=>f && f.icon);
+  if(!feats.length) return '';
+  return `<div class="pd-fabric-features">
+    ${feats.slice(0,3).map(f=>{
+      const preset = fabricFeaturePreset(f.icon);
+      const label = (f.label!=null && f.label!=='') ? f.label : (preset?preset.label:'');
+      const size = f.size || 11.5;
+      return `<div class="pd-fabric-feature">
+        ${fabricFeatureIconSvg(f.icon, 22)}
+        <span style="font-size:${size}px">${escapeHtml(label)}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+function colorSectionHtml(p){
+  const colors = (p.colors||[]).filter(c=>c && c.c1);
+  if(!colors.length) return '';
+  const first = colorLabel(colors[0]);
+  return `<div class="pd-color-section" id="pdColorSection">
+    <div class="pd-color-label">رنگ: <b id="pdColorName">${escapeHtml(first)}</b></div>
+    <div class="pd-color-row">
+      ${colors.map((c,i)=>`<button type="button" class="pd-color-dot ${i===0?'active':''}" data-i="${i}" data-label="${escapeHtml(colorLabel(c))}" title="${escapeHtml(colorLabel(c))}" style="${colorSwatchStyle(c)}"></button>`).join('')}
+    </div>
+  </div>`;
+}
+
 /* ---------------- product gallery (multiple images, drag/swipe + zoom) ---------------- */
 function productGalleryHtml(p){
   const imgs = normalizeImages(p);
   if(!imgs.length){
-    return `<div class="pd-img">${productImgHtml(p,'ph')}</div>`;
+    return `<div class="pd-img" style="position:relative">${newBadgeHtml(p)}${productImgHtml(p,'ph')}</div>`;
   }
   return `
   <div class="pd-gallery" id="pdGallery" data-count="${imgs.length}">
+    ${newBadgeHtml(p)}
     <div class="pd-gallery-main" id="pdGalleryMain" dir="ltr">
       <div class="pd-gallery-track" id="pdGalleryTrack">
         ${imgs.map((src,i)=>`<div class="pd-gallery-slide"><img src="${src}" alt="${escapeHtml(p.name)} ${i+1}" draggable="false" ${i===0?'loading="eager"':'loading="lazy"'} decoding="async"></div>`).join('')}
@@ -1924,6 +2349,19 @@ function productGalleryHtml(p){
       ${imgs.map((src,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"><img src="${src}" alt="" loading="lazy" decoding="async"></button>`).join('')}
     </div>`:''}
   </div>`;
+}
+
+function bindProductColorPicker(){
+  const wrap = $('#pdColorSection');
+  if(!wrap) return;
+  const nameEl = $('#pdColorName');
+  $$('.pd-color-dot', wrap).forEach(dot=>{
+    dot.onclick = ()=>{
+      $$('.pd-color-dot', wrap).forEach(d=>d.classList.remove('active'));
+      dot.classList.add('active');
+      if(nameEl) nameEl.textContent = dot.dataset.label;
+    };
+  });
 }
 
 function bindProductGallery(p){
@@ -2073,16 +2511,20 @@ function wireLightbox(){
 
 function productCard(p){
   const off = p.compareAt && p.compareAt > p.price;
+  const discountPct = off ? Math.round((p.compareAt - p.price) / p.compareAt * 100) : 0;
+  const extraImgs = normalizeImages(p).slice(1, 5);
   return `
   <div class="card">
     <a href="#/product/${p.id}" data-link>
       <div class="card-img">
         ${productImgHtml(p)}
-        ${off ? `<span class="card-badge">تخفیف</span>` : ''}
+        ${off ? `<span class="card-discount">${discountPct}%-</span>` : ''}
         ${p.stock<=0 ? `<div class="card-out">ناموجود</div>` : (p.stock>0 && p.stock<=2 ? `<div class="card-lowstock">تنها ${p.stock} عدد باقی مانده</div>` : '')}
       </div>
+      ${extraImgs.length ? `<div class="card-thumbs">
+        ${extraImgs.map(src=>`<span class="card-thumb"><img src="${src}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async"></span>`).join('')}
+      </div>` : ''}
     </a>
-    ${wishlistBtnHtml(p, 'wishlist-btn card-wishlist')}
     <div class="card-body">
       <span class="cat-tag">${catLabel(p.category)}</span>
       <a href="#/product/${p.id}" data-link><h3>${escapeHtml(p.name)}</h3></a>
@@ -2092,17 +2534,47 @@ function productCard(p){
       </div>
       <div class="card-actions">
         <button class="btn ${p.stock<=0?'btn-ghost':''}" ${p.stock<=0?'disabled':''} onclick="quickAdd('${p.id}')">${p.stock<=0?'ناموجود':'افزودن به سبد'}</button>
-        <a href="#/product/${p.id}" data-link class="icon-sq" title="مشاهده">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-        </a>
+        ${wishlistBtnHtml(p, 'wishlist-btn icon-sq')}
       </div>
     </div>
   </div>`;
 }
 
 /* ---------------- PAGES ---------------- */
+function catGradient(i){ return `linear-gradient(135deg,${i%2===0?'#2a2320,#0f0d0c':'#201f1e,#0c0c0d'})`; }
+function catPanelOne(c, i, opts){
+  opts = opts || {};
+  const cloneAttr = opts.clone ? ` data-clone="${opts.clone}"` : '';
+  const desktopImg = getCategoryImageForTheme(c, false);
+  const mobileImg = getCategoryImageForTheme(c, true) || desktopImg;
+  const bgDesktop = desktopImg ? `background:url('${desktopImg}') center/cover no-repeat` : `background:${catGradient(i)}`;
+  const bgMobile = mobileImg ? `background:url('${mobileImg}') center/cover no-repeat` : `background:${catGradient(i)}`;
+  return `
+    <a href="#/shop/${c.slug}" data-link class="cat-panel" data-real-index="${i}"${cloneAttr}>
+      <div class="cat-bg cat-bg-desktop" style="${bgDesktop}"></div>
+      <div class="cat-bg cat-bg-mobile" style="${bgMobile}"></div>
+      <div class="cat-content">
+        <span class="eyebrow">${escapeHtml(c.tagline || c.label)}</span>
+        <h3 class="serif">${escapeHtml(c.label)}</h3>
+        <div style="margin-top:16px"><span class="btn btn-ghost">مشاهده ‹</span></div>
+      </div>
+    </a>`;
+}
+function catPanelsHtml(cats){
+  if(!cats.length) return '';
+  if(cats.length === 1) return catPanelOne(cats[0], 0);
+  const first = catPanelOne(cats[0], 0, {clone:'end'});
+  const last = catPanelOne(cats[cats.length-1], cats.length-1, {clone:'start'});
+  const real = cats.map((c,i)=> catPanelOne(c, i)).join('');
+  return last + real + first;
+}
 function pageHome(){
   const featured = STATE.products.slice(0,8);
+  const newest = STATE.products.slice().sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,12);
+  const discounted = STATE.products.filter(p=> p.compareAt && p.compareAt > p.price)
+    .slice()
+    .sort((a,b)=> new Date(b.discountUpdatedAt || b.createdAt || 0) - new Date(a.discountUpdatedAt || a.createdAt || 0))
+    .slice(0,12);
   const heroImg = getHeroForTheme(STATE.settings);
   const heroImgMobile = getHeroForThemeMobile(STATE.settings);
   return `
@@ -2125,6 +2597,30 @@ function pageHome(){
     </div>
   </section>
 
+  ${newest.length ? `
+  <section class="section glass-band glass-new" style="padding-bottom:0">
+    <div class="container section-head" style="text-align:right;margin-bottom:20px">
+      <span class="eyebrow">NEW ARRIVALS</span>
+      <h2 class="serif" style="display:inline-block">جدیدترین‌های وایت ریون</h2>
+      <div class="divider" style="margin:16px 0 0"></div>
+    </div>
+    <div class="container">
+      <div class="glass-scroll">${newest.map(productCard).join('')}</div>
+    </div>
+  </section>` : ''}
+
+  ${discounted.length ? `
+  <section class="section glass-band glass-deals" style="padding-bottom:0">
+    <div class="container section-head" style="text-align:right;margin-bottom:20px">
+      <span class="eyebrow">TODAY'S DEALS</span>
+      <h2 class="serif" style="display:inline-block">تخفیف‌های امروز</h2>
+      <div class="divider" style="margin:16px 0 0"></div>
+    </div>
+    <div class="container">
+      <div class="glass-scroll">${discounted.map(productCard).join('')}</div>
+    </div>
+  </section>` : ''}
+
   <section class="section" style="padding-bottom:0">
     <div class="container section-head">
       <span class="eyebrow">CATEGORIES</span>
@@ -2132,16 +2628,16 @@ function pageHome(){
       <div class="divider"></div>
     </div>
   </section>
-  <div class="cat-split" style="--cat-cols:${Math.max(1,(STATE.settings.categories||[]).length)}">
-    ${(STATE.settings.categories||[]).map((c,i)=>`
-    <a href="#/shop/${c.slug}" data-link class="cat-panel">
-      <div class="cat-bg" style="${c.image ? `background:url('${c.image}') center/cover no-repeat` : `background:linear-gradient(135deg,${i%2===0?'#2a2320,#0f0d0c':'#201f1e,#0c0c0d'})`}"></div>
-      <div class="cat-content">
-        <span class="eyebrow">${escapeHtml(c.tagline || c.label)}</span>
-        <h3 class="serif">${escapeHtml(c.label)}</h3>
-        <div style="margin-top:16px"><span class="btn btn-ghost">مشاهده ‹</span></div>
-      </div>
-    </a>`).join('')}
+  <div class="cat-carousel-wrap">
+    ${(STATE.settings.categories||[]).length > 1 ? `<button type="button" class="cat-nav-btn cat-nav-prev" id="catPrevBtn" aria-label="دسته قبلی">‹</button>` : ''}
+    <div class="cat-split" id="catSplit" style="--cat-cols:${Math.max(1,(STATE.settings.categories||[]).length)}">
+      ${catPanelsHtml(STATE.settings.categories||[])}
+    </div>
+    ${(STATE.settings.categories||[]).length > 1 ? `<button type="button" class="cat-nav-btn cat-nav-next" id="catNextBtn" aria-label="دسته بعدی">›</button>` : ''}
+    ${(STATE.settings.categories||[]).length > 1 ? `
+    <div class="cat-dots" id="catDots">
+      ${(STATE.settings.categories||[]).map((c,i)=>`<button type="button" class="cat-dot ${i===0?'active':''}" data-idx="${i}" aria-label="${escapeHtml(c.label)}"></button>`).join('')}
+    </div>` : ''}
   </div>
 
   <section class="features">
@@ -2165,14 +2661,14 @@ function pageHome(){
     </div>
   </section>
 
-  <section class="section">
+  <section class="section glass-band glass-best">
     <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">FEATURED</span>
-        <h2 class="serif">منتخب فروشگاه</h2>
-        <div class="divider"></div>
+      <div class="section-head" style="text-align:right;margin-bottom:20px">
+        <span class="eyebrow">SUGGESTED PRODUCTS</span>
+        <h2 class="serif" style="display:inline-block">محصولات پیشنهادی</h2>
+        <div class="divider" style="margin:16px 0 0"></div>
       </div>
-      <div class="grid">${featured.map(productCard).join('') || emptyState()}</div>
+      <div class="glass-scroll">${featured.map(productCard).join('') || emptyState()}</div>
     </div>
   </section>
   `;
@@ -2180,7 +2676,7 @@ function pageHome(){
 
 function emptyState(msg='هنوز محصولی ثبت نشده است'){
   return `<div class="empty-state" style="grid-column:1/-1">
-    <svg width="46" height="46" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#8a744c"/></svg>
+    <svg width="46" height="46" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg>
     <p>${msg}</p>
   </div>`;
 }
@@ -2252,21 +2748,26 @@ function pageProduct(id){
   const off = p.compareAt && p.compareAt > p.price;
   const related = STATE.products.filter(x=>x.category===p.category && x.id!==p.id).slice(0,4);
   return `
-  <div class="section">
+  <div class="section pd-page-section">
     <div class="container">
       <div class="breadcrumb">
-        <a href="#/" data-link>خانه</a> / <a href="#/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
+        <a href="#/" data-link>خانه</a> / <span class="breadcrumb-desktop-only"><a href="#/shop/all" data-link>محصولات</a> / </span><a href="#/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
       </div>
       <div class="pd-wrap">
         <div class="pd-gallery-col">${productGalleryHtml(p)}</div>
         <div class="pd-info">
-          <span class="cat-tag">${catLabel(p.category)}</span>
-          <h1 class="serif">${escapeHtml(p.name)}</h1>
+          ${p.badge ? `<span class="pd-product-badge">${escapeHtml(p.badge)}</span>` : ''}
+          <span class="cat-tag" style="font-size:${p.catSize||10}px">${catLabel(p.category)}</span>
+          <h1 class="serif" style="font-size:${p.nameSize||26}px">${escapeHtml(p.name)}</h1>
           <div class="pd-price">
-            <span class="now">${RIAL(p.price)}</span>
+            <span class="now" style="font-size:${p.priceSize||20}px">${RIAL(p.price)}</span>
             ${off?`<span class="was">${RIAL(p.compareAt)}</span>`:''}
           </div>
-          <p class="pd-desc">${escapeHtml(p.desc||'')}</p>
+          <p class="pd-desc" style="font-size:${p.descSize||12.5}px">${escapeHtml(p.desc||'')}</p>
+
+          ${fabricFeaturesHtml(p)}
+
+          ${colorSectionHtml(p)}
 
           ${p.sizes && p.sizes.length ? (()=>{
             const normSizes = p.sizes.map(s=> typeof s==='string' ? {size:s, qty:null} : s);
@@ -2344,7 +2845,7 @@ function pageAbout(){
         <a href="#/shop/all" data-link class="btn btn-solid" style="margin-top:10px">مشاهده محصولات ‹</a>
       </div>
       <div class="about-visual">
-        ${s.aboutImage ? `<img src="${s.aboutImage}" alt="${escapeHtml(s.aboutTitle||'')}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="140" height="140" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#b9975e"/></svg>`}
+        ${(()=>{ const img = getAboutImageForTheme(s); return img ? `<img src="${img}" alt="${escapeHtml(s.aboutTitle||'')}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="140" height="140" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg>`; })()}
       </div>
     </div>
   </div>`;
@@ -2641,41 +3142,142 @@ function page404(){
 }
 
 /* ---------------- page-level bindings ---------------- */
-/* ---------------- category carousel (mobile coverflow) ---------------- */
-function updateCatSplitTransforms(track){
-  const rect = track.getBoundingClientRect();
-  const centerX = rect.left + rect.width/2;
-  const panels = track.querySelectorAll('.cat-panel');
-  panels.forEach(p=>{
-    const pr = p.getBoundingClientRect();
-    const pCenter = pr.left + pr.width/2;
-    const dist = Math.abs(centerX - pCenter);
-    const norm = Math.min(1, dist / (rect.width/2));
-    const scale = 1 - norm*0.14;
-    const opacity = 1 - norm*0.45;
-    p.style.transform = `scale(${scale})`;
-    p.style.opacity = opacity;
+/* ---------------- category carousel (mobile, looping + dots, pure native scroll) ---------------- */
+function initCatCarousel(){
+  if(!window.matchMedia('(max-width:760px)').matches) return;
+  const track = document.getElementById('catSplit');
+  if(!track) return;
+  const panels = Array.from(track.querySelectorAll('.cat-panel'));
+  if(panels.length < 2) return;
+  const dotsWrap = document.getElementById('catDots');
+  const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.cat-dot')) : [];
+
+  function setActiveDot(idx){
+    dots.forEach(d=> d.classList.toggle('active', Number(d.dataset.idx)===idx));
+  }
+
+  // center a panel horizontally inside the carousel WITHOUT ever touching the
+  // page's own vertical scroll position (scrollIntoView can drag the whole
+  // page down on load — this avoids that entirely).
+  function centerPanel(panel, smooth){
+    if(!panel) return;
+    const left = panel.offsetLeft - (track.clientWidth - panel.clientWidth)/2;
+    track.scrollTo({left, behavior: smooth ? 'smooth' : 'auto'});
+  }
+
+  // start on the first real panel (skip the looping clone before it)
+  const firstReal = track.querySelector('.cat-panel[data-real-index="0"]:not([data-clone])');
+  centerPanel(firstReal, false);
+
+  // dots only update once the finger has fully released and the panel has
+  // settled into a snap position — no motion/effect is applied while scrolling.
+  let current = firstReal;
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting && entry.intersectionRatio >= 0.6){
+        current = entry.target;
+        setActiveDot(Number(current.dataset.realIndex));
+      }
+    });
+  }, {root: track, threshold: 0.6});
+  panels.forEach(p=> io.observe(p));
+
+  let settleTimer = null;
+  track.addEventListener('scroll', ()=>{
+    if(settleTimer) clearTimeout(settleTimer);
+    settleTimer = setTimeout(()=>{
+      if(current && current.dataset.clone){
+        const realIdx = current.dataset.realIndex;
+        const realPanel = track.querySelector(`.cat-panel[data-real-index="${realIdx}"]:not([data-clone])`);
+        if(realPanel){
+          centerPanel(realPanel, false);
+          current = realPanel;
+          setActiveDot(Number(realIdx));
+        }
+      }
+    }, 120);
+  }, {passive:true});
+
+  dots.forEach(d=>{
+    d.addEventListener('click', ()=>{
+      const idx = d.dataset.idx;
+      const target = track.querySelector(`.cat-panel[data-real-index="${idx}"]:not([data-clone])`);
+      centerPanel(target, true);
+    });
   });
 }
-let catCarouselRAF = null;
-function initCatSplitCarousel(){
-  if(catCarouselRAF){ cancelAnimationFrame(catCarouselRAF); catCarouselRAF = null; }
-  const track = document.querySelector('.cat-split');
-  if(!track) return;
-  function loop(){
-    if(!document.body.contains(track)) return;
-    if(window.matchMedia('(max-width:760px)').matches){
-      updateCatSplitTransforms(track);
-    } else {
-      track.querySelectorAll('.cat-panel').forEach(p=>{ p.style.transform=''; p.style.opacity=''; });
-    }
-    catCarouselRAF = requestAnimationFrame(loop);
+
+function initCatCarouselDesktop(){
+  if(window.matchMedia('(max-width:760px)').matches) return;
+  const wrap = document.querySelector('.cat-carousel-wrap');
+  const track = document.getElementById('catSplit');
+  if(!track || !wrap) return;
+  const prevBtn = document.getElementById('catPrevBtn');
+  const nextBtn = document.getElementById('catNextBtn');
+  const panels = Array.from(track.querySelectorAll('.cat-panel'));
+  const dotsWrap = document.getElementById('catDots');
+  const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.cat-dot')) : [];
+
+  if(panels.length < 2){
+    if(prevBtn) prevBtn.style.display = 'none';
+    if(nextBtn) nextBtn.style.display = 'none';
+    return;
   }
-  loop();
+
+  const total = panels.length; // includes the 2 looping clones
+  track.style.width = (total*100)+'%';
+  panels.forEach(p=> p.style.flex = `0 0 ${100/total}%`);
+
+  let position = 1; // index of the first real panel (slot 0 is the "prev" clone)
+  let animating = false;
+
+  function apply(animate){
+    track.style.transition = animate ? 'transform .55s cubic-bezier(.16,1,.3,1)' : 'none';
+    track.style.transform = `translateX(${-(position*(100/total))}%)`;
+  }
+  apply(false);
+
+  function setActiveDot(realIdx){
+    dots.forEach(d=> d.classList.toggle('active', Number(d.dataset.idx)===realIdx));
+  }
+
+  track.addEventListener('transitionend', ()=>{
+    animating = false;
+    const p = panels[position];
+    if(p.dataset.clone){
+      const realIdx = p.dataset.realIndex;
+      const realPanel = panels.find(x=> x.dataset.realIndex===realIdx && !x.dataset.clone);
+      if(realPanel){
+        position = panels.indexOf(realPanel);
+        apply(false);
+      }
+    }
+    setActiveDot(Number(panels[position].dataset.realIndex));
+  });
+
+  function go(dir){
+    if(animating) return;
+    animating = true;
+    position += dir;
+    apply(true);
+  }
+
+  if(nextBtn) nextBtn.onclick = ()=> go(1);
+  if(prevBtn) prevBtn.onclick = ()=> go(-1);
+
+  dots.forEach(d=>{
+    d.addEventListener('click', ()=>{
+      if(animating) return;
+      animating = true;
+      position = Number(d.dataset.idx)+1;
+      apply(true);
+    });
+  });
 }
 
 function bindPageUI(){
-  initCatSplitCarousel();
+  initCatCarousel();
+  initCatCarouselDesktop();
   const shopSearch = $('#shopSearch');
   if(shopSearch){
     shopSearch.addEventListener('input', e=>{
@@ -2707,6 +3309,7 @@ function bindPageUI(){
       item.querySelector('.pd-faq-q').onclick = ()=> item.classList.toggle('open');
     });
     if(prod) bindProductGallery(prod);
+    if(prod) bindProductColorPicker();
   }
 
   const contactForm = $('#contactForm');
@@ -2838,6 +3441,10 @@ if (messageInput && messageCounter) {
     if(!code){ if(msgEl) msgEl.textContent = 'کد تخفیف را وارد کنید'; return; }
     const coupon = findCoupon(code);
     if(!coupon){ if(msgEl) msgEl.textContent = 'کد تخفیف نامعتبر است'; return; }
+    if(coupon.minSubtotal && cartSubtotal() < coupon.minSubtotal){
+      if(msgEl) msgEl.textContent = `این کد فقط برای خریدهای حداقل ${RIAL(coupon.minSubtotal)} قابل استفاده است`;
+      return;
+    }
     appliedCoupon = coupon;
     const app = $('#app');
     if(app) app.innerHTML = pageCheckout();
@@ -2995,8 +3602,10 @@ function findCoupon(code){
 }
 function computeDiscount(subtotal, coupon){
   if(!coupon || subtotal<=0) return 0;
-  if(coupon.type==='fixed') return Math.min(coupon.value, subtotal);
-  return Math.round(subtotal * (coupon.value/100));
+  if(coupon.minSubtotal && subtotal < coupon.minSubtotal) return 0;
+  let discount = coupon.type==='fixed' ? Math.min(coupon.value, subtotal) : Math.round(subtotal * (coupon.value/100));
+  if(coupon.maxDiscount) discount = Math.min(discount, coupon.maxDiscount);
+  return discount;
 }
 // renders the shipping-cost line; when the order qualifies for free shipping,
 // the normal cost is shown struck-through next to "رایگان".
@@ -3182,9 +3791,9 @@ function renderCart(){
       if(!p) return '';
       return `
       <div class="cart-line">
-        <div class="thumb">${productImgHtml(p)}</div>
+        <a href="#/product/${p.id}" data-link class="thumb" onclick="closeCartUI()">${productImgHtml(p)}</a>
         <div class="ci-body">
-          <h4>${escapeHtml(p.name)}</h4>
+          <a href="#/product/${p.id}" data-link onclick="closeCartUI()"><h4>${escapeHtml(p.name)}</h4></a>
           <span class="ci-meta">${ci.size?('سایز: '+ci.size):''} ${p.category?(' · '+catLabel(p.category)):''}</span>
           <div class="ci-row">
             <div class="ci-qty">
@@ -3392,7 +4001,7 @@ function adminShell(){
   <div class="admin-wrap">
     <div class="admin-bar">
       <a href="#/" data-link class="logo">
-        <span id="adminLogoSlot"><svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M50 10C50 10 30 25 15 30C24 33 34 32 40 28C36 40 20 48 10 50C22 54 36 52 44 45C40 58 26 66 14 70C28 72 42 66 48 56C46 68 38 78 28 84C42 82 54 72 58 60C60 70 68 78 80 82C74 72 70 60 70 50C78 54 88 52 94 46C82 44 72 38 68 30C76 30 84 26 90 18C76 20 62 26 56 34C56 24 54 16 50 10Z" fill="#f2efe8"/></svg></span>
+        <span id="adminLogoSlot"><svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg></span>
         <span style="font-family:'Cormorant Garamond',serif;letter-spacing:.15em;font-size:17px">WHITE RAVEN ADMIN</span>
       </a>
       <div style="display:flex;gap:14px;align-items:center">
@@ -3428,12 +4037,22 @@ function adminShell(){
               <input type="file" accept="image/*" id="productImageInput" multiple>
             </div>
           </div>
+          <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:8px">ابعاد پیشنهادی: ۱۰۰۰×۱۳۳۳ پیکسل (نسبت ۳:۴) — این تصاویر در کارت محصول، گالری صفحه محصول و لایت‌باکس زوم استفاده می‌شوند؛ اولین عکس به‌عنوان تصویر اصلی محصول نمایش داده می‌شود.</span>
         </div>
         <div class="form-row2">
           <div class="form-field"><label>نام محصول</label><input required id="pName"></div>
           <div class="form-field"><label>دسته‌بندی</label>
             <select id="pCategory">${(STATE.settings.categories||[]).map(c=>`<option value="${c.slug}">${escapeHtml(c.label)}</option>`).join('')}</select>
           </div>
+        </div>
+        <div class="form-field">
+          <label>بج محصول <span style="color:var(--text-faint);font-weight:400">(اختیاری — بالای نام دسته‌بندی در صفحه محصول نمایش داده می‌شود)</span></label>
+          <select id="pBadge">
+            <option value="">بدون بج</option>
+            <option value="فروش ویژه">فروش ویژه</option>
+            <option value="جدید">جدید</option>
+            <option value="تخفیف">تخفیف</option>
+          </select>
         </div>
         <div class="form-row2">
           <div class="form-field"><label>قیمت (تومان)</label><input required type="number" id="pPrice" min="0"></div>
@@ -3448,6 +4067,32 @@ function adminShell(){
           <button type="button" id="addSizeRowBtn" class="btn btn-ghost" style="margin-top:4px;padding:8px 16px;font-size:12.5px">+ افزودن سایز</button>
         </div>
         <div class="form-field"><label>توضیحات</label><textarea id="pDesc"></textarea></div>
+        <div class="form-field">
+          <label>اندازه فونت در صفحه محصول <span style="color:var(--text-faint);font-weight:400">(پیکسل — پیش‌فرض کوچک‌تر از حالت عادی است؛ خالی بگذارید تا پیش‌فرض اعمال شود)</span></label>
+          <div class="form-row2">
+            <div class="form-field"><label style="font-size:11px">اسم محصول</label><input type="number" id="pNameSize" min="10" max="60" placeholder="۲۶"></div>
+            <div class="form-field"><label style="font-size:11px">اسم دسته‌بندی</label><input type="number" id="pCatSize" min="8" max="30" placeholder="۱۰"></div>
+          </div>
+          <div class="form-row2">
+            <div class="form-field"><label style="font-size:11px">قیمت</label><input type="number" id="pPriceSize" min="10" max="50" placeholder="۲۰"></div>
+            <div class="form-field"><label style="font-size:11px">توضیحات</label><input type="number" id="pDescSize" min="9" max="30" placeholder="۱۲.۵"></div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>ویژگی‌های پارچه <span style="color:var(--text-faint);font-weight:400">(اختیاری — حداکثر ۳ آیکون با برچسب، پایین توضیحات محصول نمایش داده می‌شود)</span></label>
+          <div id="fabricFeatureRows"></div>
+        </div>
+        <div class="form-field">
+          <label>رنگ‌های موجود <span style="color:var(--text-faint);font-weight:400">(روی رنگ‌ها کلیک کنید تا به لیست اضافه یا حذف شوند)</span></label>
+          <div class="color-preset-grid" id="colorPresetGrid"></div>
+          <div class="dual-color-builder">
+            <select id="dualColor1"><option value="">رنگ اول...</option>${COLOR_PRESETS.map(c=>`<option value="${c.key}">${escapeHtml(c.name)}</option>`).join('')}</select>
+            <select id="dualColor2"><option value="">رنگ دوم...</option>${COLOR_PRESETS.map(c=>`<option value="${c.key}">${escapeHtml(c.name)}</option>`).join('')}</select>
+            <button type="button" class="btn btn-ghost" id="addDualColorBtn" style="padding:8px 16px;font-size:12px">+ افزودن رنگ دورنگ</button>
+          </div>
+          <span style="font-size:11px;color:var(--text-faint);display:block;margin:8px 0 6px">رنگ‌های انتخاب‌شده (به همین ترتیب در صفحه محصول نمایش داده می‌شوند):</span>
+          <div class="selected-color-list" id="selectedColorList"></div>
+        </div>
         <button class="btn btn-solid btn-block" type="submit">ذخیره محصول</button>
       </form>
     </div>
@@ -3804,6 +4449,7 @@ function adminSettings(){
           </div>
           ${s.logoDark ? `<button type="button" class="btn btn-ghost" id="removeLogoBtnDark" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: حداکثر عرض ۴۰۰ پیکسل، ارتفاع ۱۲۰ پیکسل — PNG با پس‌زمینه شفاف. این لوگو در هدر سایت هنگام فعال بودن تم مشکی نمایش داده می‌شود.</span>
       </div>
       <div class="theme-asset-col">
         <span class="theme-asset-label">☀️ لوگو برای تم روشن</span>
@@ -3814,9 +4460,20 @@ function adminSettings(){
           </div>
           ${s.logoLight ? `<button type="button" class="btn btn-ghost" id="removeLogoBtnLight" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: حداکثر عرض ۴۰۰ پیکسل، ارتفاع ۱۲۰ پیکسل — PNG با پس‌زمینه شفاف. این لوگو در هدر سایت هنگام فعال بودن تم روشن نمایش داده می‌شود.</span>
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🎨 لوگو برای تم کلاسیک</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="logoUploadBoxClassic">
+            ${s.logoClassic ? `<img src="${s.logoClassic}" alt="لوگو تم کلاسیک">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون لوگوی سفارشی</span>`}
+            <input type="file" accept="image/*" id="logoInputClassic">
+          </div>
+          ${s.logoClassic ? `<button type="button" class="btn btn-ghost" id="removeLogoBtnClassic" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: حداکثر عرض ۴۰۰ پیکسل، ارتفاع ۱۲۰ پیکسل — PNG با پس‌زمینه شفاف. این لوگو در هدر سایت هنگام فعال بودن تم کلاسیک نمایش داده می‌شود.</span>
       </div>
     </div>
-    <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">فرمت PNG با پس‌زمینه شفاف پیشنهاد می‌شود.</span>
     <div style="margin-top:18px">
       <label style="display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:8px">زیرنویس کوچک زیر نام برند (مثلاً: WOMEN'S WEAR)</label>
       <input type="text" id="logoSubtitleInput" value="${escapeHtml(s.logoSubtitle ?? "WOMEN'S WEAR")}" placeholder="WOMEN'S WEAR">
@@ -3848,6 +4505,7 @@ function adminSettings(){
           </div>
           ${s.announcementIcon ? `<button type="button" class="btn btn-ghost" id="removeAnnouncementIconBtn" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۶۴×۶۴ پیکسل (مربع). آیکون کوچکی که کنار متن نوار اعلان بالای صفحه نمایش داده می‌شود.</span>
       </div>
       <div class="theme-asset-col">
         <span class="theme-asset-label">رنگ پس‌زمینه نوار</span>
@@ -3874,6 +4532,7 @@ function adminSettings(){
           </div>
           ${s.heroImageDark ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnDark" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۱۶۰۰×۹۰۰ پیکسل (افقی). پس‌زمینهٔ بخش اصلی (Hero) صفحه نخست در حالت دسکتاپ، هنگام فعال بودن تم مشکی.</span>
       </div>
       <div class="theme-asset-col">
         <span class="theme-asset-label">☀️ تصویر برای تم روشن</span>
@@ -3884,9 +4543,20 @@ function adminSettings(){
           </div>
           ${s.heroImageLight ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnLight" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۱۶۰۰×۹۰۰ پیکسل (افقی). پس‌زمینهٔ بخش اصلی (Hero) صفحه نخست در حالت دسکتاپ، هنگام فعال بودن تم روشن.</span>
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🎨 تصویر برای تم کلاسیک</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="heroImageBoxClassic" style="width:220px;height:130px">
+            ${s.heroImageClassic ? `<img src="${s.heroImageClassic}" alt="تصویر صفحه نخست - تم کلاسیک" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="heroImageInputClassic">
+          </div>
+          ${s.heroImageClassic ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnClassic" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۱۶۰۰×۹۰۰ پیکسل (افقی). پس‌زمینهٔ بخش اصلی (Hero) صفحه نخست در حالت دسکتاپ، هنگام فعال بودن تم کلاسیک.</span>
       </div>
     </div>
-    <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">پیشنهاد می‌شود تصویری افقی (مثلاً ۱۶۰۰×۹۰۰) و با کیفیت بالا انتخاب کنید.</span>
   </div>
 
   <div class="settings-card">
@@ -3902,6 +4572,7 @@ function adminSettings(){
           </div>
           ${s.heroImageDarkMobile ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnDarkMobile" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۹۰۰×۱۶۰۰ پیکسل (عمودی). پس‌زمینهٔ بخش اصلی (Hero) صفحه نخست در حالت موبایل، هنگام فعال بودن تم مشکی. اختیاری — اگر خالی بماند از تصویر دسکتاپ استفاده می‌شود.</span>
       </div>
       <div class="theme-asset-col">
         <span class="theme-asset-label">☀️ موبایل — تم روشن</span>
@@ -3912,9 +4583,20 @@ function adminSettings(){
           </div>
           ${s.heroImageLightMobile ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnLightMobile" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۹۰۰×۱۶۰۰ پیکسل (عمودی). پس‌زمینهٔ بخش اصلی (Hero) صفحه نخست در حالت موبایل، هنگام فعال بودن تم روشن. اختیاری — اگر خالی بماند از تصویر دسکتاپ استفاده می‌شود.</span>
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🎨 موبایل — تم کلاسیک</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="heroImageBoxClassicMobile" style="width:130px;height:220px">
+            ${s.heroImageClassicMobile ? `<img src="${s.heroImageClassicMobile}" alt="تصویر صفحه نخست موبایل - تم کلاسیک" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="heroImageInputClassicMobile">
+          </div>
+          ${s.heroImageClassicMobile ? `<button type="button" class="btn btn-ghost" id="removeHeroImageBtnClassicMobile" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۹۰۰×۱۶۰۰ پیکسل (عمودی). پس‌زمینهٔ بخش اصلی (Hero) صفحه نخست در حالت موبایل، هنگام فعال بودن تم کلاسیک. اختیاری — اگر خالی بماند از تصویر دسکتاپ استفاده می‌شود.</span>
       </div>
     </div>
-    <span style="font-size:12.5px;color:var(--text-faint);display:block;margin-top:14px">پیشنهاد می‌شود تصویری عمودی (مثلاً ۹۰۰×۱۶۰۰) انتخاب کنید تا در گوشی بهتر جا بیفتد.</span>
   </div>
 
   <div class="settings-card">
@@ -3954,7 +4636,11 @@ function adminContent(){
       aboutHeading: s.aboutHeading ?? '',
       aboutText: s.aboutText ?? ''
     };
-    pendingAboutImage = s.aboutImage ?? '';
+    pendingAboutImage = {
+      Classic: s.aboutImageClassic ?? '',
+      Light: s.aboutImageLight ?? '',
+      Dark: s.aboutImageDark ?? (s.aboutImage ?? '')
+    };
     pendingContentInit = true;
   }
   if(!pendingFaqInit){
@@ -3991,16 +4677,39 @@ function adminContent(){
     <div class="form-field"><label>تیتر صفحه</label><input id="contAboutTitle" value="${escapeHtml(pendingContent.aboutTitle)}"></div>
     <div class="form-field"><label>زیرعنوان (داستان برند)</label><input id="contAboutHeading" value="${escapeHtml(pendingContent.aboutHeading)}"></div>
     <div class="form-field"><label>متن اصلی (هر پاراگراف در یک خط)</label><textarea id="contAboutText" style="min-height:160px">${escapeHtml(pendingContent.aboutText)}</textarea></div>
-    <div class="theme-asset-col" style="margin-top:6px">
-      <span class="theme-asset-label">تصویر بخش درباره ما</span>
-      <div class="logo-upload-row">
-        <div class="logo-upload-box" id="aboutImageBox" style="width:180px;height:180px">
-          ${pendingAboutImage ? `<img src="${pendingAboutImage}" alt="تصویر درباره ما" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
-          <input type="file" accept="image/*" id="aboutImageInput">
+    <div class="theme-asset-row" style="margin-top:6px">
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🎨 تصویر برای تم کلاسیک</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="aboutImageBoxClassic" style="width:140px;height:140px">
+            ${pendingAboutImage.Classic ? `<img src="${pendingAboutImage.Classic}" alt="تصویر درباره ما - تم کلاسیک" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="aboutImageInputClassic">
+          </div>
+          ${pendingAboutImage.Classic ? `<button type="button" class="btn btn-ghost" id="removeAboutImageBtnClassic" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
-        ${pendingAboutImage ? `<button type="button" class="btn btn-ghost" id="removeAboutImageBtn" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">☀️ تصویر برای تم روشن</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="aboutImageBoxLight" style="width:140px;height:140px">
+            ${pendingAboutImage.Light ? `<img src="${pendingAboutImage.Light}" alt="تصویر درباره ما - تم روشن" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="aboutImageInputLight">
+          </div>
+          ${pendingAboutImage.Light ? `<button type="button" class="btn btn-ghost" id="removeAboutImageBtnLight" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
+      </div>
+      <div class="theme-asset-col">
+        <span class="theme-asset-label">🌙 تصویر برای تم مشکی</span>
+        <div class="logo-upload-row">
+          <div class="logo-upload-box" id="aboutImageBoxDark" style="width:140px;height:140px">
+            ${pendingAboutImage.Dark ? `<img src="${pendingAboutImage.Dark}" alt="تصویر درباره ما - تم مشکی" style="object-fit:cover">` : `<span style="font-size:10.5px;color:var(--text-faint);text-align:center;padding:8px">بدون تصویر سفارشی</span>`}
+            <input type="file" accept="image/*" id="aboutImageInputDark">
+          </div>
+          ${pendingAboutImage.Dark ? `<button type="button" class="btn btn-ghost" id="removeAboutImageBtnDark" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
+        </div>
       </div>
     </div>
+    <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">ابعاد پیشنهادی: ۸۰۰×۸۰۰ پیکسل (مربع). می‌توانید برای هر تم سایت یک تصویر جدا بگذارید؛ با تعویض تم توسط مشتری، تصویر متناسب با همان تم نمایش داده می‌شود. اگر برای تمی نگذارید، از عکس یکی دیگر از تم‌ها استفاده می‌شود.</span>
     <button type="button" class="btn btn-solid" id="saveAboutContentBtn" style="margin-top:14px">ذخیره نوشته‌های درباره ما</button>
   </div>
 
@@ -4114,7 +4823,7 @@ function adminDescriptions(){
 
   <div class="settings-card">
     <h3 class="serif">کدهای تخفیف (Coupon)</h3>
-    <p class="settings-desc">کد تخفیف بسازید تا مشتری بتواند آن را در صفحه تسویه‌حساب وارد کند. نوع تخفیف می‌تواند درصدی (مثلاً ۱۰٪) یا مبلغ ثابت (مثلاً ۵۰,۰۰۰ تومان) باشد. کدهای غیرفعال در تسویه‌حساب پذیرفته نمی‌شوند.</p>
+    <p class="settings-desc">کد تخفیف بسازید تا مشتری بتواند آن را در صفحه تسویه‌حساب وارد کند. نوع تخفیف می‌تواند درصدی (مثلاً ۱۰٪) یا مبلغ ثابت (مثلاً ۵۰,۰۰۰ تومان) باشد. کدهای غیرفعال در تسویه‌حساب پذیرفته نمی‌شوند. همچنین می‌توانید حداقل مبلغ خرید برای استفاده از کد، و حداکثر مبلغ تخفیفی که به مشتری تعلق می‌گیرد را تعیین کنید (مثلاً تخفیف ۱۰٪ ولی حداکثر ۲۰۰,۰۰۰ تومان).</p>
     <div class="form-row3">
       <div class="form-field">
         <label>کد تخفیف</label>
@@ -4133,6 +4842,16 @@ function adminDescriptions(){
       </div>
       <button type="button" class="btn btn-solid" id="addCouponBtn">+ افزودن</button>
     </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:-6px">
+      <div class="form-field" style="margin-bottom:0">
+        <label>حداقل مبلغ خرید (تومان) — اختیاری</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="newCouponMinSubtotal" placeholder="مثلاً 500000">
+      </div>
+      <div class="form-field" style="margin-bottom:0">
+        <label>حداکثر مبلغ تخفیف (تومان) — اختیاری</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="newCouponMaxDiscount" placeholder="مثلاً 200000">
+      </div>
+    </div>
     <div id="couponListBox" style="margin-top:18px">${couponListHtml()}</div>
   </div>
   `;
@@ -4146,17 +4865,23 @@ function couponListHtml(){
     ${pendingCoupons.map(c=>{
       if(c.id===editingCouponId){
         return `
-        <div class="coupon-row" data-id="${c.id}" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--gold-dim)">
-          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>کد</label><input class="coupon-edit-code" data-id="${c.id}" value="${escapeHtml(c.code)}" style="text-transform:uppercase"></div>
-          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>نوع</label>
-            <select class="coupon-edit-type" data-id="${c.id}">
-              <option value="percent" ${c.type==='percent'?'selected':''}>درصدی (٪)</option>
-              <option value="fixed" ${c.type==='fixed'?'selected':''}>مبلغ ثابت (تومان)</option>
-            </select>
+        <div class="coupon-row" data-id="${c.id}" style="display:flex;flex-direction:column;gap:12px;padding:12px;border:1px solid var(--gold-dim)">
+          <div style="display:flex;align-items:end;gap:12px;flex-wrap:wrap">
+            <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>کد</label><input class="coupon-edit-code" data-id="${c.id}" value="${escapeHtml(c.code)}" style="text-transform:uppercase"></div>
+            <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>نوع</label>
+              <select class="coupon-edit-type" data-id="${c.id}">
+                <option value="percent" ${c.type==='percent'?'selected':''}>درصدی (٪)</option>
+                <option value="fixed" ${c.type==='fixed'?'selected':''}>مبلغ ثابت (تومان)</option>
+              </select>
+            </div>
+            <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>مقدار</label><input type="number" min="0" step="1" class="coupon-edit-value" data-id="${c.id}" value="${c.value}"></div>
           </div>
-          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>مقدار</label><input type="number" min="0" step="1" class="coupon-edit-value" data-id="${c.id}" value="${c.value}"></div>
-          <button type="button" class="btn btn-solid coupon-save" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">ذخیره</button>
-          <button type="button" class="btn btn-ghost coupon-cancel" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">انصراف</button>
+          <div style="display:flex;align-items:end;gap:12px;flex-wrap:wrap">
+            <div class="form-field" style="margin-bottom:0;flex:1;min-width:160px"><label>حداقل مبلغ خرید (تومان)</label><input type="number" min="0" step="1000" class="coupon-edit-minsubtotal" data-id="${c.id}" value="${c.minSubtotal||0}" placeholder="بدون محدودیت"></div>
+            <div class="form-field" style="margin-bottom:0;flex:1;min-width:160px"><label>حداکثر مبلغ تخفیف (تومان)</label><input type="number" min="0" step="1000" class="coupon-edit-maxdiscount" data-id="${c.id}" value="${c.maxDiscount||''}" placeholder="بدون سقف"></div>
+            <button type="button" class="btn btn-solid coupon-save" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">ذخیره</button>
+            <button type="button" class="btn btn-ghost coupon-cancel" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">انصراف</button>
+          </div>
         </div>`;
       }
       return `
@@ -4164,6 +4889,7 @@ function couponListHtml(){
         <div style="flex:1;min-width:160px">
           <div style="font-size:14px;letter-spacing:.04em">${escapeHtml(c.code)} ${c.active===false ? '<span style="color:var(--text-faint);font-size:11.5px">(غیرفعال)</span>' : ''}</div>
           <div style="font-size:12.5px;color:var(--gold-light);margin-top:4px">${c.type==='fixed' ? RIAL(c.value)+' تخفیف' : c.value+'٪ تخفیف'}</div>
+          ${(c.minSubtotal || c.maxDiscount) ? `<div style="font-size:11px;color:var(--text-faint);margin-top:3px">${c.minSubtotal?`حداقل خرید: ${RIAL(c.minSubtotal)}`:''}${c.minSubtotal && c.maxDiscount ? ' — ' : ''}${c.maxDiscount?`سقف تخفیف: ${RIAL(c.maxDiscount)}`:''}</div>` : ''}
         </div>
         <button type="button" class="btn btn-ghost coupon-toggle" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px">${c.active===false?'فعال‌سازی':'غیرفعال‌سازی'}</button>
         <button type="button" class="btn btn-ghost coupon-edit" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px">ویرایش</button>
@@ -4192,17 +4918,21 @@ function bindCouponsUI(){
   addBtn.onclick = async ()=>{
     const codeInput = $('#newCouponCode');
     const valueInput = $('#newCouponValue');
+    const minSubtotalInput = $('#newCouponMinSubtotal');
+    const maxDiscountInput = $('#newCouponMaxDiscount');
     const code = codeInput.value.trim().toUpperCase();
     const type = typeSelect ? typeSelect.value : 'percent';
     const value = Math.max(0, Number(valueInput.value) || 0);
+    const minSubtotal = Math.max(0, Number(minSubtotalInput?.value) || 0);
+    const maxDiscount = (maxDiscountInput?.value && Number(maxDiscountInput.value)>0) ? Number(maxDiscountInput.value) : 0;
     if(!code){ showToast('کد تخفیف را وارد کنید'); return; }
     if(pendingCoupons.some(c=>c.code.toUpperCase()===code)){ showToast('این کد قبلاً ثبت شده'); return; }
     if(!valueInput.value || value<=0){ showToast('مقدار تخفیف را وارد کنید'); return; }
     if(type==='percent' && value>100){ showToast('درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد'); return; }
-    pendingCoupons.push({id:uid(), code, type, value, active:true});
+    pendingCoupons.push({id:uid(), code, type, value, active:true, minSubtotal, maxDiscount});
     await persistCoupons();
     showToast('کد تخفیف ثبت شد ✓');
-    codeInput.value=''; valueInput.value='';
+    codeInput.value=''; valueInput.value=''; if(minSubtotalInput) minSubtotalInput.value=''; if(maxDiscountInput) maxDiscountInput.value='';
     $('#couponListBox').innerHTML = couponListHtml();
     bindCouponRowEvents();
     codeInput.focus();
@@ -4255,11 +4985,14 @@ function bindCouponRowEvents(){
       const code = row.querySelector('.coupon-edit-code').value.trim().toUpperCase();
       const type = row.querySelector('.coupon-edit-type').value;
       const value = Math.max(0, Number(row.querySelector('.coupon-edit-value').value) || 0);
+      const minSubtotal = Math.max(0, Number(row.querySelector('.coupon-edit-minsubtotal')?.value) || 0);
+      const maxDiscountVal = row.querySelector('.coupon-edit-maxdiscount')?.value;
+      const maxDiscount = (maxDiscountVal && Number(maxDiscountVal)>0) ? Number(maxDiscountVal) : 0;
       if(!code){ showToast('کد تخفیف را وارد کنید'); return; }
       if(pendingCoupons.some(c=>c.id!==id && c.code.toUpperCase()===code)){ showToast('این کد قبلاً ثبت شده'); return; }
       if(type==='percent' && value>100){ showToast('درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد'); return; }
       const c = pendingCoupons.find(x=>x.id===id);
-      if(c){ c.code=code; c.type=type; c.value=value; }
+      if(c){ c.code=code; c.type=type; c.value=value; c.minSubtotal=minSubtotal; c.maxDiscount=maxDiscount; }
       editingCouponId = null;
       await persistCoupons();
       showToast('ذخیره شد ✓');
@@ -4474,6 +5207,7 @@ function bindAdminShell(){
   const imgInput = $('#productImageInput');
   if(imgInput) bindMultiUploadInput();
   bindSizeQtyUI();
+  bindColorPickerUI();
 
   const pForm = $('#productForm');
   if(pForm){
@@ -4507,17 +5241,33 @@ function bindAdminShell(){
     }
   }
 
+  const newCompareAt = Number($('#pCompareAt').value)||0;
+  const prevProduct = editingProductId ? STATE.products.find(p=>p.id===editingProductId) : null;
+  const prevCompareAt = prevProduct ? (prevProduct.compareAt||0) : 0;
+  const discountChanged = newCompareAt !== prevCompareAt;
+
   const data = {
     name: $('#pName').value.trim(),
     category: $('#pCategory').value,
+    badge: $('#pBadge').value,
     price: Number($('#pPrice').value)||0,
-    compareAt: Number($('#pCompareAt').value)||0,
+    compareAt: newCompareAt,
     stock: Number($('#pStock').value)||0,
     sizes: readSizeQtyRows(),
     desc: $('#pDesc').value.trim(),
     images: editingImages.slice(),
-    image: editingImages[0] || ''
+    image: editingImages[0] || '',
+    nameSize: Number($('#pNameSize').value) || null,
+    catSize: Number($('#pCatSize').value) || null,
+    priceSize: Number($('#pPriceSize').value) || null,
+    descSize: Number($('#pDescSize').value) || null,
+    fabricFeatures: readFabricFeatureRows(),
+    colors: editingColors.filter(c=>c.c1).map(c=>({c1:c.c1, c2:c.c2||null, label:(c.label||'').trim()}))
   };
+
+  if(discountChanged){
+    data.discountUpdatedAt = new Date().toISOString();
+  }
 
   let savedProduct;
 
@@ -4584,6 +5334,95 @@ function bindSizeQtyUI(){
   const addBtn = $('#addSizeRowBtn');
   if(addBtn) addBtn.onclick = ()=>{ editingSizes.push({size:'', qty:0}); renderSizeQtyRows(); };
 }
+
+/* ---------------- ویژگی‌های پارچه (حداکثر ۳ اسلات) ---------------- */
+let editingFabricFeatures = [];
+function renderFabricFeatureRows(){
+  const wrap = $('#fabricFeatureRows');
+  if(!wrap) return;
+  while(editingFabricFeatures.length < 3) editingFabricFeatures.push({icon:'', label:'', size:11.5});
+  editingFabricFeatures = editingFabricFeatures.slice(0,3);
+  wrap.innerHTML = editingFabricFeatures.map((f,i)=>`
+    <div class="fabric-feature-row" data-i="${i}">
+      <div class="ff-preview">${f.icon ? fabricFeatureIconSvg(f.icon, 20) : ''}</div>
+      <select class="ff-icon" data-i="${i}">
+        <option value="">بدون ویژگی</option>
+        ${FABRIC_FEATURE_PRESETS.map(pr=>`<option value="${pr.key}" ${f.icon===pr.key?'selected':''}>${escapeHtml(pr.label)}</option>`).join('')}
+      </select>
+      <input class="ff-label" data-i="${i}" placeholder="متن نمایشی" value="${escapeHtml(f.label||'')}" ${f.icon?'':'disabled'}>
+      <input class="ff-size" type="number" min="8" max="20" step="0.5" data-i="${i}" placeholder="۱۱.۵" value="${f.size||''}" ${f.icon?'':'disabled'}>
+    </div>`).join('');
+
+  $$('#fabricFeatureRows .ff-icon').forEach(sel=>{
+    sel.onchange = ()=>{
+      const i = Number(sel.dataset.i);
+      const key = sel.value;
+      const preset = fabricFeaturePreset(key);
+      editingFabricFeatures[i].icon = key;
+      if(key && !editingFabricFeatures[i].label) editingFabricFeatures[i].label = preset ? preset.label : '';
+      if(!key){ editingFabricFeatures[i].label=''; editingFabricFeatures[i].size=11.5; }
+      renderFabricFeatureRows();
+    };
+  });
+  $$('#fabricFeatureRows .ff-label').forEach(inp=>{
+    inp.oninput = ()=>{ editingFabricFeatures[Number(inp.dataset.i)].label = inp.value; };
+  });
+  $$('#fabricFeatureRows .ff-size').forEach(inp=>{
+    inp.oninput = ()=>{ editingFabricFeatures[Number(inp.dataset.i)].size = Number(inp.value)||11.5; };
+  });
+}
+function readFabricFeatureRows(){
+  return editingFabricFeatures
+    .filter(f=>f.icon)
+    .map(f=>({icon:f.icon, label:(f.label||'').trim(), size:Number(f.size)||11.5}));
+}
+
+/* ---------------- رنگ‌های موجود ---------------- */
+let editingColors = [];
+function renderColorPickerUI(){
+  const grid = $('#colorPresetGrid');
+  const list = $('#selectedColorList');
+  if(!grid || !list) return;
+
+  grid.innerHTML = COLOR_PRESETS.map(c=>{
+    const isSelected = editingColors.some(ec=>ec.c1===c.key && !ec.c2);
+    return `<button type="button" class="color-preset-dot ${isSelected?'selected':''}" data-key="${c.key}" title="${escapeHtml(c.name)}" style="background:${c.hex}"></button>`;
+  }).join('');
+
+  $$('.color-preset-dot', grid).forEach(dot=>{
+    dot.onclick = ()=>{
+      const key = dot.dataset.key;
+      const idx = editingColors.findIndex(ec=>ec.c1===key && !ec.c2);
+      if(idx>-1) editingColors.splice(idx,1);
+      else editingColors.push({c1:key, c2:null, label:''});
+      renderColorPickerUI();
+    };
+  });
+
+  list.innerHTML = editingColors.map((c,i)=>`
+    <div class="selected-color-item" data-i="${i}">
+      <div class="sc-dot" style="${colorSwatchStyle(c)}"></div>
+      <span>${escapeHtml(colorLabel(c))}</span>
+      <button type="button" class="sc-remove" data-i="${i}">حذف</button>
+    </div>`).join('') || `<span style="font-size:11.5px;color:var(--text-faint)">هنوز رنگی انتخاب نشده</span>`;
+
+  $$('.sc-remove', list).forEach(btn=>{
+    btn.onclick = ()=>{ editingColors.splice(Number(btn.dataset.i),1); renderColorPickerUI(); };
+  });
+}
+function bindColorPickerUI(){
+  const addDualBtn = $('#addDualColorBtn');
+  if(addDualBtn) addDualBtn.onclick = ()=>{
+    const c1 = $('#dualColor1').value;
+    const c2 = $('#dualColor2').value;
+    if(!c1 || !c2){ showToast('هر دو رنگ را انتخاب کنید'); return; }
+    if(c1===c2){ showToast('دو رنگ متفاوت انتخاب کنید'); return; }
+    editingColors.push({c1, c2, label:''});
+    $('#dualColor1').value = '';
+    $('#dualColor2').value = '';
+    renderColorPickerUI();
+  };
+}
 let editingImages = [];
 function renderMultiUploadGrid(){
   const grid = $('#multiUploadGrid');
@@ -4635,24 +5474,26 @@ function bindAdminSettingsUI(){
     };
   });
 
-  ['Dark','Light'].forEach(mode=>{
+  ['Dark','Light','Classic'].forEach(mode=>{
     const logoBox = $(`#logoUploadBox${mode}`);
     if(logoBox && !logoBox.dataset.pendingInit){
       logoBox.dataset.pendingInit = '1';
       if(mode==='Dark') pendingLogoDark = STATE.settings.logoDark;
-      else pendingLogoLight = STATE.settings.logoLight;
+      else if(mode==='Light') pendingLogoLight = STATE.settings.logoLight;
+      else pendingLogoClassic = STATE.settings.logoClassic;
     }
     bindLogoInput(mode);
     const removeLogoBtn = $(`#removeLogoBtn${mode}`);
     if(removeLogoBtn) removeLogoBtn.onclick = ()=>{
       if(mode==='Dark'){ pendingLogoDark = ''; STATE.settings = {...STATE.settings, logoDark:''}; }
-      else{ pendingLogoLight = ''; STATE.settings = {...STATE.settings, logoLight:''}; }
+      else if(mode==='Light'){ pendingLogoLight = ''; STATE.settings = {...STATE.settings, logoLight:''}; }
+      else{ pendingLogoClassic = ''; STATE.settings = {...STATE.settings, logoClassic:''}; }
       $('#adminMain').innerHTML = adminSettings();
       bindAdminShell();
     };
   });
 
-  ['Dark','Light','DarkMobile','LightMobile'].forEach(mode=>{
+  ['Dark','Light','Classic','DarkMobile','LightMobile','ClassicMobile'].forEach(mode=>{
     const heroBox = $(`#heroImageBox${mode}`);
     if(heroBox && !heroBox.dataset.pendingInit){
       heroBox.dataset.pendingInit = '1';
@@ -4700,7 +5541,7 @@ function bindAdminSettingsUI(){
   bindCategoryRowEvents();
   const addCategoryBtn = $('#addCategoryBtn');
   if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
-    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', image:''});
+    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', imageClassic:'', imageLight:'', imageDark:'', imageMobileClassic:'', imageMobileLight:'', imageMobileDark:''});
     $('#categoryListBox').innerHTML = categoryListHtml();
     bindCategoryRowEvents();
     const inputs = $$('.cat-edit-name');
@@ -4728,11 +5569,14 @@ function bindAdminSettingsUI(){
     const newSettings = {
       logoDark: pendingLogoDark || '',
       logoLight: pendingLogoLight || '',
+      logoClassic: pendingLogoClassic || '',
       logoSubtitle: $('#logoSubtitleInput')?.value.trim() || "WOMEN'S WEAR",
       heroImageDark: pendingHeroImage.Dark || '',
       heroImageLight: pendingHeroImage.Light || '',
+      heroImageClassic: pendingHeroImage.Classic || '',
       heroImageDarkMobile: pendingHeroImage.DarkMobile || '',
       heroImageLightMobile: pendingHeroImage.LightMobile || '',
+      heroImageClassicMobile: pendingHeroImage.ClassicMobile || '',
       categories: cleanedCategories.length ? cleanedCategories : STATE.settings.categories,
       fonts, scales
     };
@@ -4745,13 +5589,14 @@ function bindAdminSettingsUI(){
 
 let pendingLogoDark = '';
 let pendingLogoLight = '';
-let pendingHeroImage = {Dark:'', Light:'', DarkMobile:'', LightMobile:''};
+let pendingLogoClassic = '';
+let pendingHeroImage = {Dark:'', Light:'', Classic:'', DarkMobile:'', LightMobile:'', ClassicMobile:''};
 let pendingCategories = [];
 let pendingCategoriesInit = false;
 let pendingDescriptionsInit = false;
 let pendingContent = {};
 let pendingContentInit = false;
-let pendingAboutImage = '';
+let pendingAboutImage = {Classic:'', Light:'', Dark:''};
 let pendingFaq = [];
 let pendingFaqInit = false;
 let pendingShipping = {freeShippingThreshold:1000000, shippingCost:45000};
@@ -4815,28 +5660,28 @@ function bindCategoryRowEvents(){
   });
   $$('.cat-edit-remove-img').forEach(btn=>{
     btn.onclick = ()=>{
-      pendingCategories[Number(btn.dataset.idx)].image = '';
+      const idx = Number(btn.dataset.idx), field = btn.dataset.field;
+      pendingCategories[idx][field] = '';
       $('#categoryListBox').innerHTML = categoryListHtml();
       bindCategoryRowEvents();
     };
   });
   $$('.cat-edit-img-input').forEach(input=>{
     input.onchange = async ()=>{
-      const idx = Number(input.dataset.idx);
+      const idx = Number(input.dataset.idx), field = input.dataset.field;
       const file = input.files[0];
       if(!file) return;
       try{
         input.disabled = true;
         showLoading();
-        const url = await uploadSettingImage(file, `category-${pendingCategories[idx].slug}`);
-        pendingCategories[idx].image = url;
+        const url = await uploadSettingImage(file, `category-${field}-${pendingCategories[idx].slug}`);
+        pendingCategories[idx][field] = url;
         $('#categoryListBox').innerHTML = categoryListHtml();
         bindCategoryRowEvents();
       }catch(error){
         console.error('Category image upload error:', error);
         showToast('آپلود عکس دسته‌بندی انجام نشد');
       }finally{
-        input.disabled = false;
         hideLoading();
       }
     };
@@ -4898,32 +5743,32 @@ function bindAdminContentUI(){
     showToast('نوشته فوتر ذخیره شد ✓');
   };
 
-  const aboutInput = $('#aboutImageInput');
-  if(aboutInput) aboutInput.onchange = async ()=>{
-    const file = aboutInput.files[0];
-    if(!file) return;
-    const box = $('#aboutImageBox');
-    try{
-      aboutInput.disabled = true;
-      showLoading();
-      const url = await uploadSettingImage(file, 'about-image');
-      pendingAboutImage = url;
+  ['Classic','Light','Dark'].forEach(mode=>{
+    const aboutInput = $(`#aboutImageInput${mode}`);
+    if(aboutInput) aboutInput.onchange = async ()=>{
+      const file = aboutInput.files[0];
+      if(!file) return;
+      try{
+        aboutInput.disabled = true;
+        showLoading();
+        const url = await uploadSettingImage(file, `about-image-${mode.toLowerCase()}`);
+        pendingAboutImage[mode] = url;
+        $('#adminMain').innerHTML = adminContent();
+        bindAdminContentUI();
+      }catch(error){
+        console.error('About image upload error:', error);
+        showToast('آپلود تصویر انجام نشد');
+      }finally{
+        hideLoading();
+      }
+    };
+    const removeAboutBtn = $(`#removeAboutImageBtn${mode}`);
+    if(removeAboutBtn) removeAboutBtn.onclick = ()=>{
+      pendingAboutImage[mode] = '';
       $('#adminMain').innerHTML = adminContent();
       bindAdminContentUI();
-    }catch(error){
-      console.error('About image upload error:', error);
-      showToast('آپلود تصویر انجام نشد');
-    }finally{
-      hideLoading();
-    }
-  };
-
-  const removeAboutBtn = $('#removeAboutImageBtn');
-  if(removeAboutBtn) removeAboutBtn.onclick = ()=>{
-    pendingAboutImage = '';
-    $('#adminMain').innerHTML = adminContent();
-    bindAdminContentUI();
-  };
+    };
+  });
 
   const aboutBtn = $('#saveAboutContentBtn');
   if(aboutBtn) aboutBtn.onclick = async ()=>{
@@ -4936,7 +5781,9 @@ function bindAdminContentUI(){
       aboutTitle: pendingContent.aboutTitle,
       aboutHeading: pendingContent.aboutHeading,
       aboutText: pendingContent.aboutText,
-      aboutImage: pendingAboutImage
+      aboutImageClassic: pendingAboutImage.Classic || '',
+      aboutImageLight: pendingAboutImage.Light || '',
+      aboutImageDark: pendingAboutImage.Dark || ''
     };
     STATE.settings = newSettings;
     await withLoading(()=>saveSettingsRemote(newSettings));
@@ -5014,22 +5861,50 @@ function categoryListHtml(){
   if(!pendingCategories.length){
     return `<p style="color:var(--text-faint);font-size:13px">هنوز دسته‌بندی‌ای ثبت نشده — یکی اضافه کنید.</p>`;
   }
+  const MODES = [
+    {key:'Classic', emoji:'🎨', label:'تم کلاسیک'},
+    {key:'Light', emoji:'☀️', label:'تم روشن'},
+    {key:'Dark', emoji:'🌙', label:'تم مشکی'}
+  ];
+  const imgBox = (c,i,field,emoji,label,w,h)=>{
+    const val = c[field];
+    return `
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:10.5px;color:var(--text-faint)">${emoji} ${label}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="logo-upload-box cat-edit-img" data-idx="${i}" data-field="${field}" style="width:${w}px;height:${h}px;flex:none">
+            ${val ? `<img src="${val}" alt="${escapeHtml(c.label)}" style="object-fit:cover">` : `<span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span>`}
+            <input type="file" accept="image/*" class="cat-edit-img-input" data-idx="${i}" data-field="${field}">
+          </div>
+          ${val ? `<button type="button" class="btn btn-ghost cat-edit-remove-img" data-idx="${i}" data-field="${field}" style="padding:5px 10px;font-size:11px">حذف</button>` : ''}
+        </div>
+      </div>`;
+  };
   return `<div style="display:flex;flex-direction:column;gap:14px">
     ${pendingCategories.map((c,i)=>{
       const count = STATE.products.filter(p=>p.category===c.slug).length;
       return `
-      <div class="cat-edit-row" data-idx="${i}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px;border:1px solid var(--line)">
-        <div class="logo-upload-box cat-edit-img" data-idx="${i}" style="width:64px;height:64px;flex:none">
-          ${c.image ? `<img src="${c.image}" alt="${escapeHtml(c.label)}" style="object-fit:cover">` : `<span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span>`}
-          <input type="file" accept="image/*" class="cat-edit-img-input" data-idx="${i}">
+      <div class="cat-edit-row" data-idx="${i}" style="display:flex;flex-direction:column;gap:14px;padding:12px;border:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px">
+            <input class="cat-edit-name" data-idx="${i}" value="${escapeHtml(c.label)}" placeholder="نام دسته‌بندی (مثلاً: زنانه)">
+            <input class="cat-edit-tagline" data-idx="${i}" value="${escapeHtml(c.tagline||'')}" placeholder="متن کنار اسم (مثلاً: WOMEN)">
+            <span style="font-size:11.5px;color:var(--text-faint)">${count} محصول در این دسته</span>
+          </div>
+          <button type="button" class="btn btn-ghost cat-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف دسته</button>
         </div>
-        <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px">
-          <input class="cat-edit-name" data-idx="${i}" value="${escapeHtml(c.label)}" placeholder="نام دسته‌بندی (مثلاً: زنانه)">
-          <input class="cat-edit-tagline" data-idx="${i}" value="${escapeHtml(c.tagline||'')}" placeholder="متن کنار اسم (مثلاً: WOMEN)">
-          <span style="font-size:11.5px;color:var(--text-faint)">${count} محصول در این دسته</span>
+        <div>
+          <span style="font-size:11px;color:var(--text-dim);display:block;margin-bottom:8px">عکس دسکتاپ — یک عکس جدا برای هر تم (۱۲۰۰×۸۰۰ پیکسل). اگر برای تمی نگذارید، از عکس یکی دیگر از تم‌ها استفاده می‌شود.</span>
+          <div class="theme-asset-row" style="gap:14px">
+            ${MODES.map(mo=>imgBox(c,i,'image'+mo.key,mo.emoji,mo.label,96,64)).join('')}
+          </div>
         </div>
-        ${c.image ? `<button type="button" class="btn btn-ghost cat-edit-remove-img" data-idx="${i}" style="padding:6px 12px;font-size:11.5px">حذف عکس</button>` : ''}
-        <button type="button" class="btn btn-ghost cat-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف دسته</button>
+        <div>
+          <span style="font-size:11px;color:var(--text-dim);display:block;margin-bottom:8px">عکس موبایل — اختیاری، برای هر تم (۸۰۰×۱۰۰۰ پیکسل). اگر خالی بماند از عکس دسکتاپ همان تم استفاده می‌شود.</span>
+          <div class="theme-asset-row" style="gap:14px">
+            ${MODES.map(mo=>imgBox(c,i,'imageMobile'+mo.key,mo.emoji,mo.label,64,80)).join('')}
+          </div>
+        </div>
       </div>`;
     }).join('')}
   </div>`;
@@ -5080,7 +5955,9 @@ function bindLogoInput(mode){
       showLoading();
 
       const url = await uploadSettingImage(file, `logo-${mode.toLowerCase()}`);
-      if(mode==='Dark') pendingLogoDark = url; else pendingLogoLight = url;
+      if(mode==='Dark') pendingLogoDark = url;
+      else if(mode==='Light') pendingLogoLight = url;
+      else pendingLogoClassic = url;
 
       logoBox.innerHTML = `
         <img src="${url}" alt="لوگو">
@@ -5141,6 +6018,11 @@ function openProductModal(id){
   $('#modalTitle').textContent = p ? 'ویرایش محصول' : 'افزودن محصول';
   $('#pName').value = p?.name || '';
   $('#pCategory').value = p?.category || (STATE.settings.categories?.[0]?.slug || '');
+  $('#pBadge').value = p?.badge || '';
+  $('#pNameSize').value = p?.nameSize || '';
+  $('#pCatSize').value = p?.catSize || '';
+  $('#pPriceSize').value = p?.priceSize || '';
+  $('#pDescSize').value = p?.descSize || '';
   $('#pPrice').value = p?.price || '';
   $('#pCompareAt').value = p?.compareAt || '';
   $('#pStock').value = p?.stock ?? '';
@@ -5149,6 +6031,10 @@ function openProductModal(id){
   renderSizeQtyRows();
   editingImages = p ? normalizeImages(p).slice() : [];
   renderMultiUploadGrid();
+  editingFabricFeatures = p?.fabricFeatures?.length ? p.fabricFeatures.map(f=>({icon:f.icon||'', label:f.label||'', size:f.size||11.5})) : [];
+  renderFabricFeatureRows();
+  editingColors = p?.colors?.length ? p.colors.map(c=>({c1:c.c1||'', c2:c.c2||null, label:c.label||''})) : [];
+  renderColorPickerUI();
   $('#productModalOverlay').classList.add('open');
 }
 window.editProduct = openProductModal;
