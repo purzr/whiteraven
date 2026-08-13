@@ -477,6 +477,11 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
   background:var(--banner-img) center/cover no-repeat;
   cursor:pointer;
 }
+@media(min-width:761px){
+  .banner-slider-wrap{padding:20px 24px 0;max-width:1400px;margin:0 auto}
+  .banner-slider{border-radius:16px}
+  .banner-slide{aspect-ratio:21/9;max-height:520px}
+}
 .banner-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px 0 4px;direction:ltr}
 .banner-dot{width:8px;height:8px;border-radius:50%;background:transparent;border:1.5px solid var(--gold-dim);padding:0;cursor:pointer;transition:background .3s ease,transform .3s ease,width .3s ease}
 .banner-dot.active{background:var(--gold);border-color:var(--gold);width:22px;border-radius:5px}
@@ -1069,20 +1074,6 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 
 /* ===== Auth / account ===== */
 .narrow{max-width:420px;margin:0 auto}
-/* ===== تخمین هزینه ارسال (صفحه محصول و سبد خرید) ===== */
-.ship-estimate{
-  margin-top:18px;padding:16px;border:1px solid var(--line);background:var(--bg-card);border-radius:10px;
-}
-.ship-estimate-head{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);margin-bottom:10px}
-.ship-estimate-head svg{color:var(--gold);flex:none}
-.ship-estimate select{
-  width:100%;padding:10px 12px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
-  font-family:inherit;font-size:13px;border-radius:8px;
-}
-.ship-estimate select:focus{outline:none;border-color:var(--gold)}
-.ship-estimate-result{margin-top:10px;font-size:13px;color:var(--text-dim)}
-.ship-estimate-result b{color:var(--text)}
-.ship-estimate-note{font-size:11.5px;color:var(--text-faint);margin-top:4px}
 .cart-ship-row{margin-bottom:14px}
 .cart-ship-row label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:6px}
 .cart-ship-row select{
@@ -1099,6 +1090,28 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 }
 .form-field input:focus,.form-field textarea:focus,.form-field select:focus{outline:none;border-color:var(--gold)}
 .form-field textarea{min-height:100px;resize:vertical}
+/* ===== کادر کشویی جستجوپذیر برای انتخاب استان/شهر (مثل سایت‌های حرفه‌ای) ===== */
+.wr-combo{position:relative}
+.wr-combo-input{cursor:text}
+.wr-combo-arrow{position:absolute;top:50%;left:14px;transform:translateY(-50%);pointer-events:none;color:var(--text-faint);transition:transform .15s}
+.wr-combo.open .wr-combo-arrow{transform:translateY(-50%) rotate(180deg);color:var(--gold)}
+.wr-combo-list{
+  display:none;position:absolute;top:calc(100% + 6px);right:0;left:0;
+  max-height:252px;overflow-y:auto;background:var(--bg-card);
+  border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-md);z-index:60;padding:6px;
+}
+.wr-combo.open .wr-combo-list{display:block}
+.wr-combo-option{
+  padding:10px 12px;font-size:13.5px;color:var(--text);cursor:pointer;
+  border-radius:6px;transition:background .12s,color .12s;
+}
+.wr-combo-option+.wr-combo-option{margin-top:2px}
+.wr-combo-option:hover,.wr-combo-option.active{background:var(--bg-alt);color:var(--gold-light)}
+.wr-combo-option mark{background:none;color:var(--gold);font-weight:700}
+.wr-combo-empty{padding:10px 12px;font-size:12.5px;color:var(--text-faint)}
+.wr-combo-list::-webkit-scrollbar{width:7px}
+.wr-combo-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px}
 .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:520px){.form-row2{grid-template-columns:1fr}}
 .form-row3{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end}
@@ -1142,6 +1155,15 @@ footer.site{font-family:var(--font-footer)}
 .stat-card{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px}
 .stat-card .num{font-size:26px;color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-weight:600}
 .stat-card .lbl{font-size:12px;color:var(--text-faint);margin-top:4px}
+.mag-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.mag-toolbar button{background:var(--bg-card);border:1px solid var(--line);color:var(--text-dim);padding:6px 12px;border-radius:6px;font-size:12.5px;cursor:pointer}
+.mag-toolbar button:hover{color:var(--gold-light);border-color:var(--gold)}
+.mag-editor{min-height:220px;max-height:420px;overflow:auto;background:var(--bg-card);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:14px;line-height:1.9;color:var(--text)}
+.mag-editor:focus{outline:none;border-color:var(--gold)}
+.mag-editor a,.article-content a{color:var(--gold-light);text-decoration:underline}
+.article-content img{max-width:100%;border-radius:8px}
+.article-content p{margin-bottom:16px}
+.article-content h2,.article-content h3{font-family:var(--font-heading);margin:26px 0 12px}
 table.admin-table{width:100%;border-collapse:collapse;font-size:13.5px}
 table.admin-table th{text-align:right;color:var(--text-faint);font-weight:500;font-size:11.5px;letter-spacing:.05em;padding:12px;border-bottom:1px solid var(--line)}
 table.admin-table td{padding:12px;border-bottom:1px solid var(--line);color:var(--text-dim);vertical-align:middle}
@@ -1309,6 +1331,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
           </button>
           <div class="nav-megamenu" id="navCatLinks"></div>
         </div>
+        <a href="#/magazine" data-link data-route="/magazine">مجله</a>
         <a href="#/about" data-link data-route="/about">درباره ما</a>
         <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
       </nav>
@@ -1377,6 +1400,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
     <div class="mobile-nav-submenu" id="mobileNavCatLinks"></div>
   </div>
   <div class="mobile-nav-bottom">
+    <a href="#/magazine" data-link data-route="/magazine">مجله</a>
     <a href="#/about" data-link data-route="/about">درباره ما</a>
     <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
     <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
@@ -1397,6 +1421,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
         <a href="#/shop/women" data-link>لباس زیر زنانه</a>
         <a href="#/shop/men" data-link>لباس زیر مردانه</a>
         <a href="#/shop/all" data-link>جدیدترین‌ها</a>
+        <a href="#/magazine" data-link>مجله</a>
       </div>
       <div class="foot-col">
         <h5>درباره</h5>
@@ -1499,6 +1524,56 @@ const IRAN_PROVINCES_CITIES = {
 };
 function iranAllProvinces(){ return Object.keys(IRAN_PROVINCES_CITIES).sort((a,b)=>a.localeCompare(b,'fa')); }
 function iranCitiesFor(province){ return IRAN_PROVINCES_CITIES[province] || []; }
+
+// ===== کامپوننت کادر کشویی جستجوپذیر (برای انتخاب استان/شهر مثل سایت‌های حرفه‌ای) =====
+// wrapperEl: عنصر با کلاس wr-combo که یک input.wr-combo-input و یک div.wr-combo-list داخلش است.
+// getOptions: تابعی که لیست گزینه‌ها را برمی‌گرداند (برای اینکه بتوان لیست شهر را بسته به استان تغییر داد).
+// onChange (اختیاری): وقتی کاربر گزینه‌ای را انتخاب می‌کند یا متن را کامل پاک می‌کند صدا زده می‌شود.
+function initWrCombo(wrapperEl, getOptions, onChange){
+  if(!wrapperEl) return null;
+  const input = wrapperEl.querySelector('.wr-combo-input');
+  const list = wrapperEl.querySelector('.wr-combo-list');
+  if(!input || !list) return null;
+
+  function highlight(text, query){
+    if(!query) return escapeHtml(text);
+    const idx = text.indexOf(query);
+    if(idx === -1) return escapeHtml(text);
+    return escapeHtml(text.slice(0,idx)) + '<mark>' + escapeHtml(text.slice(idx,idx+query.length)) + '</mark>' + escapeHtml(text.slice(idx+query.length));
+  }
+
+  function render(){
+    const q = input.value.trim();
+    const all = getOptions() || [];
+    const filtered = q ? all.filter(o=>o.includes(q)) : all;
+    if(!filtered.length){
+      list.innerHTML = `<div class="wr-combo-empty">موردی یافت نشد</div>`;
+      return;
+    }
+    list.innerHTML = filtered.slice(0,300).map(o=>`<div class="wr-combo-option" data-val="${escapeHtml(o)}">${highlight(o,q)}</div>`).join('');
+  }
+  function open(){ render(); wrapperEl.classList.add('open'); }
+  function close(){ wrapperEl.classList.remove('open'); }
+
+  input.addEventListener('focus', open);
+  input.addEventListener('click', open);
+  input.addEventListener('input', ()=>{ open(); if(onChange) onChange(input.value.trim(), false); });
+  input.addEventListener('blur', ()=>{ setTimeout(close, 160); });
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){ close(); input.blur(); }
+    if(e.key === 'Enter'){ e.preventDefault(); }
+  });
+  list.addEventListener('mousedown', (e)=>{
+    const opt = e.target.closest('.wr-combo-option');
+    if(!opt) return;
+    e.preventDefault();
+    input.value = opt.dataset.val;
+    close();
+    if(onChange) onChange(opt.dataset.val, true);
+  });
+  return { refresh: render, setValue:(v)=>{ input.value = v || ''; } };
+}
+
 function iranAllCities(){
   return [...new Set(Object.values(IRAN_PROVINCES_CITIES).flat())].sort((a,b)=>a.localeCompare(b,'fa'));
 }
@@ -1831,6 +1906,91 @@ async function loadOrders(){
   return (await sGet('orders', true)) || [];
 }
 
+/* ---------------- magazine / blog (shared: Supabase table "magazine_posts",
+   falls back to per-browser localStorage if Supabase isn't configured).
+   See README.md "جدول magazine_posts" for the SQL to create the table:
+   id text primary key, title text, slug text unique, excerpt text,
+   content text, cover_image text, meta_title text, meta_description text,
+   published boolean, created_at timestamptz, updated_at timestamptz ---------------- */
+function rowToPost(row){
+  return {
+    id: row.id, title: row.title||'', slug: row.slug||'',
+    excerpt: row.excerpt||'', content: row.content||'',
+    coverImage: row.cover_image||'',
+    metaTitle: row.meta_title||'', metaDescription: row.meta_description||'',
+    published: row.published!==false,
+    createdAt: row.created_at||null, updatedAt: row.updated_at||null
+  };
+}
+function postToRow(p){
+  return {
+    id: p.id, title: p.title, slug: p.slug,
+    excerpt: p.excerpt||'', content: p.content||'',
+    cover_image: p.coverImage||'',
+    meta_title: p.metaTitle||'', meta_description: p.metaDescription||'',
+    published: p.published!==false,
+    updated_at: new Date().toISOString()
+  };
+}
+function slugify(str){
+  const s = (str||'').trim().toLowerCase()
+    .replace(/[^\u0600-\u06FFa-z0-9\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .replace(/^-|-$/g,'');
+  return s || ('post-'+Date.now());
+}
+async function loadMagazinePosts(){
+  if(supabaseClient){
+    const {data, error} = await supabaseClient
+      .from('magazine_posts')
+      .select('*')
+      .order('created_at', {ascending:false})
+      .limit(200);
+    if(error){ console.error(error); return null; }
+    return data.map(rowToPost);
+  }
+  return (await sGet('magazinePosts', true)) || [];
+}
+async function upsertMagazinePostRemote(p){
+  if(supabaseClient){
+    const row = postToRow(p);
+    if(!p._exists) row.created_at = new Date().toISOString();
+    const {error} = await supabaseClient.from('magazine_posts').upsert(row);
+    if(error){ console.error(error); throw error; }
+  } else {
+    await sSet('magazinePosts', STATE.magazinePosts, true);
+  }
+}
+async function deleteMagazinePostRemote(id){
+  if(supabaseClient){
+    const {error} = await supabaseClient.from('magazine_posts').delete().eq('id', id);
+    if(error) console.error(error);
+  } else {
+    await sSet('magazinePosts', STATE.magazinePosts, true);
+  }
+}
+function findPost(idOrSlug){
+  return STATE.magazinePosts.find(p=>p.id===idOrSlug || p.slug===idOrSlug);
+}
+/* uploads a magazine image (cover or inline) to the shared "site-assets" bucket */
+async function uploadMagazineImage(file){
+  return uploadSettingImage(file, 'magazine');
+}
+/* sets <title> and the meta-description tag for SEO on a given page —
+   restores the site default when leaving that page */
+const DEFAULT_TITLE = document.title;
+function setPageMeta(title, description){
+  document.title = title || DEFAULT_TITLE;
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if(!metaDesc){
+    metaDesc = document.createElement('meta');
+    metaDesc.setAttribute('name','description');
+    document.head.appendChild(metaDesc);
+  }
+  if(description) metaDesc.setAttribute('content', description);
+}
+
 /* ---------------- product reviews (shared: Supabase table "product_reviews",
    falls back to per-browser localStorage if Supabase isn't configured) ---------------- */
 function rowToReview(row){
@@ -1976,9 +2136,12 @@ async function findOrderByIdAndPhone(orderId, phone){
 
   let order = null;
   if(supabaseClient){
-    const {data, error} = await supabaseClient.from('orders').select('*').eq('id', cleanId).maybeSingle();
+    const {data, error} = await supabaseClient.rpc('get_order_by_id_and_phone', {
+      order_id: cleanId,
+      order_phone: cleanPhone
+    });
     if(error){ console.error(error); return {error:'خطا در ارتباط با سرور، دوباره تلاش کنید'}; }
-    if(data) order = rowToOrder(data);
+    if(data && data.length) order = rowToOrder(data[0]);
   }else{
     order = STATE.orders.find(o=>o.id===cleanId) || null;
   }
@@ -2491,6 +2654,7 @@ let STATE = {
   reviews: [],
   account: null,
   wishlist: [],
+  magazinePosts: [],
   route: '/',
   filters:{category:'all', q:'', section:null},
   admin: {loggedIn:false},
@@ -2598,7 +2762,8 @@ async function init(){
     cart,
     account,
     wishlist,
-    reviews
+    reviews,
+    magazinePosts
   ] = await Promise.all([
     loadProducts(),
     loadOrders(),
@@ -2607,7 +2772,8 @@ async function init(){
     sGet('cart', false),
     getCurrentAccount(),
     sGet('wishlist', false),
-    loadAllReviews()
+    loadAllReviews(),
+    loadMagazinePosts()
   ]);
 
   let finalProducts = products;
@@ -2637,6 +2803,7 @@ async function init(){
   STATE.account = account || null;
   STATE.wishlist = wishlist || [];
   STATE.reviews = reviews || [];
+  STATE.magazinePosts = (magazinePosts || []).map(p=>({...p, _exists:true}));
 
   STATE.settings = settings || defaultSettings();
 
@@ -2694,10 +2861,13 @@ function router(preserveScroll){
   });
 
   const app = $('#app');
+  setPageMeta();
   if(path==='/' ) app.innerHTML = pageHome();
   else if(path.startsWith('/shop/')) app.innerHTML = pageShop(path.split('/shop/')[1]);
   else if(path.startsWith('/product/')) app.innerHTML = pageProduct(path.split('/product/')[1]);
   else if(path.startsWith('/others/')) app.innerHTML = pageOthers(path.split('/others/')[1]);
+  else if(path==='/magazine') app.innerHTML = pageMagazineList();
+  else if(path.startsWith('/magazine/')) app.innerHTML = pageMagazineArticle(path.split('/magazine/')[1]);
   else if(path==='/about') app.innerHTML = pageAbout();
   else if(path==='/contact') app.innerHTML = pageContact();
   else if(path==='/account') app.innerHTML = pageAccount();
@@ -3329,7 +3499,7 @@ function pdGalleryPerksHtml(){
     { icon:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>`, title:'ضمانت کیفیت', sub:'کیفیت محصولات تضمین شده' },
     { icon:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c4.97 0 9-3.5 9-8s-4.03-8-9-8-9 3.5-9 8c0 1.8.62 3.46 1.68 4.83L4 21l4.5-1.2A9.9 9.9 0 0 0 12 21z"/></svg>`, title:'پشتیبانی ۲۴/۷', sub:'همیشه پاسخگوی شما هستیم' },
     { icon:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>`, title:'پرداخت امن', sub:'اطلاعات شما محافظت می‌شود' },
-    { icon:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>`, title:'ارسال رایگان', sub:'برای خرید بالای ۵۰۰ هزار تومان' },
+    { icon:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>`, title:'ارسال رایگان', sub:`برای خرید بالای ${RIAL(STATE.settings.freeShippingThreshold ?? 1000000)}` },
   ];
   return `
   <div class="pd-perks-strip">
@@ -4256,6 +4426,92 @@ function pageProduct(id){
   </div>`;
 }
 
+/* ---------------- magazine (public pages) ---------------- */
+function publishedPosts(){
+  return STATE.magazinePosts.filter(p=>p.published!==false);
+}
+function magazineCard(p){
+  const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '';
+  return `
+  <div class="card">
+    <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link>
+      <div class="card-img">
+        ${p.coverImage ? `<img src="${p.coverImage}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async">` : `<div style="background:var(--ph-bg);width:100%;height:100%"></div>`}
+      </div>
+    </a>
+    <div class="card-body">
+      ${dateStr ? `<span class="cat-tag">${dateStr}</span>` : ''}
+      <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link><h3>${escapeHtml(p.title)}</h3></a>
+      ${p.excerpt ? `<p style="font-size:13px;color:var(--text-dim);line-height:1.9;margin:6px 0 0">${escapeHtml(p.excerpt)}</p>` : ''}
+      <div class="card-actions">
+        <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link class="btn" style="text-align:center;flex:1">ادامه مطلب</a>
+      </div>
+    </div>
+  </div>`;
+}
+function pageMagazineList(){
+  const posts = publishedPosts();
+  setPageMeta(
+    'مجله | WHITE RAVEN',
+    'مقالات، راهنماها و اخبار مجله وایت ریون — نکات استایل، مراقبت از پوشاک و معرفی محصولات.'
+  );
+  return `
+  <div class="page-head"><span class="eyebrow">MAGAZINE</span><h1 class="serif">مجله</h1></div>
+  <div class="section">
+    <div class="container">
+      <div class="grid" id="magazineGrid">${posts.map(magazineCard).join('') || emptyState('هنوز مطلبی در مجله منتشر نشده است')}</div>
+    </div>
+  </div>`;
+}
+function pageMagazineArticle(slug){
+  const p = findPost(decodeURIComponent(slug));
+  if(!p || p.published===false){
+    setPageMeta();
+    return page404();
+  }
+  setPageMeta(
+    (p.metaTitle || p.title) + ' | مجله WHITE RAVEN',
+    p.metaDescription || p.excerpt || ''
+  );
+  const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '';
+  const others = publishedPosts().filter(x=>x.id!==p.id).slice(0,3);
+  // every link inside article content is forced to open in a new tab so the
+  // magazine tab itself stays put — see forceExternalLinkTargets()
+  return `
+  <article class="section">
+    <div class="container" style="max-width:820px">
+      <div class="page-head" style="text-align:${document.documentElement.dir==='rtl'?'right':'left'};padding-bottom:0">
+        <span class="eyebrow">MAGAZINE</span>
+        <h1 class="serif" style="margin-top:8px">${escapeHtml(p.title)}</h1>
+        ${dateStr ? `<span style="font-size:12px;color:var(--text-faint);display:block;margin-top:10px">${dateStr}</span>` : ''}
+      </div>
+      ${p.coverImage ? `<img src="${p.coverImage}" alt="${escapeHtml(p.title)}" style="width:100%;border-radius:var(--radius);margin:26px 0;object-fit:cover;max-height:460px">` : ''}
+      <div class="article-content" style="font-size:15.5px;line-height:2.1;color:var(--text)">${forceExternalLinkTargets(p.content||'')}</div>
+      <div style="margin-top:40px">
+        <a href="#/magazine" data-link class="btn btn-ghost">‹ بازگشت به مجله</a>
+      </div>
+    </div>
+  </article>
+  ${others.length ? `
+  <div class="section" style="padding-top:0">
+    <div class="container">
+      <div class="section-head"><h2 class="serif">مطالب دیگر</h2></div>
+      <div class="grid">${others.map(magazineCard).join('')}</div>
+    </div>
+  </div>` : ''}`;
+}
+/* ensures every <a> inside saved article HTML opens in a new tab, so the
+   reader's magazine tab stays open behind it */
+function forceExternalLinkTargets(html){
+  const wrap = document.createElement('div');
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('a[href]').forEach(a=>{
+    a.setAttribute('target','_blank');
+    a.setAttribute('rel','noopener noreferrer');
+  });
+  return wrap.innerHTML;
+}
+
 function pageAbout(){
   const s = STATE.settings;
   const paragraphs = (s.aboutText||'').split('\n').filter(p=>p.trim()).map(p=>`<p>${escapeHtml(p)}</p>`).join('');
@@ -4374,9 +4630,14 @@ function pageCheckout(){
     </div></div>`;
   }
   const subtotal = cartSubtotal();
-  const shipping = computeShipping(subtotal, getSavedShippingProvince());
+  const savedProvinceForTotal = getSavedShippingProvince();
+  const savedCityForTotal = getSavedShippingCity();
+  const shipping = computeShipping(subtotal, savedProvinceForTotal, savedCityForTotal);
   const discount = computeDiscount(subtotal, appliedCoupon);
+  const freeShipForTotal = subtotal >= (STATE.settings.freeShippingThreshold ?? 1000000);
+  const totalReady = freeShipForTotal || !!(savedProvinceForTotal && savedCityForTotal);
   const total = Math.max(0, subtotal + shipping - discount);
+  const totalDisplay = totalReady ? RIAL(total) : 'مقصد ارسال را انتخاب کنید';
   return `
   <div class="page-head"><span class="eyebrow">CHECKOUT</span><h1 class="serif">تکمیل خرید</h1></div>
   <div class="section"><div class="container">
@@ -4400,26 +4661,24 @@ function pageCheckout(){
 </div>
 
 ${(()=>{
-  const rates = STATE.settings.shippingRates || [];
-  const provinces = [...new Set(rates.map(r=>r.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
   const savedProvince = getSavedShippingProvince();
+  const savedCity = getSavedShippingCity();
   return `<div class="form-row2">
   <div class="form-field">
     <label>استان</label>
-    ${provinces.length ? `<select required id="checkoutProvince">
-        <option value="">انتخاب کنید</option>
-        ${provinces.map(p=>`<option value="${escapeHtml(p)}" ${p===savedProvince?'selected':''}>${escapeHtml(p)}</option>`).join('')}
-      </select>` : `<input required id="checkoutProvince" placeholder="استان را تایپ کنید..." value="${escapeHtml(savedProvince)}" list="checkoutProvinceList" autocomplete="off">
-      <datalist id="checkoutProvinceList">
-        ${iranAllProvinces().map(p=>`<option value="${escapeHtml(p)}"></option>`).join('')}
-      </datalist>`}
+    <div class="wr-combo" id="checkoutProvinceCombo">
+      <input required id="checkoutProvince" class="wr-combo-input" placeholder="استان را انتخاب یا تایپ کنید..." value="${escapeHtml(savedProvince)}" autocomplete="off">
+      <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      <div class="wr-combo-list"></div>
+    </div>
   </div>
   <div class="form-field">
     <label>شهر</label>
-    <input required id="checkoutCity" placeholder="شهر را تایپ کنید..." list="checkoutCityList" autocomplete="off">
-    <datalist id="checkoutCityList">
-      ${(iranCitiesFor(savedProvince).length ? iranCitiesFor(savedProvince) : iranAllCities()).map(c=>`<option value="${escapeHtml(c)}"></option>`).join('')}
-    </datalist>
+    <div class="wr-combo" id="checkoutCityCombo">
+      <input required id="checkoutCity" class="wr-combo-input" placeholder="شهر را انتخاب یا تایپ کنید..." value="${escapeHtml(savedCity)}" autocomplete="off">
+      <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      <div class="wr-combo-list"></div>
+    </div>
   </div>
 </div>`;
 })()}
@@ -4438,7 +4697,6 @@ ${(()=>{
   <label>روش پرداخت</label>
   <select id="checkoutPaymentMethod">
     <option>پرداخت آنلاین (درگاه بانکی)</option>
-    <option>پرداخت در محل</option>
   </select>
 </div>
 
@@ -4456,9 +4714,9 @@ ${(()=>{
             </div>`;
           }).join('')}
           <div class="cart-sum-row" style="margin-top:16px"><span>جمع کل</span><span>${RIAL(subtotal)}</span></div>
-          <div class="cart-sum-row"><span>هزینه ارسال</span><span id="checkoutShippingLine">${shippingLineHtml(subtotal, getSavedShippingProvince())}</span></div>
+          <div class="cart-sum-row"><span>هزینه ارسال</span><span id="checkoutShippingLine">${shippingLineHtml(subtotal, getSavedShippingProvince(), getSavedShippingCity())}</span></div>
           <div class="cart-sum-row" id="checkoutDiscountRow" style="${discount>0?'':'display:none'}"><span>تخفیف ${appliedCoupon?`(${escapeHtml(appliedCoupon.code)})`:''}</span><span id="checkoutDiscountLine" style="color:var(--ok)">${discount>0?'-'+RIAL(discount):''}</span></div>
-          <div class="cart-sum-row total"><span>مبلغ نهایی</span><span id="checkoutTotalLine">${RIAL(total)}</span></div>
+          <div class="cart-sum-row total"><span>مبلغ نهایی</span><span id="checkoutTotalLine">${totalDisplay}</span></div>
 
           <div style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)">
             <label style="font-size:12.5px;color:var(--text-dim);display:block;margin-bottom:8px">کد تخفیف</label>
@@ -4769,7 +5027,6 @@ function bindPageUI(){
           qty = 0;
           qtyVal.textContent = qty;
           updateLowStockMsg();
-          if(shipRecalc) shipRecalc();
         };
       });
     };
@@ -4778,12 +5035,10 @@ function bindPageUI(){
     let maxStock = getMaxForSelection();
     let qty = hasSizes ? 0 : 1;
     qtyVal.textContent = qty;
-    const shipRecalc = prod ? bindShippingEstimateWidget('pdShip', ()=> prod.price*qty) : null;
-    $('#qtyMinus').onclick = ()=>{ qty=Math.max(hasSizes?0:1,qty-1); qtyVal.textContent=qty; if(shipRecalc) shipRecalc(); };
+    $('#qtyMinus').onclick = ()=>{ qty=Math.max(hasSizes?0:1,qty-1); qtyVal.textContent=qty; };
     $('#qtyPlus').onclick = ()=>{
       if(qty>=maxStock){ showToast(maxStock>0 ? `فقط ${maxStock} عدد موجود است` : 'ناموجود است'); return; }
       qty=qty+1; qtyVal.textContent=qty;
-      if(shipRecalc) shipRecalc();
     };
     $$('.size-opt').forEach(b=> { if(b.classList.contains('out')) return; b.onclick=()=> {
       $$('.size-opt').forEach(x=>x.classList.remove('active'));
@@ -4795,7 +5050,6 @@ function bindPageUI(){
       qty = 0;
       qtyVal.textContent = qty;
       updateLowStockMsg();
-      if(shipRecalc) shipRecalc();
     }; });
     updateLowStockMsg();
     $('#addToCartBtn').onclick = ()=>{
@@ -4977,6 +5231,9 @@ if (messageInput && messageCounter) {
     const province = checkoutProvinceEl ? checkoutProvinceEl.value.trim() : '';
     const city = checkoutCityEl ? checkoutCityEl.value.trim() : '';
     if(province) saveShippingProvince(province);
+    saveShippingCity(city);
+    const freeShip = subtotal >= (STATE.settings.freeShippingThreshold ?? 1000000);
+    const locationReady = !!(province && city);
     const shipping = computeShipping(subtotal, province, city);
     const discount = computeDiscount(subtotal, appliedCoupon);
     const shippingLineEl = $('#checkoutShippingLine');
@@ -4986,23 +5243,23 @@ if (messageInput && messageCounter) {
     if(shippingLineEl) shippingLineEl.innerHTML = shippingLineHtml(subtotal, province, city);
     if(discountRowEl) discountRowEl.style.display = discount>0 ? '' : 'none';
     if(discountLineEl) discountLineEl.textContent = discount>0 ? '-'+RIAL(discount) : '';
-    if(totalLineEl) totalLineEl.textContent = RIAL(Math.max(0, subtotal + shipping - discount));
+    if(totalLineEl){
+      totalLineEl.textContent = (freeShip || locationReady)
+        ? RIAL(Math.max(0, subtotal + shipping - discount))
+        : 'مقصد ارسال را انتخاب کنید';
+    }
   };
-  // با انتخاب/تایپ استان، لیست پیشنهادی شهرها (datalist) همان استان را نشان می‌دهد
-  // تا کاربر با چند حرف اول سریع‌تر شهر خودش را پیدا و انتخاب کند.
-  const updateCityDatalist = ()=>{
+  // کادر کشویی جستجوپذیر استان: با تایپ چند حرف، لیست فیلتر می‌شود و با انتخاب،
+  // لیست شهرهای همان استان در کادر شهر به‌روزرسانی و هزینهٔ ارسال دوباره محاسبه می‌شود.
+  const cityCombo = initWrCombo($('#checkoutCityCombo'), ()=>{
     const province = checkoutProvinceEl ? checkoutProvinceEl.value.trim() : '';
     const cities = iranCitiesFor(province);
-    fillDatalist('checkoutCityList', cities.length ? cities : iranAllCities());
-  };
-  if(checkoutProvinceEl){
-    checkoutProvinceEl.onchange = ()=>{ updateCityDatalist(); updateCheckoutShipping(); };
-    if(checkoutProvinceEl.tagName === 'INPUT'){
-      checkoutProvinceEl.oninput = updateCityDatalist;
-    }
-    updateCityDatalist();
-  }
-  if(checkoutCityEl) checkoutCityEl.oninput = updateCheckoutShipping;
+    return cities.length ? cities : iranAllCities();
+  }, ()=>{ updateCheckoutShipping(); });
+  initWrCombo($('#checkoutProvinceCombo'), ()=>iranAllProvinces(), (val, picked)=>{
+    if(picked && checkoutCityEl) checkoutCityEl.value = '';
+    updateCheckoutShipping();
+  });
 
   const applyCouponBtn = $('#applyCouponBtn');
   if(applyCouponBtn) applyCouponBtn.onclick = ()=>{
@@ -5257,12 +5514,18 @@ function computeDiscount(subtotal, coupon){
 // the normal cost is shown struck-through next to "رایگان".
 function shippingLineHtml(subtotal, province, city){
   const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
-  const cost = shippingCostFor(province, city);
   const free = subtotal >= threshold;
-  if(free && cost > 0){
-    return `<span><s style="color:var(--text-faint);opacity:.7;margin-left:6px">${RIAL(cost)}</s><span style="color:var(--ok)">رایگان</span></span>`;
+  if(free){
+    return `<span style="color:var(--ok)">رایگان</span>`;
   }
-  return `<span>${free ? 'رایگان' : RIAL(cost)}</span>`;
+  // تا زمانی که هم استان و هم شهر مشخص نشده، عدد دقیق نمایش داده نمی‌شود —
+  // این‌طور مشتری متوجه نمی‌شود که هزینه فقط بر اساس استان محاسبه شده یا
+  // برای همان شهر خاص یک نرخ جداگانه ثبت شده است.
+  if(!province || !city){
+    return `<span style="color:var(--text-faint);font-size:12.5px">مقصد ارسال را انتخاب کنید</span>`;
+  }
+  const cost = shippingCostFor(province, city);
+  return `<span>${RIAL(cost)}</span>`;
 }
 
 /* ---------------- shipping estimate widget (product page / cart) ----------------
@@ -5279,57 +5542,21 @@ function saveShippingProvince(province){
     else localStorage.removeItem('wr-ship-province');
   }catch(e){}
 }
+// شهر ذخیره‌شده هم به همراه استان نگه داشته می‌شود، تا اگر ادمین برای همان
+// «استان + شهر» دقیقاً یک هزینهٔ جداگانه ثبت کرده باشد، همان مبلغ (نه هزینهٔ
+// کلی استان) در همه‌جا — از جمله در بارگذاری اولیهٔ صفحهٔ تسویه‌حساب — نمایش داده شود.
+function getSavedShippingCity(){
+  try{ return localStorage.getItem('wr-ship-city') || ''; }catch(e){ return ''; }
+}
+function saveShippingCity(city){
+  try{
+    if(city) localStorage.setItem('wr-ship-city', city);
+    else localStorage.removeItem('wr-ship-city');
+  }catch(e){}
+}
 function shippingProvinceList(){
   const rates = STATE.settings.shippingRates || [];
   return [...new Set(rates.map(r=>r.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
-}
-// result line shown once a province is selected — mirrors shippingLineHtml's
-// free-shipping logic but labeled for a pre-checkout estimate context.
-function shippingEstimateResultHtml(province, subtotal){
-  if(!province) return '';
-  const threshold = STATE.settings.freeShippingThreshold ?? 1000000;
-  const cost = shippingCostFor(province, '');
-  const free = subtotal >= threshold && subtotal > 0;
-  if(free && cost > 0){
-    return `هزینه ارسال به <b>${escapeHtml(province)}</b>: <s style="color:var(--text-faint);opacity:.7;margin-left:6px">${RIAL(cost)}</s><span style="color:var(--ok)">رایگان</span>`;
-  }
-  return `هزینه ارسال به <b>${escapeHtml(province)}</b>: <b style="color:var(--gold-light)">${free ? 'رایگان' : RIAL(cost)}</b>`;
-}
-// standalone widget markup (used on the product page). idPrefix must be unique
-// per instance on the page so multiple widgets can coexist without clashing ids.
-function shippingEstimateWidgetHtml(idPrefix){
-  const provinces = shippingProvinceList();
-  const saved = getSavedShippingProvince();
-  if(!provinces.length) return '';
-  return `
-  <div class="ship-estimate">
-    <div class="ship-estimate-head">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>
-      <span>تخمین هزینه ارسال</span>
-    </div>
-    <select id="${idPrefix}Select">
-      <option value="">استان خود را انتخاب کنید</option>
-      ${provinces.map(p=>`<option value="${escapeHtml(p)}" ${p===saved?'selected':''}>${escapeHtml(p)}</option>`).join('')}
-    </select>
-    <div class="ship-estimate-result" id="${idPrefix}Result">${saved ? shippingEstimateResultHtml(saved, cartSubtotal()) : ''}</div>
-  </div>`;
-}
-// binds a widget rendered by shippingEstimateWidgetHtml. extraFn (optional) returns
-// an extra amount (e.g. the product being viewed × its selected quantity) to add to
-// the current cart subtotal, so the free-shipping check reflects "if I buy this too".
-function bindShippingEstimateWidget(idPrefix, extraFn){
-  const select = $(`#${idPrefix}Select`);
-  const resultEl = $(`#${idPrefix}Result`);
-  if(!select || !resultEl) return;
-  const recalc = ()=>{
-    const province = select.value;
-    saveShippingProvince(province);
-    if(!province){ resultEl.innerHTML=''; return; }
-    const extra = extraFn ? extraFn() : 0;
-    resultEl.innerHTML = shippingEstimateResultHtml(province, cartSubtotal()+extra);
-  };
-  select.onchange = recalc;
-  return recalc;
 }
 
 async function addToCart(productId, qty=1, size=null, color=null){
@@ -5492,31 +5719,14 @@ function renderCart(){
   const shippingNote = subtotal>0 && remaining>0
     ? `<div class="cart-sum-row" style="font-size:11.5px;color:var(--text-faint)">تا ${RIAL(remaining)} دیگر خرید کنید تا ارسال رایگان شود</div>`
     : '';
-  const provinces = shippingProvinceList();
   const savedProvince = getSavedShippingProvince();
-  const provinceRow = provinces.length ? `
-    <div class="cart-ship-row">
-      <label for="cartShipSelect">تخمین هزینه ارسال — استان</label>
-      <select id="cartShipSelect">
-        <option value="">انتخاب استان...</option>
-        ${provinces.map(p=>`<option value="${escapeHtml(p)}" ${p===savedProvince?'selected':''}>${escapeHtml(p)}</option>`).join('')}
-      </select>
-    </div>` : '';
+  const savedCity = getSavedShippingCity();
   $('#cartFoot').innerHTML = `
-    ${provinceRow}
     <div class="cart-sum-row"><span>جمع جزء</span><span>${RIAL(subtotal)}</span></div>
-    <div class="cart-sum-row"><span>هزینه ارسال</span><span id="cartShippingLine">${shippingLineHtml(subtotal, savedProvince)}</span></div>
+    <div class="cart-sum-row"><span>هزینه ارسال</span><span id="cartShippingLine">${shippingLineHtml(subtotal, savedProvince, savedCity)}</span></div>
     ${shippingNote}
     <a href="#/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''} onclick="closeCartUI()">تکمیل خرید ‹</a>
   `;
-  const cartShipSelect = $('#cartShipSelect');
-  if(cartShipSelect){
-    cartShipSelect.onchange = ()=>{
-      saveShippingProvince(cartShipSelect.value);
-      const line = $('#cartShippingLine');
-      if(line) line.innerHTML = shippingLineHtml(cartSubtotal(), cartShipSelect.value);
-    };
-  }
 }
 window.closeCartUI = closeCart;
 
@@ -5557,6 +5767,7 @@ async function renderAdmin(path){
   else if(path==='/admin/settings'){ adminSection='settings'; pendingCategoriesInit=false; pendingBannersInit=false; }
   else if(path==='/admin/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
   else if(path==='/admin/content'){ adminSection='content'; pendingContentInit=false; pendingFaqInit=false; }
+  else if(path==='/admin/magazine' || path.startsWith('/admin/magazine')) adminSection='magazine';
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
@@ -5569,6 +5780,8 @@ async function renderAdmin(path){
   if(freshSettings){ STATE.settings = freshSettings; applySettingsToDOM(STATE.settings); }
   const freshReviews = await loadAllReviews();
   if(freshReviews) STATE.reviews = freshReviews;
+  const freshPosts = await loadMagazinePosts();
+  if(freshPosts) STATE.magazinePosts = freshPosts.map(p=>({...p, _exists:true}));
   hideLoading();
 
   box.innerHTML = adminShell();
@@ -5698,15 +5911,17 @@ function adminShell(){
         <a href="#/admin/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
         <a href="#/admin/product-reviews" data-link class="${adminSection==='productReviews'?'active':''}">نظرات محصولات${STATE.reviews.filter(r=>r.status==='pending').length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
         <a href="#/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
+        <a href="#/admin/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
         <a href="#/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
         <a href="#/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
         <a href="#/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminOrders()}
       </div>
     </div>
   </div>
+  ${magazineModalHtml()}
   <div class="modal-overlay" id="productModalOverlay">
     <div class="modal-box">
       <div class="modal-close-row"><button id="modalCloseBtn" style="font-size:18px;color:var(--text-faint)">✕</button></div>
@@ -5935,6 +6150,282 @@ function adminProducts(){
       </tbody>
     </table>
   </div>`;
+}
+
+/* ---------------- admin: magazine ---------------- */
+let editingPostId = null;
+let editingPostCover = '';
+function adminMagazine(){
+  const list = STATE.magazinePosts.slice().sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0));
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+    <h2 class="admin-title" style="margin:0">مدیریت مجله</h2>
+    <button class="btn btn-solid" id="addPostBtn">+ نوشتن پست جدید</button>
+  </div>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>کاور</th><th>عنوان</th><th>وضعیت</th><th>تاریخ</th><th></th></tr></thead>
+      <tbody>
+        ${list.map(p=>`
+        <tr>
+          <td>${p.coverImage?`<img src="${p.coverImage}" loading="lazy" decoding="async">`:`<div style="width:44px;height:54px;background:#0d0d0e;border:1px solid var(--line)"></div>`}</td>
+          <td style="color:var(--text)">${escapeHtml(p.title)}</td>
+          <td>${p.published!==false?'<span class="badge ok">منتشر شده</span>':'<span class="badge no">پیش‌نویس</span>'}</td>
+          <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '—'}</td>
+          <td><div class="tbl-actions">
+            <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link target="_blank" rel="noopener" style="cursor:pointer">مشاهده</a>
+            <button onclick="editMagazinePost('${p.id}')">ویرایش</button>
+            <button class="danger" onclick="deleteMagazinePost('${p.id}')">حذف</button>
+          </div></td>
+        </tr>`).join('') || `<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز پستی ثبت نشده است</td></tr>`}
+      </tbody>
+    </table>
+  </div>`;
+}
+function magazineModalHtml(){
+  return `
+  <div class="modal-overlay" id="magazineModalOverlay">
+    <div class="modal-box">
+      <div class="modal-close-row"><button id="magazineModalCloseBtn" style="font-size:18px;color:var(--text-faint)">✕</button></div>
+      <h3 id="magazineModalTitle">نوشتن پست جدید</h3>
+      <form id="postForm">
+        <div class="form-field">
+          <label>تصویر کاور</label>
+          <div class="logo-upload-box" id="postCoverBox" style="width:160px;height:100px">
+            <span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span>
+            <input type="file" accept="image/*" id="postCoverInput">
+          </div>
+        </div>
+        <div class="form-field"><label>عنوان</label><input required id="postTitle" placeholder="عنوان مطلب"></div>
+        <div class="form-field"><label>آدرس (Slug) <span style="color:var(--text-faint);font-weight:400">— برای SEO؛ خالی بگذارید تا خودکار ساخته شود</span></label><input id="postSlug" placeholder="مثلاً: راهنمای-انتخاب-سایز"></div>
+        <div class="form-field"><label>خلاصه <span style="color:var(--text-faint);font-weight:400">(در کارت‌های مجله و نتایج گوگل نمایش داده می‌شود)</span></label><textarea id="postExcerpt" rows="2" placeholder="یک یا دو جمله کوتاه درباره این مطلب"></textarea></div>
+        <div class="form-field">
+          <label>متن مطلب</label>
+          <div class="mag-toolbar" id="magToolbar">
+            <button type="button" data-cmd="bold" title="ضخیم"><b>B</b></button>
+            <button type="button" data-cmd="italic" title="مورب"><i>I</i></button>
+            <button type="button" id="magInsertLinkBtn" title="درج لینک (در تب جدید باز می‌شود)">🔗 لینک</button>
+            <button type="button" id="magInsertProductBtn" title="لینک به یک محصول">🛍️ لینک محصول</button>
+            <button type="button" id="magInsertImageBtn" title="افزودن عکس داخل متن">🖼️ عکس</button>
+            <button type="button" id="magUnlinkBtn" title="حذف لینک">حذف لینک</button>
+          </div>
+          <div id="postContentEditor" class="mag-editor" contenteditable="true"></div>
+          <input type="file" accept="image/*" id="postInlineImageInput" style="display:none">
+          <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:8px">هر متنی را انتخاب کنید و روی «لینک» بزنید — با کلیک کاربر روی آن، یک تب جدید مرورگر باز می‌شود و تب مجله همچنان باز می‌ماند.</span>
+        </div>
+        <div style="border-top:1px solid var(--line);padding-top:16px;margin-top:6px">
+          <h4 style="font-size:13px;color:var(--text-dim);margin-bottom:12px">تنظیمات سئو (اختیاری)</h4>
+          <div class="form-field"><label>عنوان صفحه برای گوگل</label><input id="postMetaTitle" placeholder="اگر خالی باشد، از عنوان مطلب استفاده می‌شود"></div>
+          <div class="form-field"><label>توضیحات متا</label><textarea id="postMetaDescription" rows="2" placeholder="اگر خالی باشد، از خلاصه استفاده می‌شود"></textarea></div>
+        </div>
+        <div class="form-field" style="flex-direction:row;align-items:center;gap:8px">
+          <input type="checkbox" id="postPublished" checked style="width:auto">
+          <label for="postPublished" style="margin:0">منتشر شود (در غیر این صورت به‌صورت پیش‌نویس ذخیره می‌شود)</label>
+        </div>
+        <button type="submit" class="btn btn-solid btn-block" style="margin-top:10px">ذخیره پست</button>
+      </form>
+    </div>
+  </div>`;
+}
+function openMagazinePostModal(id){
+  editingPostId = id;
+  const p = id ? findPost(id) : null;
+  $('#magazineModalTitle').textContent = p ? 'ویرایش پست مجله' : 'نوشتن پست جدید';
+  $('#postTitle').value = p?.title || '';
+  $('#postSlug').value = p?.slug || '';
+  $('#postExcerpt').value = p?.excerpt || '';
+  $('#postContentEditor').innerHTML = p?.content || '';
+  $('#postMetaTitle').value = p?.metaTitle || '';
+  $('#postMetaDescription').value = p?.metaDescription || '';
+  $('#postPublished').checked = p?.published !== false;
+  editingPostCover = p?.coverImage || '';
+  const coverBox = $('#postCoverBox');
+  coverBox.innerHTML = editingPostCover
+    ? `<img src="${editingPostCover}" alt="کاور"><input type="file" accept="image/*" id="postCoverInput">`
+    : `<span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span><input type="file" accept="image/*" id="postCoverInput">`;
+  bindPostCoverInput();
+  $('#magazineModalOverlay').classList.add('open');
+}
+window.editMagazinePost = openMagazinePostModal;
+window.deleteMagazinePost = async (id)=>{
+  if(!confirm('آیا از حذف این پست مطمئن هستید؟')) return;
+  STATE.magazinePosts = STATE.magazinePosts.filter(p=>p.id!==id);
+  await withLoading(()=>deleteMagazinePostRemote(id));
+  showToast('پست حذف شد');
+  $('#adminMain').innerHTML = adminMagazine();
+  bindAdminShell();
+};
+function bindPostCoverInput(){
+  const input = $('#postCoverInput');
+  if(!input) return;
+  input.onchange = async ()=>{
+    const file = input.files[0];
+    if(!file) return;
+    try{
+      showLoading();
+      const url = await uploadMagazineImage(file);
+      editingPostCover = url;
+      const box = $('#postCoverBox');
+      box.innerHTML = `<img src="${url}" alt="کاور"><input type="file" accept="image/*" id="postCoverInput">`;
+      bindPostCoverInput();
+    }catch(err){
+      console.error('Cover upload error:', err);
+      showToast('آپلود تصویر کاور انجام نشد');
+    }finally{
+      hideLoading();
+    }
+  };
+}
+function bindMagazineAdminUI(){
+  const addPostBtn = $('#addPostBtn');
+  if(addPostBtn) addPostBtn.onclick = ()=> openMagazinePostModal(null);
+
+  const magOverlay = $('#magazineModalOverlay');
+  const magCloseBtn = $('#magazineModalCloseBtn');
+  if(magCloseBtn) magCloseBtn.onclick = ()=> magOverlay.classList.remove('open');
+  if(magOverlay) magOverlay.onclick = e=>{ if(e.target===magOverlay) magOverlay.classList.remove('open'); };
+
+  const editor = $('#postContentEditor');
+  if(!editor) return;
+
+  let savedRange = null;
+  function saveSelection(){
+    const sel = window.getSelection();
+    if(sel && sel.rangeCount && editor.contains(sel.anchorNode)) savedRange = sel.getRangeAt(0);
+  }
+  function restoreSelection(){
+    if(!savedRange) return;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+  }
+  editor.addEventListener('mouseup', saveSelection);
+  editor.addEventListener('keyup', saveSelection);
+
+  $$('#magToolbar [data-cmd]').forEach(btn=>{
+    btn.onclick = ()=>{
+      editor.focus();
+      restoreSelection();
+      document.execCommand(btn.dataset.cmd, false, null);
+      saveSelection();
+    };
+  });
+
+  const linkBtn = $('#magInsertLinkBtn');
+  if(linkBtn) linkBtn.onclick = ()=>{
+    editor.focus();
+    restoreSelection();
+    const sel = window.getSelection();
+    if(!sel || sel.isCollapsed){
+      showToast('ابتدا کلمه یا متنی را که می‌خواهید لینک شود انتخاب کنید');
+      return;
+    }
+    const url = prompt('آدرس لینک را وارد کنید (مثلاً آدرس یک محصول یا صفحه دیگر):', 'https://');
+    if(!url) return;
+    document.execCommand('createLink', false, url);
+    // force every link created here to open in a new tab
+    forceEditorLinkTargets(editor);
+    saveSelection();
+  };
+
+  const unlinkBtn = $('#magUnlinkBtn');
+  if(unlinkBtn) unlinkBtn.onclick = ()=>{
+    editor.focus();
+    restoreSelection();
+    document.execCommand('unlink', false, null);
+  };
+
+  const productBtn = $('#magInsertProductBtn');
+  if(productBtn) productBtn.onclick = ()=>{
+    editor.focus();
+    restoreSelection();
+    const sel = window.getSelection();
+    if(!sel || sel.isCollapsed){
+      showToast('ابتدا کلمه یا متنی را که می‌خواهید به محصول لینک شود انتخاب کنید');
+      return;
+    }
+    if(!STATE.products.length){ showToast('هنوز محصولی ثبت نشده است'); return; }
+    const names = STATE.products.map((p,i)=> `${i+1}. ${p.name}`).join('\n');
+    const pick = prompt(`شماره محصول مورد نظر را وارد کنید:\n${names}`);
+    const idx = Number(pick) - 1;
+    const prod = STATE.products[idx];
+    if(!prod){ showToast('محصول یافت نشد'); return; }
+    const url = location.origin + location.pathname + `#/product/${prod.id}`;
+    document.execCommand('createLink', false, url);
+    forceEditorLinkTargets(editor);
+    saveSelection();
+  };
+
+  const imgBtn = $('#magInsertImageBtn');
+  const imgInput = $('#postInlineImageInput');
+  if(imgBtn && imgInput){
+    imgBtn.onclick = ()=>{ editor.focus(); restoreSelection(); imgInput.click(); };
+    imgInput.onchange = async ()=>{
+      const file = imgInput.files[0];
+      if(!file) return;
+      try{
+        showLoading();
+        const url = await uploadMagazineImage(file);
+        editor.focus();
+        restoreSelection();
+        document.execCommand('insertHTML', false, `<img src="${url}" alt="" style="max-width:100%;border-radius:8px;display:block;margin:14px 0">`);
+      }catch(err){
+        console.error('Inline image upload error:', err);
+        showToast('آپلود عکس انجام نشد');
+      }finally{
+        hideLoading();
+        imgInput.value = '';
+      }
+    };
+  }
+
+  const postForm = $('#postForm');
+  if(postForm){
+    postForm.onsubmit = async e=>{
+      e.preventDefault();
+      const title = $('#postTitle').value.trim();
+      if(!title){ showToast('عنوان را وارد کنید'); return; }
+      const postId = editingPostId || uid();
+      const prev = editingPostId ? findPost(editingPostId) : null;
+      const slug = ($('#postSlug').value.trim() ? slugify($('#postSlug').value) : (prev?.slug || slugify(title)));
+
+      const data = {
+        id: postId,
+        title,
+        slug,
+        excerpt: $('#postExcerpt').value.trim(),
+        content: forceExternalLinkTargets($('#postContentEditor').innerHTML),
+        coverImage: editingPostCover || '',
+        metaTitle: $('#postMetaTitle').value.trim(),
+        metaDescription: $('#postMetaDescription').value.trim(),
+        published: $('#postPublished').checked,
+        createdAt: prev?.createdAt || new Date().toISOString(),
+        _exists: !!prev
+      };
+
+      showLoading();
+      try{
+        await upsertMagazinePostRemote(data);
+        const idx = STATE.magazinePosts.findIndex(p=>p.id===postId);
+        if(idx>-1) STATE.magazinePosts[idx] = data; else STATE.magazinePosts.unshift(data);
+        showToast('پست ذخیره شد');
+        $('#magazineModalOverlay').classList.remove('open');
+        $('#adminMain').innerHTML = adminMagazine();
+        bindAdminShell();
+      }catch(err){
+        console.error('Save post error:', err);
+        showToast('ذخیره پست انجام نشد');
+      }finally{
+        hideLoading();
+      }
+    };
+  }
+}
+function forceEditorLinkTargets(editor){
+  editor.querySelectorAll('a[href]').forEach(a=>{
+    a.setAttribute('target','_blank');
+    a.setAttribute('rel','noopener noreferrer');
+  });
 }
 
 function adminOrders(){
@@ -6784,11 +7275,19 @@ function adminDescriptions(){
     <div class="form-row3">
       <div class="form-field">
         <label>نام استان</label>
-        <input id="newRateProvince" placeholder="مثلاً تهران">
+        <div class="wr-combo" id="newRateProvinceCombo">
+          <input class="wr-combo-input" id="newRateProvince" placeholder="استان را انتخاب یا تایپ کنید..." autocomplete="off">
+          <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          <div class="wr-combo-list"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>نام شهر (اختیاری)</label>
-        <input id="newRateCity" placeholder="مثلاً کرج">
+        <div class="wr-combo" id="newRateCityCombo">
+          <input class="wr-combo-input" id="newRateCity" placeholder="خالی = همهٔ شهرهای استان" autocomplete="off">
+          <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          <div class="wr-combo-list"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>مبلغ ارسال (تومان)</label>
@@ -7008,8 +7507,20 @@ function shippingRateListHtml(){
       if(r.id===editingShippingRateId){
         return `
         <div class="shipping-rate-row" data-id="${r.id}" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--gold-dim)">
-          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>استان</label><input class="rate-edit-province" data-id="${r.id}" value="${escapeHtml(r.province)}"></div>
-          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>شهر (اختیاری)</label><input class="rate-edit-city" data-id="${r.id}" value="${escapeHtml(r.city||'')}"></div>
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>استان</label>
+            <div class="wr-combo" id="rateEditProvinceCombo-${r.id}">
+              <input class="wr-combo-input rate-edit-province" data-id="${r.id}" value="${escapeHtml(r.province)}" autocomplete="off">
+              <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              <div class="wr-combo-list"></div>
+            </div>
+          </div>
+          <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>شهر (اختیاری)</label>
+            <div class="wr-combo" id="rateEditCityCombo-${r.id}">
+              <input class="wr-combo-input rate-edit-city" data-id="${r.id}" value="${escapeHtml(r.city||'')}" autocomplete="off">
+              <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              <div class="wr-combo-list"></div>
+            </div>
+          </div>
           <div class="form-field" style="margin-bottom:0;flex:1;min-width:120px"><label>مبلغ (تومان)</label><input type="number" min="0" step="1000" class="rate-edit-amount" data-id="${r.id}" value="${r.amount}"></div>
           <button type="button" class="btn btn-solid rate-save" data-id="${r.id}" style="padding:9px 16px;font-size:12.5px">ذخیره</button>
           <button type="button" class="btn btn-ghost rate-cancel" data-id="${r.id}" style="padding:9px 16px;font-size:12.5px">انصراف</button>
@@ -7044,14 +7555,23 @@ function bindShippingRatesUI(){
   const addBtn = $('#addShippingRateBtn');
   if(!addBtn) return; // not on the descriptions page
 
+  const provinceInput = $('#newRateProvince');
+  const cityInput = $('#newRateCity');
+
+  const cityCombo = initWrCombo($('#newRateCityCombo'), ()=>{
+    const province = provinceInput ? provinceInput.value.trim() : '';
+    return iranCitiesFor(province);
+  });
+  initWrCombo($('#newRateProvinceCombo'), ()=>iranAllProvinces(), (val, picked)=>{
+    if(picked && cityInput) cityInput.value = '';
+  });
+
   addBtn.onclick = async ()=>{
-    const provinceInput = $('#newRateProvince');
-    const cityInput = $('#newRateCity');
     const amountInput = $('#newRateAmount');
     const province = provinceInput.value.trim();
     const city = cityInput.value.trim();
     const amount = Math.max(0, Number(amountInput.value) || 0);
-    if(!province){ showToast('نام استان را وارد کنید'); return; }
+    if(!province){ showToast('استان را انتخاب کنید'); return; }
     if(!amountInput.value){ showToast('مبلغ ارسال را وارد کنید'); return; }
     pendingShippingRates.push({id:uid(), province, city, amount});
     await persistShippingRates();
@@ -7118,6 +7638,15 @@ function bindShippingRatesUI(){
 }
 
 function bindShippingRateRowEvents(){
+  $$('.rate-edit-province[data-id]').forEach(inp=>{
+    const id = inp.dataset.id;
+    const row = inp.closest('.shipping-rate-row');
+    const cityInput = row ? row.querySelector('.rate-edit-city') : null;
+    initWrCombo($(`#rateEditProvinceCombo-${id}`), ()=>iranAllProvinces(), (val, picked)=>{
+      if(picked && cityInput) cityInput.value = '';
+    });
+    initWrCombo($(`#rateEditCityCombo-${id}`), ()=>iranCitiesFor(inp.value.trim()));
+  });
   $$('.rate-edit').forEach(btn=>{
     btn.onclick = ()=>{
       editingShippingRateId = btn.dataset.id;
@@ -7202,6 +7731,8 @@ function bindAdminShell(){
   const closeModalBtn = $('#modalCloseBtn');
   if(closeModalBtn) closeModalBtn.onclick = ()=> modalOverlay.classList.remove('open');
   if(modalOverlay) modalOverlay.onclick = e=>{ if(e.target===modalOverlay) modalOverlay.classList.remove('open'); };
+
+  bindMagazineAdminUI();
 
   const imgInput = $('#productImageInput');
   if(imgInput) bindMultiUploadInput();
