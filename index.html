@@ -359,6 +359,31 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
   .header-icons{gap:12px}
   .header-icons-left{gap:12px}
 }
+@media(min-width:901px){
+  .header-row{min-height:96px;gap:24px;display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"iconsleft search logo" "nav nav nav";align-items:center;row-gap:10px}
+  .header-right{display:none}
+  .logo{grid-area:logo;justify-self:end}
+  .logo img.logo-img{height:calc(var(--logo-h) * 1.6)}
+  .logo .wordmark{font-size:calc(24px * var(--scale-header))}
+  .logo .wordmark small{font-size:calc(10px * var(--scale-header))}
+  .header-search-desktop{grid-area:search;display:flex}
+  .header-icons{grid-area:iconsleft}
+  nav.main-nav{grid-area:nav;display:flex;justify-self:end;gap:26px}
+  nav.main-nav a{font-size:calc(13.5px * var(--scale-header))}
+  .header-icons{gap:22px}
+  .header-icons-left{gap:26px}
+  .icon-btn svg{width:22px;height:22px}
+  .cart-badge{width:19px;height:19px;font-size:11px;top:-9px;left:-11px}
+  #searchOpenBtn,.wishlist-header-icon,.account-header-icon{display:none!important}
+  .header-account-desktop{display:flex}
+}
+.header-search-desktop{display:none;align-items:center;gap:10px;flex:1;max-width:520px;background:var(--bg-alt);border:1px solid var(--line);border-radius:10px;padding:0 16px;height:44px}
+.header-search-desktop input{background:none;border:none;color:var(--text);font-size:13.5px;flex:1;font-family:inherit;outline:none;height:100%}
+.header-search-desktop svg{flex:none;color:var(--text-faint)}
+.header-account-desktop{display:none;align-items:center;gap:7px;color:var(--text-dim);white-space:nowrap;transition:color .2s}
+.header-account-desktop:hover{color:var(--gold-light)}
+.header-account-desktop svg{width:17px;height:17px;flex:none}
+.header-account-desktop span{font-family:var(--font-header);font-size:calc(12px * var(--scale-header))}
 
 /* ===== دکمه تغییر تم (سفید/مشکی) ===== */
 .theme-toggle .icon-sun{display:none}
@@ -469,7 +494,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 
 /* ===== Homepage banner slider (replaces hero) ===== */
 .banner-slider-wrap{position:relative;padding:14px 0 0}
-.banner-slider{position:relative;overflow:hidden;border-radius:0;direction:ltr}
+.banner-slider{position:relative;overflow:hidden;border-radius:0;direction:ltr;cursor:grab;user-select:none}
 .banner-track{display:flex;transition:transform .5s cubic-bezier(.16,1,.3,1);direction:ltr}
 .banner-slide{
   flex:0 0 100%;position:relative;display:block;
@@ -478,9 +503,9 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
   cursor:pointer;
 }
 @media(min-width:761px){
-  .banner-slider-wrap{padding:20px 24px 0;max-width:1400px;margin:0 auto}
-  .banner-slider{border-radius:16px}
-  .banner-slide{aspect-ratio:21/9;max-height:520px}
+  .banner-slider-wrap{padding:0}
+  .banner-slider{border-radius:0}
+  .banner-slide{aspect-ratio:21/6.2;max-height:460px}
 }
 .banner-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px 0 4px;direction:ltr}
 .banner-dot{width:8px;height:8px;border-radius:50%;background:transparent;border:1.5px solid var(--gold-dim);padding:0;cursor:pointer;transition:background .3s ease,transform .3s ease,width .3s ease}
@@ -1164,6 +1189,21 @@ footer.site{font-family:var(--font-footer)}
 .article-content img{max-width:100%;border-radius:8px}
 .article-content p{margin-bottom:16px}
 .article-content h2,.article-content h3{font-family:var(--font-heading);margin:26px 0 12px}
+.acc-back-link{display:inline-block;font-size:12.5px;color:var(--text-faint);margin-bottom:6px}
+.acc-back-link:hover{color:var(--gold-light)}
+.acc-menu{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.acc-menu-item{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--bg-card);border:1px solid var(--line);border-radius:10px;width:100%;text-align:right;font-family:inherit;cursor:pointer;transition:border-color .2s}
+.acc-menu-item:hover{border-color:var(--gold)}
+.acc-menu-icon{flex:none;width:38px;height:38px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;color:var(--gold-light)}
+.acc-menu-text{flex:1;display:flex;flex-direction:column;gap:3px}
+.acc-menu-text strong{font-size:13.5px;color:var(--text)}
+.acc-menu-text small{font-size:11.5px;color:var(--text-faint)}
+.acc-menu-arrow{color:var(--text-faint);font-size:16px}
+.acc-menu-item-danger .acc-menu-icon{color:var(--danger)}
+.acc-menu-item-danger:hover{border-color:var(--danger)}
+.my-orders-list{display:flex;flex-direction:column;gap:12px}
+.my-order-card{background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.my-order-top{display:flex;justify-content:space-between;align-items:flex-start}
 table.admin-table{width:100%;border-collapse:collapse;font-size:13.5px}
 table.admin-table th{text-align:right;color:var(--text-faint);font-weight:500;font-size:11.5px;letter-spacing:.05em;padding:12px;border-bottom:1px solid var(--line)}
 table.admin-table td{padding:12px;border-bottom:1px solid var(--line);color:var(--text-dim);vertical-align:middle}
@@ -1322,19 +1362,10 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
       <button class="icon-btn header-search-mobile" id="searchOpenBtnMobile" title="جستجو">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </button>
-      <nav class="main-nav" id="mainNav">
-        <a href="#/" data-link data-route="/">خانه</a>
-        <div class="nav-item-drop" id="navProductsDrop">
-          <button type="button" class="nav-drop-trigger" id="navProductsTrigger">
-            <span>محصولات</span>
-            <svg class="nav-drop-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <div class="nav-megamenu" id="navCatLinks"></div>
-        </div>
-        <a href="#/magazine" data-link data-route="/magazine">مجله</a>
-        <a href="#/about" data-link data-route="/about">درباره ما</a>
-        <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
-      </nav>
+    </div>
+    <div class="header-search-desktop" id="headerSearchDesktop">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint);flex:none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="searchInputDesktop" type="text" placeholder="جستجوی محصولات...">
     </div>
     <a href="#/" class="logo" data-link>
       <span id="siteLogoSlot"><svg class="raven-mark" width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1351,12 +1382,16 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
         <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="icon-classic" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
       </button>
-      <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
+      <a href="#/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
         <span class="cart-badge hidden" id="wishlistBadge">0</span>
       </a>
       <a href="#/account" data-link class="icon-btn account-header-icon" title="حساب کاربری">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </a>
+      <a href="#/account" data-link class="header-account-desktop" id="headerAccountDesktop">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span id="headerAccountLabel">ورود | ثبت‌نام</span>
       </a>
       <button class="icon-btn" id="cartOpenBtn" title="سبد خرید">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8.5 8.5V7C8.5 4.51 10.01 2.5 12 2.5C13.99 2.5 15.5 4.51 15.5 7V8.5"/><path d="M5 8.5H19L19.8 20.2C19.9 21.2 19.1 22 18.1 22H5.9C4.9 22 4.1 21.2 4.2 20.2L5 8.5Z"/></svg>
@@ -1366,6 +1401,19 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
     </div>
+    <nav class="main-nav" id="mainNav">
+      <a href="#/" data-link data-route="/">خانه</a>
+      <div class="nav-item-drop" id="navProductsDrop">
+        <button type="button" class="nav-drop-trigger" id="navProductsTrigger">
+          <span>محصولات</span>
+          <svg class="nav-drop-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-megamenu" id="navCatLinks"></div>
+      </div>
+      <a href="#/magazine" data-link data-route="/magazine">مجله</a>
+      <a href="#/about" data-link data-route="/about">درباره ما</a>
+      <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
+    </nav>
   </div>
 
   <!-- search overlay -->
@@ -1386,7 +1434,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
       <a href="#/account" data-link data-route="/account" class="icon-btn" title="حساب کاربری">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
       </a>
-      <a href="#/wishlist" data-link data-route="/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
+      <a href="#/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
       </a>
     </div>
@@ -1403,7 +1451,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
     <a href="#/magazine" data-link data-route="/magazine">مجله</a>
     <a href="#/about" data-link data-route="/about">درباره ما</a>
     <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
-    <a href="#/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
+    <a href="#/account/track-order" data-link data-route="/account/track-order">پیگیری سفارش</a>
   </div>
 </div>
 
@@ -2092,7 +2140,7 @@ async function updateReviewReplyRemote(id, reply){
 }
 async function updateReviewLikesRemote(id, likes){
   if(supabaseClient){
-    const {error} = await supabaseClient.from('product_reviews').update({likes}).eq('id', id);
+    const {error} = await supabaseClient.rpc('set_review_likes', {review_id: id, new_likes: likes});
     if(error) console.error(error);
   } else {
     const r = STATE.reviews.find(x=>x.id===id);
@@ -2129,6 +2177,24 @@ async function insertOrderRemote(order){
     await sSet('orders', STATE.orders, true);
   }
 }
+/* علاقه‌مندی‌های حساب کاربری — روی جدول wishlists ذخیره می‌شود تا با هر
+   دستگاهی که کاربر وارد شود، همان لیست دیده شود. برای مهمان (بدون ورود)
+   از حافظه‌ی محلی مرورگر استفاده می‌شود (که عملاً استفاده نمی‌شود چون
+   افزودن به علاقه‌مندی‌ها نیازمند ورود است). */
+async function loadWishlistRemote(accountId){
+  if(!supabaseClient || !accountId) return null;
+  const {data, error} = await supabaseClient
+    .from('wishlists').select('product_ids').eq('account_id', accountId).maybeSingle();
+  if(error){ console.error(error); return null; }
+  return data ? (data.product_ids || []) : [];
+}
+async function saveWishlistRemote(accountId, ids){
+  if(!supabaseClient || !accountId) return;
+  const {error} = await supabaseClient.from('wishlists').upsert({
+    account_id: accountId, product_ids: ids, updated_at: new Date().toISOString()
+  });
+  if(error) console.error(error);
+}
 async function findOrderByIdAndPhone(orderId, phone){
   const cleanId = (orderId||'').trim();
   const cleanPhone = (phone||'').trim();
@@ -2151,6 +2217,22 @@ async function findOrderByIdAndPhone(orderId, phone){
     return {error:'شماره تماس با این سفارش مطابقت ندارد'};
   }
   return {order};
+}
+/* سفارش‌های حساب کاربری فعلی — از طریق تابع دیتابیس get_orders_by_account_id
+   (RPC، چون خواندن مستقیم جدول orders برای کاربر عادی مجاز نیست).
+   اگر Supabase وصل نباشد، از روی سفارش‌های محلی فیلتر می‌شود. */
+async function loadMyOrders(){
+  if(!STATE.account) return [];
+  if(supabaseClient){
+    const {data, error} = await supabaseClient.rpc('get_orders_by_account_id', {
+      account_uuid: STATE.account.id
+    });
+    if(error){ console.error(error); return []; }
+    return (data||[]).map(rowToOrder).sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+  }
+  return STATE.orders
+    .filter(o=> o.customer && o.customer.accountId === STATE.account.id)
+    .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
 }
 
 async function updateOrderStatusRemote(id, status){
@@ -2805,6 +2887,13 @@ async function init(){
   STATE.reviews = reviews || [];
   STATE.magazinePosts = (magazinePosts || []).map(p=>({...p, _exists:true}));
 
+  // اگر کاربر وارد شده، علاقه‌مندی‌ها را از حساب کاربری (نه مرورگر) بخوان
+  // تا در هر دستگاهی که وارد شود همان لیست را ببیند
+  if(STATE.account){
+    const remoteWishlist = await loadWishlistRemote(STATE.account.id);
+    if(remoteWishlist !== null) STATE.wishlist = remoteWishlist;
+  }
+
   STATE.settings = settings || defaultSettings();
 
   applySettingsToDOM(STATE.settings);
@@ -2860,6 +2949,9 @@ function router(preserveScroll){
     a.classList.toggle('active', a.dataset.route === path || (path.startsWith('/shop') && a.dataset.route===path));
   });
 
+  const accLabel = $('#headerAccountLabel');
+  if(accLabel) accLabel.textContent = STATE.account ? 'حساب کاربری' : 'ورود | ثبت‌نام';
+
   const app = $('#app');
   setPageMeta();
   if(path==='/' ) app.innerHTML = pageHome();
@@ -2870,11 +2962,14 @@ function router(preserveScroll){
   else if(path.startsWith('/magazine/')) app.innerHTML = pageMagazineArticle(path.split('/magazine/')[1]);
   else if(path==='/about') app.innerHTML = pageAbout();
   else if(path==='/contact') app.innerHTML = pageContact();
-  else if(path==='/account') app.innerHTML = pageAccount();
+  else if(path==='/account') app.innerHTML = pageAccount('profile');
+  else if(path==='/account/wishlist') app.innerHTML = pageAccount('wishlist');
+  else if(path.startsWith('/account/track-order')) app.innerHTML = pageAccount('orders', path.split('/account/track-order/')[1]);
+  else if(path==='/account/reviews') app.innerHTML = pageAccount('reviews');
   else if(path==='/checkout') app.innerHTML = pageCheckout();
   else if(path.startsWith('/order-confirmed/')) app.innerHTML = pageOrderConfirmed(path.split('/order-confirmed/')[1]);
-  else if(path==='/wishlist') app.innerHTML = pageWishlist();
-  else if(path.startsWith('/track-order')) app.innerHTML = pageTrackOrder(path.split('/track-order/')[1]);
+  else if(path==='/wishlist') app.innerHTML = pageAccount('wishlist'); // قدیمی — به تب علاقه‌مندی‌ها در حساب کاربری هدایت می‌شود
+  else if(path.startsWith('/track-order')) app.innerHTML = pageAccount('orders', path.split('/track-order/')[1]); // قدیمی — به تب پیگیری سفارش در حساب کاربری هدایت می‌شود
   else app.innerHTML = page404();
 
   if(!preserveScroll) window.scrollTo({top:0,left:0,behavior:'smooth'});
@@ -2951,6 +3046,21 @@ function bindGlobalUI(){
       $('#searchInput').focus();
     }
   });
+
+  const searchInputDesktop = $('#searchInputDesktop');
+  if(searchInputDesktop){
+    searchInputDesktop.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){
+        STATE.filters.q = e.target.value.trim();
+        STATE.filters.category='all';
+        if(currentPath()==='/shop/all'){
+          router(true);
+        }else{
+          navigate('/shop/all');
+        }
+      }
+    });
+  }
 
   $('#cartOpenBtn').onclick = openCart;
   $('#cartCloseBtn').onclick = closeCart;
@@ -4584,16 +4694,88 @@ function pageContact(){
   </div>`;
 }
 
-function pageAccount(){
+function accountBackLink(){
+  return `<a href="#/account" data-link class="acc-back-link">‹ بازگشت به حساب کاربری</a>`;
+}
+function accountMenuHtml(){
   const acc = STATE.account;
+  return `
+  <div class="acc-menu">
+    <a href="#/account/wishlist" data-link class="acc-menu-item">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg></span>
+      <span class="acc-menu-text"><strong>علاقه‌مندی‌های من</strong><small>محصولاتی که ذخیره کرده‌اید</small></span>
+      <span class="acc-menu-arrow">‹</span>
+    </a>
+    <a href="#/account/track-order" data-link class="acc-menu-item">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
+      <span class="acc-menu-text"><strong>پیگیری سفارش</strong><small>وضعیت سفارش‌های خود را ببینید</small></span>
+      <span class="acc-menu-arrow">‹</span>
+    </a>
+    <a href="#/account/reviews" data-link class="acc-menu-item">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="acc-menu-text"><strong>نظرات و پرسش‌های من</strong><small>نظراتی که ثبت کرده‌اید، لایک‌ها و پاسخ فروشگاه</small></span>
+      <span class="acc-menu-arrow">‹</span>
+    </a>
+    ${acc ? `
+    <button type="button" id="logoutBtn" class="acc-menu-item acc-menu-item-danger">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
+      <span class="acc-menu-text"><strong>خروج از حساب</strong></span>
+    </button>` : ''}
+  </div>`;
+}
+function accountRequireLoginPage(title){
+  STATE.accountAuthTab = 'login';
+  return `
+  <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">${title}</h1></div>
+  <div class="section"><div class="container narrow">
+    ${accountBackLink()}
+    <div style="margin-top:18px;text-align:center;background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:32px 20px">
+      <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:18px">برای مشاهده‌ی «${escapeHtml(title)}» ابتدا باید وارد حساب کاربری خود شوید یا ثبت‌نام کنید.</p>
+      <a href="#/account" data-link class="btn btn-solid">ورود / ثبت‌نام</a>
+    </div>
+  </div></div>`;
+}
+function pageAccount(tab, trackOrderPrefillId){
+  const acc = STATE.account;
+  tab = tab || 'profile';
+
+  // علاقه‌مندی‌ها و پیگیری سفارش برای مهمان‌ها هم قابل استفاده‌اند و صفحه‌ی
+  // کامل و جداگانه‌ی خودشان را دارند (نه یک تب داخل همین صفحه)
+  if(tab==='wishlist'){
+    if(!acc) return accountRequireLoginPage('علاقه‌مندی‌های من');
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">علاقه‌مندی‌های من</h1></div>
+    <div class="section"><div class="container">
+      ${accountBackLink()}
+      <div style="margin-top:18px">${accountWishlistTabHtml()}</div>
+    </div></div>`;
+  }
+  if(tab==='orders'){
+    if(!acc) return accountRequireLoginPage('پیگیری سفارش');
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">پیگیری سفارش</h1></div>
+    <div class="section"><div class="container narrow">
+      ${accountBackLink()}
+      <div style="margin-top:18px">${accountOrdersTabHtml(trackOrderPrefillId)}</div>
+    </div></div>`;
+  }
+  if(tab==='reviews'){
+    if(!acc) return accountRequireLoginPage('نظرات و پرسش‌های من');
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">نظرات و پرسش‌های من</h1></div>
+    <div class="section"><div class="container narrow">
+      ${accountBackLink()}
+      <div style="margin-top:18px">${accountReviewsTabHtml()}</div>
+    </div></div>`;
+  }
+
   if(acc){
     return `
     <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">حساب کاربری</h1></div>
     <div class="section"><div class="container narrow">
       <p style="margin-bottom:6px;color:var(--text-dim)">خوش آمدید،</p>
-      <h3 class="serif" style="font-size:26px;margin-bottom:24px">${escapeHtml(acc.name || acc.email)}</h3>
-      <div class="form-field"><label>ایمیل</label><input disabled value="${escapeHtml(acc.email)}"></div>
-      <button class="btn btn-ghost btn-block" id="logoutBtn">خروج از حساب</button>
+      <h3 class="serif" style="font-size:24px;margin-bottom:24px">${escapeHtml(acc.name || acc.email)}</h3>
+      ${accountMenuHtml()}
     </div></div>`;
   }
   const wantSignup = STATE.accountAuthTab === 'signup';
@@ -4620,6 +4802,135 @@ function pageAccount(){
       <button class="btn btn-solid btn-block" type="submit">ساخت حساب</button>
     </form>
   </div></div>`;
+}
+function reviewStatusBadgeHtml(status){
+  const map = {
+    pending: {label:'در انتظار تایید', color:'var(--gold-light)'},
+    approved: {label:'تایید شده', color:'var(--ok)'},
+    rejected: {label:'رد شده', color:'var(--danger)'}
+  };
+  const s = map[status] || map.pending;
+  return `<span style="font-size:11px;color:${s.color};border:1px solid ${s.color};border-radius:20px;padding:2px 10px">${s.label}</span>`;
+}
+function accountReviewsTabHtml(){
+  const acc = STATE.account;
+  const mine = (STATE.reviews||[])
+    .filter(r => r.email && acc && r.email.toLowerCase() === acc.email.toLowerCase())
+    .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+
+  if(!mine.length){
+    return `<div style="text-align:center">
+      ${emptyState('هنوز نظر یا پرسشی ثبت نکرده‌اید')}
+      <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+    </div>`;
+  }
+
+  return `<div class="my-orders-list">
+    ${mine.map(r=>{
+      const p = findProduct(r.productId);
+      const dt = new Date(r.createdAt);
+      const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
+      return `
+      <div class="my-order-card">
+        <div class="my-order-top">
+          <div>
+            <p style="font-size:11.5px;color:var(--text-faint)">${p ? escapeHtml(p.name) : 'محصول حذف شده'}</p>
+            <p style="font-size:12.5px;color:var(--text)">${r.isQuestion ? 'پرسش' : '⭐'.repeat(r.rating||0)}</p>
+          </div>
+          <div style="text-align:left">
+            <p style="font-size:11.5px;color:var(--text-faint)">${dateStr}</p>
+            ${reviewStatusBadgeHtml(r.status)}
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-dim);line-height:1.9;margin:12px 0">${escapeHtml(r.text)}</p>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-faint)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+          <span>${(r.likes||0).toLocaleString('fa-IR')} لایک</span>
+        </div>
+        ${r.reply ? `
+        <div class="pd-review-reply" style="margin-top:14px">
+          <div class="pd-review-reply-head">پاسخ فروشگاه</div>
+          <p class="pd-review-reply-text">${escapeHtml(r.reply)}</p>
+        </div>` : ''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+function accountWishlistTabHtml(){
+  const items = STATE.wishlist.map(id=>findProduct(id)).filter(Boolean);
+  return items.length
+    ? `<div class="grid">${items.map(productCard).join('')}</div>`
+    : `<div style="text-align:center">
+        ${emptyState('هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید')}
+        <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+      </div>`;
+}
+function accountOrdersTabHtml(prefillId){
+  return `
+  <div style="margin-bottom:36px">
+    <h3 class="serif" style="font-size:18px;margin-bottom:14px">سفارش‌های من</h3>
+    <div id="myOrdersList"><p style="color:var(--text-faint);font-size:13px">در حال بارگذاری سفارش‌ها...</p></div>
+  </div>
+  <div style="border-top:1px solid var(--line);padding-top:24px">
+    <h3 class="serif" style="font-size:16px;margin-bottom:14px">پیگیری با شماره سفارش</h3>
+    <p style="font-size:12px;color:var(--text-faint);margin-bottom:14px">برای سفارش‌هایی که پیش از ساخت حساب کاربری ثبت کرده‌اید.</p>
+    <form id="trackOrderForm">
+      <div class="form-field"><label>شماره سفارش</label><input required id="trackOrderId" placeholder="مثلاً id_xxxxxxx" value="${escapeHtml(prefillId||'')}"></div>
+      <div class="form-field"><label>شماره تماسی که هنگام ثبت سفارش وارد کردید</label><input required id="trackOrderPhone" type="tel" placeholder="09xxxxxxxxx"></div>
+      <button class="btn btn-solid btn-block" type="submit">پیگیری سفارش</button>
+    </form>
+    <div id="trackOrderResult" style="margin-top:32px"></div>
+  </div>`;
+}
+function myOrderCardHtml(order){
+  const dt = new Date(order.createdAt);
+  const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
+  const statusColor = order.status==='لغو شده' ? 'var(--danger)' : order.status==='تحویل داده شده' ? 'var(--ok)' : 'var(--gold-light)';
+  return `
+  <div class="my-order-card" data-order-id="${escapeHtml(order.id)}">
+    <div class="my-order-top">
+      <div>
+        <p style="font-size:11.5px;color:var(--text-faint)">شماره سفارش</p>
+        <p style="color:var(--gold-light);font-size:13px">${escapeHtml(order.id)}</p>
+      </div>
+      <div style="text-align:left">
+        <p style="font-size:11.5px;color:var(--text-faint)">${dateStr}</p>
+        <p style="font-size:12.5px;color:${statusColor}">${escapeHtml(order.status||'')}</p>
+      </div>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-dim);margin:10px 0">
+      ${(order.items||[]).slice(0,3).map(it=>escapeHtml(it.name)).join('، ')}${(order.items||[]).length>3?' و ...':''}
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px">${RIAL(order.total)}</span>
+      <button type="button" class="btn btn-ghost my-order-detail-btn" style="padding:6px 14px;font-size:11.5px">جزئیات سفارش</button>
+    </div>
+    <div class="my-order-detail" style="display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)"></div>
+  </div>`;
+}
+async function initMyOrdersList(){
+  const box = $('#myOrdersList');
+  if(!box) return;
+  const orders = await loadMyOrders();
+  if(!orders.length){
+    box.innerHTML = `<p style="color:var(--text-faint);font-size:13px">هنوز سفارشی با این حساب ثبت نکرده‌اید.</p>`;
+    return;
+  }
+  box.innerHTML = `<div class="my-orders-list">${orders.map(myOrderCardHtml).join('')}</div>`;
+  box.querySelectorAll('.my-order-card').forEach(card=>{
+    const btn = card.querySelector('.my-order-detail-btn');
+    const detail = card.querySelector('.my-order-detail');
+    btn.onclick = ()=>{
+      const opening = detail.style.display === 'none';
+      detail.style.display = opening ? 'block' : 'none';
+      btn.textContent = opening ? 'بستن جزئیات' : 'جزئیات سفارش';
+      if(opening && !detail.dataset.loaded){
+        const order = orders.find(o=>o.id===card.dataset.orderId);
+        detail.innerHTML = orderStatusTimelineHtml(order.status);
+        detail.dataset.loaded = '1';
+      }
+    };
+  });
 }
 
 function pageCheckout(){
@@ -4748,17 +5059,24 @@ function pageOrderConfirmed(orderId){
     ${order?.couponCode?`<p style="color:var(--ok);margin-bottom:30px;font-size:13px">کد تخفیف «${escapeHtml(order.couponCode)}» اعمال شد (${RIAL(order.discount||0)}- تومان)</p>`:(order?`<div style="margin-bottom:30px"></div>`:'')}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="#/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
-      <a href="#/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
+      <a href="#/account/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
     </div>
   </div></div>`;
 }
 
-const ORDER_STEPS = ['در حال پردازش','ارسال شده','تحویل داده شده'];
+const ORDER_STATUSES = ['در حال بررسی','در حال پردازش','آماده‌سازی و بسته‌بندی','ارسال شده','در حال ارسال به مقصد','تحویل داده شده','لغو شده','مرجوع شده'];
+const ORDER_STEPS = ['در حال بررسی','در حال پردازش','آماده‌سازی و بسته‌بندی','ارسال شده','در حال ارسال به مقصد','تحویل داده شده'];
 function orderStatusTimelineHtml(status){
   if(status==='لغو شده'){
     return `<div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.1);border:1px solid var(--danger);color:var(--danger)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
       <span>این سفارش لغو شده است</span>
+    </div>`;
+  }
+  if(status==='مرجوع شده'){
+    return `<div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(185,151,94,.1);border:1px solid var(--gold-dim);color:var(--gold-light)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-1"/></svg>
+      <span>این سفارش مرجوع شده است</span>
     </div>`;
   }
   const idx = Math.max(0, ORDER_STEPS.indexOf(status));
@@ -4901,6 +5219,53 @@ function initBannerSlider(){
     }
     startAutoplay();
   });
+
+  // mouse drag support (desktop) — mirrors the touch handlers above
+  let mouseDown = false, mouseStartX = 0, mouseDeltaX = 0;
+  slider.querySelectorAll('img, a').forEach(node=> node.setAttribute('draggable', 'false'));
+  track.addEventListener('dragstart', e=> e.preventDefault());
+
+  slider.addEventListener('mousedown', e=>{
+    mouseDown = true;
+    mouseStartX = e.clientX;
+    mouseDeltaX = 0;
+    stopAutoplay();
+    track.style.transition = 'none';
+    slider.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', e=>{
+    if(!mouseDown) return;
+    mouseDeltaX = e.clientX - mouseStartX;
+    const percent = -(idx*100) + (mouseDeltaX/slideWidth())*100;
+    track.style.transform = `translateX(${percent}%)`;
+  });
+
+  window.addEventListener('mouseup', ()=>{
+    if(!mouseDown) return;
+    mouseDown = false;
+    slider.style.cursor = '';
+    if(Math.abs(mouseDeltaX) > 50){
+      goTo(mouseDeltaX < 0 ? idx+1 : idx-1);
+    }else{
+      apply(true); // snap back to the current slide
+    }
+    startAutoplay();
+  });
+
+  // mouse wheel: horizontal or vertical scroll moves to next/prev slide
+  let wheelLock = false;
+  slider.addEventListener('wheel', e=>{
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if(Math.abs(delta) < 12) return;
+    e.preventDefault();
+    if(wheelLock) return;
+    wheelLock = true;
+    goTo(delta > 0 ? idx+1 : idx-1);
+    startAutoplay();
+    setTimeout(()=> wheelLock = false, 500);
+  }, {passive:false});
 }
 
 /* ---------------- free-drag horizontal scroll for product rows ---------------- */
@@ -4953,6 +5318,7 @@ function initGlassScrollers(){
 function bindPageUI(){
   initGlassScrollers();
   initBannerSlider();
+  initMyOrdersList();
   const shopSearch = $('#shopSearch');
   if(shopSearch){
     shopSearch.addEventListener('input', e=>{
@@ -5154,6 +5520,8 @@ if (messageInput && messageCounter) {
       const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
       if(error) throw error;
       STATE.account = accountFromSupabaseUser(data.user);
+      const remoteWishlist = await loadWishlistRemote(STATE.account.id);
+      STATE.wishlist = remoteWishlist !== null ? remoteWishlist : [];
       showToast('ورود موفقیت‌آمیز بود ✓');
       navigate('/account');
     }catch(err){
@@ -5201,6 +5569,8 @@ if (messageInput && messageCounter) {
   if(logoutBtn) logoutBtn.onclick = async ()=>{
     if(supabaseClient) await supabaseClient.auth.signOut();
     STATE.account = null;
+    STATE.wishlist = [];
+    renderWishlistBadge();
     router();
   };
 
@@ -5340,7 +5710,8 @@ const customer = {
   province: $('#checkoutProvince') ? $('#checkoutProvince').value.trim() : '',
   city: $('#checkoutCity').value.trim(),
   postalCode: $('#checkoutPostalCode').value.trim(),
-  paymentMethod: $('#checkoutPaymentMethod').value
+  paymentMethod: $('#checkoutPaymentMethod').value,
+  accountId: STATE.account ? STATE.account.id : null
 };
 
 const subtotal = cartSubtotal();
@@ -5375,7 +5746,7 @@ const order = {
   couponCode: validCoupon ? validCoupon.code : '',
   discount,
   total,
-  status: 'در حال پردازش',
+  status: 'در حال بررسی',
   createdAt: new Date().toISOString(),
   customer
 };
@@ -5665,11 +6036,12 @@ async function toggleWishlist(productId){
     showToast('به علاقه‌مندی‌ها اضافه شد ♥');
   }
   await sSet('wishlist', STATE.wishlist, false);
+  if(STATE.account) await saveWishlistRemote(STATE.account.id, STATE.wishlist);
   renderWishlistBadge();
   $$('.wishlist-btn').forEach(btn=>{
     if(btn.dataset.id === productId) btn.classList.toggle('active', isWishlisted(productId));
   });
-  if(STATE.route === '/wishlist') router();
+  if(STATE.route === '/account/wishlist' || STATE.route === '/wishlist') router();
 }
 window.toggleWishlist = toggleWishlist;
 
@@ -6448,7 +6820,7 @@ function adminOrders(){
           <td>${RIAL(o.total)}${o.couponCode?`<div style="font-size:11px;color:var(--ok);margin-top:3px">کد: ${escapeHtml(o.couponCode)} (${RIAL(o.discount||0)}-)</div>`:''}</td>
           <td>
             <select onchange="updateOrderStatus('${o.id}',this.value)" style="background:var(--bg-card);border:1px solid var(--line);color:var(--text);padding:5px 8px;font-size:12px">
-              ${['در حال پردازش','ارسال شده','تحویل داده شده','لغو شده'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+              ${ORDER_STATUSES.map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
             </select>
           </td>
           <td>${new Date(o.createdAt).toLocaleDateString('fa-IR')}</td>
