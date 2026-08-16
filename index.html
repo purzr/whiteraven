@@ -33,7 +33,7 @@
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Estedad:wght@300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&family=Mada:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Estedad:wght@300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&family=Mada:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=Manrope:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=Fraunces:opsz,wght@9..144,300..900&display=swap" rel="stylesheet">
 <!-- Supabase client — used for the shared product catalog & orders. See README.md "اتصال به Supabase" section. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -60,12 +60,13 @@
   --ph-bg:linear-gradient(160deg,#131a16,#0a0d0b);
 
   /* ===== customizable typography (editable from admin ▸ تنظیمات ظاهری) ===== */
-  --font-header:'Vazirmatn',sans-serif;
-  --font-hero:'Cormorant Garamond',serif;
-  --font-heading:'Cormorant Garamond',serif;
-  --font-product:'Vazirmatn',sans-serif;
-  --font-body:'Vazirmatn',sans-serif;
-  --font-footer:'Vazirmatn',sans-serif;
+  --font-latin:'Fraunces',serif;
+  --font-header:'Fraunces','Vazirmatn',sans-serif;
+  --font-hero:'Fraunces','Cormorant Garamond',serif;
+  --font-heading:'Fraunces','Cormorant Garamond',serif;
+  --font-product:'Fraunces','Vazirmatn',sans-serif;
+  --font-body:'Fraunces','Vazirmatn',sans-serif;
+  --font-footer:'Fraunces','Vazirmatn',sans-serif;
   --scale-header:1;
   --scale-hero:1;
   --scale-heading:1;
@@ -1273,7 +1274,7 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .settings-card{background:var(--bg-card);border:1px solid var(--line);padding:24px;margin-bottom:22px}
 .settings-card h3{font-family:'Cormorant Garamond',serif;font-size:19px;margin-bottom:4px}
 .settings-card .settings-desc{font-size:12.5px;color:var(--text-faint);margin-bottom:20px}
-.font-section-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:end;padding:14px 0;border-bottom:1px solid var(--line)}
+.font-section-row{display:grid;grid-template-columns:1fr 1.2fr 1fr .8fr;gap:14px;align-items:end;padding:14px 0;border-bottom:1px solid var(--line)}
 .font-section-row:last-child{border-bottom:none}
 .font-section-row .fs-label{font-size:13px;color:var(--text);align-self:center}
 @media(max-width:760px){.font-section-row{grid-template-columns:1fr}}
@@ -1546,9 +1547,10 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
       <div class="foot-col">
         <h5>دسترسی سریع</h5>
         <a href="#/shop/all" data-link>فروشگاه</a>
-        <a href="#/shop/newest" data-link>جدیدترین‌ها</a>
-        <a href="#/shop/deals" data-link>تخفیف‌ها</a>
-        <a href="#/shop/featured" data-link>محصولات پیشنهادی</a>
+        <a href="#/shop/newest" data-link id="footLinkNewest">جدیدترین‌ها</a>
+        <a href="#/shop/bestsellers" data-link id="footLinkBestsellers">پرفروش‌ترین‌ها</a>
+        <a href="#/shop/deals" data-link id="footLinkDeals">تخفیف‌ها</a>
+        <a href="#/shop/featured" data-link id="footLinkFeatured">محصولات پیشنهادی</a>
         <a href="#/magazine" data-link>مجله‌ها</a>
       </div>
       <div class="foot-col">
@@ -2560,8 +2562,10 @@ function iconLibSvg(id, size){
   return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.path}</svg>`;
 }
 const FONT_OPTIONS = [
-  {id:"Vazirmatn", label:"وزیرمتن — Vazirmatn (فارسی)"},
-  {id:"Estedad", label:"استعداد — Estedad (فارسی)"},
+  {id:"Vazirmatn", label:"وزیرمتن — Vazirmatn (فارسی، نرم و حرفه‌ای)"},
+  {id:"Estedad", label:"استعداد — Estedad (فارسی، نرم)"},
+  {id:"Noto Sans Arabic", label:"نوتو سنس — Noto Sans Arabic (فارسی، نرم و مدرن)"},
+  {id:"IBM Plex Sans Arabic", label:"آی‌بی‌ام پلکس — IBM Plex Sans Arabic (فارسی، حرفه‌ای)"},
   {id:"Dima Shekasteh Free", label:"دیما شکسته — Dima Shekasteh Free (فارسی)"},
   {id:"A Shekari", label:" آ شکاری — A Shekari (فارسی)"},
   {id:"Cairo", label:"کایرو — Cairo (فارسی)"},
@@ -2570,6 +2574,12 @@ const FONT_OPTIONS = [
   {id:"Far.Diplomaat", label:"دیپلومات — Far Diplomaat Medium (فارسی)"},
   {id:"Cooper Black", label:"زغال سیاه — Cooper Black Bold (انگلیسی)"},
   {id:"Brush Script MT", label:" قلمو روان نویس — Brush Script Bold (انگلیسی)"},
+  {id:"Manrope", label:"Manrope (انگلیسی، نرم و مدرن)"},
+  {id:"DM Sans", label:"DM Sans (انگلیسی، حرفه‌ای)"},
+  {id:"Outfit", label:"Outfit (انگلیسی، هندسی و نرم)"},
+  {id:"Urbanist", label:"Urbanist (انگلیسی، ظریف)"},
+  {id:"DM Serif Display", label:"DM Serif Display (انگلیسی، اِلگانت)"},
+  {id:"Fraunces", label:"Fraunces (انگلیسی، رومی ضخیم گرد — شبیه فونت Margin)"},
   {id:"Poppins", label:"Poppins (انگلیسی)"},
   {id:"Playfair Display", label:"Playfair Display (انگلیسی)"},
 ];
@@ -2581,6 +2591,38 @@ const FONT_SECTIONS = [
   {key:'body', label:'متن عمومی و توضیحات'},
   {key:'footer', label:'فوتر'}
 ];
+/* Selectors whose text-color follows the per-section color chosen in تنظیمات ظاهری ▸ فونت و اندازه متن.
+   Only applied (with !important) when the admin actually picks a color for that section — otherwise
+   the site keeps using its normal theme colors. "heading" also needs to cancel the gold gradient
+   text-fill so the chosen solid color is visible. */
+const SECTION_COLOR_SELECTORS = {
+  header:'.logo .wordmark, .logo .wordmark small, nav.main-nav a, .mobile-nav a, .mobile-nav-submenu a, .header-account-desktop span',
+  hero:'.hero h1',
+  heading:'.section-head h2, .cat-content h3, .cart-head h3, .page-head h1, .about-block h2, .article-content h2, .article-content h3',
+  product:'.card-body h3, .pd-info h1',
+  body:'.hero p.lede, .form-field label',
+  footer:'footer.site h5, footer.site p, footer.site .footer-tagline'
+};
+function applySectionFontColors(fontColors){
+  let css = '';
+  FONT_SECTIONS.forEach(s=>{
+    const color = (fontColors?.[s.key]||'').trim();
+    const sel = SECTION_COLOR_SELECTORS[s.key];
+    if(!color || !sel) return;
+    if(s.key === 'heading'){
+      css += `${sel}{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:${color}!important;color:${color}!important}`;
+    } else {
+      css += `${sel}{color:${color}!important}`;
+    }
+  });
+  let styleTag = document.getElementById('sectionFontColorsStyle');
+  if(!styleTag){
+    styleTag = document.createElement('style');
+    styleTag.id = 'sectionFontColorsStyle';
+    document.head.appendChild(styleTag);
+  }
+  styleTag.textContent = css;
+}
 function defaultSettings(){
   return {
     logoDark:'',
@@ -2618,6 +2660,7 @@ function defaultSettings(){
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
     },
     scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 },
+    fontColors:{ header:'', hero:'', heading:'', product:'', body:'', footer:'' },
     freeShippingThreshold: 1000000,
     shippingCost: 45000,
     shippingRates: [],
@@ -2660,7 +2703,8 @@ function defaultSettings(){
     ],
     iconPanelsFooter: [],
     gaId: '',
-    metaPixelId: ''
+    metaPixelId: '',
+    homeSectionsEnabled: { newest:true, deals:true, featured:true, bestsellers:true }
   };
 }
 /* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
@@ -2724,7 +2768,8 @@ function rowToSettings(row){
     iconPanelsTop: Array.isArray(data.iconPanelsTop) ? data.iconPanelsTop : d.iconPanelsTop,
     iconPanelsFooter: Array.isArray(data.iconPanelsFooter) ? data.iconPanelsFooter : d.iconPanelsFooter,
     gaId: data.gaId ?? d.gaId,
-    metaPixelId: data.metaPixelId ?? d.metaPixelId
+    metaPixelId: data.metaPixelId ?? d.metaPixelId,
+    homeSectionsEnabled: {...d.homeSectionsEnabled, ...(data.homeSectionsEnabled||{})}
   };
 }
 async function loadSettings(){
@@ -2786,6 +2831,10 @@ async function loadSettings(){
           ...defaultSettings().scales,
           ...(s.scales||{})
         },
+        fontColors:{
+          ...defaultSettings().fontColors,
+          ...(s.fontColors||{})
+        },
         coupons: Array.isArray(s.coupons) ? s.coupons : defaultSettings().coupons,
         announcementEnabled: s.announcementEnabled ?? defaultSettings().announcementEnabled,
         announcementText: s.announcementText ?? defaultSettings().announcementText,
@@ -2806,7 +2855,8 @@ async function loadSettings(){
         relatedIntensity: s.relatedIntensity ?? defaultSettings().relatedIntensity,
         productPanels: Array.isArray(s.productPanels) ? s.productPanels : defaultSettings().productPanels,
         iconPanelsTop: Array.isArray(s.iconPanelsTop) ? s.iconPanelsTop : defaultSettings().iconPanelsTop,
-        iconPanelsFooter: Array.isArray(s.iconPanelsFooter) ? s.iconPanelsFooter : defaultSettings().iconPanelsFooter
+        iconPanelsFooter: Array.isArray(s.iconPanelsFooter) ? s.iconPanelsFooter : defaultSettings().iconPanelsFooter,
+        homeSectionsEnabled: {...defaultSettings().homeSectionsEnabled, ...(s.homeSectionsEnabled||{})}
       }
     : null;
 }
@@ -2977,13 +3027,19 @@ function trackPageView(){
 }
 function applySettingsToDOM(settings){
   applyTrackingScripts(settings);
+  const hse = settings.homeSectionsEnabled || {};
+  [['footLinkNewest','newest'],['footLinkBestsellers','bestsellers'],['footLinkDeals','deals'],['footLinkFeatured','featured']].forEach(([elId,key])=>{
+    const el = document.getElementById(elId);
+    if(el) el.style.display = (hse[key] === false) ? 'none' : '';
+  });
   const root = document.documentElement.style;
   FONT_SECTIONS.forEach(s=>{
     const fam = settings.fonts?.[s.key] || defaultSettings().fonts[s.key];
-    root.setProperty(`--font-${s.key}`, `'${fam}', ${/garamond|playfair/i.test(fam)?'serif':'sans-serif'}`);
+    root.setProperty(`--font-${s.key}`, `'Fraunces', '${fam}', ${/garamond|playfair|dm serif/i.test(fam)?'serif':'sans-serif'}`);
     const scale = (settings.scales?.[s.key] ?? 100)/100;
     root.setProperty(`--scale-${s.key}`, scale);
   });
+  applySectionFontColors(settings.fontColors||{});
   renderCategoryNavLinks(settings);
   const footTag = $('#footerTaglineText');
   if(footTag){
@@ -4532,6 +4588,23 @@ function catPanelsHtml(cats){
   if(!cats.length) return '';
   return cats.map((c,i)=> catPanelOne(c, i)).join('');
 }
+/* محصولات پرفروش: بر اساس مجموع تعداد فروخته‌شده در سفارش‌های واقعی (بدون احتساب
+   سفارش‌های لغو یا مرجوع‌شده) مرتب می‌شوند؛ فقط محصولاتی که حداقل یک فروش دارند نمایش داده می‌شوند */
+function bestsellerProducts(){
+  const counts = {};
+  STATE.orders.forEach(o=>{
+    if(o.status==='لغو شده' || o.status==='مرجوع شده') return;
+    (o.items||[]).forEach(it=>{
+      if(!it.productId) return;
+      counts[it.productId] = (counts[it.productId]||0) + (it.qty||0);
+    });
+  });
+  return Object.keys(counts)
+    .map(id=> ({p: findProduct(id), qty: counts[id]}))
+    .filter(x=> x.p && x.qty>0)
+    .sort((a,b)=> b.qty - a.qty)
+    .map(x=> x.p);
+}
 function homeSectionDefs(){
   const defs = {
     newest:{
@@ -4547,12 +4620,17 @@ function homeSectionDefs(){
     featured:{
       eyebrow:'SUGGESTED PRODUCTS', title:'محصولات پیشنهادی',
       build: ()=> (STATE.settings.featuredProductIds||[]).map(id=> findProduct(id)).filter(Boolean)
+    },
+    bestsellers:{
+      eyebrow:'BESTSELLERS', title:'پرفروش‌ترین‌ها', color:'#e0562a',
+      build: ()=> bestsellerProducts()
     }
   };
   (STATE.settings.customSections||[]).forEach(cs=>{
     defs[cs.id] = {
       eyebrow: cs.eyebrow || '', title: cs.title || 'بخش ویژه',
       color: cs.color || '#c9a24b', image: cs.image || '', imageFramed: cs.imageFramed !== false,
+      enabled: cs.enabled !== false,
       build: ()=> (cs.productIds||[]).map(id=> findProduct(id)).filter(Boolean)
     };
   });
@@ -4560,6 +4638,7 @@ function homeSectionDefs(){
     defs[pp.id] = {
       eyebrow:'', title: pp.title || 'محصولات',
       image: pp.image || '',
+      enabled: pp.enabled !== false,
       build: ()=> (pp.productIds||[]).map(id=> findProduct(id)).filter(Boolean)
     };
   });
@@ -4567,6 +4646,7 @@ function homeSectionDefs(){
     defs[ip.id] = {
       eyebrow:'', title: ip.title || 'محصولات',
       image: ip.image || '',
+      enabled: ip.enabled !== false,
       build: ()=> (ip.productIds||[]).map(id=> findProduct(id)).filter(Boolean)
     };
   });
@@ -4574,6 +4654,7 @@ function homeSectionDefs(){
     defs[ip.id] = {
       eyebrow:'', title: ip.title || 'محصولات',
       image: ip.image || '',
+      enabled: ip.enabled !== false,
       build: ()=> (ip.productIds||[]).map(id=> findProduct(id)).filter(Boolean)
     };
   });
@@ -4628,7 +4709,7 @@ function customSectionSlotLabel(v){
   return (CUSTOM_SECTION_SLOTS.find(s=>s.value===v)||CUSTOM_SECTION_SLOTS[5]).label;
 }
 function customSectionsForSlot(slot){
-  return (STATE.settings.customSections||[]).filter(cs=> (cs.position || 'after_featured') === slot).map(customSectionHtml).join('');
+  return (STATE.settings.customSections||[]).filter(cs=> (cs.position || 'after_featured') === slot && cs.enabled !== false).map(customSectionHtml).join('');
 }
 function promoBannerHtml(pb){
   if(!pb.image) return '';
@@ -4650,14 +4731,17 @@ function pageHome(){
   const featuredAll = sectionDefs.featured.build();
   const newestAll = sectionDefs.newest.build();
   const discountedAll = sectionDefs.deals.build();
+  const bestsellersAll = sectionDefs.bestsellers.build();
   // در اسکرول‌های افقی صفحه‌ی نخست، محصولات ناموجود اصلاً نمایش داده نمی‌شوند؛
   // فقط با ورود به همان دسته/بخش (صفحه‌ی کامل) و اسکرول به انتهای لیست دیده می‌شوند.
   const featuredInStock = featuredAll.filter(p=> p.stock>0);
   const newestInStock = newestAll.filter(p=> p.stock>0);
   const discountedInStock = discountedAll.filter(p=> p.stock>0);
+  const bestsellersInStock = bestsellersAll.filter(p=> p.stock>0);
   const featured = featuredInStock.slice(0,12);
   const newest = newestInStock.slice(0,12);
   const discounted = discountedInStock.slice(0,12);
+  const bestsellers = bestsellersInStock.slice(0,12);
   const heroImg = getHeroForTheme(STATE.settings);
   const heroImgMobile = getHeroForThemeMobile(STATE.settings);
   const banners = STATE.settings.banners || [];
@@ -4686,7 +4770,7 @@ function pageHome(){
   ${customSectionsForSlot('top')}
   ${promoBannersForSlot('top')}
 
-  ${newest.length ? `
+  ${(newest.length && STATE.settings.homeSectionsEnabled?.newest !== false) ? `
   <section class="section glass-band glass-new" style="padding-bottom:0">
     <div class="container">
       <div class="glass-panel">
@@ -4703,7 +4787,7 @@ function pageHome(){
   ${customSectionsForSlot('after_newest')}
   ${promoBannersForSlot('after_newest')}
 
-  ${discounted.length ? `
+  ${(discounted.length && STATE.settings.homeSectionsEnabled?.deals !== false) ? `
   <section class="section glass-band glass-deals" style="padding-bottom:0">
     <div class="container">
       <div class="glass-panel">
@@ -4759,7 +4843,7 @@ function pageHome(){
   ${customSectionsForSlot('after_features')}
   ${promoBannersForSlot('after_features')}
 
-  ${featuredInStock.length ? `
+  ${(featuredInStock.length && STATE.settings.homeSectionsEnabled?.featured !== false) ? `
   <section class="section glass-band glass-best">
     <div class="container">
       <div class="glass-panel">
@@ -4775,6 +4859,24 @@ function pageHome(){
 
   ${customSectionsForSlot('after_featured')}
   ${promoBannersForSlot('after_featured')}
+
+  ${(bestsellersInStock.length && STATE.settings.homeSectionsEnabled?.bestsellers !== false) ? (()=>{
+    const bcolor = STATE.settings.bestsellerColor || '#e0562a';
+    const brgb = hexToRgbStr(bcolor) || '224,86,42';
+    return `
+  <section class="section glass-band" style="padding-bottom:0">
+    <div class="container">
+      <div class="glass-panel" style="background:linear-gradient(160deg,rgba(${brgb},.20),rgba(${brgb},.05) 60%,rgba(255,255,255,.06))">
+        <div class="section-head" style="text-align:right">
+          <span class="eyebrow" style="font-size:10px;color:${bcolor}">BESTSELLERS</span>
+          <h2 class="serif" style="display:inline-block;font-size:29px;font-weight:800;background:linear-gradient(90deg,var(--text),${bcolor} 55%,${bcolor});-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">پرفروش‌ترین‌ها</h2>
+          <div class="divider" style="margin:16px 0 0;background:linear-gradient(90deg,transparent,${bcolor},transparent)"></div>
+        </div>
+        <div class="glass-scroll">${bestsellers.map(productCard).join('')}${bestsellersInStock.length > 12 ? viewAllTileHtml('bestsellers') : ''}</div>
+      </div>
+    </div>
+  </section>`;
+  })() : ''}
 
   ${productPanelsSectionHtml()}
 
@@ -4800,7 +4902,7 @@ function productPanelOne(pp, i){
     </a>`;
 }
 function productPanelsSectionHtml(){
-  const panels = (STATE.settings.productPanels||[]).filter(pp=> pp.image || (pp.productIds||[]).length);
+  const panels = (STATE.settings.productPanels||[]).filter(pp=> pp.enabled !== false && (pp.image || (pp.productIds||[]).length));
   if(!panels.length) return '';
   return `
   <section class="section" style="padding:40px 0 24px">
@@ -4822,7 +4924,7 @@ function iconPanelOne(ip){
     </a>`;
 }
 function iconPanelsSectionHtml(fieldName, topPad){
-  const panels = (STATE.settings[fieldName]||[]).filter(ip=> ip.image || (ip.productIds||[]).length);
+  const panels = (STATE.settings[fieldName]||[]).filter(ip=> ip.enabled !== false && (ip.image || (ip.productIds||[]).length));
   if(!panels.length) return '';
   return `
   <section class="section" style="padding:${topPad || '32px 0 0'}">
@@ -4848,6 +4950,20 @@ function emptyState(msg='هنوز محصولی ثبت نشده است'){
 function pageShop(catRaw){
   STATE.filters.othersList = null;
   const specialSections = homeSectionDefs();
+  const TOGGLEABLE_SECTIONS = ['newest','deals','featured','bestsellers'];
+  const isDisabled = TOGGLEABLE_SECTIONS.includes(catRaw)
+    ? STATE.settings.homeSectionsEnabled?.[catRaw] === false
+    : (specialSections[catRaw] && specialSections[catRaw].enabled === false);
+  if(isDisabled){
+    return `
+    <section class="section">
+      <div class="container" style="text-align:center;padding:80px 20px">
+        <h2 class="serif" style="font-size:26px;font-weight:800;margin-bottom:14px">این صفحه غیرفعال است</h2>
+        <p style="color:var(--text-faint);margin-bottom:24px">این بخش در حال حاضر توسط مدیر فروشگاه غیرفعال شده است.</p>
+        <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+      </div>
+    </section>`;
+  }
   if(specialSections[catRaw]){
     STATE.filters.section = catRaw;
     STATE.filters.category = null;
@@ -8663,9 +8779,11 @@ function adminSettings(){
   </div>
 
   <div class="settings-card">
-    <h3 class="serif">فونت و اندازه متن هر بخش</h3>
-    <p class="settings-desc">برای هر بخش از سایت، فونت و اندازهٔ متن را جداگانه انتخاب کنید. تغییرات بلافاصله برای همهٔ بازدیدکننده‌ها اعمال می‌شود.</p>
-    ${FONT_SECTIONS.map(sec=>`
+    <h3 class="serif">فونت، اندازه و رنگ متن هر بخش</h3>
+    <p class="settings-desc">برای هر بخش از سایت، فونت، اندازهٔ متن و رنگ متن را جداگانه انتخاب کنید. چند فونت حرفه‌ای و نرم فارسی/انگلیسی هم به لیست اضافه شده (وزیرمتن، نوتو سنس عربی، آی‌بی‌ام پلکس عربی، Manrope، DM Sans، Outfit، Urbanist). برای رنگ، اگر چیزی انتخاب نکنید همان رنگ پیش‌فرض تم سایت اعمال می‌شود؛ با دکمهٔ «حذف رنگ» می‌توانید رنگ سفارشی را بردارید. تغییرات بلافاصله برای همهٔ بازدیدکننده‌ها اعمال می‌شود.</p>
+    ${FONT_SECTIONS.map(sec=>{
+      const currentColor = (s.fontColors && s.fontColors[sec.key]) || '';
+      return `
       <div class="font-section-row">
         <span class="fs-label">${sec.label}</span>
         <div class="form-field" style="margin-bottom:0">
@@ -8677,7 +8795,32 @@ function adminSettings(){
           <input type="range" class="scale-range" data-section="${sec.key}" min="70" max="160" step="5" value="${s.scales[sec.key]}">
           <span class="range-val" data-section-val="${sec.key}">${s.scales[sec.key]}٪</span>
         </div>
+        <div class="range-field">
+          <label style="font-size:12.5px;color:var(--text-dim)">رنگ متن</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="color" class="font-color-input" data-section="${sec.key}" data-active="${currentColor?'1':'0'}" value="${currentColor || '#c9a066'}" style="width:38px;height:32px;padding:2px;border-radius:6px;border:1px solid var(--line);background:none;cursor:pointer;opacity:${currentColor?'1':'.5'}">
+            <button type="button" class="btn btn-ghost font-color-reset" data-section="${sec.key}" style="padding:5px 10px;font-size:11px">${currentColor ? 'حذف رنگ' : 'پیش‌فرض'}</button>
+          </div>
+        </div>
+      </div>`;}).join('')}
+  <div class="settings-card">
+    <h3 class="serif">نمایش بخش‌ها در صفحه اصلی</h3>
+    <p class="settings-desc">هر بخش را می‌توانید جداگانه در صفحه اصلی سایت روشن یا خاموش کنید. با خاموش‌کردن یک بخش، آن قسمت از صفحه اصلی و از لینک‌های «دسترسی سریع» در فوتر حذف می‌شود؛ اگر کسی همچنان لینک مستقیم آن صفحه را داشته باشد، پیام «این صفحه غیرفعال است» را می‌بیند.</p>
+    ${[
+      {key:'newest', label:'جدیدترین‌ها'},
+      {key:'deals', label:'تخفیف‌های امروز'},
+      {key:'featured', label:'محصولات پیشنهادی'},
+      {key:'bestsellers', label:'پرفروش‌ترین‌ها'}
+    ].map(sec=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">
+        <span style="font-size:13.5px">${sec.label}</span>
+        <label class="toggle-switch">
+          <input type="checkbox" class="home-section-toggle" data-key="${sec.key}" ${(STATE.settings.homeSectionsEnabled?.[sec.key] !== false) ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
       </div>`).join('')}
+  </div>
+
   <div class="settings-card">
     <h3 class="serif">کدهای ردیابی و تبلیغات (Google Analytics / Meta Pixel)</h3>
     <p class="settings-desc">با وارد کردن شناسه‌ها، امکان دیدن آمار بازدید سایت در Google Analytics و اجرای کمپین‌های ریتارگتینگ اینستاگرام/فیسبوک از طریق Meta Ads Manager فراهم می‌شود. کدها به‌صورت خودکار در همهٔ صفحات سایت (نه در پنل ادمین) بارگذاری می‌شوند.</p>
@@ -9724,6 +9867,9 @@ function bindCustomSectionRowEvents(){
   $$('.cs-edit-color').forEach(inp=>{
     inp.oninput = ()=>{ pendingCustomSections[Number(inp.dataset.idx)].color = inp.value; };
   });
+  $$('.cs-edit-enabled').forEach(chk=>{
+    chk.onchange = ()=>{ pendingCustomSections[Number(chk.dataset.idx)].enabled = chk.checked; };
+  });
   $$('.cs-edit-img-frame').forEach(chk=>{
     chk.onchange = ()=>{ pendingCustomSections[Number(chk.dataset.idx)].imageFramed = chk.checked; };
   });
@@ -10183,7 +10329,7 @@ function bindAdminSettingsUI(){
   $$('.font-select').forEach(sel=>{
     sel.onchange = ()=>{
       const key = sel.dataset.section;
-      document.documentElement.style.setProperty(`--font-${key}`, `'${sel.value}', ${/garamond|playfair/i.test(sel.value)?'serif':'sans-serif'}`);
+      document.documentElement.style.setProperty(`--font-${key}`, `'Fraunces', '${sel.value}', ${/garamond|playfair|dm serif/i.test(sel.value)?'serif':'sans-serif'}`);
     };
   });
   $$('.scale-range').forEach(range=>{
@@ -10192,6 +10338,37 @@ function bindAdminSettingsUI(){
       document.documentElement.style.setProperty(`--scale-${key}`, Number(range.value)/100);
       const label = $(`[data-section-val="${key}"]`);
       if(label) label.textContent = range.value + '٪';
+    };
+  });
+  const previewFontColors = ()=>{
+    const colors = {};
+    $$('.font-color-input').forEach(inp=>{ if(inp.dataset.active==='1') colors[inp.dataset.section] = inp.value; });
+    applySectionFontColors(colors);
+  };
+  $$('.font-color-input').forEach(inp=>{
+    inp.oninput = ()=>{
+      inp.dataset.active = '1';
+      inp.style.opacity = '1';
+      const btn = $(`.font-color-reset[data-section="${inp.dataset.section}"]`);
+      if(btn) btn.textContent = 'حذف رنگ';
+      previewFontColors();
+    };
+  });
+  $$('.font-color-reset').forEach(btn=>{
+    btn.onclick = ()=>{
+      const key = btn.dataset.section;
+      const inp = $(`.font-color-input[data-section="${key}"]`);
+      if(!inp) return;
+      if(inp.dataset.active==='1'){
+        inp.dataset.active = '0';
+        inp.style.opacity = '.5';
+        btn.textContent = 'پیش‌فرض';
+      } else {
+        inp.dataset.active = '1';
+        inp.style.opacity = '1';
+        btn.textContent = 'حذف رنگ';
+      }
+      previewFontColors();
     };
   });
 
@@ -10306,10 +10483,11 @@ function bindAdminSettingsUI(){
 
   const saveFontsBtn = $('#saveFontsBtn');
   if(saveFontsBtn) saveFontsBtn.onclick = async ()=>{
-    const fonts = {}, scales = {};
+    const fonts = {}, scales = {}, fontColors = {};
     $$('.font-select').forEach(sel=> fonts[sel.dataset.section] = sel.value);
     $$('.scale-range').forEach(range=> scales[range.dataset.section] = Number(range.value));
-    const newSettings = { ...STATE.settings, fonts, scales };
+    $$('.font-color-input').forEach(inp=> fontColors[inp.dataset.section] = inp.dataset.active==='1' ? inp.value : '');
+    const newSettings = { ...STATE.settings, fonts, scales, fontColors };
     STATE.settings = newSettings;
     applySettingsToDOM(newSettings);
     await withLoading(()=>saveSettingsRemote(newSettings));
@@ -10326,6 +10504,17 @@ function bindAdminSettingsUI(){
     await withLoading(()=>saveSettingsRemote(newSettings));
     showToast('کدهای ردیابی ذخیره شد ✓');
   };
+
+  $$('.home-section-toggle').forEach(tg=>{
+    tg.onchange = async ()=>{
+      const key = tg.dataset.key;
+      const homeSectionsEnabled = {...STATE.settings.homeSectionsEnabled, [key]: tg.checked};
+      const newSettings = {...STATE.settings, homeSectionsEnabled};
+      STATE.settings = newSettings;
+      await withLoading(()=>saveSettingsRemote(newSettings));
+      showToast('ذخیره شد ✓');
+    };
+  });
 
   const saveLogoBtn = $('#saveLogoBtn');
   if(saveLogoBtn) saveLogoBtn.onclick = async ()=>{
@@ -10901,6 +11090,10 @@ function productPanelListHtml(){
             </div>
           </div>
           <button type="button" class="btn btn-ghost pp-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف پنل</button>
+          <label class="toggle-switch" title="نمایش این پنل در صفحه اصلی">
+            <input type="checkbox" class="pp-edit-enabled" data-idx="${i}" ${pp.enabled === false ? '' : 'checked'}>
+            <span class="toggle-slider"></span>
+          </label>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
           <select class="pp-edit-product-select" data-idx="${i}" multiple size="6" style="flex:1;min-width:200px">
@@ -10915,6 +11108,9 @@ function productPanelListHtml(){
 function bindProductPanelRowEvents(){
   $$('.pp-edit-title').forEach(inp=>{
     inp.oninput = ()=>{ pendingProductPanels[Number(inp.dataset.idx)].title = inp.value; };
+  });
+  $$('.pp-edit-enabled').forEach(chk=>{
+    chk.onchange = ()=>{ pendingProductPanels[Number(chk.dataset.idx)].enabled = chk.checked; };
   });
   $$('.pp-edit-delete').forEach(btn=>{
     btn.onclick = ()=>{
@@ -11018,6 +11214,10 @@ function iconPanelListHtml(group){
             </div>
           </div>
           <button type="button" class="btn btn-ghost ip-${group}-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف آیکون</button>
+          <label class="toggle-switch" title="نمایش این آیکون در صفحه اصلی">
+            <input type="checkbox" class="ip-${group}-edit-enabled" data-idx="${i}" ${ip.enabled === false ? '' : 'checked'}>
+            <span class="toggle-slider"></span>
+          </label>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
           <select class="ip-${group}-edit-product-select" data-idx="${i}" multiple size="6" style="flex:1;min-width:200px">
@@ -11035,6 +11235,9 @@ function bindIconPanelRowEvents(group){
   const rerender = ()=>{ $(boxId).innerHTML = iconPanelListHtml(group); bindIconPanelRowEvents(group); };
   $$(`.ip-${group}-edit-title`).forEach(inp=>{
     inp.oninput = ()=>{ list[Number(inp.dataset.idx)].title = inp.value; };
+  });
+  $$(`.ip-${group}-edit-enabled`).forEach(chk=>{
+    chk.onchange = ()=>{ list[Number(chk.dataset.idx)].enabled = chk.checked; };
   });
   $$(`.ip-${group}-edit-delete`).forEach(btn=>{
     btn.onclick = ()=>{
@@ -11162,6 +11365,10 @@ function customSectionListHtml(){
             <span style="font-size:10px;color:var(--text-faint);max-width:190px;display:block">مثلاً عکس یک تیشرت تا مشتری بفهمد این بخش فقط برای تیشرت‌هاست.</span>
           </div>
           <button type="button" class="btn btn-ghost cs-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف بخش</button>
+          <label class="toggle-switch" title="نمایش این بخش در صفحه اصلی">
+            <input type="checkbox" class="cs-edit-enabled" data-idx="${i}" ${cs.enabled === false ? '' : 'checked'}>
+            <span class="toggle-slider"></span>
+          </label>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
           <select class="cs-edit-product-select" data-idx="${i}" multiple size="6" style="flex:1;min-width:200px">
