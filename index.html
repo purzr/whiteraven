@@ -2743,6 +2743,7 @@ function rowToSettings(row){
     aboutImageDark: data.aboutImageDark ?? d.aboutImageDark,
     fonts: {...d.fonts, ...(data.fonts||{})},
     scales: {...d.scales, ...(data.scales||{})},
+    fontColors: {...d.fontColors, ...(data.fontColors||{})},
     freeShippingThreshold: (typeof data.freeShippingThreshold === 'number') ? data.freeShippingThreshold : d.freeShippingThreshold,
     shippingCost: (typeof data.shippingCost === 'number') ? data.shippingCost : d.shippingCost,
     shippingRates: Array.isArray(data.shippingRates) ? data.shippingRates : d.shippingRates,
@@ -2870,9 +2871,19 @@ async function saveSettingsRemote(settings){
         data: settings
       });
 
-    if(error) console.error(error);
+    if(error){
+      console.error('[saveSettingsRemote] Supabase error:', error);
+      return {ok:false, error};
+    }
+    return {ok:true};
   } else {
-    await sSet('settings', settings, true);
+    try{
+      await sSet('settings', settings, true);
+      return {ok:true};
+    }catch(error){
+      console.error('[saveSettingsRemote] local save error:', error);
+      return {ok:false, error};
+    }
   }
 }
 
@@ -10490,8 +10501,14 @@ function bindAdminSettingsUI(){
     const newSettings = { ...STATE.settings, fonts, scales, fontColors };
     STATE.settings = newSettings;
     applySettingsToDOM(newSettings);
-    await withLoading(()=>saveSettingsRemote(newSettings));
-    showToast('فونت‌ها ذخیره شد ✓');
+    const result = await withLoading(()=>saveSettingsRemote(newSettings));
+    if(result && result.ok){
+      showToast('فونت‌ها ذخیره شد ✓');
+    } else {
+      const msg = result?.error?.message || 'خطای نامشخص';
+      showToast('❌ ذخیره نشد: ' + msg);
+      console.error('[saveFontsBtn] save failed:', result?.error);
+    }
   };
 
   const saveTrackingBtn = $('#saveTrackingBtn');
