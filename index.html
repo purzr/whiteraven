@@ -60,13 +60,12 @@
   --ph-bg:linear-gradient(160deg,#131a16,#0a0d0b);
 
   /* ===== customizable typography (editable from admin ▸ تنظیمات ظاهری) ===== */
-  --font-latin:'Fraunces',serif;
-  --font-header:'Fraunces','Vazirmatn',sans-serif;
-  --font-hero:'Fraunces','Cormorant Garamond',serif;
-  --font-heading:'Fraunces','Cormorant Garamond',serif;
-  --font-product:'Fraunces','Vazirmatn',sans-serif;
-  --font-body:'Fraunces','Vazirmatn',sans-serif;
-  --font-footer:'Fraunces','Vazirmatn',sans-serif;
+  --font-header:'Vazirmatn',sans-serif;
+  --font-hero:'Cormorant Garamond',serif;
+  --font-heading:'Cormorant Garamond',serif;
+  --font-product:'Vazirmatn',sans-serif;
+  --font-body:'Vazirmatn',sans-serif;
+  --font-footer:'Vazirmatn',sans-serif;
   --scale-header:1;
   --scale-hero:1;
   --scale-heading:1;
@@ -3046,7 +3045,7 @@ function applySettingsToDOM(settings){
   const root = document.documentElement.style;
   FONT_SECTIONS.forEach(s=>{
     const fam = settings.fonts?.[s.key] || defaultSettings().fonts[s.key];
-    root.setProperty(`--font-${s.key}`, `'Fraunces', '${fam}', ${/garamond|playfair|dm serif/i.test(fam)?'serif':'sans-serif'}`);
+    root.setProperty(`--font-${s.key}`, `'${fam}', ${/garamond|playfair|dm serif/i.test(fam)?'serif':'sans-serif'}`);
     const scale = (settings.scales?.[s.key] ?? 100)/100;
     root.setProperty(`--scale-${s.key}`, scale);
   });
@@ -10343,7 +10342,7 @@ function bindAdminSettingsUI(){
   $$('.font-select').forEach(sel=>{
     sel.onchange = ()=>{
       const key = sel.dataset.section;
-      document.documentElement.style.setProperty(`--font-${key}`, `'Fraunces', '${sel.value}', ${/garamond|playfair|dm serif/i.test(sel.value)?'serif':'sans-serif'}`);
+      document.documentElement.style.setProperty(`--font-${key}`, `'${sel.value}', ${/garamond|playfair|dm serif/i.test(sel.value)?'serif':'sans-serif'}`);
     };
   });
   $$('.scale-range').forEach(range=>{
