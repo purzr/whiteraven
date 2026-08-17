@@ -33,7 +33,7 @@
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Estedad:wght@300;400;500;600;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700;800&family=Mada:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&family=Manrope:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=Fraunces:opsz,wght@9..144,300..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&display=swap" rel="stylesheet">
 <!-- Supabase client — used for the shared product catalog & orders. See README.md "اتصال به Supabase" section. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -61,8 +61,8 @@
 
   /* ===== customizable typography (editable from admin ▸ تنظیمات ظاهری) ===== */
   --font-header:'Vazirmatn',sans-serif;
-  --font-hero:'Cormorant Garamond',serif;
-  --font-heading:'Cormorant Garamond',serif;
+  --font-hero:'Baloo Bhaijaan 2',sans-serif;
+  --font-heading:'Baloo Bhaijaan 2',sans-serif;
   --font-product:'Vazirmatn',sans-serif;
   --font-body:'Vazirmatn',sans-serif;
   --font-footer:'Vazirmatn',sans-serif;
@@ -179,7 +179,7 @@ body::before{
 ::-webkit-scrollbar-thumb{background:var(--line);border:3px solid var(--bg);border-radius:20px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold-dim)}
 * {scrollbar-color:var(--line) var(--bg); scrollbar-width:thin}
-.serif{font-family:'Cormorant Garamond',serif;}
+.serif{font-family:var(--font-heading);}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
 img{max-width:100%;display:block}
@@ -2562,25 +2562,9 @@ function iconLibSvg(id, size){
 }
 const FONT_OPTIONS = [
   {id:"Vazirmatn", label:"وزیرمتن — Vazirmatn (فارسی، نرم و حرفه‌ای)"},
-  {id:"Estedad", label:"استعداد — Estedad (فارسی، نرم)"},
-  {id:"Noto Sans Arabic", label:"نوتو سنس — Noto Sans Arabic (فارسی، نرم و مدرن)"},
   {id:"IBM Plex Sans Arabic", label:"آی‌بی‌ام پلکس — IBM Plex Sans Arabic (فارسی، حرفه‌ای)"},
-  {id:"Dima Shekasteh Free", label:"دیما شکسته — Dima Shekasteh Free (فارسی)"},
-  {id:"A Shekari", label:" آ شکاری — A Shekari (فارسی)"},
-  {id:"Cairo", label:"کایرو — Cairo (فارسی)"},
-  {id:"Mada", label:"مدا — Mada (فارسی)"},
-  {id:"Adobe Arabic", label:"آدوب عربی — Adobe Arabic (فارسی)"},
-  {id:"Far.Diplomaat", label:"دیپلومات — Far Diplomaat Medium (فارسی)"},
-  {id:"Cooper Black", label:"زغال سیاه — Cooper Black Bold (انگلیسی)"},
-  {id:"Brush Script MT", label:" قلمو روان نویس — Brush Script Bold (انگلیسی)"},
-  {id:"Manrope", label:"Manrope (انگلیسی، نرم و مدرن)"},
-  {id:"DM Sans", label:"DM Sans (انگلیسی، حرفه‌ای)"},
   {id:"Outfit", label:"Outfit (انگلیسی، هندسی و نرم)"},
-  {id:"Urbanist", label:"Urbanist (انگلیسی، ظریف)"},
-  {id:"DM Serif Display", label:"DM Serif Display (انگلیسی، اِلگانت)"},
-  {id:"Fraunces", label:"Fraunces (انگلیسی، رومی ضخیم گرد — شبیه فونت Margin)"},
-  {id:"Poppins", label:"Poppins (انگلیسی)"},
-  {id:"Playfair Display", label:"Playfair Display (انگلیسی)"},
+  {id:"Baloo Bhaijaan 2", label:"بالو — Baloo Bhaijaan 2 (فارسی، تپل و گرد)"},
 ];
 const FONT_SECTIONS = [
   {key:'header', label:'سربرگ و منوی سایت'},
@@ -2655,7 +2639,7 @@ function defaultSettings(){
     aboutImageClassic:'',
     aboutImageDark:'',
     fonts:{
-      header:'Vazirmatn', hero:'Cormorant Garamond', heading:'Cormorant Garamond',
+      header:'Vazirmatn', hero:'Baloo Bhaijaan 2', heading:'Baloo Bhaijaan 2',
       product:'Vazirmatn', body:'Vazirmatn', footer:'Vazirmatn'
     },
     scales:{ header:100, hero:100, heading:100, product:100, body:100, footer:100 },
