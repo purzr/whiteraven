@@ -5,6 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>آنلاین شاپ | White Raven</title>
 <meta name="google-site-verification" content="kL_OLb8OrVfu_IKcqN5klacGED9wQm9_FrE5p5uo-iA" />
+<meta name="description" content="White Raven (کلاغ سفید) — فروشگاه آنلاین پوشاک با طراحی مینیمال و کیفیت پرمیوم. خرید آنلاین با ارسال سریع به سراسر ایران.">
+<link rel="canonical" href="https://whiteraven.ir/">
+<!-- Open Graph / social preview tags — این‌ها استاتیک و پیش‌فرض کل سایت هستند
+     چون کراولرهای شبکه‌های اجتماعی (تلگرام، واتساپ، اینستاگرام) جاوااسکریپت
+     اجرا نمی‌کنند و نسخه‌ی per-page ساخته‌شده توسط setPageMeta() را نمی‌بینند. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="White Raven">
+<meta property="og:title" content="White Raven | کلاغ سفید">
+<meta property="og:description" content="فروشگاه آنلاین پوشاک با طراحی مینیمال و کیفیت پرمیوم. خرید آنلاین با ارسال سریع به سراسر ایران.">
+<meta property="og:url" content="https://whiteraven.ir/">
+<meta property="og:image" content="https://whiteraven.ir/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="fa_IR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="White Raven | کلاغ سفید">
+<meta name="twitter:description" content="فروشگاه آنلاین پوشاک با طراحی مینیمال و کیفیت پرمیوم. خرید آنلاین با ارسال سریع به سراسر ایران.">
+<meta name="twitter:image" content="https://whiteraven.ir/og-image.jpg">
+<!-- Schema.org Organization — معرفی برند به گوگل (نام، لوگو، شبکه‌های اجتماعی) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "White Raven",
+  "alternateName": "کلاغ سفید",
+  "url": "https://whiteraven.ir/",
+  "logo": "https://whiteraven.ir/logo.png",
+  "sameAs": [
+    "https://instagram.com/WhiteRavenLabel",
+    "https://t.me/Purzr22"
+  ]
+}
+</script>
 <!-- دیکودر همتای 404.html: اگر کاربر از یک آدرس واقعی (مثل /product/123) از
      طریق 404.html به این‌جا هدایت شده، مسیر اصلی را از کوئری‌استرینگ بازیابی
      و با pushState به نوار آدرس مرورگر برمی‌گرداند — قبل از اجرای باقی اسکریپت‌ها. -->
@@ -2275,6 +2308,16 @@ function setPageMeta(title, description){
     document.head.appendChild(metaDesc);
   }
   if(description) metaDesc.setAttribute('content', description);
+  // og:title / og:description را هم برای همین صفحه به‌روز می‌کنیم — کراولرهای
+  // شبکه‌های اجتماعی این تغییر را نمی‌بینند (چون جاوااسکریپت اجرا نمی‌کنند و
+  // مقدار استاتیک <head> را می‌گیرند)، اما گوگل که جاوااسکریپت را اجرا می‌کند
+  // نسخه‌ی به‌روزشده‌ی هر صفحه را برای ایندکس می‌بیند.
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if(ogTitle) ogTitle.setAttribute('content', title || DEFAULT_TITLE);
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if(ogDesc && description) ogDesc.setAttribute('content', description);
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if(ogUrl) ogUrl.setAttribute('content', location.origin + currentPath());
   removeProductJsonLd();
 }
 
