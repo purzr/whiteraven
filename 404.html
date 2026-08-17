@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>White Raven</title>
+<!--
+  گیت‌هاب‌پیجز فقط فایل استاتیک سرو می‌کند و از مسیرهای واقعی مثل
+  /product/123 خبر ندارد — برای هر آدرسی غیر از فایل‌های واقعی، همین
+  صفحه‌ی 404.html را نشان می‌دهد. این اسکریپت مسیر درخواستی را به یک
+  کوئری‌استرینگ تبدیل می‌کند و کاربر را به index.html هدایت می‌کند؛
+  اسکریپت داخل index.html هم آن را دوباره به مسیر اصلی برمی‌گرداند.
+  (بر پایه‌ی روش استاندارد rafgraph/spa-github-pages)
+-->
+<script>
+  var pathSegmentsToKeep = 0; // اگر سایت روی دامنه‌ی اختصاصی (whiteraven.ir) است این عدد 0 بماند
+  var l = window.location;
+  l.replace(
+    l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+    l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+    l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+    (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+    l.hash
+  );
+</script>
+</head>
+<body></body>
+</html>

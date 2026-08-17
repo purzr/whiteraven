@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>آنلاین شاپ | White Raven</title>
 <meta name="google-site-verification" content="kL_OLb8OrVfu_IKcqN5klacGED9wQm9_FrE5p5uo-iA" />
+<!-- دیکودر همتای 404.html: اگر کاربر از یک آدرس واقعی (مثل /product/123) از
+     طریق 404.html به این‌جا هدایت شده، مسیر اصلی را از کوئری‌استرینگ بازیابی
+     و با pushState به نوار آدرس مرورگر برمی‌گرداند — قبل از اجرای باقی اسکریپت‌ها. -->
+<script>
+(function(){
+  var l = window.location;
+  if(l.search[1] === '/'){
+    var decoded = l.search.slice(1).split('&').map(function(s){ return s.replace(/~and~/g, '&'); }).join('?');
+    window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+  }
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%231a1512'/%3E%3Cpath d='M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z' fill='%23fff' stroke='%232b2016' stroke-width='2.2'/%3E%3C/svg%3E">
 <!-- تم پیش‌فرض سایت "مشکی" است. این اسکریپت قبل از رندر صفحه اجرا می‌شود تا اگر
      مشتری قبلاً تم روشن را انتخاب کرده، بدون فلش رنگی همان تم روشن نمایش داده شود. -->
@@ -1447,7 +1459,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint);flex:none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="searchInputDesktop" type="text" placeholder="جستجوی محصولات...">
     </div>
-    <a href="#/" class="logo" data-link>
+    <a href="/" class="logo" data-link>
       <span id="siteLogoSlot"><svg class="raven-mark" width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/>
       </svg></span>
@@ -1462,11 +1474,11 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
         <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="icon-classic" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
       </button>
-      <a href="#/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
+      <a href="/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
         <span class="cart-badge hidden" id="wishlistBadge">0</span>
       </a>
-      <a href="#/account" data-link class="icon-btn account-header-icon" title="حساب کاربری">
+      <a href="/account" data-link class="icon-btn account-header-icon" title="حساب کاربری">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
         <span class="cart-badge notif-badge hidden" id="accountNotifBadge">0</span>
       </a>
@@ -1474,7 +1486,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8.5 8.5V7C8.5 4.51 10.01 2.5 12 2.5C13.99 2.5 15.5 4.51 15.5 7V8.5"/><path d="M5 8.5H19L19.8 20.2C19.9 21.2 19.1 22 18.1 22H5.9C4.9 22 4.1 21.2 4.2 20.2L5 8.5Z"/></svg>
         <span class="cart-badge hidden" id="cartBadge">0</span>
       </button>
-      <a href="#/account" data-link class="header-account-desktop" id="headerAccountDesktop">
+      <a href="/account" data-link class="header-account-desktop" id="headerAccountDesktop">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
         <span id="headerAccountLabel">ورود | ثبت‌نام</span>
         <span class="cart-badge notif-badge hidden" id="accountNotifBadgeDesktop">0</span>
@@ -1484,7 +1496,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
       </button>
     </div>
     <nav class="main-nav" id="mainNav">
-      <a href="#/" data-link data-route="/">خانه</a>
+      <a href="/" data-link data-route="/">خانه</a>
       <div class="nav-item-drop" id="navProductsDrop">
         <button type="button" class="nav-drop-trigger" id="navProductsTrigger">
           <span>محصولات</span>
@@ -1492,9 +1504,9 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
         </button>
         <div class="nav-megamenu" id="navCatLinks"></div>
       </div>
-      <a href="#/magazine" data-link data-route="/magazine">مجله</a>
-      <a href="#/about" data-link data-route="/about">درباره ما</a>
-      <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
+      <a href="/magazine" data-link data-route="/magazine">مجله</a>
+      <a href="/about" data-link data-route="/about">درباره ما</a>
+      <a href="/contact" data-link data-route="/contact">تماس با ما</a>
     </nav>
   </div>
 
@@ -1513,16 +1525,16 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
   <div class="mobile-nav-top">
     <div class="mobile-close" id="mobileCloseBtn">✕ بستن</div>
     <div class="mobile-nav-icons">
-      <a href="#/account" data-link data-route="/account" class="icon-btn" title="حساب کاربری">
+      <a href="/account" data-link data-route="/account" class="icon-btn" title="حساب کاربری">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
         <span class="cart-badge notif-badge hidden" id="accountNotifBadgeMobile">0</span>
       </a>
-      <a href="#/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
+      <a href="/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
       </a>
     </div>
   </div>
-  <a href="#/" data-link data-route="/">خانه</a>
+  <a href="/" data-link data-route="/">خانه</a>
   <div class="mobile-nav-drop" id="mobileProductsDrop">
     <button type="button" class="mobile-nav-drop-trigger" id="mobileProductsTrigger">
       <span>محصولات</span>
@@ -1531,10 +1543,10 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
     <div class="mobile-nav-submenu" id="mobileNavCatLinks"></div>
   </div>
   <div class="mobile-nav-bottom">
-    <a href="#/magazine" data-link data-route="/magazine">مجله</a>
-    <a href="#/about" data-link data-route="/about">درباره ما</a>
-    <a href="#/contact" data-link data-route="/contact">تماس با ما</a>
-    <a href="#/account/track-order" data-link data-route="/account/track-order">پیگیری سفارش</a>
+    <a href="/magazine" data-link data-route="/magazine">مجله</a>
+    <a href="/about" data-link data-route="/about">درباره ما</a>
+    <a href="/contact" data-link data-route="/contact">تماس با ما</a>
+    <a href="/account/track-order" data-link data-route="/account/track-order">پیگیری سفارش</a>
   </div>
 </div>
 
@@ -1550,25 +1562,25 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
           <a href="https://instagram.com/WhiteRavenLabel" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
           <a href="https://t.me/Purzr22" target="_blank" rel="noopener" aria-label="Telegram"><svg width="17" height="17" viewBox="0 0 240 240" fill="currentColor"><path d="M240 120c0 66.3-53.7 120-120 120S0 186.3 0 120 53.7 0 120 0s120 53.7 120 120ZM98.9 175.6c3.7 0 5.3-1.7 7.4-3.7l17.7-17.2 24.5 18c4.5 2.5 7.7 1.2 8.9-4.2l16-75.5c1.7-7.1-2.6-10.5-7.7-8.4L54.5 122c-7.3 2.9-7.2 6.9-1.3 8.7l30.4 9.5 70.4-44.4c3.3-2.2 6.3-1 3.8 1.2l-57 51.5-2.2 30.8c1 0 1.4-.5 1.9-1z"/></svg></a>
           <a href="mailto:Purzrshop@gmail.com" aria-label="Email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></svg></a>
-          <a href="#/contact" data-link aria-label="تماس با ما"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></a>
+          <a href="/contact" data-link aria-label="تماس با ما"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></a>
         </div>
       </div>
       <div class="foot-col">
         <h5>دسترسی سریع</h5>
-        <a href="#/shop/all" data-link>فروشگاه</a>
-        <a href="#/shop/newest" data-link id="footLinkNewest">جدیدترین‌ها</a>
-        <a href="#/shop/bestsellers" data-link id="footLinkBestsellers">پرفروش‌ترین‌ها</a>
-        <a href="#/shop/deals" data-link id="footLinkDeals">تخفیف‌ها</a>
-        <a href="#/shop/featured" data-link id="footLinkFeatured">محصولات پیشنهادی</a>
-        <a href="#/magazine" data-link>مجله‌ها</a>
+        <a href="/shop/all" data-link>فروشگاه</a>
+        <a href="/shop/newest" data-link id="footLinkNewest">جدیدترین‌ها</a>
+        <a href="/shop/bestsellers" data-link id="footLinkBestsellers">پرفروش‌ترین‌ها</a>
+        <a href="/shop/deals" data-link id="footLinkDeals">تخفیف‌ها</a>
+        <a href="/shop/featured" data-link id="footLinkFeatured">محصولات پیشنهادی</a>
+        <a href="/magazine" data-link>مجله‌ها</a>
       </div>
       <div class="foot-col">
         <h5>خدمات مشتریان</h5>
-        <a href="#/faq" data-link>پرسش‌های متداول</a>
-        <a href="#/terms" data-link>شرایط و قوانین</a>
-        <a href="#/privacy" data-link>حریم خصوصی</a>
-        <a href="#/return-policy" data-link>رویه بازگشت کالا</a>
-        <a href="#/contact" data-link>تماس با ما</a>
+        <a href="/faq" data-link>پرسش‌های متداول</a>
+        <a href="/terms" data-link>شرایط و قوانین</a>
+        <a href="/privacy" data-link>حریم خصوصی</a>
+        <a href="/return-policy" data-link>رویه بازگشت کالا</a>
+        <a href="/contact" data-link>تماس با ما</a>
       </div>
       <div class="foot-col">
         <h5>خبرنامه</h5>
@@ -1583,11 +1595,11 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
       <a href="https://instagram.com/WhiteRavenLabel" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
       <a href="https://t.me/Purzr22" target="_blank" rel="noopener" aria-label="Telegram"><svg width="17" height="17" viewBox="0 0 240 240" fill="currentColor"><path d="M240 120c0 66.3-53.7 120-120 120S0 186.3 0 120 53.7 0 120 0s120 53.7 120 120ZM98.9 175.6c3.7 0 5.3-1.7 7.4-3.7l17.7-17.2 24.5 18c4.5 2.5 7.7 1.2 8.9-4.2l16-75.5c1.7-7.1-2.6-10.5-7.7-8.4L54.5 122c-7.3 2.9-7.2 6.9-1.3 8.7l30.4 9.5 70.4-44.4c3.3-2.2 6.3-1 3.8 1.2l-57 51.5-2.2 30.8c1 0 1.4-.5 1.9-1z"/></svg></a>
       <a href="mailto:Purzrshop@gmail.com" aria-label="Email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></svg></a>
-      <a href="#/contact" data-link aria-label="تماس با ما"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></a>
+      <a href="/contact" data-link aria-label="تماس با ما"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></a>
     </div>
     <div class="foot-bottom">
       <span>© 1405 White Raven — تمامی حقوق محفوظ است.</span>
-      <a href="#/admin-login" data-link style="color:var(--text-faint)">پنل مدیریت </a>
+      <a href="/admin-login" data-link style="color:var(--text-faint)">پنل مدیریت </a>
     </div>
   </div>
 </footer>
@@ -2277,7 +2289,7 @@ function setProductJsonLd(p){
   removeProductJsonLd();
   const ratedList = (STATE.reviews||[]).filter(r=> r.productId===p.id && r.status==='approved' && r.rating!=null);
   const avgRating = ratedList.length ? (ratedList.reduce((s,r)=> s + Number(r.rating||0), 0) / ratedList.length) : 0;
-  const siteUrl = location.origin + location.pathname;
+  const siteUrl = location.origin;
   const data = {
     '@context': 'https://schema.org/',
     '@type': 'Product',
@@ -2287,7 +2299,7 @@ function setProductJsonLd(p){
     sku: p.id,
     offers: {
       '@type': 'Offer',
-      url: siteUrl + '#/product/' + p.id,
+      url: siteUrl + '/product/' + p.id,
       priceCurrency: 'IRR',
       price: Number(p.price) * 10 || 0, // site stores prices in Toman; schema.org has no Toman code, so convert to Rial (×10) for the standards-compliant IRR value
       availability: p.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
@@ -3018,19 +3030,19 @@ function renderCategoryNavLinks(settings){
   const curPath = STATE.route;
   const mobileSlot = document.getElementById('mobileNavCatLinks');
   if(mobileSlot){
-    const mobileCatLinks = cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
+    const mobileCatLinks = cats.map(c=>`<a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
     mobileSlot.innerHTML = mobileCatLinks
-      + `<a href="#/shop/all" data-link data-route="/shop/all">جدیدترین‌ها</a>`
-      + `<a href="#/shop/all" data-link data-route="/shop/all" class="mnav-all ${curPath==='/shop/all'?'active':''}">همه محصولات</a>`;
+      + `<a href="/shop/all" data-link data-route="/shop/all">جدیدترین‌ها</a>`
+      + `<a href="/shop/all" data-link data-route="/shop/all" class="mnav-all ${curPath==='/shop/all'?'active':''}">همه محصولات</a>`;
   }
 
   // Desktop mega-menu: category links (each with a small icon dot) + a link to "all"
   const megaSlot = document.getElementById('navCatLinks');
   if(megaSlot){
     const megaLinks = cats.length
-      ? cats.map(c=>`<a href="#/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')
+      ? cats.map(c=>`<a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')
       : `<span class="nav-mega-empty">دسته‌بندی‌ای ثبت نشده</span>`;
-    megaSlot.innerHTML = megaLinks + `<a href="#/shop/all" data-link data-route="/shop/all" class="nav-mega-all">مشاهده همه محصولات ‹</a>`;
+    megaSlot.innerHTML = megaLinks + `<a href="/shop/all" data-link data-route="/shop/all" class="nav-mega-all">مشاهده همه محصولات ‹</a>`;
   }
 }
 
@@ -3095,7 +3107,7 @@ function trackPageView(){
   const path = currentPath();
   if(path.startsWith('/admin')) return; // آمار و ریتارگتینگ فقط برای بازدید مشتری‌ها ثبت می‌شود
   if(typeof gtag === 'function' && STATE.settings?.gaId){
-    gtag('event', 'page_view', { page_path: '#'+path });
+    gtag('event', 'page_view', { page_path: path });
   }
   if(typeof fbq === 'function' && STATE.settings?.metaPixelId){
     fbq('track', 'PageView');
@@ -3213,8 +3225,8 @@ function applySettingsToDOM(settings){
           annBar.classList.add('has-link');
           annBar.onclick = ()=>{
             if(/^https?:\/\//i.test(link)) window.open(link, '_blank', 'noopener');
-            else if(link.startsWith('#')) location.hash = link.slice(1);
-            else if(link.startsWith('/')) location.hash = link;
+            else if(link.startsWith('#')) navigate(link.slice(1));
+            else if(link.startsWith('/')) navigate(link);
             else location.href = link;
           };
         } else {
@@ -3656,7 +3668,7 @@ async function init(){
 
   bindGlobalUI();
 
-  window.addEventListener('hashchange', ()=>{ router(); trackPageView(); });
+  window.addEventListener('popstate', ()=>{ router(); trackPageView(); });
 
   router();
 
@@ -3674,10 +3686,20 @@ async function init(){
 init();
 
 /* ---------------- routing ---------------- */
+// از ۱۳۹۹/تیر — به‌جای آدرس‌دهی مبتنی بر # (که گوگل آن را ایندکس نمی‌کند)
+// از History API (pushState) استفاده می‌شود تا هر صفحه آدرس واقعی و مجزا داشته
+// باشد. برای این‌که رفرش کردن یا لینک مستقیم به صفحاتی مثل /product/123 خطای
+// ۴۰۴ ندهد، سرور باید همه‌ی آدرس‌ها را به همین index.html هدایت کند — فایل
+// .htaccess (یا معادل آن بسته به نوع هاست) باید برای این کار تنظیم شود.
 function currentPath(){
-  return (location.hash.replace(/^#/,'') || '/');
+  return location.pathname || '/';
 }
-function navigate(path){ location.hash = '#'+path; }
+function navigate(path){
+  if(currentPath() === path) return;
+  history.pushState(null, '', path);
+  router();
+  trackPageView();
+}
 
 function router(preserveScroll){
   const path = currentPath();
@@ -3850,7 +3872,7 @@ function bindGlobalUI(){
     const link = e.target.closest('[data-link]');
     if(link){
       e.preventDefault();
-      navigate(link.getAttribute('href').replace('#',''));
+      navigate(link.getAttribute('href').replace(/^#/,''));
     }
   });
 }
@@ -4609,7 +4631,7 @@ function productCard(p){
   const extraImgs = normalizeImages(p).slice(1, 5);
   return `
   <div class="card">
-    <a href="#/product/${p.id}" data-link>
+    <a href="/product/${p.id}" data-link>
       <div class="card-img">
         ${productImgHtml(p)}
         ${off ? `<span class="card-discount">${discountPct}%-</span>` : ''}
@@ -4621,7 +4643,7 @@ function productCard(p){
     </a>
     <div class="card-body">
       <span class="cat-tag">${catLabel(p.category)}</span>
-      <a href="#/product/${p.id}" data-link><h3>${escapeHtml(p.name)}</h3></a>
+      <a href="/product/${p.id}" data-link><h3>${escapeHtml(p.name)}</h3></a>
       <div class="card-price">
         <span class="now">${RIAL(p.price)}</span>
         ${off?`<span class="was">${RIAL(p.compareAt)}</span>`:''}
@@ -4656,7 +4678,7 @@ function catPanelOne(c, i){
   const img = getCategoryImageForTheme(c);
   const bg = img ? `background:url('${img}') center/cover no-repeat` : `background:${catGradient(i)}`;
   return `
-    <a href="#/shop/${c.slug}" data-link class="cat-panel" data-real-index="${i}">
+    <a href="/shop/${c.slug}" data-link class="cat-panel" data-real-index="${i}">
       <div class="cat-bg cat-bg-desktop" style="${bg}"></div>
       <div class="cat-bg cat-bg-mobile" style="${bg}"></div>
       <div class="cat-content">
@@ -4743,7 +4765,7 @@ function homeSectionDefs(){
 }
 function viewAllTileHtml(sectionKey){
   return `
-    <a href="#/shop/${sectionKey}" data-link class="card view-all-card">
+    <a href="/shop/${sectionKey}" data-link class="card view-all-card">
       <div class="view-all-card-inner">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
         <span>نمایش همه</span>
@@ -4987,7 +5009,7 @@ function pageHome(){
 function productPanelOne(pp, i){
   const bg = pp.image ? `background:url('${pp.image}') center/cover no-repeat` : `background:${catGradient(i)}`;
   return `
-    <a href="#/shop/${pp.id}" data-link class="cat-panel">
+    <a href="/shop/${pp.id}" data-link class="cat-panel">
       <div class="cat-bg cat-bg-desktop" style="${bg}"></div>
       <div class="cat-bg cat-bg-mobile" style="${bg}"></div>
       <div class="cat-content">
@@ -5012,7 +5034,7 @@ function productPanelsSectionHtml(){
 
 function iconPanelOne(ip){
   return `
-    <a href="#/shop/${ip.id}" data-link class="icon-panel">
+    <a href="/shop/${ip.id}" data-link class="icon-panel">
       <div class="icon-panel-img">${ip.image ? `<img loading="lazy" decoding="async" src="${ip.image}" alt="${escapeHtml(ip.title||'')}">` : ''}</div>
       <span>${escapeHtml(ip.title||'')}</span>
     </a>`;
@@ -5054,7 +5076,7 @@ function pageShop(catRaw){
       <div class="container" style="text-align:center;padding:80px 20px">
         <h2 class="serif" style="font-size:26px;font-weight:800;margin-bottom:14px">این صفحه غیرفعال است</h2>
         <p style="color:var(--text-faint);margin-bottom:24px">این بخش در حال حاضر توسط مدیر فروشگاه غیرفعال شده است.</p>
-        <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+        <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
       </div>
     </section>`;
   }
@@ -5103,7 +5125,7 @@ function pageShop(catRaw){
           </div>
           <div class="toolbar" style="position:relative;z-index:5;margin-top:24px">
             <div class="chip-row">
-              <a href="#/shop/all" data-link class="chip">همه محصولات</a>
+              <a href="/shop/all" data-link class="chip">همه محصولات</a>
             </div>
             <div class="search-mini">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -5138,8 +5160,8 @@ function pageShop(catRaw){
     <div class="container">
       <div class="toolbar">
         <div class="chip-row">
-          <a href="#/shop/all" data-link class="chip ${cat==='all'?'active':''}">همه</a>
-          ${cats.map(c=>`<a href="#/shop/${c.slug}" data-link class="chip ${cat===c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')}
+          <a href="/shop/all" data-link class="chip ${cat==='all'?'active':''}">همه</a>
+          ${cats.map(c=>`<a href="/shop/${c.slug}" data-link class="chip ${cat===c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')}
         </div>
         <div class="search-mini">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -5173,7 +5195,7 @@ function pageOthers(id){
     <div class="container">
       <div class="toolbar">
         <div class="chip-row">
-          <a href="#/shop/all" data-link class="chip">همه محصولات</a>
+          <a href="/shop/all" data-link class="chip">همه محصولات</a>
         </div>
         <div class="search-mini">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -5325,7 +5347,7 @@ function pageProduct(id){
   <div class="section pd-page-section">
     <div class="container">
       <div class="breadcrumb">
-        <a href="#/" data-link>خانه</a> / <span class="breadcrumb-desktop-only"><a href="#/shop/all" data-link>محصولات</a> / </span><a href="#/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
+        <a href="/" data-link>خانه</a> / <span class="breadcrumb-desktop-only"><a href="/shop/all" data-link>محصولات</a> / </span><a href="/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
       </div>
       <div class="pd-wrap">
         <div class="pd-gallery-col">${productGalleryHtml(p)}</div>
@@ -5448,7 +5470,7 @@ function pageProduct(id){
               <h2 class="serif">دیگر محصولات</h2>
               <div class="divider" style="margin-right:0"></div>
             </div>
-            <a href="#/others/${p.id}" data-link class="btn btn-ghost" style="margin-bottom:4px">مشاهده همه ‹</a>
+            <a href="/others/${p.id}" data-link class="btn btn-ghost" style="margin-bottom:4px">مشاهده همه ‹</a>
           </div>
           <div class="glass-scroll">${others.map(productCard).join('')}</div>
         </div>
@@ -5468,17 +5490,17 @@ function magazineCard(p){
   const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '';
   return `
   <div class="card">
-    <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link>
+    <a href="/magazine/${encodeURIComponent(p.slug)}" data-link>
       <div class="card-img">
         ${p.coverImage ? `<img src="${p.coverImage}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async">` : `<div style="background:var(--ph-bg);width:100%;height:100%"></div>`}
       </div>
     </a>
     <div class="card-body">
       ${dateStr ? `<span class="cat-tag">${dateStr}</span>` : ''}
-      <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link><h3>${escapeHtml(p.title)}</h3></a>
+      <a href="/magazine/${encodeURIComponent(p.slug)}" data-link><h3>${escapeHtml(p.title)}</h3></a>
       ${p.excerpt ? `<p style="font-size:13px;color:var(--text-dim);line-height:1.9;margin:6px 0 0">${escapeHtml(p.excerpt)}</p>` : ''}
       <div class="card-actions">
-        <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link class="btn" style="text-align:center;flex:1">ادامه مطلب</a>
+        <a href="/magazine/${encodeURIComponent(p.slug)}" data-link class="btn" style="text-align:center;flex:1">ادامه مطلب</a>
       </div>
     </div>
   </div>`;
@@ -5522,7 +5544,7 @@ function pageMagazineArticle(slug){
       ${p.coverImage ? `<img loading="lazy" decoding="async" src="${p.coverImage}" alt="${escapeHtml(p.title)}" style="width:100%;border-radius:var(--radius);margin:26px 0;object-fit:cover;max-height:460px">` : ''}
       <div class="article-content" style="font-size:15.5px;line-height:2.1;color:var(--text)">${forceExternalLinkTargets(p.content||'')}</div>
       <div style="margin-top:40px">
-        <a href="#/magazine" data-link class="btn btn-ghost">‹ بازگشت به مجله</a>
+        <a href="/magazine" data-link class="btn btn-ghost">‹ بازگشت به مجله</a>
       </div>
     </div>
   </article>
@@ -5556,7 +5578,7 @@ function pageAbout(){
       <div>
         ${s.aboutHeading?`<h2 class="serif">${escapeHtml(s.aboutHeading)}</h2>`:''}
         ${paragraphs}
-        <a href="#/shop/all" data-link class="btn btn-solid" style="margin-top:10px">مشاهده محصولات ‹</a>
+        <a href="/shop/all" data-link class="btn btn-solid" style="margin-top:10px">مشاهده محصولات ‹</a>
       </div>
       <div class="about-visual">
         ${(()=>{ const img = getAboutImageForTheme(s); return img ? `<img loading="lazy" decoding="async" src="${img}" alt="${escapeHtml(s.aboutTitle||'')}" style="width:100%;height:100%;object-fit:cover">` : `<svg width="140" height="140" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg>`; })()}
@@ -5581,7 +5603,7 @@ function pageFaq(){
           <div class="pd-faq-a"><p>${escapeHtml(it.a)}</p></div>
         </div>`).join('')}
       </div>
-      <p style="margin-top:24px;color:var(--text-faint);font-size:13px">سوال شما پاسخ داده نشد؟ از طریق <a href="#/contact" data-link style="color:var(--gold-light)">صفحه تماس با ما</a> در خدمت شما هستیم.</p>
+      <p style="margin-top:24px;color:var(--text-faint);font-size:13px">سوال شما پاسخ داده نشد؟ از طریق <a href="/contact" data-link style="color:var(--gold-light)">صفحه تماس با ما</a> در خدمت شما هستیم.</p>
     </div>
   </div>`;
 }
@@ -5674,7 +5696,7 @@ function pageContact(){
           <div class="form-field"><label>نام</label><input required placeholder="نام شما"></div>
           <div class="form-field"><label>ایمیل</label><input required type="email" placeholder="example@gmail.com"></div>
         </div>
-        <p class="pd-review-form-sub" style="margin:-8px 0 18px">شما وارد حساب کاربری خود در وایت ریون نشده‌اید، پس پاسخ پیام شما به همین ایمیلی که وارد می‌کنید ارسال می‌شود، نه به حساب کاربری. برای دریافت پاسخ داخل حساب کاربری و اطلاع فوری، ابتدا <a href="#/account" data-link style="color:var(--gold-light)">وارد حساب خود شوید</a>.</p>
+        <p class="pd-review-form-sub" style="margin:-8px 0 18px">شما وارد حساب کاربری خود در وایت ریون نشده‌اید، پس پاسخ پیام شما به همین ایمیلی که وارد می‌کنید ارسال می‌شود، نه به حساب کاربری. برای دریافت پاسخ داخل حساب کاربری و اطلاع فوری، ابتدا <a href="/account" data-link style="color:var(--gold-light)">وارد حساب خود شوید</a>.</p>
         `}
 <div class="form-field">
   <label>موضوع</label>
@@ -5702,38 +5724,38 @@ function pageContact(){
 }
 
 function accountBackLink(){
-  return `<a href="#/account" data-link class="acc-back-link">‹ بازگشت به حساب کاربری</a>`;
+  return `<a href="/account" data-link class="acc-back-link">‹ بازگشت به حساب کاربری</a>`;
 }
 function accountMenuHtml(){
   const acc = STATE.account;
   return `
   <div class="acc-menu">
-    <a href="#/account/wishlist" data-link class="acc-menu-item">
+    <a href="/account/wishlist" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg></span>
       <span class="acc-menu-text"><strong>علاقه‌مندی‌های من</strong><small>محصولاتی که ذخیره کرده‌اید</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
-    <a href="#/account/addresses" data-link class="acc-menu-item">
+    <a href="/account/addresses" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
       <span class="acc-menu-text"><strong>آدرس‌های من</strong><small>آدرس‌های ذخیره‌شده برای ارسال سفارش</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
-    <a href="#/account/track-order" data-link class="acc-menu-item">
+    <a href="/account/track-order" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
       <span class="acc-menu-text"><strong>پیگیری سفارش</strong><small>وضعیت سفارش‌های خود را ببینید</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
-    <a href="#/account/reviews" data-link class="acc-menu-item">
+    <a href="/account/reviews" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
       <span class="acc-menu-text"><strong>نظرات و پرسش‌های من</strong><small>نظراتی که ثبت کرده‌اید، لایک‌ها و پاسخ فروشگاه</small>${acc && myUnreadReviewReplyCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadReviewReplyCount()}</span>` : ''}</span>
       <span class="acc-menu-arrow">‹</span>
     </a>
-    <a href="#/account/messages" data-link class="acc-menu-item">
+    <a href="/account/messages" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg></span>
       <span class="acc-menu-text"><strong>پیام‌های من</strong><small>پیام‌های تماس با ما و پاسخ فروشگاه</small>${acc && myUnreadMessageReplyCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadMessageReplyCount()}</span>` : ''}</span>
       <span class="acc-menu-arrow">‹</span>
     </a>
-    <a href="#/account/notifications" data-link class="acc-menu-item">
+    <a href="/account/notifications" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
       <span class="acc-menu-text"><strong>اطلاع‌رسانی موجودی</strong><small>محصولاتی که برای اعلام موجود شدن ثبت کرده‌اید</small>${acc && myUnreadStockNotifCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadStockNotifCount()}</span>` : ''}</span>
       <span class="acc-menu-arrow">‹</span>
@@ -5753,7 +5775,7 @@ function accountRequireLoginPage(title){
     ${accountBackLink()}
     <div style="margin-top:18px;text-align:center;background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:32px 20px">
       <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:18px">برای مشاهده‌ی «${escapeHtml(title)}» ابتدا باید وارد حساب کاربری خود شوید یا ثبت‌نام کنید.</p>
-      <a href="#/account" data-link class="btn btn-solid">ورود / ثبت‌نام</a>
+      <a href="/account" data-link class="btn btn-solid">ورود / ثبت‌نام</a>
     </div>
   </div></div>`;
 }
@@ -5883,7 +5905,7 @@ function accountMessagesTabHtml(){
   if(!mine.length){
     return `<div style="text-align:center">
       ${emptyState('هنوز پیامی از طریق تماس با ما ارسال نکرده‌اید')}
-      <a href="#/contact" data-link class="btn btn-solid">تماس با ما</a>
+      <a href="/contact" data-link class="btn btn-solid">تماس با ما</a>
     </div>`;
   }
 
@@ -5940,7 +5962,7 @@ function accountNotificationsTabHtml(){
             <p style="font-size:11.5px;color:var(--text-faint)">${dateStr}</p>
           </div>
         </div>
-        ${pid ? `<a href="#/product/${pid}" data-link class="btn btn-ghost" style="margin-top:12px;font-size:12px;padding:8px 14px">مشاهده محصول</a>` : ''}
+        ${pid ? `<a href="/product/${pid}" data-link class="btn btn-ghost" style="margin-top:12px;font-size:12px;padding:8px 14px">مشاهده محصول</a>` : ''}
       </div>`;
     }).join('')}
   </div>`;
@@ -5954,7 +5976,7 @@ function accountReviewsTabHtml(){
   if(!mine.length){
     return `<div style="text-align:center">
       ${emptyState('هنوز نظر یا پرسشی ثبت نکرده‌اید')}
-      <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+      <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
     </div>`;
   }
 
@@ -5995,7 +6017,7 @@ function accountWishlistTabHtml(){
     ? `<div class="grid">${items.map(productCard).join('')}</div>`
     : `<div style="text-align:center">
         ${emptyState('هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید')}
-        <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+        <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
       </div>`;
 }
 function addressCardHtml(a, opts){
@@ -6142,7 +6164,7 @@ function pageCheckout(){
   if(!STATE.cart.length){
     return `<div class="section"><div class="container narrow" style="text-align:center">
       ${emptyState('سبد خرید شما خالی است')}
-      <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+      <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
     </div></div>`;
   }
   const subtotal = cartSubtotal();
@@ -6467,8 +6489,8 @@ function pageOrderConfirmed(orderId){
     ${order?`<p style="color:var(--text-dim);margin-bottom:6px">مبلغ نهایی: ${RIAL(order.total)}</p>`:''}
     ${order?.couponCode?`<p style="color:var(--ok);margin-bottom:30px;font-size:13px">کد تخفیف «${escapeHtml(order.couponCode)}» اعمال شد (${RIAL(order.discount||0)}- تومان)</p>`:(order?`<div style="margin-bottom:30px"></div>`:'')}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <a href="#/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
-      <a href="#/account/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
+      <a href="/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
+      <a href="/account/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
     </div>
   </div></div>`;
 }
@@ -6550,7 +6572,7 @@ function pageWishlist(){
       ${items.length ? `<div class="grid">${items.map(productCard).join('')}</div>` :
       `<div style="text-align:center">
         ${emptyState('هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید')}
-        <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+        <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
       </div>`}
     </div>
   </div>`;
@@ -6560,7 +6582,7 @@ function page404(){
   return `<div class="section"><div class="container" style="text-align:center;padding:100px 0">
     <h1 class="serif" style="font-size:44px;margin-bottom:14px">۴۰۴</h1>
     <p style="color:var(--text-dim);margin-bottom:26px">صفحه مورد نظر یافت نشد.</p>
-    <a href="#/" data-link class="btn btn-solid">بازگشت به خانه</a>
+    <a href="/" data-link class="btn btn-solid">بازگشت به خانه</a>
   </div></div>`;
 }
 
@@ -7671,9 +7693,9 @@ function renderCart(){
       if(!p) return '';
       return `
       <div class="cart-line">
-        <a href="#/product/${p.id}" data-link class="thumb" onclick="closeCartUI()">${productImgHtml(p)}</a>
+        <a href="/product/${p.id}" data-link class="thumb" onclick="closeCartUI()">${productImgHtml(p)}</a>
         <div class="ci-body">
-          <a href="#/product/${p.id}" data-link onclick="closeCartUI()"><h4>${escapeHtml(p.name)}</h4></a>
+          <a href="/product/${p.id}" data-link onclick="closeCartUI()"><h4>${escapeHtml(p.name)}</h4></a>
           <span class="ci-meta">${ci.size?('سایز: '+ci.size):''}${ci.color?(' · رنگ: '+escapeHtml(ci.color.label||colorLabel(ci.color))):''} ${p.category?(' · '+catLabel(p.category)):''}</span>
           <div class="ci-row">
             <div class="ci-qty">
@@ -7701,7 +7723,7 @@ function renderCart(){
     <div class="cart-sum-row"><span>جمع جزء</span><span>${RIAL(subtotal)}</span></div>
     <div class="cart-sum-row"><span>هزینه ارسال</span><span id="cartShippingLine">${shippingLineHtml(subtotal, savedProvince, savedCity)}</span></div>
     ${shippingNote}
-    <a href="#/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''} onclick="closeCartUI()">تکمیل خرید ‹</a>
+    <a href="/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''} onclick="closeCartUI()">تکمیل خرید ‹</a>
   `;
 }
 window.closeCartUI = closeCart;
@@ -7808,7 +7830,7 @@ function adminLoginScreen(){
       </button>
 
       <a
-        href="#/"
+        href="/"
         data-link
         class="btn btn-ghost btn-block"
         style="margin-top:10px"
@@ -7881,28 +7903,28 @@ function adminShell(){
   return `
   <div class="admin-wrap">
     <div class="admin-bar">
-      <a href="#/" data-link class="logo">
+      <a href="/" data-link class="logo">
         <span id="adminLogoSlot"><svg class="raven-mark" width="26" height="26" viewBox="0 0 100 100" fill="none"><path d="M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z M54.49 3.98 L54.26 14.63 L55.81 14.66 L56.04 4.02 Z M54.26 14.63 L54.03 25.43 L55.58 25.46 L55.81 14.66 Z M54.03 25.43 L53.82 36.26 L55.36 36.29 L55.58 25.46 Z M53.82 36.27 L53.62 47.03 L55.16 47.06 L55.36 36.29 Z M53.62 47.03 L53.44 57.62 L54.99 57.65 L55.16 47.06 Z M53.44 57.62 L53.3 67.92 L54.84 67.95 L54.99 57.65 Z M53.3 67.93 L53.19 77.83 L54.73 77.84 L54.84 67.94 Z M53.4 77.83 L53.33 87.22 L54.45 87.23 L54.52 77.84 Z M53.33 87.23 L53.3 96 L54.42 96 L54.45 87.23 Z M55.27 15.16 L65.81 10.23 L65.33 9.21 L54.8 14.14 Z M55.04 25.95 L69.09 19.39 L68.61 18.37 L54.57 24.93 Z M54.84 36.78 L71.7 28.44 L71.2 27.43 L54.34 35.78 Z M54.65 47.54 L70.1 39.47 L69.58 38.48 L54.13 46.55 Z M54.49 58.13 L67.83 50.79 L67.29 49.8 L53.95 57.14 Z M55.27 14.14 L39.82 6.91 L39.35 7.93 L54.8 15.16 Z M55.04 24.93 L33.98 15.08 L33.5 16.1 L54.57 25.95 Z M54.84 35.78 L30.96 23.96 L30.46 24.96 L54.34 36.78 Z M54.65 46.55 L32.18 34.81 L31.66 35.8 L54.13 47.54 Z M54.49 57.14 L36.93 47.49 L36.39 48.47 L53.95 58.13 Z" fill-rule="evenodd" fill="#fff" stroke="#2b2016" stroke-width="2.2"/></svg></span>
         <span style="font-family:'Cormorant Garamond',serif;letter-spacing:.15em;font-size:17px">WHITE RAVEN ADMIN</span>
       </a>
       <div style="display:flex;gap:14px;align-items:center">
-        <a href="#/" data-link class="btn btn-ghost" style="padding:9px 18px;font-size:12.5px">مشاهده سایت</a>
+        <a href="/" data-link class="btn btn-ghost" style="padding:9px 18px;font-size:12.5px">مشاهده سایت</a>
         <button id="adminLogoutBtn" class="btn" style="padding:9px 18px;font-size:12.5px">خروج</button>
       </div>
     </div>
     <div class="admin-shell">
       <div class="admin-side">
-        <a href="#/admin" data-link class="${adminSection==='dashboard'?'active':''}">داشبورد</a>
-        <a href="#/admin/stats" data-link class="${adminSection==='stats'?'active':''}">آمار و گزارش‌ها</a>
-        <a href="#/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
-        <a href="#/admin/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
-        <a href="#/admin/comments" data-link class="${adminSection==='comments'?'active':''}">نظرات${(STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length) ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
-        <a href="#/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
-        <a href="#/admin/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
-        <a href="#/admin/stock-notify" data-link class="${adminSection==='stockNotify'?'active':''}">اطلاع‌رسانی موجودی${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length}</span>` : ''}</a>
-        <a href="#/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
-        <a href="#/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
-        <a href="#/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
+        <a href="/admin" data-link class="${adminSection==='dashboard'?'active':''}">داشبورد</a>
+        <a href="/admin/stats" data-link class="${adminSection==='stats'?'active':''}">آمار و گزارش‌ها</a>
+        <a href="/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
+        <a href="/admin/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
+        <a href="/admin/comments" data-link class="${adminSection==='comments'?'active':''}">نظرات${(STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length) ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
+        <a href="/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
+        <a href="/admin/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
+        <a href="/admin/stock-notify" data-link class="${adminSection==='stockNotify'?'active':''}">اطلاع‌رسانی موجودی${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length}</span>` : ''}</a>
+        <a href="/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
+        <a href="/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
+        <a href="/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
         ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminOrders()}
@@ -8117,10 +8139,10 @@ function adminStats(){
     <div class="stat-card"><div class="num">${phones.size}</div><div class="lbl">مشتریان یکتا (بر اساس شماره تماس)</div></div>
     <div class="stat-card"><div class="num">${newsletterCount}</div><div class="lbl">مشترکین خبرنامه</div></div>
     <div class="stat-card"><div class="num">${STATE.products.length}</div><div class="lbl">تعداد محصولات</div></div>
-    <a href="#/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام (≤۳ عدد)</div></a>
+    <a href="/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام (≤۳ عدد)</div></a>
     <div class="stat-card"><div class="num">${outOfStock}</div><div class="lbl">محصولات ناموجود</div></div>
-    <a href="#/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${unreadMessages}</div><div class="lbl">پیام‌های خوانده‌نشده</div></a>
-    <a href="#/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${pendingReviews}</div><div class="lbl">نظرات در انتظار تایید</div></a>
+    <a href="/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${unreadMessages}</div><div class="lbl">پیام‌های خوانده‌نشده</div></a>
+    <a href="/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${pendingReviews}</div><div class="lbl">نظرات در انتظار تایید</div></a>
     <div class="stat-card"><div class="num">${approvedReviews}</div><div class="lbl">نظرات تاییدشده</div></div>
   </div>
 
@@ -8163,7 +8185,7 @@ function adminDashboard(){
     <div class="stat-card"><div class="num">${STATE.products.length}</div><div class="lbl">تعداد محصولات</div></div>
     <div class="stat-card"><div class="num">${totalOrders}</div><div class="lbl">تعداد سفارش‌ها</div></div>
     <div class="stat-card"><div class="num">${RIAL(totalRevenue)}</div><div class="lbl">مجموع فروش</div></div>
-    <a href="#/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام</div></a>
+    <a href="/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام</div></a>
   </div>
 <div class="stat-card">
   <div class="num">${totalMessages}</div>
@@ -8194,9 +8216,9 @@ function adminComments(){
   return `
   <h2 class="admin-title">نظرات</h2>
   <div class="admin-side" style="border:none;padding:0;display:flex;gap:6px;margin-bottom:24px;overflow-x:auto">
-    <a href="#/admin/comments" data-comments-tab="messages" class="${subTab==='messages'?'active':''}" style="border-radius:6px">پیام‌های تماس با ما</a>
-    <a href="#/admin/comments" data-comments-tab="newsletter" class="${subTab==='newsletter'?'active':''}" style="border-radius:6px">خبرنامه</a>
-    <a href="#/admin/comments" data-comments-tab="productReviews" class="${subTab==='productReviews'?'active':''}" style="border-radius:6px">نظرات محصولات${STATE.reviews.filter(r=>r.status==='pending').length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
+    <a href="/admin/comments" data-comments-tab="messages" class="${subTab==='messages'?'active':''}" style="border-radius:6px">پیام‌های تماس با ما</a>
+    <a href="/admin/comments" data-comments-tab="newsletter" class="${subTab==='newsletter'?'active':''}" style="border-radius:6px">خبرنامه</a>
+    <a href="/admin/comments" data-comments-tab="productReviews" class="${subTab==='productReviews'?'active':''}" style="border-radius:6px">نظرات محصولات${STATE.reviews.filter(r=>r.status==='pending').length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
   </div>
   ${subTab==='newsletter' ? adminNewsletterList() : subTab==='productReviews' ? adminProductReviews() : adminMessagesList()}`;
 }
@@ -8326,7 +8348,7 @@ function adminProducts(){
   ${adminProductStockFilter ? `
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;background:rgba(214,167,79,.08);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;flex-wrap:wrap">
     <span style="color:var(--gold-light);font-size:13px">نمایش محصولات رو به اتمام (موجودی ۳ یا کمتر)</span>
-    <a href="#/admin/products" data-link style="margin-inline-start:auto;font-size:12.5px;cursor:pointer;color:var(--text-dim)">✕ حذف فیلتر</a>
+    <a href="/admin/products" data-link style="margin-inline-start:auto;font-size:12.5px;cursor:pointer;color:var(--text-dim)">✕ حذف فیلتر</a>
   </div>` : ''}
   <div class="chip-row" style="margin-bottom:18px">
     <button type="button" class="chip admin-cat-chip ${activeCat==='all'?'active':''}" data-cat="all">همه (${STATE.products.length})</button>
@@ -8375,7 +8397,7 @@ function adminMagazine(){
           <td>${p.published!==false?'<span class="badge ok">منتشر شده</span>':'<span class="badge no">پیش‌نویس</span>'}</td>
           <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '—'}</td>
           <td><div class="tbl-actions">
-            <a href="#/magazine/${encodeURIComponent(p.slug)}" data-link target="_blank" rel="noopener" style="cursor:pointer">مشاهده</a>
+            <a href="/magazine/${encodeURIComponent(p.slug)}" data-link target="_blank" rel="noopener" style="cursor:pointer">مشاهده</a>
             <button onclick="editMagazinePost('${p.id}')">ویرایش</button>
             <button class="danger" onclick="deleteMagazinePost('${p.id}')">حذف</button>
           </div></td>
@@ -8552,7 +8574,7 @@ function bindMagazineAdminUI(){
     const idx = Number(pick) - 1;
     const prod = STATE.products[idx];
     if(!prod){ showToast('محصول یافت نشد'); return; }
-    const url = location.origin + location.pathname + `#/product/${prod.id}`;
+    const url = location.origin + `/product/${prod.id}`;
     document.execCommand('createLink', false, url);
     forceEditorLinkTargets(editor);
     saveSelection();
@@ -12020,7 +12042,7 @@ function announcementListHtml(){
         </div>
         <div class="form-field" style="margin:0">
           <label>لینک نوار (اختیاری)</label>
-          <input type="text" class="ann-edit-link" data-idx="${i}" value="${escapeHtml(b.link||'')}" placeholder="مثلاً: #/shop/all یا https://...">
+          <input type="text" class="ann-edit-link" data-idx="${i}" value="${escapeHtml(b.link||'')}" placeholder="مثلاً: /shop/all یا https://...">
         </div>
         <div class="theme-asset-row">
           <div class="theme-asset-col" style="flex:1;min-width:200px">
@@ -12112,7 +12134,7 @@ function bannerListHtml(){
             ${imgBox(b,i,'imageClassic','☀️ تم روشن',140,79)}
           </div>
           <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">
-            <input class="banner-edit-link" data-idx="${i}" value="${escapeHtml(b.link||'')}" placeholder="لینک با کلیک روی بنر (مثلاً #/shop/all یا آدرس کامل)">
+            <input class="banner-edit-link" data-idx="${i}" value="${escapeHtml(b.link||'')}" placeholder="لینک با کلیک روی بنر (مثلاً /shop/all یا آدرس کامل)">
             <span style="font-size:10.5px;color:var(--text-faint)">فقط کافیست عکس یک تم را بگذارید؛ اگر تصویر تم دیگری خالی باشد همان عکس نمایش داده می‌شود.</span>
           </div>
           <button type="button" class="btn btn-ghost banner-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف بنر</button>
