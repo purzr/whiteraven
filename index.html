@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>White Raven | فروشگاه لباس زیر</title>
+<title>آنلاین شاپ | White Raven</title>
+<meta name="google-site-verification" content="kL_OLb8OrVfu_IKcqN5klacGED9wQm9_FrE5p5uo-iA" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%231a1512'/%3E%3Cpath d='M55.27 4 C66.5 15.94 70.72 32.09 67.91 48.24 C60.89 62.29 57.37 70.72 57.37 70.72 L55.97 76.34 L53.86 96 L51.76 76.34 L50.35 70.72 C45.44 67.21 32.79 56.67 29.28 35.6 C35.6 14.53 55.27 4 55.27 4 Z' fill='%23fff' stroke='%232b2016' stroke-width='2.2'/%3E%3C/svg%3E">
 <!-- تم پیش‌فرض سایت "مشکی" است. این اسکریپت قبل از رندر صفحه اجرا می‌شود تا اگر
      مشتری قبلاً تم روشن را انتخاب کرده، بدون فلش رنگی همان تم روشن نمایش داده شود. -->
@@ -1397,6 +1398,15 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
 .gl-dots span:nth-child(3){animation-delay:.3s}
 @keyframes gl-bounce{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q6C60P9MN0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q6C60P9MN0');
+</script>
 </head>
 <body>
 
@@ -2454,6 +2464,75 @@ async function saveWishlistRemote(accountId, ids){
   });
   if(error) console.error(error);
 }
+/* دفترچه‌ی آدرس‌های حساب کاربری — روی جدول addresses ذخیره می‌شود تا مشتری
+   با هر دستگاهی که وارد شود همان آدرس‌های ذخیره‌شده را ببیند. اگر جدول addresses
+   در Supabase ساخته نشده باشد (یا اتصال برقرار نباشد)، به‌صورت خودکار در
+   حافظه‌ی محلی همان مرورگر (localStorage) ذخیره می‌شود.
+   ساختار جدول پیشنهادی در Supabase:
+   addresses(id text primary key, account_id text, title text, first_name text,
+     last_name text, phone text, province text, city text, address text,
+     postal_code text, is_default boolean, created_at timestamptz) */
+function addressRowToObj(row){
+  return {
+    id: row.id, title: row.title || '', firstName: row.first_name || '', lastName: row.last_name || '',
+    phone: row.phone || '', province: row.province || '', city: row.city || '', address: row.address || '',
+    postalCode: row.postal_code || '', isDefault: !!row.is_default, createdAt: row.created_at || new Date().toISOString()
+  };
+}
+async function loadAddressesRemote(accountId){
+  if(!accountId) return [];
+  if(supabaseClient){
+    try{
+      const {data, error} = await supabaseClient
+        .from('addresses').select('*').eq('account_id', accountId).order('created_at', {ascending:true});
+      if(!error) return (data||[]).map(addressRowToObj);
+    }catch(e){ /* جدول ساخته نشده — به localStorage برمی‌گردیم */ }
+  }
+  try{ return JSON.parse(localStorage.getItem('wr-addresses-'+accountId) || '[]'); }catch(e){ return []; }
+}
+async function saveAddressRemote(accountId, addr){
+  if(!accountId) return;
+  if(supabaseClient){
+    try{
+      const {error} = await supabaseClient.from('addresses').upsert({
+        id: addr.id, account_id: accountId, title: addr.title || '', first_name: addr.firstName || '',
+        last_name: addr.lastName || '', phone: addr.phone || '', province: addr.province || '',
+        city: addr.city || '', address: addr.address || '', postal_code: addr.postalCode || '',
+        is_default: !!addr.isDefault, created_at: addr.createdAt || new Date().toISOString()
+      });
+      if(!error) return;
+    }catch(e){ /* جدول ساخته نشده — به localStorage برمی‌گردیم */ }
+  }
+  const key = 'wr-addresses-'+accountId;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  const idx = list.findIndex(a=>a.id===addr.id);
+  if(idx>-1) list[idx] = addr; else list.push(addr);
+  localStorage.setItem(key, JSON.stringify(list));
+}
+async function deleteAddressRemote(accountId, addressId){
+  if(!accountId) return;
+  if(supabaseClient){
+    try{
+      const {error} = await supabaseClient.from('addresses').delete().eq('id', addressId).eq('account_id', accountId);
+      if(!error) return;
+    }catch(e){ /* جدول ساخته نشده — به localStorage برمی‌گردیم */ }
+  }
+  const key = 'wr-addresses-'+accountId;
+  const list = JSON.parse(localStorage.getItem(key) || '[]').filter(a=>a.id!==addressId);
+  localStorage.setItem(key, JSON.stringify(list));
+}
+// اگر آدرسی که به‌عنوان پیش‌فرض جدید انتخاب شده، بقیه‌ی آدرس‌های حساب باید
+// از حالت پیش‌فرض خارج شوند (چون فقط یک آدرس پیش‌فرض داریم)
+async function setDefaultAddress(accountId, addressId){
+  STATE.addresses.forEach(a=> a.isDefault = (a.id===addressId));
+  await Promise.all(STATE.addresses.map(a=> saveAddressRemote(accountId, a)));
+}
+function getSelectedAddress(){
+  if(!STATE.addresses.length) return null;
+  return STATE.addresses.find(a=>a.id===STATE.selectedAddressId)
+    || STATE.addresses.find(a=>a.isDefault)
+    || STATE.addresses[0];
+}
 async function findOrderByIdAndPhone(orderId, phone){
   const cleanId = (orderId||'').trim();
   const cleanPhone = (phone||'').trim();
@@ -2687,7 +2766,8 @@ function defaultSettings(){
     iconPanelsFooter: [],
     gaId: '',
     metaPixelId: '',
-    homeSectionsEnabled: { newest:true, deals:true, featured:true, bestsellers:true }
+    homeSectionsEnabled: { newest:true, deals:true, featured:true, bestsellers:true },
+    featuresPosition: 'after_icons_top'
   };
 }
 /* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
@@ -2753,7 +2833,8 @@ function rowToSettings(row){
     iconPanelsFooter: Array.isArray(data.iconPanelsFooter) ? data.iconPanelsFooter : d.iconPanelsFooter,
     gaId: data.gaId ?? d.gaId,
     metaPixelId: data.metaPixelId ?? d.metaPixelId,
-    homeSectionsEnabled: {...d.homeSectionsEnabled, ...(data.homeSectionsEnabled||{})}
+    homeSectionsEnabled: {...d.homeSectionsEnabled, ...(data.homeSectionsEnabled||{})},
+    featuresPosition: data.featuresPosition ?? d.featuresPosition
   };
 }
 async function loadSettings(){
@@ -2840,7 +2921,8 @@ async function loadSettings(){
         productPanels: Array.isArray(s.productPanels) ? s.productPanels : defaultSettings().productPanels,
         iconPanelsTop: Array.isArray(s.iconPanelsTop) ? s.iconPanelsTop : defaultSettings().iconPanelsTop,
         iconPanelsFooter: Array.isArray(s.iconPanelsFooter) ? s.iconPanelsFooter : defaultSettings().iconPanelsFooter,
-        homeSectionsEnabled: {...defaultSettings().homeSectionsEnabled, ...(s.homeSectionsEnabled||{})}
+        homeSectionsEnabled: {...defaultSettings().homeSectionsEnabled, ...(s.homeSectionsEnabled||{})},
+        featuresPosition: s.featuresPosition ?? defaultSettings().featuresPosition
       }
     : null;
 }
@@ -3188,6 +3270,8 @@ let STATE = {
   reviews: [],
   account: null,
   wishlist: [],
+  addresses: [],
+  selectedAddressId: null,
   magazinePosts: [],
   route: '/',
   filters:{category:'all', q:'', section:null, sort:''},
@@ -3553,6 +3637,8 @@ async function init(){
     const remoteWishlist = await loadWishlistRemote(STATE.account.id);
     if(remoteWishlist !== null) STATE.wishlist = remoteWishlist;
     STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
+    STATE.addresses = await loadAddressesRemote(STATE.account.id);
+    try{ STATE.selectedAddressId = localStorage.getItem('wr-selected-address-'+STATE.account.id) || null; }catch(e){}
     await finalizePendingStockNotify();
   }
 
@@ -3633,6 +3719,7 @@ function router(preserveScroll){
   else if(path==='/contact') app.innerHTML = pageContact();
   else if(path==='/account') app.innerHTML = pageAccount('profile');
   else if(path==='/account/wishlist') app.innerHTML = pageAccount('wishlist');
+  else if(path==='/account/addresses') app.innerHTML = pageAccount('addresses');
   else if(path.startsWith('/account/track-order')) app.innerHTML = pageAccount('orders', path.split('/account/track-order/')[1]);
   else if(path==='/account/reviews') app.innerHTML = pageAccount('reviews');
   else if(path==='/account/messages') app.innerHTML = pageAccount('messages');
@@ -4705,6 +4792,32 @@ function customSectionSlotLabel(v){
 function customSectionsForSlot(slot){
   return (STATE.settings.customSections||[]).filter(cs=> (cs.position || 'after_featured') === slot && cs.enabled !== false).map(customSectionHtml).join('');
 }
+function featuresSectionHtml(){
+  return `
+  <section class="features">
+    <div class="container">
+      <div class="feature">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/></svg>
+        <div><h4>ضمانت اصالت کالا</h4><p>تضمین کیفیت و اصالت</p></div>
+      </div>
+      <div class="feature">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 16V6a1 1 0 0 1 1-1h9v11"/><path d="M13 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+        <div><h4>ارسال سریع و رایگان</h4><p>برای خریدهای بالای ${RIAL(STATE.settings.freeShippingThreshold ?? 1000000)}</p></div>
+      </div>
+      <div class="feature">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="m21 8-9-6-9 6 9 6 9-6Z"/><path d="M3 8v8l9 6 9-6V8"/></svg>
+        <div><h4>ضمانت بازگشت کالا</h4><p>تا ۷ روز بدون قید و شرط</p></div>
+      </div>
+      <div class="feature">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 5a2 2 0 0 1 2-2h2l2 5-2.5 1.5a11 11 0 0 0 5 5L13 12l5 2v2a2 2 0 0 1-2 2A15 15 0 0 1 3 5Z"/></svg>
+        <div><h4>پشتیبانی ۲۴/۷</h4><p>برای مشاوره و راهنمایی</p></div>
+      </div>
+    </div>
+  </section>`;
+}
+function featuresBlock(slot){
+  return (STATE.settings.featuresPosition || 'after_icons_top') === slot ? featuresSectionHtml() : '';
+}
 function promoBannerHtml(pb){
   if(!pb.image) return '';
   const img = `<img src="${pb.image}" alt="بنر تبلیغاتی" loading="lazy" decoding="async" style="width:100%;height:auto;display:block;border-radius:16px">`;
@@ -4763,6 +4876,7 @@ function pageHome(){
 
   ${customSectionsForSlot('top')}
   ${promoBannersForSlot('top')}
+  ${featuresBlock('top')}
 
   ${(newest.length && STATE.settings.homeSectionsEnabled?.newest !== false) ? `
   <section class="section glass-band glass-new" style="padding-bottom:0">
@@ -4780,6 +4894,7 @@ function pageHome(){
 
   ${customSectionsForSlot('after_newest')}
   ${promoBannersForSlot('after_newest')}
+  ${featuresBlock('after_newest')}
 
   ${(discounted.length && STATE.settings.homeSectionsEnabled?.deals !== false) ? `
   <section class="section glass-band glass-deals" style="padding-bottom:0">
@@ -4807,35 +4922,17 @@ function pageHome(){
 
   ${customSectionsForSlot('after_deals')}
   ${promoBannersForSlot('after_deals')}
+  ${featuresBlock('after_deals')}
 
   ${iconPanelsSectionHtml('iconPanelsTop')}
 
   ${customSectionsForSlot('after_icons_top')}
   ${promoBannersForSlot('after_icons_top')}
-
-  <section class="features">
-    <div class="container">
-      <div class="feature">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6l-9-4Z"/></svg>
-        <div><h4>ضمانت اصالت کالا</h4><p>تضمین کیفیت و اصالت</p></div>
-      </div>
-      <div class="feature">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 16V6a1 1 0 0 1 1-1h9v11"/><path d="M13 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-        <div><h4>ارسال سریع و رایگان</h4><p>برای خریدهای بالای ${RIAL(STATE.settings.freeShippingThreshold ?? 1000000)}</p></div>
-      </div>
-      <div class="feature">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="m21 8-9-6-9 6 9 6 9-6Z"/><path d="M3 8v8l9 6 9-6V8"/></svg>
-        <div><h4>ضمانت بازگشت کالا</h4><p>تا ۷ روز بدون قید و شرط</p></div>
-      </div>
-      <div class="feature">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 5a2 2 0 0 1 2-2h2l2 5-2.5 1.5a11 11 0 0 0 5 5L13 12l5 2v2a2 2 0 0 1-2 2A15 15 0 0 1 3 5Z"/></svg>
-        <div><h4>پشتیبانی ۲۴/۷</h4><p>برای مشاوره و راهنمایی</p></div>
-      </div>
-    </div>
-  </section>
+  ${featuresBlock('after_icons_top')}
 
   ${customSectionsForSlot('after_features')}
   ${promoBannersForSlot('after_features')}
+  ${featuresBlock('after_features')}
 
   ${(featuredInStock.length && STATE.settings.homeSectionsEnabled?.featured !== false) ? `
   <section class="section glass-band glass-best">
@@ -4853,6 +4950,7 @@ function pageHome(){
 
   ${customSectionsForSlot('after_featured')}
   ${promoBannersForSlot('after_featured')}
+  ${featuresBlock('after_featured')}
 
   ${(bestsellersInStock.length && STATE.settings.homeSectionsEnabled?.bestsellers !== false) ? (()=>{
     const bcolor = STATE.settings.bestsellerColor || '#e0562a';
@@ -4876,11 +4974,13 @@ function pageHome(){
 
   ${customSectionsForSlot('after_product_panels')}
   ${promoBannersForSlot('after_product_panels')}
+  ${featuresBlock('after_product_panels')}
 
   ${iconPanelsSectionHtml('iconPanelsFooter', '0')}
 
   ${customSectionsForSlot('end')}
   ${promoBannersForSlot('end')}
+  ${featuresBlock('end')}
   `;
 }
 
@@ -5613,6 +5713,11 @@ function accountMenuHtml(){
       <span class="acc-menu-text"><strong>علاقه‌مندی‌های من</strong><small>محصولاتی که ذخیره کرده‌اید</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
+    <a href="#/account/addresses" data-link class="acc-menu-item">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
+      <span class="acc-menu-text"><strong>آدرس‌های من</strong><small>آدرس‌های ذخیره‌شده برای ارسال سفارش</small></span>
+      <span class="acc-menu-arrow">‹</span>
+    </a>
     <a href="#/account/track-order" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
       <span class="acc-menu-text"><strong>پیگیری سفارش</strong><small>وضعیت سفارش‌های خود را ببینید</small></span>
@@ -5666,6 +5771,16 @@ function pageAccount(tab, trackOrderPrefillId){
       ${accountBackLink()}
       <div style="margin-top:18px">${accountWishlistTabHtml()}</div>
     </div></div>`;
+  }
+  if(tab==='addresses'){
+    if(!acc) return accountRequireLoginPage('آدرس‌های من');
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">آدرس‌های من</h1></div>
+    <div class="section"><div class="container narrow">
+      ${accountBackLink()}
+      <div style="margin-top:18px">${accountAddressesTabHtml()}</div>
+    </div></div>
+    ${addressModalHtml()}`;
   }
   if(tab==='orders'){
     if(!acc) return accountRequireLoginPage('پیگیری سفارش');
@@ -5883,6 +5998,78 @@ function accountWishlistTabHtml(){
         <a href="#/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
       </div>`;
 }
+function addressCardHtml(a, opts){
+  opts = opts || {};
+  return `
+  <div class="my-order-card addr-card" data-id="${a.id}">
+    <div class="my-order-top">
+      <div>
+        <p style="font-size:13px;color:var(--text);font-weight:600">${escapeHtml(a.title || (a.firstName+' '+a.lastName).trim() || 'آدرس')} ${a.isDefault ? `<span style="font-size:10.5px;color:var(--ok);border:1px solid var(--ok);border-radius:20px;padding:1px 8px;margin-inline-start:6px">پیش‌فرض</span>` : ''}</p>
+        <p style="font-size:12px;color:var(--text-faint);margin-top:4px">${escapeHtml((a.firstName+' '+a.lastName).trim())} — ${escapeHtml(a.phone||'')}</p>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.9;margin:10px 0">${escapeHtml(a.province||'')}، ${escapeHtml(a.city||'')} — ${escapeHtml(a.address||'')}${a.postalCode?` — کد پستی: ${escapeHtml(a.postalCode)}`:''}</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      ${opts.selectable ? `<button type="button" class="btn btn-solid addr-pick-btn" data-id="${a.id}" style="padding:7px 14px;font-size:12px">انتخاب این آدرس</button>` : ''}
+      <button type="button" class="btn btn-ghost addr-edit-btn" data-id="${a.id}" style="padding:7px 14px;font-size:12px">ویرایش</button>
+      ${!a.isDefault ? `<button type="button" class="btn btn-ghost addr-default-btn" data-id="${a.id}" style="padding:7px 14px;font-size:12px">پیش‌فرض کن</button>` : ''}
+      <button type="button" class="btn btn-ghost addr-delete-btn" data-id="${a.id}" style="padding:7px 14px;font-size:12px;color:var(--danger);border-color:var(--danger)">حذف</button>
+    </div>
+  </div>`;
+}
+function accountAddressesTabHtml(){
+  const list = STATE.addresses || [];
+  return `
+  <div style="margin-bottom:18px">
+    <button type="button" id="addAddressBtn" class="btn btn-solid">+ افزودن آدرس جدید</button>
+  </div>
+  <div class="my-orders-list" id="addressListBox">
+    ${list.length ? list.map(a=>addressCardHtml(a)).join('') : emptyState('هنوز آدرسی ذخیره نکرده‌اید')}
+  </div>`;
+}
+// مودال افزودن/ویرایش آدرس — هم در صفحه‌ی «آدرس‌های من» و هم در صفحه‌ی تسویه‌حساب استفاده می‌شود
+function addressModalHtml(){
+  return `
+  <div class="modal-overlay" id="addressModalOverlay">
+    <div class="modal-box" style="max-width:520px">
+      <div class="modal-close-row"><button type="button" class="btn btn-ghost" id="addressModalClose" style="padding:5px 10px">✕</button></div>
+      <h3 id="addressModalTitle">افزودن آدرس جدید</h3>
+      <form id="addressForm">
+        <input type="hidden" id="addrId">
+        <div class="form-field"><label>عنوان آدرس (اختیاری)</label><input id="addrTitle" placeholder="مثلاً: خانه، محل کار"></div>
+        <div class="form-row2">
+          <div class="form-field"><label>نام</label><input required id="addrFirstName" placeholder="نام"></div>
+          <div class="form-field"><label>نام خانوادگی</label><input required id="addrLastName" placeholder="نام خانوادگی"></div>
+        </div>
+        <div class="form-field"><label>شماره تماس</label><input required id="addrPhone" type="tel" placeholder="09xxxxxxxxx"></div>
+        <div class="form-row2">
+          <div class="form-field">
+            <label>استان</label>
+            <div class="wr-combo" id="addrProvinceCombo">
+              <input required id="addrProvince" class="wr-combo-input" placeholder="استان را انتخاب یا تایپ کنید..." autocomplete="off">
+              <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              <div class="wr-combo-list"></div>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>شهر</label>
+            <div class="wr-combo" id="addrCityCombo">
+              <input required id="addrCity" class="wr-combo-input" placeholder="شهر را انتخاب یا تایپ کنید..." autocomplete="off">
+              <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              <div class="wr-combo-list"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-field"><label>آدرس کامل</label><textarea required id="addrAddress" placeholder="خیابان، کوچه، پلاک، واحد..."></textarea></div>
+        <div class="form-field"><label>کد پستی</label><input id="addrPostalCode" inputmode="numeric" placeholder="کد پستی"></div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);margin-bottom:16px">
+          <input type="checkbox" id="addrIsDefault" style="width:17px;height:17px;accent-color:var(--gold)"> این آدرس به‌عنوان آدرس پیش‌فرض تنظیم شود
+        </label>
+        <button class="btn btn-solid btn-block" type="submit">ذخیره آدرس</button>
+      </form>
+    </div>
+  </div>`;
+}
 function accountOrdersTabHtml(prefillId){
   return `
   <div style="margin-bottom:36px">
@@ -5967,26 +6154,39 @@ function pageCheckout(){
   const totalReady = freeShipForTotal || !!(savedProvinceForTotal && savedCityForTotal);
   const total = Math.max(0, subtotal + shipping - discount);
   const totalDisplay = totalReady ? RIAL(total) : 'مقصد ارسال را انتخاب کنید';
+  const acc = STATE.account;
+  const hasAddrBook = !!(acc && STATE.addresses && STATE.addresses.length);
+  const selAddr = hasAddrBook ? getSelectedAddress() : null;
   return `
   <div class="page-head"><span class="eyebrow">CHECKOUT</span><h1 class="serif">تکمیل خرید</h1></div>
   <div class="section"><div class="container">
     <div class="pd-wrap">
       <form id="checkoutForm">
         <h3 class="serif" style="font-size:22px;margin-bottom:20px">اطلاعات ارسال</h3>
+
+        ${hasAddrBook ? `
+        <div id="checkoutAddrSummaryBox" style="border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:20px;background:var(--bg-card)">
+          ${checkoutAddrSummaryInnerHtml(selAddr)}
+        </div>` : ''}
+
+        <div id="checkoutManualFields" style="${hasAddrBook ? 'display:none' : ''}">
+        ${acc ? `<label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);margin-bottom:16px">
+          <input type="checkbox" id="checkoutSaveAddress" style="width:17px;height:17px;accent-color:var(--gold)" checked> این آدرس در حساب کاربری من ذخیره شود
+        </label>` : ''}
         <div class="form-row2">
   <div class="form-field">
     <label>نام</label>
-    <input required id="checkoutFirstName" placeholder="نام">
+    <input ${hasAddrBook?'':'required'} id="checkoutFirstName" placeholder="نام">
   </div>
   <div class="form-field">
     <label>نام خانوادگی</label>
-    <input required id="checkoutLastName" placeholder="نام خانوادگی">
+    <input ${hasAddrBook?'':'required'} id="checkoutLastName" placeholder="نام خانوادگی">
   </div>
 </div>
 
 <div class="form-field">
   <label>شماره تماس</label>
-  <input required id="checkoutPhone" type="tel" placeholder="09xxxxxxxxx">
+  <input ${hasAddrBook?'':'required'} id="checkoutPhone" type="tel" placeholder="09xxxxxxxxx">
 </div>
 
 ${(()=>{
@@ -5996,7 +6196,7 @@ ${(()=>{
   <div class="form-field">
     <label>استان</label>
     <div class="wr-combo" id="checkoutProvinceCombo">
-      <input required id="checkoutProvince" class="wr-combo-input" placeholder="استان را انتخاب یا تایپ کنید..." value="${escapeHtml(savedProvince)}" autocomplete="off">
+      <input ${hasAddrBook?'':'required'} id="checkoutProvince" class="wr-combo-input" placeholder="استان را انتخاب یا تایپ کنید..." value="${escapeHtml(savedProvince)}" autocomplete="off">
       <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
       <div class="wr-combo-list"></div>
     </div>
@@ -6004,7 +6204,7 @@ ${(()=>{
   <div class="form-field">
     <label>شهر</label>
     <div class="wr-combo" id="checkoutCityCombo">
-      <input required id="checkoutCity" class="wr-combo-input" placeholder="شهر را انتخاب یا تایپ کنید..." value="${escapeHtml(savedCity)}" autocomplete="off">
+      <input ${hasAddrBook?'':'required'} id="checkoutCity" class="wr-combo-input" placeholder="شهر را انتخاب یا تایپ کنید..." value="${escapeHtml(savedCity)}" autocomplete="off">
       <svg class="wr-combo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
       <div class="wr-combo-list"></div>
     </div>
@@ -6014,13 +6214,14 @@ ${(()=>{
 
 <div class="form-field">
   <label>آدرس کامل</label>
-  <textarea required id="checkoutAddress" placeholder="خیابان، کوچه، پلاک، واحد..."></textarea>
+  <textarea ${hasAddrBook?'':'required'} id="checkoutAddress" placeholder="خیابان، کوچه، پلاک، واحد..."></textarea>
 </div>
 
 <div class="form-field">
   <label>کد پستی</label>
   <input id="checkoutPostalCode" inputmode="numeric" placeholder="کد پستی">
 </div>
+        </div>
 
 <div class="form-field">
   <label>روش پرداخت</label>
@@ -6063,7 +6264,197 @@ ${(()=>{
         </div>
       </div>
     </div>
-  </div></div>`;
+  </div></div>
+  ${hasAddrBook || acc ? addressPickerSheetHtml() : ''}
+  ${addressModalHtml()}`;
+}
+function checkoutAddrSummaryInnerHtml(a){
+  if(!a){
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--text-dim)">هنوز آدرسی انتخاب نشده</span>
+      <button type="button" id="checkoutChangeAddrBtn" class="btn btn-ghost" style="padding:7px 14px;font-size:12px">انتخاب آدرس</button>
+    </div>`;
+  }
+  return `<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+    <div>
+      <p style="font-size:13px;color:var(--text);font-weight:600">${escapeHtml(a.title || (a.firstName+' '+a.lastName).trim() || 'آدرس ارسال')}</p>
+      <p style="font-size:12px;color:var(--text-faint);margin-top:4px">${escapeHtml((a.firstName+' '+a.lastName).trim())} — ${escapeHtml(a.phone||'')}</p>
+      <p style="font-size:12.5px;color:var(--text-dim);margin-top:6px;line-height:1.8">${escapeHtml(a.province||'')}، ${escapeHtml(a.city||'')} — ${escapeHtml(a.address||'')}${a.postalCode?` — کد پستی: ${escapeHtml(a.postalCode)}`:''}</p>
+    </div>
+    <button type="button" id="checkoutChangeAddrBtn" class="btn btn-ghost" style="padding:7px 14px;font-size:12px;white-space:nowrap">تغییر آدرس</button>
+  </div>`;
+}
+function addressPickerSheetHtml(){
+  const list = STATE.addresses || [];
+  return `
+  <div class="notify-sheet-overlay" id="addrSheetOverlay">
+    <div class="notify-sheet">
+      <div class="notify-sheet-head">
+        <h3>انتخاب آدرس ارسال</h3>
+        <button type="button" class="notify-sheet-close" id="addrSheetClose">✕</button>
+      </div>
+      <div id="addrSheetList" style="display:flex;flex-direction:column;gap:12px;max-height:50vh;overflow-y:auto">
+        ${list.length ? list.map(a=>addressCardHtml(a, {selectable:true})).join('') : `<p style="font-size:13px;color:var(--text-faint);text-align:center">هنوز آدرسی ذخیره نکرده‌اید</p>`}
+      </div>
+      <button type="button" id="addrSheetAddNew" class="btn btn-ghost btn-block" style="margin-top:16px">+ افزودن آدرس جدید</button>
+    </div>
+  </div>`;
+}
+
+// اطلاعات فرم افزودن/ویرایش آدرس را در فیلدهای صفحه‌ی تسویه‌حساب هم می‌ریزد
+// (اگر آن فیلدها در صفحه موجود باشند) تا نیازی به وارد کردن دوباره‌ی اطلاعات نباشد.
+function fillCheckoutFieldsFromAddress(a){
+  if(!a) return;
+  const set = (id, val)=>{ const el = $('#'+id); if(el) el.value = val || ''; };
+  set('checkoutFirstName', a.firstName);
+  set('checkoutLastName', a.lastName);
+  set('checkoutPhone', a.phone);
+  set('checkoutProvince', a.province);
+  set('checkoutCity', a.city);
+  set('checkoutAddress', a.address);
+  set('checkoutPostalCode', a.postalCode);
+  if(a.province) saveShippingProvince(a.province);
+  saveShippingCity(a.city || '');
+}
+function openAddressModal(existing){
+  const overlay = $('#addressModalOverlay');
+  if(!overlay) return;
+  const title = $('#addressModalTitle');
+  if(title) title.textContent = existing ? 'ویرایش آدرس' : 'افزودن آدرس جدید';
+  $('#addrId').value = existing ? existing.id : '';
+  $('#addrTitle').value = existing ? (existing.title||'') : '';
+  $('#addrFirstName').value = existing ? (existing.firstName||'') : '';
+  $('#addrLastName').value = existing ? (existing.lastName||'') : '';
+  $('#addrPhone').value = existing ? (existing.phone||'') : '';
+  $('#addrProvince').value = existing ? (existing.province||'') : '';
+  $('#addrCity').value = existing ? (existing.city||'') : '';
+  $('#addrAddress').value = existing ? (existing.address||'') : '';
+  $('#addrPostalCode').value = existing ? (existing.postalCode||'') : '';
+  $('#addrIsDefault').checked = existing ? !!existing.isDefault : (STATE.addresses.length===0);
+  initWrCombo($('#addrCityCombo'), ()=>{
+    const province = $('#addrProvince') ? $('#addrProvince').value.trim() : '';
+    const cities = iranCitiesFor(province);
+    return cities.length ? cities : iranAllCities();
+  }, ()=>{});
+  initWrCombo($('#addrProvinceCombo'), ()=>iranAllProvinces(), (val, picked)=>{
+    if(picked){ const c = $('#addrCity'); if(c) c.value=''; }
+  });
+  overlay.classList.add('open');
+}
+function closeAddressModal(){
+  const overlay = $('#addressModalOverlay');
+  if(overlay) overlay.classList.remove('open');
+}
+function bindAddressUI(){
+  const acc = STATE.account;
+
+  const addAddressBtn = $('#addAddressBtn');
+  if(addAddressBtn) addAddressBtn.onclick = ()=> openAddressModal(null);
+
+  const addressModalClose = $('#addressModalClose');
+  if(addressModalClose) addressModalClose.onclick = closeAddressModal;
+
+  $$('.addr-edit-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      const a = STATE.addresses.find(x=>x.id===btn.dataset.id);
+      if(a) openAddressModal(a);
+    };
+  });
+  $$('.addr-delete-btn').forEach(btn=>{
+    btn.onclick = async ()=>{
+      if(!acc) return;
+      if(!confirm('آیا از حذف این آدرس مطمئن هستید؟')) return;
+      showLoading();
+      await deleteAddressRemote(acc.id, btn.dataset.id);
+      STATE.addresses = STATE.addresses.filter(a=>a.id!==btn.dataset.id);
+      if(STATE.selectedAddressId===btn.dataset.id) STATE.selectedAddressId = null;
+      hideLoading();
+      showToast('آدرس حذف شد');
+      router();
+    };
+  });
+  $$('.addr-default-btn').forEach(btn=>{
+    btn.onclick = async ()=>{
+      if(!acc) return;
+      showLoading();
+      await setDefaultAddress(acc.id, btn.dataset.id);
+      hideLoading();
+      showToast('آدرس پیش‌فرض تنظیم شد ✓');
+      router();
+    };
+  });
+  $$('.addr-pick-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      STATE.selectedAddressId = btn.dataset.id;
+      if(acc){ try{ localStorage.setItem('wr-selected-address-'+acc.id, btn.dataset.id); }catch(e){} }
+      const selected = STATE.addresses.find(a=>a.id===btn.dataset.id);
+      fillCheckoutFieldsFromAddress(selected);
+      const overlay = $('#addrSheetOverlay');
+      if(overlay) overlay.classList.remove('open');
+      const app = $('#app');
+      if(app && STATE.route==='/checkout'){ app.innerHTML = pageCheckout(); bindPageUI(); }
+    };
+  });
+
+  const addressForm = $('#addressForm');
+  if(addressForm) addressForm.onsubmit = async e=>{
+    e.preventDefault();
+    if(!acc){ showToast('برای ذخیره‌ی آدرس ابتدا وارد حساب کاربری شوید'); return; }
+    const id = $('#addrId').value || uid();
+    const addr = {
+      id,
+      title: $('#addrTitle').value.trim(),
+      firstName: $('#addrFirstName').value.trim(),
+      lastName: $('#addrLastName').value.trim(),
+      phone: $('#addrPhone').value.trim(),
+      province: $('#addrProvince').value.trim(),
+      city: $('#addrCity').value.trim(),
+      address: $('#addrAddress').value.trim(),
+      postalCode: $('#addrPostalCode').value.trim(),
+      isDefault: $('#addrIsDefault').checked,
+      createdAt: new Date().toISOString()
+    };
+    showLoading();
+    if(addr.isDefault) STATE.addresses.forEach(a=> a.isDefault=false);
+    await saveAddressRemote(acc.id, addr);
+    const idx = STATE.addresses.findIndex(a=>a.id===id);
+    if(idx>-1) STATE.addresses[idx] = addr; else STATE.addresses.push(addr);
+    STATE.selectedAddressId = id;
+    try{ localStorage.setItem('wr-selected-address-'+acc.id, id); }catch(err){}
+    hideLoading();
+    closeAddressModal();
+    showToast('آدرس ذخیره شد ✓');
+    if(STATE.route==='/checkout'){
+      fillCheckoutFieldsFromAddress(addr);
+      const app = $('#app');
+      if(app){ app.innerHTML = pageCheckout(); bindPageUI(); }
+    }else{
+      router();
+    }
+  };
+
+  const checkoutChangeAddrBtn = $('#checkoutChangeAddrBtn');
+  if(checkoutChangeAddrBtn) checkoutChangeAddrBtn.onclick = ()=>{
+    const overlay = $('#addrSheetOverlay');
+    if(overlay) overlay.classList.add('open');
+  };
+  const addrSheetClose = $('#addrSheetClose');
+  if(addrSheetClose) addrSheetClose.onclick = ()=>{
+    const overlay = $('#addrSheetOverlay');
+    if(overlay) overlay.classList.remove('open');
+  };
+  const addrSheetAddNew = $('#addrSheetAddNew');
+  if(addrSheetAddNew) addrSheetAddNew.onclick = ()=>{
+    const overlay = $('#addrSheetOverlay');
+    if(overlay) overlay.classList.remove('open');
+    openAddressModal(null);
+  };
+
+  // در بار اول بارگذاری صفحه‌ی تسویه‌حساب، اگر مشتری آدرس ذخیره‌شده دارد،
+  // فیلدهای فرم را از همان آدرس پر می‌کند تا هزینه‌ی ارسال هم درست محاسبه شود.
+  if(STATE.route==='/checkout' && acc && STATE.addresses.length){
+    fillCheckoutFieldsFromAddress(getSelectedAddress());
+  }
 }
 
 function pageOrderConfirmed(orderId){
@@ -6597,6 +6988,8 @@ if (messageInput && messageCounter) {
       const remoteWishlist = await loadWishlistRemote(STATE.account.id);
       STATE.wishlist = remoteWishlist !== null ? remoteWishlist : [];
       STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
+      STATE.addresses = await loadAddressesRemote(STATE.account.id);
+      try{ STATE.selectedAddressId = localStorage.getItem('wr-selected-address-'+STATE.account.id) || null; }catch(e){}
       const notifyRegistered = await finalizePendingStockNotify();
       renderAccountNotifBadge();
       showToast(notifyRegistered ? 'ورود انجام شد و درخواست اطلاع‌رسانی شما ثبت شد ✓' : 'ورود موفقیت‌آمیز بود ✓');
@@ -6647,6 +7040,7 @@ if (messageInput && messageCounter) {
       if(data.session){
         STATE.account = accountFromSupabaseUser(data.user);
         STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
+        STATE.addresses = await loadAddressesRemote(STATE.account.id);
         const notifyRegistered = await finalizePendingStockNotify();
         renderAccountNotifBadge();
         showToast(notifyRegistered ? 'حساب شما ساخته شد و درخواست اطلاع‌رسانی شما ثبت شد ✓' : 'حساب شما ساخته شد ✓');
@@ -6669,10 +7063,14 @@ if (messageInput && messageCounter) {
     STATE.account = null;
     STATE.wishlist = [];
     STATE.accountNotifications = [];
+    STATE.addresses = [];
+    STATE.selectedAddressId = null;
     renderWishlistBadge();
     renderAccountNotifBadge();
     router();
   };
+
+  bindAddressUI();
 
   const trackOrderForm = $('#trackOrderForm');
   if(trackOrderForm){
@@ -6813,6 +7211,22 @@ const customer = {
   paymentMethod: $('#checkoutPaymentMethod').value,
   accountId: STATE.account ? STATE.account.id : null
 };
+
+// اگر مشتری وارد حساب شده و آدرس تازه‌ای وارد کرده (نه از دفترچه‌ی آدرس)،
+// در صورت تیک زدن گزینه‌ی «ذخیره در حساب کاربری» آن را در دفترچه ذخیره می‌کنیم.
+const saveAddrCheckbox = $('#checkoutSaveAddress');
+if(STATE.account && saveAddrCheckbox && saveAddrCheckbox.checked){
+  const newAddr = {
+    id: uid(), title:'', firstName: customer.firstName, lastName: customer.lastName,
+    phone: customer.phone, province: customer.province, city: customer.city,
+    address: customer.address, postalCode: customer.postalCode,
+    isDefault: STATE.addresses.length===0, createdAt: new Date().toISOString()
+  };
+  await saveAddressRemote(STATE.account.id, newAddr);
+  STATE.addresses.push(newAddr);
+  STATE.selectedAddressId = newAddr.id;
+  try{ localStorage.setItem('wr-selected-address-'+STATE.account.id, newAddr.id); }catch(e){}
+}
 
 const subtotal = cartSubtotal();
 const shipping = computeShipping(subtotal, customer.province, customer.city);
@@ -7324,6 +7738,7 @@ async function renderAdmin(path){
   }
 
   if(path==='/admin/orders') adminSection='orders';
+  else if(path==='/admin/stats') adminSection='stats';
   else if(path==='/admin/products' || path.startsWith('/admin/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); }
   else if(path==='/admin/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; }
   else if(path==='/admin/product-reviews'){ adminSection='comments'; adminCommentsTab='productReviews'; adminReviewStatusFilter='pending'; }
@@ -7478,6 +7893,7 @@ function adminShell(){
     <div class="admin-shell">
       <div class="admin-side">
         <a href="#/admin" data-link class="${adminSection==='dashboard'?'active':''}">داشبورد</a>
+        <a href="#/admin/stats" data-link class="${adminSection==='stats'?'active':''}">آمار و گزارش‌ها</a>
         <a href="#/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
         <a href="#/admin/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
         <a href="#/admin/comments" data-link class="${adminSection==='comments'?'active':''}">نظرات${(STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length) ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
@@ -7489,7 +7905,7 @@ function adminShell(){
         <a href="#/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminOrders()}
       </div>
     </div>
   </div>
@@ -7594,6 +8010,142 @@ function adminShell(){
         <button class="btn btn-solid btn-block" type="submit">ذخیره محصول</button>
       </form>
     </div>
+  </div>`;
+}
+
+async function loadGA4Stats(){
+  const box = document.getElementById('gaStatsBox');
+  if(!box) return;
+  if(!supabaseClient){
+    box.innerHTML = `<div class="stat-card" style="grid-column:1/-1"><div class="lbl">اتصال Supabase برقرار نیست</div></div>`;
+    return;
+  }
+  try{
+    const {data, error} = await supabaseClient.functions.invoke('ga-stats');
+    if(error) throw error;
+    if(data && data.error) throw new Error(data.error);
+
+    const totalsRows = (data.totals && data.totals.rows) || [];
+    const t = totalsRows[0] ? totalsRows[0].metricValues.map(m=>Number(m.value)) : [0,0,0,0];
+    const [activeUsers, pageViews, sessions, newUsers] = t;
+
+    box.innerHTML = `
+      <div class="stat-card"><div class="num">${activeUsers.toLocaleString('fa-IR')}</div><div class="lbl">بازدیدکننده (۳۰ روز اخیر)</div></div>
+      <div class="stat-card"><div class="num">${sessions.toLocaleString('fa-IR')}</div><div class="lbl">تعداد نشست‌ها (Sessions)</div></div>
+      <div class="stat-card"><div class="num">${pageViews.toLocaleString('fa-IR')}</div><div class="lbl">بازدید صفحات (Page Views)</div></div>
+      <div class="stat-card"><div class="num">${newUsers.toLocaleString('fa-IR')}</div><div class="lbl">کاربران جدید</div></div>`;
+  }catch(err){
+    console.error('[loadGA4Stats]', err);
+    box.innerHTML = `<div class="stat-card" style="grid-column:1/-1">
+      <div class="lbl">دریافت آمار گوگل ناموفق بود — مطمئن شوید Edge Function «ga-stats» را دیپلوی و Secretها را تنظیم کرده‌اید.</div>
+      <div class="lbl" style="margin-top:6px;color:var(--text-faint)">${escapeHtml(err.message||String(err))}</div>
+    </div>`;
+  }
+}
+
+function adminStats(){
+  const orders = STATE.orders || [];
+  const totalOrders = orders.length;
+  const totalRevenue = orders.reduce((s,o)=>s+(o.total||0),0);
+  const avgOrder = totalOrders ? Math.round(totalRevenue/totalOrders) : 0;
+
+  const phones = new Set();
+  orders.forEach(o=>{
+    const phone = (o.customer && typeof o.customer==='object') ? o.customer.phone : null;
+    if(phone) phones.add(phone);
+  });
+
+  const newsletterCount = (STATE.newsletterSubscribers||[]).length;
+  const unreadMessages = (STATE.messages||[]).filter(m=>!m.is_read).length;
+  const pendingReviews = (STATE.reviews||[]).filter(r=>r.status==='pending').length;
+  const approvedReviews = (STATE.reviews||[]).filter(r=>r.status==='approved').length;
+  const lowStock = STATE.products.filter(p=>p.stock<=3).length;
+  const outOfStock = STATE.products.filter(p=>p.stock<=0).length;
+
+  // last 7 days breakdown
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate()-i);
+    days.push(d);
+  }
+  const dayStats = days.map(d=>{
+    const next = new Date(d); next.setDate(next.getDate()+1);
+    const dayOrders = orders.filter(o=>{
+      const t = new Date(o.createdAt||0).getTime();
+      return t >= d.getTime() && t < next.getTime();
+    });
+    return {
+      date: d,
+      count: dayOrders.length,
+      revenue: dayOrders.reduce((s,o)=>s+(o.total||0),0)
+    };
+  });
+  const maxDayRevenue = Math.max(1, ...dayStats.map(d=>d.revenue));
+
+  // top selling products
+  const soldMap = {};
+  orders.forEach(o=>{
+    (o.items||[]).forEach(it=>{
+      const key = it.productId || it.name;
+      if(!soldMap[key]) soldMap[key] = {name: it.name, qty:0, revenue:0};
+      soldMap[key].qty += (it.qty||0);
+      soldMap[key].revenue += (it.qty||0) * (it.price||0);
+    });
+  });
+  const topProducts = Object.values(soldMap).sort((a,b)=>b.qty-a.qty).slice(0,5);
+
+  return `
+  <h2 class="admin-title">آمار و گزارش‌ها</h2>
+
+  <div class="stat-card" style="margin-bottom:24px;background:linear-gradient(135deg,var(--bg-card),transparent)">
+    <div style="font-size:13.5px;color:var(--text-dim);line-height:1.9">
+      📊 بخش پایین آمار <b>فروش و فعالیت داخلی سایت</b> است. آمار بازدیدکننده از Google Analytics هم پایین همین باکس، به‌صورت خودکار لود می‌شود.
+    </div>
+  </div>
+
+  <h3 style="font-size:15px;margin:0 0 14px;color:var(--text-dim)">بازدیدکنندگان سایت (Google Analytics — ۷ روز اخیر)</h3>
+  <div id="gaStatsBox" class="admin-grid" style="margin-bottom:28px">
+    <div class="stat-card"><div class="num">…</div><div class="lbl">در حال دریافت آمار از گوگل</div></div>
+  </div>
+
+  <div class="admin-grid">
+    <div class="stat-card"><div class="num">${RIAL(totalRevenue)}</div><div class="lbl">مجموع فروش (کل دوره)</div></div>
+    <div class="stat-card"><div class="num">${totalOrders}</div><div class="lbl">تعداد سفارش‌ها</div></div>
+    <div class="stat-card"><div class="num">${RIAL(avgOrder)}</div><div class="lbl">میانگین ارزش هر سفارش</div></div>
+    <div class="stat-card"><div class="num">${phones.size}</div><div class="lbl">مشتریان یکتا (بر اساس شماره تماس)</div></div>
+    <div class="stat-card"><div class="num">${newsletterCount}</div><div class="lbl">مشترکین خبرنامه</div></div>
+    <div class="stat-card"><div class="num">${STATE.products.length}</div><div class="lbl">تعداد محصولات</div></div>
+    <a href="#/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام (≤۳ عدد)</div></a>
+    <div class="stat-card"><div class="num">${outOfStock}</div><div class="lbl">محصولات ناموجود</div></div>
+    <a href="#/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${unreadMessages}</div><div class="lbl">پیام‌های خوانده‌نشده</div></a>
+    <a href="#/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${pendingReviews}</div><div class="lbl">نظرات در انتظار تایید</div></a>
+    <div class="stat-card"><div class="num">${approvedReviews}</div><div class="lbl">نظرات تاییدشده</div></div>
+  </div>
+
+  <h3 style="font-size:15px;margin:28px 0 14px;color:var(--text-dim)">فروش ۷ روز اخیر</h3>
+  <div style="display:flex;gap:6px;align-items:end;height:140px;padding:0 4px 8px;border-bottom:1px solid var(--line)">
+    ${dayStats.map(d=>`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:6px;height:100%">
+        <span style="font-size:10.5px;color:var(--text-faint)">${d.count?RIAL(d.revenue):''}</span>
+        <div style="width:100%;max-width:34px;background:var(--gold);border-radius:5px 5px 0 0;height:${Math.max(3,(d.revenue/maxDayRevenue)*90)}px;opacity:${d.count?1:.25}"></div>
+        <span style="font-size:10.5px;color:var(--text-dim)">${d.date.toLocaleDateString('fa-IR',{weekday:'short'})}</span>
+      </div>`).join('')}
+  </div>
+
+  <h3 style="font-size:15px;margin:28px 0 14px;color:var(--text-dim)">پرفروش‌ترین محصولات</h3>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>محصول</th><th>تعداد فروش</th><th>مجموع فروش</th></tr></thead>
+      <tbody>
+        ${topProducts.map(p=>`<tr>
+          <td>${escapeHtml(p.name||'-')}</td>
+          <td>${p.qty.toLocaleString('fa-IR')}</td>
+          <td>${RIAL(p.revenue)}</td>
+        </tr>`).join('') || `<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز فروشی ثبت نشده است</td></tr>`}
+      </tbody>
+    </table>
   </div>`;
 }
 
@@ -8816,6 +9368,12 @@ function adminSettings(){
           <span class="toggle-slider"></span>
         </label>
       </div>`).join('')}
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 0 4px">
+      <label style="font-size:13px;color:var(--text-dim)">جای‌گاه ردیف ویژگی‌ها (ضمانت کالا، ارسال رایگان، ضمانت بازگشت، پشتیبانی)</label>
+      <select id="featuresPositionSelect" style="min-width:260px">
+        ${CUSTOM_SECTION_SLOTS.map(s=>`<option value="${s.value}" ${((STATE.settings.featuresPosition||'after_icons_top')===s.value)?'selected':''}>${s.label}</option>`).join('')}
+      </select>
+    </div>
   </div>
 
   <div class="settings-card">
@@ -9442,6 +10000,7 @@ function bindAdminShell(){
   }
 
   if(adminSection==='stockNotify') bindAdminStockNotify();
+  if(adminSection==='stats') loadGA4Stats();
 
   const addBtn = $('#addProductBtn');
   if(addBtn) addBtn.onclick = ()=> openProductModal(null);
@@ -10518,6 +11077,14 @@ function bindAdminSettingsUI(){
       showToast('ذخیره شد ✓');
     };
   });
+
+  const featuresPositionSelect = $('#featuresPositionSelect');
+  if(featuresPositionSelect) featuresPositionSelect.onchange = async ()=>{
+    const newSettings = {...STATE.settings, featuresPosition: featuresPositionSelect.value};
+    STATE.settings = newSettings;
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('جای‌گاه ذخیره شد ✓');
+  };
 
   const saveLogoBtn = $('#saveLogoBtn');
   if(saveLogoBtn) saveLogoBtn.onclick = async ()=>{
