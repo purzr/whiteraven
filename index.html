@@ -207,7 +207,6 @@ body{
   font-size:calc(16px * var(--scale-body));
   line-height:1.7;
   -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
   position:relative;
 }
 body::before{
@@ -6952,18 +6951,6 @@ function initBannerSlider(){
     startAutoplay();
   });
 
-  // mouse wheel: horizontal or vertical scroll moves to next/prev slide
-  let wheelLock = false;
-  slider.addEventListener('wheel', e=>{
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if(Math.abs(delta) < 12) return;
-    e.preventDefault();
-    if(wheelLock) return;
-    wheelLock = true;
-    goTo(delta > 0 ? idx+1 : idx-1);
-    startAutoplay();
-    setTimeout(()=> wheelLock = false, 500);
-  }, {passive:false});
 }
 
 /* ---------------- free-drag horizontal scroll for product rows ---------------- */
