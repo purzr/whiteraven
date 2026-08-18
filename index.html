@@ -302,6 +302,7 @@ header.site{
 .logo{display:flex;align-items:center;gap:10px;min-width:0;justify-self:center;grid-column:2}
 .logo img.logo-img{height:var(--logo-h);width:auto;max-width:180px;object-fit:contain}
 .logo .wordmark{font-family:var(--font-header);font-size:calc(18px * var(--scale-header));letter-spacing:.18em;font-weight:600;white-space:nowrap;text-align:center}
+.logo .wordmark.no-subtitle{display:flex;align-items:center;height:100%}
 .logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(8px * var(--scale-header));letter-spacing:.28em;color:var(--text-faint);margin-top:2px;white-space:nowrap;text-align:center}
 .header-right{display:flex;align-items:center;gap:16px;grid-column:1;justify-self:start;min-width:0}
 nav.main-nav{display:flex;gap:18px;min-width:0;align-items:center}
@@ -383,6 +384,46 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
   .header-search-mobile{display:flex}
   #themeToggleBtn{display:none}
   .header-theme-mobile{display:flex}
+  #cartOpenBtn{display:none}
+  body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+}
+
+/* ===== Header scrolled state (mobile only): shows a long search bar + theme + menu ===== */
+.header-scroll-row{display:none;align-items:center;gap:10px;padding:10px 16px}
+.header-scroll-searchbar{
+  flex:1;display:flex;align-items:center;gap:10px;
+  background:var(--bg-alt);border:1px solid var(--line);border-radius:999px;
+  padding:12px 18px;color:var(--text-faint);cursor:pointer;min-width:0;
+}
+.hss-label{font-family:var(--font-header);font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
+.hss-white,.hss-black{border-radius:999px;padding:3px 10px;font-weight:800;letter-spacing:.01em;line-height:1.5}
+.hss-white{background:#0a0a0a;color:#fff}
+.hss-black{background:#fff;color:#0a0a0a;border:1px solid rgba(0,0,0,.1)}
+@media(max-width:900px){
+  header.site.scrolled .header-row{display:none}
+  header.site.scrolled .header-scroll-row{display:flex}
+}
+
+/* ===== Mobile bottom nav ===== */
+.mobile-bottom-nav{
+  display:none;
+  position:fixed;left:0;right:0;bottom:0;z-index:80;
+  background:var(--bg);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  box-shadow:0 -2px 14px rgba(var(--shadow-color),.08);
+}
+.mobile-bottom-nav-row{display:flex;align-items:stretch;justify-content:space-around}
+.mbn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:9px 4px 8px;color:var(--text-faint);position:relative;
+  background:none;border:none;font:inherit;cursor:pointer;
+}
+.mbn-item svg{width:21px;height:21px}
+.mbn-item span{font-family:var(--font-body);font-size:10px;letter-spacing:.01em}
+.mbn-item.active{color:var(--gold-light)}
+.mbn-item .cart-badge{position:absolute;top:4px;left:calc(50% + 6px)}
+@media(max-width:900px){
+  .mobile-bottom-nav{display:block}
 }
 @media(max-width:480px){
   .header-row{min-height:52px}
@@ -1242,20 +1283,22 @@ footer.site{font-family:var(--font-footer)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ===== Admin ===== */
-.admin-wrap{min-height:100vh;background:var(--bg)}
-.admin-bar{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--line);background:var(--bg-alt)}
 .admin-shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 73px)}
-@media(max-width:800px){.admin-shell{grid-template-columns:1fr}}
+@media(max-width:800px){.admin-shell{display:flex;flex-direction:column;width:100%;max-width:100vw}}
 .admin-side{border-left:1px solid var(--line);padding:26px 0}
-@media(max-width:800px){.admin-side{border-left:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:10px 16px}}
+@media(max-width:800px){.admin-side{border-left:none;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;overflow-y:hidden;padding:10px 16px;width:100%;max-width:100vw;box-sizing:border-box;flex:none}}
 .admin-side a{display:block;padding:13px 26px;font-size:13.5px;color:var(--text-dim);border-right:2px solid transparent}
-@media(max-width:800px){.admin-side a{white-space:nowrap;border-right:none;border-bottom:2px solid transparent}}
+@media(max-width:800px){.admin-side a{white-space:nowrap;border-right:none;border-bottom:2px solid transparent;flex:none}}
 .admin-side a.active{color:var(--gold-light);border-color:var(--gold);background:rgba(185,151,94,.06)}
-.admin-main{padding:32px}
+.admin-main{padding:32px;min-width:0;max-width:100%;box-sizing:border-box;overflow-x:hidden}
+@media(max-width:800px){.admin-main{padding:20px 16px;width:100%}}
+.admin-wrap{min-height:100vh;background:var(--bg);max-width:100vw;overflow-x:hidden}
+.admin-bar{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--line);background:var(--bg-alt);flex-wrap:wrap;gap:10px;box-sizing:border-box}
+@media(max-width:800px){.admin-bar{padding:14px 16px}}
 .admin-title{font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:24px}
 .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
 @media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,1fr)}}
-.stat-card{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.stat-card{background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px;min-width:0;box-sizing:border-box}
 .admin-card{background:var(--bg-card);border:1px solid var(--line);border-radius:12px}
 .stat-card .num{font-size:26px;color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-weight:600}
 .stat-card .lbl{font-size:12px;color:var(--text-faint);margin-top:4px}
@@ -1281,7 +1324,13 @@ footer.site{font-family:var(--font-footer)}
 .acc-menu-item-danger .acc-menu-icon{color:var(--danger)}
 .acc-menu-item-danger:hover{border-color:var(--danger)}
 .my-orders-list{display:flex;flex-direction:column;gap:12px}
-.my-order-card{background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.my-order-card{background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:border-color .2s}
+.my-order-card:hover{border-color:var(--gold-dim)}
+.my-order-main{flex:1;min-width:0}
+.my-order-thumbs{display:flex;gap:6px;flex:none}
+.my-order-thumb{width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--bg-alt);border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center}
+.my-order-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.my-order-thumb-more{font-size:12px;color:var(--text-dim);font-weight:600}
 .my-order-top{display:flex;justify-content:space-between;align-items:flex-start}
 table.admin-table{width:100%;border-collapse:collapse;font-size:13.5px}
 table.admin-table th{text-align:right;color:var(--text-faint);font-weight:500;font-size:11.5px;letter-spacing:.05em;padding:12px;border-bottom:1px solid var(--line)}
@@ -1428,10 +1477,9 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
 
 /* ===== Global loading overlay (shown during any network / async action) ===== */
 .gl-overlay{
-  position:fixed;inset:0;z-index:9999;
+  position:fixed;inset:0;z-index:50;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(var(--bg-rgb),.45);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  background:var(--bg);
   opacity:0;pointer-events:none;transition:opacity .2s ease;
 }
 .gl-overlay.show{opacity:1;pointer-events:auto}
@@ -1543,6 +1591,22 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
     </nav>
   </div>
 
+  <!-- ردیف کامپکت هدر — فقط در موبایل و هنگام اسکرول به پایین نمایش داده می‌شود -->
+  <div class="header-scroll-row" id="headerScrollRow">
+    <button type="button" class="header-scroll-searchbar" id="headerScrollSearchBar">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="flex:none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="hss-label">جستجو در <b class="hss-white">کلاغ</b><b class="hss-black">سفید</b></span>
+    </button>
+    <button class="icon-btn theme-toggle" id="themeToggleBtnScroll" title="تغییر تم سایت">
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="icon-classic" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+    </button>
+    <button class="icon-btn hamburger" id="hamburgerBtnScroll">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+
   <!-- search overlay -->
   <div id="searchOverlay" style="display:none;border-top:1px solid var(--line);background:var(--bg-alt)">
     <div class="container" style="padding:22px 32px;display:flex;gap:14px;align-items:center">
@@ -1579,9 +1643,33 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
     <a href="/magazine" data-link data-route="/magazine">مجله</a>
     <a href="/about" data-link data-route="/about">درباره ما</a>
     <a href="/contact" data-link data-route="/contact">تماس با ما</a>
-    <a href="/account/track-order" data-link data-route="/account/track-order">پیگیری سفارش</a>
+    <a href="/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
   </div>
 </div>
+
+<!-- ============ MOBILE BOTTOM NAV (only under 900px) ============ -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <div class="mobile-bottom-nav-row">
+    <a href="/" data-link data-route="/" class="mbn-item" id="mbnHome">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      <span>خانه</span>
+    </a>
+    <button type="button" class="mbn-item" id="mbnCategories">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span>دسته‌بندی</span>
+    </button>
+    <button type="button" class="mbn-item" id="mbnCart">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8.5 8.5V7C8.5 4.51 10.01 2.5 12 2.5C13.99 2.5 15.5 4.51 15.5 7V8.5"/><path d="M5 8.5H19L19.8 20.2C19.9 21.2 19.1 22 18.1 22H5.9C4.9 22 4.1 21.2 4.2 20.2L5 8.5Z"/></svg>
+      <span class="cart-badge hidden" id="cartBadgeMobileNav">0</span>
+      <span>سبد خرید</span>
+    </button>
+    <a href="/account" data-link data-route="/account" class="mbn-item" id="mbnAccount">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <span class="cart-badge notif-badge hidden" id="accountNotifBadgeMobileNav">0</span>
+      <span>حساب کاربری</span>
+    </a>
+  </div>
+</nav>
 
 <main id="app"></main>
 
@@ -1610,6 +1698,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
       <div class="foot-col">
         <h5>خدمات مشتریان</h5>
         <a href="/faq" data-link>پرسش‌های متداول</a>
+        <a href="/track-order" data-link>پیگیری سفارش</a>
         <a href="/terms" data-link>شرایط و قوانین</a>
         <a href="/privacy" data-link>حریم خصوصی</a>
         <a href="/return-policy" data-link>رویه بازگشت کالا</a>
@@ -2637,6 +2726,35 @@ async function updateOrderStatusRemote(id, status){
   }
 }
 
+// برگرداندن موجودی محصولات یک سفارش لغوشده — دقیقاً معکوس همان منطقی که هنگام
+// ثبت سفارش موجودی را کم می‌کند (سایز و رنگ مشخص هر قلم هم برمی‌گردد).
+async function restoreStockForOrder(order){
+  for(const ci of (order.items||[])){
+    const p = findProduct(ci.productId);
+    if(!p) continue;
+    p.stock = (Number(p.stock)||0) + (Number(ci.qty)||0);
+    let sizesChanged = false;
+    if(p.sizes && p.sizes.length && ci.size){
+      p.sizes = p.sizes.map(s=>{
+        const norm = normSizeObj(s);
+        if(norm.size!==ci.size) return s;
+        if(sizeHasColors(norm) && ci.color){
+          const key = colorKeyOf(ci.color);
+          const newColors = norm.colors.map(c=> colorKeyOf(c)===key ? {...c, qty:(Number(c.qty)||0) + (Number(ci.qty)||0)} : c);
+          sizesChanged = true;
+          return {...norm, colors:newColors, qty: sizeAvailQty({...norm, colors:newColors})};
+        }
+        if(norm.qty!=null){
+          sizesChanged = true;
+          return {...norm, qty:(Number(norm.qty)||0) + (Number(ci.qty)||0)};
+        }
+        return s;
+      });
+    }
+    await updateProductStockRemote(p.id, p.stock, sizesChanged ? p.sizes : undefined);
+  }
+}
+
 /* ---------------- appearance settings (logo / fonts / sizes / buy link) ----------------
    Editable from admin ▸ تنظیمات ظاهری. Stored shared so the change applies to every
    visitor (same shared-storage mechanism as products/orders — see loadSettings below). */
@@ -2745,6 +2863,7 @@ function defaultSettings(){
     logoDark:'',
     logoClassic:'',
     logoSubtitle:"WOMEN'S WEAR",
+    showLogoSubtitle:true,
     heroImageDark:'',
     heroImageClassic:'',
     heroImageDarkMobile:'',
@@ -2835,6 +2954,7 @@ function rowToSettings(row){
     logoDark: data.logoDark ?? data.logo ?? d.logoDark,
     logoClassic: data.logoClassic ?? d.logoClassic,
     logoSubtitle: data.logoSubtitle ?? d.logoSubtitle,
+    showLogoSubtitle: data.showLogoSubtitle ?? d.showLogoSubtitle,
     heroImageDark: data.heroImageDark ?? data.heroImage ?? d.heroImageDark,
     heroImageClassic: data.heroImageClassic ?? d.heroImageClassic,
     heroImageDarkMobile: data.heroImageDarkMobile ?? d.heroImageDarkMobile,
@@ -3182,7 +3302,15 @@ function applySettingsToDOM(settings){
     }
   }
   const subtitleEl = $('#logoSubtitleText');
+  const wordmarkEl = document.querySelector('.logo .wordmark');
   if(subtitleEl) subtitleEl.textContent = settings.logoSubtitle ?? "WOMEN'S WEAR";
+  if(settings.showLogoSubtitle === false){
+    if(subtitleEl) subtitleEl.style.display = 'none';
+    if(wordmarkEl) wordmarkEl.classList.add('no-subtitle');
+  } else {
+    if(subtitleEl) subtitleEl.style.display = '';
+    if(wordmarkEl) wordmarkEl.classList.remove('no-subtitle');
+  }
   const logoSrc = getLogoForTheme(settings);
   const slot = $('#siteLogoSlot');
   if(slot){
@@ -3759,9 +3887,11 @@ function router(preserveScroll){
   $('#storefront').classList.remove('hidden');
   $('#adminApp').classList.add('hidden');
 
-  $$('#mainNav a, #mobileNav a').forEach(a=>{
+  $$('#mainNav a, #mobileNav a, #mobileBottomNav a').forEach(a=>{
     a.classList.toggle('active', a.dataset.route === path || (path.startsWith('/shop') && a.dataset.route===path));
   });
+  const mbnCatBtn = $('#mbnCategories');
+  if(mbnCatBtn) mbnCatBtn.classList.toggle('active', path.startsWith('/shop') || path.startsWith('/product/'));
 
   const accLabel = $('#headerAccountLabel');
   if(accLabel) accLabel.textContent = STATE.account ? 'حساب کاربری' : 'ورود | ثبت‌نام';
@@ -3785,14 +3915,16 @@ function router(preserveScroll){
   else if(path==='/account') app.innerHTML = pageAccount('profile');
   else if(path==='/account/wishlist') app.innerHTML = pageAccount('wishlist');
   else if(path==='/account/addresses') app.innerHTML = pageAccount('addresses');
-  else if(path.startsWith('/account/track-order')) app.innerHTML = pageAccount('orders', path.split('/account/track-order/')[1]);
+  else if(path==='/account/orders') app.innerHTML = pageAccount('orders');
+  else if(path.startsWith('/account/track-order')) app.innerHTML = pageTrackOrder(decodeURIComponent(path.split('/account/track-order/')[1]||''));
   else if(path==='/account/reviews') app.innerHTML = pageAccount('reviews');
   else if(path==='/account/messages') app.innerHTML = pageAccount('messages');
   else if(path==='/account/notifications') app.innerHTML = pageAccount('notifications');
+  else if(path.startsWith('/account/order/')) app.innerHTML = pageOrderDetail(decodeURIComponent(path.split('/account/order/')[1]));
   else if(path==='/checkout') app.innerHTML = pageCheckout();
   else if(path.startsWith('/order-confirmed/')) app.innerHTML = pageOrderConfirmed(path.split('/order-confirmed/')[1]);
   else if(path==='/wishlist') app.innerHTML = pageAccount('wishlist'); // قدیمی — به تب علاقه‌مندی‌ها در حساب کاربری هدایت می‌شود
-  else if(path.startsWith('/track-order')) app.innerHTML = pageAccount('orders', path.split('/track-order/')[1]); // قدیمی — به تب پیگیری سفارش در حساب کاربری هدایت می‌شود
+  else if(path.startsWith('/track-order')) app.innerHTML = pageTrackOrder(decodeURIComponent(path.split('/track-order/')[1]||''));
   else app.innerHTML = page404();
 
   if(!preserveScroll) window.scrollTo({top:0,left:0,behavior:'smooth'});
@@ -3817,7 +3949,41 @@ function bindGlobalUI(){
   if(themeBtn) themeBtn.onclick = toggleTheme;
   const themeBtnMobile = $('#themeToggleBtnMobile');
   if(themeBtnMobile) themeBtnMobile.onclick = toggleTheme;
+  const themeBtnScroll = $('#themeToggleBtnScroll');
+  if(themeBtnScroll) themeBtnScroll.onclick = toggleTheme;
   $('#hamburgerBtn').onclick = ()=>{ $('#mobileNav').classList.add('open'); $('#mobileOverlay').classList.add('open'); };
+  const hamburgerBtnScroll = $('#hamburgerBtnScroll');
+  if(hamburgerBtnScroll) hamburgerBtnScroll.onclick = ()=>{ $('#mobileNav').classList.add('open'); $('#mobileOverlay').classList.add('open'); };
+  const headerScrollSearchBar = $('#headerScrollSearchBar');
+  if(headerScrollSearchBar) headerScrollSearchBar.onclick = ()=>{ $('#searchOverlay').style.display='block'; $('#searchInput').focus(); };
+
+  // حالت کامپکت هدر هنگام اسکرول در موبایل: سرچ‌بار بلند + تم + منو
+  (function(){
+    const headerEl = document.querySelector('header.site');
+    if(!headerEl) return;
+    let ticking = false;
+    function updateScrollState(){
+      const isMobile = window.innerWidth <= 900;
+      const scrolled = isMobile && window.scrollY > 60;
+      headerEl.classList.toggle('scrolled', scrolled);
+      ticking = false;
+    }
+    window.addEventListener('scroll', ()=>{
+      if(!ticking){ requestAnimationFrame(updateScrollState); ticking = true; }
+    }, {passive:true});
+    window.addEventListener('resize', updateScrollState);
+    updateScrollState();
+  })();
+
+  const mbnCategories = $('#mbnCategories');
+  if(mbnCategories) mbnCategories.onclick = ()=>{
+    $('#mobileNav').classList.add('open');
+    $('#mobileOverlay').classList.add('open');
+    const drop = $('#mobileProductsDrop');
+    if(drop) drop.classList.add('open');
+  };
+  const mbnCart = $('#mbnCart');
+  if(mbnCart) mbnCart.onclick = openCart;
   $('#mobileCloseBtn').onclick = closeMobile;
 
   // Products mega-menu: hover works via CSS; this adds click/tap support
@@ -5783,9 +5949,9 @@ function accountMenuHtml(){
       <span class="acc-menu-text"><strong>آدرس‌های من</strong><small>آدرس‌های ذخیره‌شده برای ارسال سفارش</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
-    <a href="/account/track-order" data-link class="acc-menu-item">
+    <a href="/account/orders" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
-      <span class="acc-menu-text"><strong>پیگیری سفارش</strong><small>وضعیت سفارش‌های خود را ببینید</small></span>
+      <span class="acc-menu-text"><strong>سفارش‌های من</strong><small>وضعیت و جزئیات سفارش‌های خود را ببینید</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
     <a href="/account/reviews" data-link class="acc-menu-item">
@@ -5848,12 +6014,12 @@ function pageAccount(tab, trackOrderPrefillId){
     ${addressModalHtml()}`;
   }
   if(tab==='orders'){
-    if(!acc) return accountRequireLoginPage('پیگیری سفارش');
+    if(!acc) return accountRequireLoginPage('سفارش‌های من');
     return `
-    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">پیگیری سفارش</h1></div>
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">سفارش‌های من</h1></div>
     <div class="section"><div class="container narrow">
       ${accountBackLink()}
-      <div style="margin-top:18px">${accountOrdersTabHtml(trackOrderPrefillId)}</div>
+      <div style="margin-top:18px">${accountOrdersTabHtml()}</div>
     </div></div>`;
   }
   if(tab==='reviews'){
@@ -6135,72 +6301,53 @@ function addressModalHtml(){
     </div>
   </div>`;
 }
-function accountOrdersTabHtml(prefillId){
+function accountOrdersTabHtml(){
   return `
-  <div style="margin-bottom:36px">
+  <div>
     <h3 class="serif" style="font-size:18px;margin-bottom:14px">سفارش‌های من</h3>
     <div id="myOrdersList"><p style="color:var(--text-faint);font-size:13px">در حال بارگذاری سفارش‌ها...</p></div>
-  </div>
-  <div style="border-top:1px solid var(--line);padding-top:24px">
-    <h3 class="serif" style="font-size:16px;margin-bottom:14px">پیگیری با شماره سفارش</h3>
-    <p style="font-size:12px;color:var(--text-faint);margin-bottom:14px">برای سفارش‌هایی که پیش از ساخت حساب کاربری ثبت کرده‌اید.</p>
-    <form id="trackOrderForm">
-      <div class="form-field"><label>شماره سفارش</label><input required id="trackOrderId" placeholder="مثلاً id_xxxxxxx" value="${escapeHtml(prefillId||'')}"></div>
-      <div class="form-field"><label>شماره تماسی که هنگام ثبت سفارش وارد کردید</label><input required id="trackOrderPhone" type="tel" placeholder="09xxxxxxxxx"></div>
-      <button class="btn btn-solid btn-block" type="submit">پیگیری سفارش</button>
-    </form>
-    <div id="trackOrderResult" style="margin-top:32px"></div>
   </div>`;
 }
+const CANCELABLE_ORDER_STATUSES = ['در حال بررسی','در حال پردازش','آماده‌سازی و بسته‌بندی'];
 function myOrderCardHtml(order){
   const dt = new Date(order.createdAt);
   const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
   const statusColor = order.status==='لغو شده' ? 'var(--danger)' : order.status==='تحویل داده شده' ? 'var(--ok)' : 'var(--gold-light)';
+  const items = order.items||[];
+  const visibleThumbs = items.slice(0,3);
+  const extraCount = items.length - visibleThumbs.length;
+  const thumbsHtml = visibleThumbs.map(it=>{
+    const img = it.image || findProduct(it.productId)?.image || '';
+    return `<div class="my-order-thumb">${img ? `<img loading="lazy" decoding="async" src="${img}" alt="${escapeHtml(it.name)}">` : ''}</div>`;
+  }).join('') + (extraCount>0 ? `<div class="my-order-thumb my-order-thumb-more">+${extraCount}</div>` : '');
   return `
-  <div class="my-order-card" data-order-id="${escapeHtml(order.id)}">
-    <div class="my-order-top">
-      <div>
-        <p style="font-size:11.5px;color:var(--text-faint)">شماره سفارش</p>
-        <p style="color:var(--gold-light);font-size:13px">${escapeHtml(order.id)}</p>
+  <a href="/account/order/${escapeHtml(order.id)}" data-link class="my-order-card">
+    <div class="my-order-thumbs">${thumbsHtml}</div>
+    <div class="my-order-main">
+      <div class="my-order-top">
+        <div>
+          <p style="font-size:11px;color:var(--text-faint)">شماره سفارش</p>
+          <p style="color:var(--gold-light);font-size:12.5px">${escapeHtml(order.id)}</p>
+        </div>
+        <div style="text-align:left">
+          <p style="font-size:11px;color:var(--text-faint)">${dateStr}</p>
+          <p style="font-size:12px;color:${statusColor}">${escapeHtml(order.status||'')}</p>
+        </div>
       </div>
-      <div style="text-align:left">
-        <p style="font-size:11.5px;color:var(--text-faint)">${dateStr}</p>
-        <p style="font-size:12.5px;color:${statusColor}">${escapeHtml(order.status||'')}</p>
-      </div>
+      <div style="margin-top:8px;font-size:13px">${RIAL(order.total)}</div>
     </div>
-    <div style="font-size:12.5px;color:var(--text-dim);margin:10px 0">
-      ${(order.items||[]).slice(0,3).map(it=>escapeHtml(it.name)).join('، ')}${(order.items||[]).length>3?' و ...':''}
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:13px">${RIAL(order.total)}</span>
-      <button type="button" class="btn btn-ghost my-order-detail-btn" style="padding:6px 14px;font-size:11.5px">جزئیات سفارش</button>
-    </div>
-    <div class="my-order-detail" style="display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)"></div>
-  </div>`;
+  </a>`;
 }
 async function initMyOrdersList(){
   const box = $('#myOrdersList');
   if(!box) return;
-  const orders = await loadMyOrders();
+  const allOrders = await loadMyOrders();
+  const orders = allOrders.filter(o=>o.status!=='لغو شده');
   if(!orders.length){
     box.innerHTML = `<p style="color:var(--text-faint);font-size:13px">هنوز سفارشی با این حساب ثبت نکرده‌اید.</p>`;
     return;
   }
   box.innerHTML = `<div class="my-orders-list">${orders.map(myOrderCardHtml).join('')}</div>`;
-  box.querySelectorAll('.my-order-card').forEach(card=>{
-    const btn = card.querySelector('.my-order-detail-btn');
-    const detail = card.querySelector('.my-order-detail');
-    btn.onclick = ()=>{
-      const opening = detail.style.display === 'none';
-      detail.style.display = opening ? 'block' : 'none';
-      btn.textContent = opening ? 'بستن جزئیات' : 'جزئیات سفارش';
-      if(opening && !detail.dataset.loaded){
-        const order = orders.find(o=>o.id===card.dataset.orderId);
-        detail.innerHTML = orderStatusTimelineHtml(order.status);
-        detail.dataset.loaded = '1';
-      }
-    };
-  });
 }
 
 function pageCheckout(){
@@ -6522,6 +6669,56 @@ function bindAddressUI(){
   }
 }
 
+function pageOrderDetail(orderId){
+  return `
+  <div class="page-head"><span class="eyebrow">ORDER</span><h1 class="serif">جزئیات سفارش</h1></div>
+  <div class="section" style="padding-top:40px"><div class="container narrow">
+    <div style="margin-bottom:18px">
+      <a href="/account" data-link class="btn btn-ghost" style="padding:7px 16px;font-size:12px">‹ بازگشت به سفارش‌های من</a>
+    </div>
+    <div id="orderDetailBox" data-order-id="${escapeHtml(orderId)}"><p style="color:var(--text-faint);font-size:13px">در حال بارگذاری سفارش...</p></div>
+  </div></div>`;
+}
+async function initOrderDetailPage(){
+  const box = $('#orderDetailBox');
+  if(!box) return;
+  const orderId = box.dataset.orderId;
+  const orders = await loadMyOrders();
+  const order = orders.find(o=>o.id===orderId);
+  if(!order){
+    box.innerHTML = `<p style="color:var(--text-faint);font-size:13px">سفارشی با این شماره یافت نشد.</p>`;
+    return;
+  }
+  const canCancel = CANCELABLE_ORDER_STATUSES.includes(order.status);
+  box.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--line);padding:24px;border-radius:12px">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+        <div>
+          <p style="font-size:12px;color:var(--text-faint)">شماره سفارش</p>
+          <p style="color:var(--gold-light)">${escapeHtml(order.id)}</p>
+        </div>
+      </div>
+      ${myOrderFullDetailHtml(order)}
+      ${canCancel ? `
+      <div style="margin-top:20px;border-top:1px solid var(--line);padding-top:18px">
+        <button type="button" id="orderDetailCancelBtn" class="btn btn-ghost" style="padding:8px 18px;font-size:12.5px;color:var(--danger);border-color:var(--danger)">لغو سفارش</button>
+      </div>` : ''}
+    </div>`;
+  const cancelBtn = $('#orderDetailCancelBtn');
+  if(cancelBtn){
+    cancelBtn.onclick = async ()=>{
+      if(!confirm('آیا از لغو این سفارش مطمئن هستید؟ این عملیات قابل بازگشت نیست.')) return;
+      showLoading();
+      if(order.status!=='لغو شده'){
+        await restoreStockForOrder(order);
+      }
+      await updateOrderStatusRemote(order.id, 'لغو شده');
+      hideLoading();
+      showToast('سفارش لغو شد');
+      navigate('/account');
+    };
+  }
+}
 function pageOrderConfirmed(orderId){
   const order = STATE.orders.find(o=>o.id===orderId);
   return `
@@ -6533,13 +6730,40 @@ function pageOrderConfirmed(orderId){
     ${order?.couponCode?`<p style="color:var(--ok);margin-bottom:30px;font-size:13px">کد تخفیف «${escapeHtml(order.couponCode)}» اعمال شد (${RIAL(order.discount||0)}- تومان)</p>`:(order?`<div style="margin-bottom:30px"></div>`:'')}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
-      <a href="/account/track-order/${encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
+      <a href="${STATE.account ? '/account/order/'+encodeURIComponent(orderId) : '/track-order/'+encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
     </div>
   </div></div>`;
 }
 
 const ORDER_STATUSES = ['در حال بررسی','در حال پردازش','آماده‌سازی و بسته‌بندی','ارسال شده','در حال ارسال به مقصد','تحویل داده شده','لغو شده','مرجوع شده'];
 const ORDER_STEPS = ['در حال بررسی','در حال پردازش','آماده‌سازی و بسته‌بندی','ارسال شده','در حال ارسال به مقصد','تحویل داده شده'];
+function myOrderFullDetailHtml(order){
+  const customer = typeof order.customer === 'object' && order.customer !== null
+    ? order.customer
+    : { name: order.customer || '' };
+  const addressParts = [customer.province, customer.city, customer.address].filter(Boolean);
+  return `
+  ${orderStatusTimelineHtml(order.status)}
+  <div style="margin-top:20px">
+    <p style="font-size:12.5px;color:var(--text-faint);margin-bottom:8px">آدرس ارسال</p>
+    ${addressParts.length ? `
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.9">${escapeHtml(addressParts.join('، '))}${customer.postalCode?`<br>کد پستی: ${escapeHtml(customer.postalCode)}`:''}${customer.phone?`<br>شماره تماس: ${escapeHtml(customer.phone)}`:''}</p>
+    ` : `<p style="font-size:13px;color:var(--text-faint)">آدرسی ثبت نشده است</p>`}
+  </div>
+  <div style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">
+    <p style="font-size:12.5px;color:var(--text-faint);margin-bottom:10px">محصولات سفارش</p>
+    ${(order.items||[]).map(it=>`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);padding:6px 0">
+      <span>${escapeHtml(it.name)} ${it.size?`(${escapeHtml(it.size)}${it.color?', '+escapeHtml(it.color.label||colorLabel(it.color)):''})`:''} × ${it.qty}</span>
+      <span>${RIAL(it.totalPrice)}</span>
+    </div>`).join('')}
+  </div>
+  <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">
+    <div class="cart-sum-row"><span>جمع محصولات</span><span>${RIAL(order.subtotal)}</span></div>
+    <div class="cart-sum-row"><span>هزینه ارسال</span><span>${order.shipping ? RIAL(order.shipping) : 'رایگان'}</span></div>
+    ${order.discount ? `<div class="cart-sum-row"><span>تخفیف${order.couponCode?` (${escapeHtml(order.couponCode)})`:''}</span><span>${RIAL(order.discount)}-</span></div>` : ''}
+    <div class="cart-sum-row total" style="margin-top:6px"><span>مبلغ نهایی پرداخت‌شده</span><span>${RIAL(order.total)}</span></div>
+  </div>`;
+}
 function orderStatusTimelineHtml(status){
   if(status==='لغو شده'){
     return `<div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.1);border:1px solid var(--danger);color:var(--danger)">
@@ -6595,14 +6819,7 @@ function orderTrackResultHtml(order){
         <p>${dateStr}</p>
       </div>`:''}
     </div>
-    ${orderStatusTimelineHtml(order.status)}
-    <div style="margin-top:24px;border-top:1px solid var(--line);padding-top:16px">
-      ${(order.items||[]).map(it=>`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);padding:6px 0">
-        <span>${escapeHtml(it.name)} ${it.size?`(${it.size}${it.color?', '+escapeHtml(it.color.label||colorLabel(it.color)):''})`:''} × ${it.qty}</span>
-        <span>${RIAL(it.totalPrice)}</span>
-      </div>`).join('')}
-      <div class="cart-sum-row total" style="margin-top:10px"><span>مبلغ نهایی</span><span>${RIAL(order.total)}</span></div>
-    </div>
+    ${myOrderFullDetailHtml(order)}
   </div>`;
 }
 
@@ -6786,13 +7003,6 @@ function initGlassScrollers(){
     el.addEventListener('click', e=>{
       if(moved){ e.preventDefault(); e.stopPropagation(); moved = false; }
     }, true);
-
-    // slow, smooth horizontal scroll on mouse wheel too
-    el.addEventListener('wheel', e=>{
-      if(Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      e.preventDefault();
-      el.scrollLeft += e.deltaY * 0.5;
-    }, {passive:false});
   });
 }
 
@@ -6800,6 +7010,7 @@ function bindPageUI(){
   initGlassScrollers();
   initBannerSlider();
   initMyOrdersList();
+  initOrderDetailPage();
   $$('#pdFaqPage .pd-faq-item').forEach(item=>{
     item.querySelector('.pd-faq-q').onclick = ()=> item.classList.toggle('open');
   });
@@ -7309,6 +7520,7 @@ const orderItems = STATE.cart.map(ci=>{
   return {
     productId: ci.productId,
     name: p?.name || 'محصول حذف شده',
+    image: p?.image || '',
     size: ci.size || '',
     color: ci.color ? {c1:ci.color.c1, c2:ci.color.c2||null, label:ci.color.label||colorLabel(ci.color)} : null,
     qty: ci.qty,
@@ -7577,6 +7789,7 @@ window.quickAdd = (id)=> addToCart(id,1,null,null);
 function bumpCartIcon(){
   const badge = $('#cartBadge');
   const btn = $('#cartOpenBtn');
+  const badgeMobileNav = $('#cartBadgeMobileNav');
   if(badge){
     badge.classList.remove('bump');
     void badge.offsetWidth; // restart animation
@@ -7586,6 +7799,11 @@ function bumpCartIcon(){
     btn.classList.remove('bump');
     void btn.offsetWidth;
     btn.classList.add('bump');
+  }
+  if(badgeMobileNav){
+    badgeMobileNav.classList.remove('bump');
+    void badgeMobileNav.offsetWidth;
+    badgeMobileNav.classList.add('bump');
   }
 }
 
@@ -7676,7 +7894,7 @@ function markAllReviewRepliesSeen(){
 }
 function renderAccountNotifBadge(){
   const count = myUnreadReplyCount();
-  ['accountNotifBadge','accountNotifBadgeDesktop','accountNotifBadgeMobile'].forEach(id=>{
+  ['accountNotifBadge','accountNotifBadgeDesktop','accountNotifBadgeMobile','accountNotifBadgeMobileNav'].forEach(id=>{
     const el = $('#'+id);
     if(!el) return;
     el.textContent = count>9 ? '9+' : String(count);
@@ -7726,6 +7944,11 @@ function renderCart(){
   const count = cartCount();
   badge.textContent = count;
   badge.classList.toggle('hidden', count===0);
+  const badgeMobileNav = $('#cartBadgeMobileNav');
+  if(badgeMobileNav){
+    badgeMobileNav.textContent = count;
+    badgeMobileNav.classList.toggle('hidden', count===0);
+  }
 
   const wrap = $('#cartItemsWrap');
   if(!STATE.cart.length){
@@ -8770,7 +8993,7 @@ function adminOrders(){
     <table class="admin-table">
       <thead><tr><th>شماره سفارش</th><th>مشتری</th><th>اقلام</th><th>مبلغ نهایی</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th></tr></thead>
       <tbody>
-        ${rev.map(o=>`<tr>
+        ${rev.map(o=>`<tr${o.status==='لغو شده'?' style="background:rgba(220,60,60,.06)"':''}>
           <td style="color:var(--gold-light)">${o.id}</td>
 <td>${escapeHtml(
   typeof o.customer === 'object' && o.customer !== null
@@ -8803,6 +9026,22 @@ function adminOrders(){
     جزئیات
   </button>
 
+  ${o.status==='لغو شده' ? `
+  <button
+    type="button"
+    onclick="acknowledgeCancelledOrder('${o.id}')"
+    style="
+      background:#5c1717;
+      color:#fff;
+      border:0;
+      border-radius:8px;
+      padding:5px 9px;
+      font-size:11px;
+      cursor:pointer;
+    "
+  >
+    لغو شد ✓
+  </button>` : `
   <button
     type="button"
     onclick="deleteOrder('${o.id}')"
@@ -8817,7 +9056,7 @@ function adminOrders(){
     "
   >
     حذف
-  </button>
+  </button>`}
 </td>
         </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</td></tr>`}
       </tbody>
@@ -8923,7 +9162,14 @@ window.showOrderDetails = showOrderDetails;
 
 window.updateOrderStatus = async (id, status)=>{
   const o = STATE.orders.find(x=>x.id===id);
-  if(o){ o.status = status; await withLoading(()=>updateOrderStatusRemote(id, status)); showToast('وضعیت سفارش بروزرسانی شد'); }
+  if(o){
+    if(status==='لغو شده' && o.status!=='لغو شده'){
+      await withLoading(()=>restoreStockForOrder(o));
+    }
+    o.status = status;
+    await withLoading(()=>updateOrderStatusRemote(id, status));
+    showToast('وضعیت سفارش بروزرسانی شد');
+  }
 };
 async function deleteOrder(id) {
   const ok = confirm('آیا از حذف این سفارش مطمئن هستید؟');
@@ -8954,6 +9200,36 @@ async function deleteOrder(id) {
 
   router();
 }
+async function acknowledgeCancelledOrder(id) {
+  const ok = confirm('با تایید این پیام، لغو سفارش را تایید می‌کنید و محصولی برای آن ارسال نخواهد شد. سفارش برای همیشه حذف می‌شود. ادامه می‌دهید؟');
+
+  if (!ok) return;
+
+  if (!supabaseClient) {
+    alert('اتصال به سرور برقرار نیست');
+    return;
+  }
+
+  showLoading();
+  const { error } = await supabaseClient
+    .from('orders')
+    .delete()
+    .eq('id', id);
+  hideLoading();
+
+  if (error) {
+    console.error('DELETE ORDER ERROR:', error);
+    alert('حذف سفارش انجام نشد');
+    return;
+  }
+
+  STATE.orders = STATE.orders.filter(o => o.id !== id);
+
+  alert('لغو سفارش تایید و حذف شد ✓');
+
+  router();
+}
+window.acknowledgeCancelledOrder = acknowledgeCancelledOrder;
 
 const GLASS_INTENSITY_LABELS = {0:'بدون رنگ', 1:'کم‌رنگ', 2:'معمولی', 3:'پررنگ'};
 function intensityPickerHtml(fieldId, current){
@@ -9350,8 +9626,14 @@ function adminSettings(){
       </div>
     </div>
     <div style="margin-top:18px">
-      <label style="display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:8px">زیرنویس کوچک زیر نام برند (مثلاً: WOMEN'S WEAR)</label>
-      <input type="text" id="logoSubtitleInput" value="${escapeHtml(s.logoSubtitle ?? "WOMEN'S WEAR")}" placeholder="WOMEN'S WEAR">
+      <label style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--text-dim);margin-bottom:8px">
+        <span class="toggle-switch">
+          <input type="checkbox" id="logoSubtitleToggle" ${(s.showLogoSubtitle !== false) ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </span>
+        نمایش زیرنویس کوچک زیر نام برند
+      </label>
+      <input type="text" id="logoSubtitleInput" value="${escapeHtml(s.logoSubtitle ?? "WOMEN'S WEAR")}" placeholder="WOMEN'S WEAR" ${(s.showLogoSubtitle === false) ? 'disabled' : ''}>
     </div>
     <button type="button" class="btn btn-solid" id="saveLogoBtn" style="margin-top:14px">ذخیره لوگو</button>
   </div>
@@ -11157,12 +11439,19 @@ function bindAdminSettingsUI(){
       ...STATE.settings,
       logoDark: pendingLogoDark || '',
       logoClassic: pendingLogoClassic || '',
-      logoSubtitle: $('#logoSubtitleInput')?.value.trim() || "WOMEN'S WEAR"
+      logoSubtitle: $('#logoSubtitleInput')?.value.trim() || "WOMEN'S WEAR",
+      showLogoSubtitle: $('#logoSubtitleToggle')?.checked !== false
     };
     STATE.settings = newSettings;
     applySettingsToDOM(newSettings);
     await withLoading(()=>saveSettingsRemote(newSettings));
     showToast('لوگو ذخیره شد ✓');
+  };
+
+  const logoSubtitleToggle = $('#logoSubtitleToggle');
+  if(logoSubtitleToggle) logoSubtitleToggle.onchange = ()=>{
+    const input = $('#logoSubtitleInput');
+    if(input) input.disabled = !logoSubtitleToggle.checked;
   };
 }
 
