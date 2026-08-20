@@ -14,7 +14,7 @@ const SITE_URL = 'https://whiteraven.ir';
 // مسیر ریشه‌ی سایت که فایل‌های خروجی توش ساخته می‌شن. چون GitHub Pages این
 // ریپو از "/ (root)" پابلیش می‌شه (نه از پوشه‌ی docs)، خروجی مستقیم توی
 // ریشه‌ی ریپو (کنار index.html) ساخته می‌شه.
-const OUTPUT_ROOT = path.join(__dirname, '..', '..');
+const OUTPUT_ROOT = path.join(__dirname, '..');
 
 function escapeHtml(str){
   return String(str || '')
