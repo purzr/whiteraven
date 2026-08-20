@@ -1780,7 +1780,6 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
     </div>
     <div class="foot-bottom">
       <span>© 1405 White Raven — تمامی حقوق محفوظ است.</span>
-      <a href="/admin-login" data-link style="color:var(--text-faint)">پنل مدیریت </a>
     </div>
   </div>
 </footer>
@@ -2693,6 +2692,28 @@ async function loadAddressesRemote(accountId){
   }
   try{ return JSON.parse(localStorage.getItem('wr-addresses-'+accountId) || '[]'); }catch(e){ return []; }
 }
+/* برای پنل مدیریت: آدرس‌های همه‌ی حساب‌ها را با هم می‌خواند (نه فقط یک حساب)
+   تا در بخش «کاربران کلاغ سفید» بشود آدرس محل سکونت هر کاربر را نشان داد. */
+async function loadAllAddresses(){
+  if(supabaseClient){
+    try{
+      const {data, error} = await supabaseClient.from('addresses').select('*').order('created_at', {ascending:true});
+      if(!error) return (data||[]).map(row=> ({...addressRowToObj(row), accountId: row.account_id}));
+    }catch(e){ /* جدول ساخته نشده — به localStorage برمی‌گردیم */ }
+  }
+  try{
+    const result = [];
+    for(let i=0;i<localStorage.length;i++){
+      const key = localStorage.key(i);
+      if(key && key.startsWith('wr-addresses-')){
+        const accountId = key.slice('wr-addresses-'.length);
+        const list = JSON.parse(localStorage.getItem(key)||'[]');
+        list.forEach(a=> result.push({...a, accountId}));
+      }
+    }
+    return result;
+  }catch(e){ return []; }
+}
 async function saveAddressRemote(accountId, addr){
   if(!accountId) return;
   if(supabaseClient){
@@ -2964,6 +2985,13 @@ function defaultSettings(){
     shippingCost: 45000,
     shippingRates: [],
     coupons: [],
+    referral: {
+      active: false,
+      percent: 10,
+      minPurchase: 1000000,
+      couponMinSubtotal: 0,
+      couponMaxDiscount: 0
+    },
     announcementEnabled: false,
     announcementText: '',
     announcementIcon: '',
@@ -3053,6 +3081,7 @@ function rowToSettings(row){
     shippingCost: (typeof data.shippingCost === 'number') ? data.shippingCost : d.shippingCost,
     shippingRates: Array.isArray(data.shippingRates) ? data.shippingRates : d.shippingRates,
     coupons: Array.isArray(data.coupons) ? data.coupons : d.coupons,
+    referral: { ...d.referral, ...(data.referral||{}) },
     announcementEnabled: data.announcementEnabled ?? d.announcementEnabled,
     announcementText: data.announcementText ?? d.announcementText,
     announcementIcon: data.announcementIcon ?? d.announcementIcon,
@@ -3147,6 +3176,7 @@ async function loadSettings(){
           ...(s.fontColors||{})
         },
         coupons: Array.isArray(s.coupons) ? s.coupons : defaultSettings().coupons,
+        referral: { ...defaultSettings().referral, ...(s.referral||{}) },
         announcementEnabled: s.announcementEnabled ?? defaultSettings().announcementEnabled,
         announcementText: s.announcementText ?? defaultSettings().announcementText,
         announcementIcon: s.announcementIcon ?? defaultSettings().announcementIcon,
@@ -3532,10 +3562,12 @@ let STATE = {
   newsletterSubscribers: [],
   stockNotifyRequests: [],
   accountNotifications: [],
+  profiles: [],
   reviews: [],
   account: null,
   wishlist: [],
   addresses: [],
+  allAddresses: [],
   selectedAddressId: null,
   magazinePosts: [],
   route: '/',
@@ -3714,6 +3746,67 @@ async function markAccountNotificationsRead(accountId){
     localStorage.setItem(key, JSON.stringify(list));
   }catch(e){}
 }
+/* ---- registered-user directory for the admin panel ("کاربران کلاغ سفید") ----
+   Requires a Supabase table (falls back to per-browser localStorage otherwise):
+
+   create table profiles (
+     id uuid primary key,
+     full_name text,
+     email text,
+     phone text,
+     created_at timestamptz default now()
+   );
+   alter table profiles enable row level security;
+   create policy "anyone can insert" on profiles for insert with check (true);
+   create policy "anyone can select" on profiles for select using (true);
+   create policy "anyone can update" on profiles for update using (true);
+*/
+async function upsertProfile(account){
+  if(!account || !account.id) return;
+  if(supabaseClient){
+    const { error } = await supabaseClient.from('profiles').upsert({
+      id: account.id, full_name: account.name||'', email: account.email||'', phone: account.phone||''
+    }, { onConflict: 'id' });
+    if(!error) return;
+  }
+  try{
+    const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
+    const idx = list.findIndex(p=>p.id===account.id);
+    const row = { id: account.id, full_name: account.name||'', email: account.email||'', phone: account.phone||'', created_at: idx>-1 ? list[idx].created_at : new Date().toISOString() };
+    if(idx>-1) list[idx] = row; else list.push(row);
+    localStorage.setItem('wr-profiles', JSON.stringify(list));
+  }catch(e){}
+}
+async function loadProfiles(){
+  if(supabaseClient){
+    const { data, error } = await supabaseClient.from('profiles').select('*').order('created_at', { ascending:false });
+    if(!error) return data || [];
+  }
+  try{
+    return JSON.parse(localStorage.getItem('wr-profiles')||'[]')
+      .slice().sort((a,b)=> new Date(b.created_at||0) - new Date(a.created_at||0));
+  }catch(e){ return []; }
+}
+/* sends a free-text message from the admin to one registered customer; it
+   reuses the account_notifications table so it shows up in their account's
+   "اطلاع‌رسانی‌ها" tab exactly like a back-in-stock alert (with no product link) */
+async function sendAdminMessageToAccount(accountId, text){
+  const message = (text||'').trim();
+  if(!accountId || !message) return false;
+  if(supabaseClient){
+    const { error } = await supabaseClient.from('account_notifications').insert({
+      account_id: accountId, product_id: null, product_name: null, message, read:false
+    });
+    if(!error) return true;
+  }
+  try{
+    const key = 'wr-account-notifs-'+accountId;
+    const list = JSON.parse(localStorage.getItem(key) || '[]');
+    list.unshift({ id: uid(), accountId, productId:null, productName:null, message, read:false, createdAt: Date.now() });
+    localStorage.setItem(key, JSON.stringify(list));
+    return true;
+  }catch(e){ return false; }
+}
 /* called right after a product is saved in the admin panel — if it just went
    from out-of-stock to in-stock, everyone who ticked "سیستم پیام شخصی کلاغ
    سفید" for it gets an in-account notification. */
@@ -3839,6 +3932,16 @@ function requireAccount(promptMsg){
   navigate('/account');
   return false;
 }
+// after a successful login/signup, sends the user back to checkout if that's what brought them
+// to the login page (cart items are kept — the cart isn't tied to the account)
+function postAuthNavigate(){
+  let wantsCheckout = false;
+  try{
+    wantsCheckout = sessionStorage.getItem('wr-checkout-redirect') === '1';
+    sessionStorage.removeItem('wr-checkout-redirect');
+  }catch(e){}
+  navigate(wantsCheckout && STATE.cart.length ? '/checkout' : '/account');
+}
 
 /* ---------------- init ---------------- */
 
@@ -3899,6 +4002,7 @@ async function init(){
   // اگر کاربر وارد شده، علاقه‌مندی‌ها را از حساب کاربری (نه مرورگر) بخوان
   // تا در هر دستگاهی که وارد شود همان لیست را ببیند
   if(STATE.account){
+    await upsertProfile(STATE.account);
     const remoteWishlist = await loadWishlistRemote(STATE.account.id);
     if(remoteWishlist !== null) STATE.wishlist = remoteWishlist;
     STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
@@ -3936,6 +4040,7 @@ async function init(){
   }
 }
 
+capturePendingReferralFromUrl();
 init();
 
 /* ---------------- routing ---------------- */
@@ -4002,8 +4107,18 @@ function router(preserveScroll){
   else if(path==='/account/reviews') app.innerHTML = pageAccount('reviews');
   else if(path==='/account/messages') app.innerHTML = pageAccount('messages');
   else if(path==='/account/notifications') app.innerHTML = pageAccount('notifications');
+  else if(path==='/account/referral') app.innerHTML = pageAccount('referral');
   else if(path.startsWith('/account/order/')) app.innerHTML = pageOrderDetail(decodeURIComponent(path.split('/account/order/')[1]));
-  else if(path==='/checkout') app.innerHTML = pageCheckout();
+  else if(path==='/checkout'){
+    if(!STATE.account){
+      try{ sessionStorage.setItem('wr-checkout-redirect', '1'); }catch(e){}
+      STATE.accountAuthTab = 'login';
+      history.replaceState(null, '', '/account');
+      router(preserveScroll);
+      return;
+    }
+    app.innerHTML = pageCheckout();
+  }
   else if(path.startsWith('/order-confirmed/')) app.innerHTML = pageOrderConfirmed(path.split('/order-confirmed/')[1]);
   else if(path==='/wishlist') app.innerHTML = pageAccount('wishlist'); // قدیمی — به تب علاقه‌مندی‌ها در حساب کاربری هدایت می‌شود
   else if(path.startsWith('/track-order')) app.innerHTML = pageTrackOrder(decodeURIComponent(path.split('/track-order/')[1]||''));
@@ -4246,6 +4361,52 @@ function bindGlobalUI(){
 
 function openCart(){ $('#cartDrawer').classList.add('open'); $('#cartOverlay').classList.add('open'); renderCart(); }
 function closeCart(){ $('#cartDrawer').classList.remove('open'); $('#cartOverlay').classList.remove('open'); }
+
+// swipe-to-close: drag the cart drawer to the left (the direction it opens from) to dismiss it
+(function initCartSwipeToClose(){
+  const drawer = document.getElementById('cartDrawer');
+  if(!drawer) return;
+  let startX = 0, startY = 0, dragging = false, isHorizontal = false;
+  const threshold = 90; // px dragged left before it counts as a close swipe
+
+  drawer.addEventListener('touchstart', e=>{
+    if(!drawer.classList.contains('open')) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dragging = true;
+    isHorizontal = false;
+    drawer.style.transition = 'none';
+  }, {passive:true});
+
+  drawer.addEventListener('touchmove', e=>{
+    if(!dragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    if(!isHorizontal){
+      if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      isHorizontal = Math.abs(dx) > Math.abs(dy);
+      if(!isHorizontal){ dragging = false; return; }
+    }
+    if(dx < 0){ // only allow dragging toward the closed (left) side
+      drawer.style.transform = `translateX(${dx}px)`;
+      const overlay = document.getElementById('cartOverlay');
+      if(overlay) overlay.style.opacity = String(Math.max(0, 1 - Math.abs(dx)/300));
+    }
+  }, {passive:true});
+
+  function endDrag(e){
+    if(!dragging || !isHorizontal) { dragging = false; return; }
+    dragging = false;
+    drawer.style.transition = '';
+    drawer.style.transform = '';
+    const overlay = document.getElementById('cartOverlay');
+    if(overlay) overlay.style.opacity = '';
+    const endX = (e.changedTouches ? e.changedTouches[0].clientX : startX);
+    if(startX - endX > threshold) closeCart();
+  }
+  drawer.addEventListener('touchend', endDrag);
+  drawer.addEventListener('touchcancel', endDrag);
+})();
 
 /* ---------------- product helpers ---------------- */
 function findProduct(id){ return STATE.products.find(p=>p.id===id); }
@@ -6102,6 +6263,11 @@ function accountMenuHtml(){
       <span class="acc-menu-text"><strong>علاقه‌مندی‌های من</strong><small>محصولاتی که ذخیره کرده‌اید</small></span>
       <span class="acc-menu-arrow">‹</span>
     </a>
+    <a href="/account/referral" data-link class="acc-menu-item">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span class="acc-menu-text"><strong>دعوت دوستان</strong><small>کد دعوت خود را به اشتراک بگذارید و تخفیف بگیرید</small></span>
+      <span class="acc-menu-arrow">‹</span>
+    </a>
     <a href="/account/addresses" data-link class="acc-menu-item">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
       <span class="acc-menu-text"><strong>آدرس‌های من</strong><small>آدرس‌های ذخیره‌شده برای ارسال سفارش</small></span>
@@ -6218,6 +6384,25 @@ function pageAccount(tab, trackOrderPrefillId){
     </div></div>`;
   }
 
+  if(tab==='referral'){
+    if(!acc) return accountRequireLoginPage('دعوت دوستان');
+    const link = referralLinkForAccount(acc.id);
+    const code = referralCodeForAccount(acc.id);
+    setTimeout(loadAndRenderReferralStatus, 0);
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">دعوت دوستان</h1></div>
+    <div class="section"><div class="container narrow">
+      ${accountBackLink()}
+      <div style="margin-top:18px;background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:20px">
+        <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:14px">لینک زیر را برای دوستانتان بفرستید. وقتی با این لینک ثبت‌نام کنند و حداقل خرید لازم را انجام دهند، هم شما و هم آن‌ها یک کد تخفیف اختصاصی دریافت می‌کنید.</p>
+        <div class="form-field" style="margin-bottom:10px"><label>کد دعوت شما</label><input readonly value="${escapeHtml(code)}" style="text-transform:uppercase;letter-spacing:.05em" onclick="this.select()"></div>
+        <div class="form-field" style="margin-bottom:14px"><label>لینک دعوت شما</label><input id="referralLinkInput" readonly value="${escapeHtml(link)}" onclick="this.select()"></div>
+        <button type="button" class="btn btn-solid" id="copyReferralLinkBtn">کپی لینک دعوت</button>
+        <div id="referralStatusBox" style="margin-top:20px;font-size:13px;color:var(--text-dim)">در حال بررسی وضعیت...</div>
+      </div>
+    </div></div>`;
+  }
+
   if(acc){
     return `
     <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">حساب کاربری</h1></div>
@@ -6249,6 +6434,11 @@ function pageAccount(tab, trackOrderPrefillId){
       <div class="form-field"><label>شماره موبایل</label><input id="accPhone" required type="tel" autocomplete="tel" placeholder="09xxxxxxxxx"></div>
       <div class="form-field"><label>رمز عبور</label><input id="accPass" required type="password" autocomplete="new-password" placeholder="حداقل ۶ کاراکتر"></div>
       <div class="form-field"><label>تکرار رمز عبور</label><input id="accPassConfirm" required type="password" autocomplete="new-password" placeholder="رمز عبور را دوباره وارد کنید"></div>
+      <button type="button" id="referralToggleBtn" style="background:none;border:none;padding:0;margin:2px 0 12px;color:var(--gold-light);font-size:12.5px;cursor:pointer;text-decoration:underline">کد دعوت دارید؟</button>
+      <div class="form-field" id="referralFieldBox" style="display:none">
+        <label>کد دعوت</label>
+        <input id="accReferralCode" placeholder="مثلاً WR1A2B3C" style="text-transform:uppercase">
+      </div>
       <div class="err-msg" id="accSignupErr"></div>
       <button class="btn btn-solid btn-block" type="submit">ساخت حساب</button>
     </form>
@@ -6522,8 +6712,13 @@ function pageCheckout(){
   const discount = computeDiscount(subtotal, appliedCoupon);
   const freeShipForTotal = subtotal >= (STATE.settings.freeShippingThreshold ?? 1000000);
   const totalReady = freeShipForTotal || !!(savedProvinceForTotal && savedCityForTotal);
-  const total = Math.max(0, subtotal + shipping - discount);
-  const totalDisplay = totalReady ? RIAL(total) : 'مقصد ارسال را انتخاب کنید';
+  const totalBeforeDiscount = subtotal + shipping;
+  const total = Math.max(0, totalBeforeDiscount - discount);
+  const totalDisplay = totalReady
+    ? (discount>0
+        ? `<span style="text-decoration:line-through;color:var(--text-faint);font-size:13px;margin-inline-end:8px">${RIAL(totalBeforeDiscount)}</span><span style="color:#1e6b3c;font-weight:700">${RIAL(total)}</span>`
+        : RIAL(total))
+    : 'مقصد ارسال را انتخاب کنید';
   const acc = STATE.account;
   const hasAddrBook = !!(acc && STATE.addresses && STATE.addresses.length);
   const selAddr = hasAddrBook ? getSelectedAddress() : null;
@@ -6615,7 +6810,7 @@ ${(()=>{
           }).join('')}
           <div class="cart-sum-row" style="margin-top:16px"><span>جمع کل</span><span>${RIAL(subtotal)}</span></div>
           <div class="cart-sum-row"><span>هزینه ارسال</span><span id="checkoutShippingLine">${shippingLineHtml(subtotal, getSavedShippingProvince(), getSavedShippingCity())}</span></div>
-          <div class="cart-sum-row" id="checkoutDiscountRow" style="${discount>0?'':'display:none'}"><span>تخفیف ${appliedCoupon?`(${escapeHtml(appliedCoupon.code)})`:''}</span><span id="checkoutDiscountLine" style="color:var(--ok)">${discount>0?'-'+RIAL(discount):''}</span></div>
+          <div class="cart-sum-row" id="checkoutDiscountRow" style="${discount>0?'':'display:none'}"><span>تخفیف ${appliedCoupon?`(${escapeHtml(appliedCoupon.code)})`:''}</span><span id="checkoutDiscountLine" style="color:#1e6b3c;font-weight:700">${discount>0?'-'+RIAL(discount):''}</span></div>
           <div class="cart-sum-row total"><span>مبلغ نهایی</span><span id="checkoutTotalLine">${totalDisplay}</span></div>
 
           <div style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)">
@@ -7407,6 +7602,7 @@ if (messageInput && messageCounter) {
       const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
       if(error) throw error;
       STATE.account = accountFromSupabaseUser(data.user);
+      await upsertProfile(STATE.account);
       const remoteWishlist = await loadWishlistRemote(STATE.account.id);
       STATE.wishlist = remoteWishlist !== null ? remoteWishlist : [];
       STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
@@ -7415,7 +7611,7 @@ if (messageInput && messageCounter) {
       const notifyRegistered = await finalizePendingStockNotify();
       renderAccountNotifBadge();
       showToast(notifyRegistered ? 'ورود انجام شد و درخواست اطلاع‌رسانی شما ثبت شد ✓' : 'ورود موفقیت‌آمیز بود ✓');
-      navigate('/account');
+      postAuthNavigate();
     }catch(err){
       errEl.textContent = 'ایمیل یا رمز عبور اشتباه است.';
     }finally{
@@ -7439,6 +7635,25 @@ if (messageInput && messageCounter) {
     accPassEl.addEventListener('input', checkPasswordMatch);
     accPassConfirmEl.addEventListener('input', checkPasswordMatch);
   }
+  const referralToggleBtn = $('#referralToggleBtn');
+  const referralFieldBox = $('#referralFieldBox');
+  const accReferralCodeEl = $('#accReferralCode');
+  if(referralToggleBtn && referralFieldBox){
+    referralToggleBtn.onclick = ()=>{
+      const showing = referralFieldBox.style.display !== 'none';
+      referralFieldBox.style.display = showing ? 'none' : '';
+      referralToggleBtn.textContent = showing ? 'کد دعوت دارید؟' : 'کد دعوت را پنهان کن';
+    };
+    // if they arrived via a referral link, prefill and reveal the field automatically
+    try{
+      const pendingRef = sessionStorage.getItem('wr-pending-ref');
+      if(pendingRef && accReferralCodeEl){
+        accReferralCodeEl.value = pendingRef;
+        referralFieldBox.style.display = '';
+        referralToggleBtn.textContent = 'کد دعوت را پنهان کن';
+      }
+    }catch(e){}
+  }
   if(signupForm) signupForm.onsubmit = async e=>{
     e.preventDefault();
     const name = $('#accName').value.trim();
@@ -7446,6 +7661,7 @@ if (messageInput && messageCounter) {
     const phone = $('#accPhone').value.trim();
     const password = $('#accPass').value;
     const passwordConfirm = $('#accPassConfirm').value;
+    const referralCode = ($('#accReferralCode')?.value || '').trim();
     const errEl = $('#accSignupErr');
     errEl.textContent = '';
     if(!supabaseClient){ errEl.textContent = 'در حال حاضر امکان ثبت‌نام وجود ندارد.'; return; }
@@ -7461,13 +7677,22 @@ if (messageInput && messageCounter) {
       if(error) throw error;
       if(data.session){
         STATE.account = accountFromSupabaseUser(data.user);
+        await upsertProfile(STATE.account);
+        const wasReferred = await applyPendingReferral(STATE.account.id, referralCode);
+        await sendPlainWelcomeMessage(STATE.account);
+        if(wasReferred) await sendReferralWelcomeMessage(STATE.account);
         STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
         STATE.addresses = await loadAddressesRemote(STATE.account.id);
         const notifyRegistered = await finalizePendingStockNotify();
         renderAccountNotifBadge();
         showToast(notifyRegistered ? 'حساب شما ساخته شد و درخواست اطلاع‌رسانی شما ثبت شد ✓' : 'حساب شما ساخته شد ✓');
-        navigate('/account');
+        postAuthNavigate();
       }else{
+        const newAccount = accountFromSupabaseUser(data.user);
+        await upsertProfile(newAccount);
+        const wasReferred = await applyPendingReferral(data.user.id, referralCode);
+        await sendPlainWelcomeMessage(newAccount);
+        if(wasReferred) await sendReferralWelcomeMessage(newAccount);
         showToast('ثبت‌نام انجام شد. لطفاً ایمیل خود را تایید کنید.');
         STATE.accountAuthTab = 'login';
         router();
@@ -7534,9 +7759,15 @@ if (messageInput && messageCounter) {
     if(discountRowEl) discountRowEl.style.display = discount>0 ? '' : 'none';
     if(discountLineEl) discountLineEl.textContent = discount>0 ? '-'+RIAL(discount) : '';
     if(totalLineEl){
-      totalLineEl.textContent = (freeShip || locationReady)
-        ? RIAL(Math.max(0, subtotal + shipping - discount))
-        : 'مقصد ارسال را انتخاب کنید';
+      const totalBeforeDiscount = subtotal + shipping;
+      const totalReady = freeShip || locationReady;
+      if(!totalReady){
+        totalLineEl.textContent = 'مقصد ارسال را انتخاب کنید';
+      }else if(discount>0){
+        totalLineEl.innerHTML = `<span style="text-decoration:line-through;color:var(--text-faint);font-size:13px;margin-inline-end:8px">${RIAL(totalBeforeDiscount)}</span><span style="color:#1e6b3c;font-weight:700">${RIAL(Math.max(0, totalBeforeDiscount - discount))}</span>`;
+      }else{
+        totalLineEl.textContent = RIAL(Math.max(0, totalBeforeDiscount - discount));
+      }
     }
   };
   // کادر کشویی جستجوپذیر استان: با تایپ چند حرف، لیست فیلتر می‌شود و با انتخاب،
@@ -7689,6 +7920,8 @@ const order = {
 };
     STATE.orders.unshift(order);
     await insertOrderRemote(order);
+    if(validCoupon && validCoupon.restrictToAccountId) await deactivateOneTimeCoupon(validCoupon.id);
+    if(STATE.account) checkAndGrantReferralReward(order);
     appliedCoupon = null;
     // decrement stock — also decrement the specific size's own qty count,
     // and, when the size defines colors, the specific size+color's own qty count
@@ -7838,7 +8071,13 @@ let appliedCoupon = null; // {id, code, type, value} — reset on cart change / 
 function findCoupon(code){
   const norm = (code||'').trim().toUpperCase();
   if(!norm) return null;
-  return (STATE.settings.coupons||[]).find(c=> c.code.toUpperCase()===norm && c.active!==false) || null;
+  const coupon = (STATE.settings.coupons||[]).find(c=> c.code.toUpperCase()===norm && c.active!==false) || null;
+  if(!coupon) return null;
+  // referral reward coupons are locked to the account that earned them
+  if(coupon.restrictToAccountId){
+    if(!STATE.account || STATE.account.id !== coupon.restrictToAccountId) return null;
+  }
+  return coupon;
 }
 function computeDiscount(subtotal, coupon){
   if(!coupon || subtotal<=0) return 0;
@@ -7847,6 +8086,207 @@ function computeDiscount(subtotal, coupon){
   if(coupon.maxDiscount) discount = Math.min(discount, coupon.maxDiscount);
   return discount;
 }
+
+/* ---------------- referral program (دعوت دوستان) ----------------
+   Uses two extra columns on the existing "profiles" table (falls back to
+   per-browser localStorage otherwise, same as the rest of the profile code):
+
+   alter table profiles add column if not exists referred_by uuid;
+   alter table profiles add column if not exists referral_rewarded boolean default false;
+
+   A user's own referral code is derived from their account id (no extra
+   column needed to store it) so it's always available even before any
+   profile row exists yet. */
+function referralCodeForAccount(accountId){
+  if(!accountId) return '';
+  return 'WR' + String(accountId).replace(/-/g,'').slice(0,6).toUpperCase();
+}
+function referralLinkForAccount(accountId){
+  const code = referralCodeForAccount(accountId);
+  try{ return location.origin + '/?ref=' + code; }catch(e){ return '?ref=' + code; }
+}
+// stashes a ?ref=CODE found in the URL so it can be applied once the visitor signs up
+function capturePendingReferralFromUrl(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const ref = (params.get('ref')||'').trim().toUpperCase();
+    if(ref) sessionStorage.setItem('wr-pending-ref', ref);
+  }catch(e){}
+}
+async function findAccountIdByReferralCode(code){
+  const norm = (code||'').trim().toUpperCase();
+  if(!norm) return null;
+  if(supabaseClient){
+    // profiles select policy is open ("anyone can select"), so we can scan client-side
+    const { data, error } = await supabaseClient.from('profiles').select('id');
+    if(error) return null;
+    const match = (data||[]).find(p=> referralCodeForAccount(p.id)===norm);
+    return match ? match.id : null;
+  }
+  try{
+    const list = JSON.parse(localStorage.getItem('wr-profiles')||'[]');
+    const match = list.find(p=> referralCodeForAccount(p.id)===norm);
+    return match ? match.id : null;
+  }catch(e){ return null; }
+}
+async function getOwnProfileRow(accountId){
+  if(!accountId) return null;
+  if(supabaseClient){
+    const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', accountId).maybeSingle();
+    if(!error) return data || null;
+    return null;
+  }
+  try{
+    const list = JSON.parse(localStorage.getItem('wr-profiles')||'[]');
+    return list.find(p=>p.id===accountId) || null;
+  }catch(e){ return null; }
+}
+// links a freshly-signed-up account to whoever invited them (only once — never overwrites an existing value).
+// explicitCode (from the signup form field) takes priority over a ?ref= link stashed earlier.
+// returns true if a referral was successfully linked (so the caller can send the welcome message).
+async function applyPendingReferral(accountId, explicitCode){
+  try{
+    if(!accountId) return false;
+    const codeToUse = (explicitCode||'').trim() || sessionStorage.getItem('wr-pending-ref');
+    sessionStorage.removeItem('wr-pending-ref');
+    if(!codeToUse) return false;
+    const referrerId = await findAccountIdByReferralCode(codeToUse);
+    if(!referrerId || referrerId === accountId) return false; // invalid code or self-referral
+    if(supabaseClient){
+      await supabaseClient.from('profiles').update({ referred_by: referrerId }).eq('id', accountId).is('referred_by', null);
+    }else{
+      const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
+      const idx = list.findIndex(p=>p.id===accountId);
+      if(idx>-1 && !list[idx].referred_by){ list[idx].referred_by = referrerId; localStorage.setItem('wr-profiles', JSON.stringify(list)); }
+    }
+    return true;
+  }catch(e){ return false; }
+}
+// sends the invited user a separate message explaining their referral discount
+// (sent in addition to the standard welcome message, only for referred signups)
+async function sendReferralWelcomeMessage(account){
+  const ref = STATE.settings.referral;
+  if(!ref || !ref.active || !account) return;
+  const firstName = (account.name||'').trim().split(/\s+/)[0] || '';
+  const percent = Math.min(100, Math.max(0, Number(ref.percent) || 0));
+  const minPurchase = Math.max(0, Number(ref.minPurchase) || 0);
+  const greeting = firstName ? `${firstName} عزیز، ` : '';
+  const message = `${greeting ? `${firstName} عزیز 🌿` : 'خوش اومدی 🌿'}
+
+با اولین خریدت به ارزش حداقل ${RIAL(minPurchase)}، یه کد تخفیف ${percent}٪ برای خرید بعدیت برات فعال می‌شه؛
+و قشنگ‌تر اینکه این کد هم برای خودت قابل استفاده‌ست، هم برای دوستی که دعوتت کرده.
+
+🔺تو هم می‌تونی کد دعوتت رو با دوستات به اشتراک بذاری و با هر دعوت، از تخفیف‌های بیشتری بهره‌مند بشی.
+
+ما فقط می‌خوایم چیزی که به دستت می‌رسه، ارزش هزینه‌ای که کردی رو داشته باشه؛ ساده، باکیفیت و بی نقص.
+
+امیدواریم این شروع یه خرید خوب باشه.🤍`;
+  await sendAdminMessageToAccount(account.id, message);
+}
+// sends the plain welcome message to every brand-new signup (referred or not)
+async function sendPlainWelcomeMessage(account){
+  if(!account) return;
+  const firstName = (account.name||'').trim().split(/\s+/)[0] || '';
+  const namePart = firstName ? `${firstName} جان، ` : '';
+  const message = `${namePart}خوش اومدی 🤍
+
+خوشحالیم که سر از اینجا درآوردی و اینجایی.
+ما سعی می‌کنیم ساده و درست کار کنیم؛ چیزی که می‌بینی، همون چیزیه که تحویل می‌گیری
+بدون تعریف اضافه و حرف‌های الکی.
+
+برامون مهمه از چیزی که از ما می‌گیری راضی باشی و سفارشت رو با حس خوب تحویل بگیری
+هر وقت سوالی داشتی یا کمکی خواستی، راحت پیام بده؛ ما کنارتیم
+
+خوشحالیم که اینجایی 🤍
+
+🌿📦`;
+  await sendAdminMessageToAccount(account.id, message);
+}
+function randomCouponSuffix(){
+  return Math.random().toString(36).slice(2,8).toUpperCase();
+}
+// referral reward coupons are personal & single-use — once used in an order, deactivate it
+// so the same account (and no one else, since it's already account-restricted) can't reuse it
+async function deactivateOneTimeCoupon(couponId){
+  try{
+    const coupons = (STATE.settings.coupons||[]).map(c=> c.id===couponId ? {...c, active:false} : c);
+    const newSettings = {...STATE.settings, coupons};
+    STATE.settings = newSettings;
+    await saveSettingsRemote(newSettings);
+  }catch(e){ console.error('deactivateOneTimeCoupon error', e); }
+}
+// called right after a logged-in customer's order is placed — if they were referred by
+// someone and this order finally crosses the configured minimum, both people get a
+// one-time personal discount coupon at the percentage/limits set in admin › coupon.
+async function checkAndGrantReferralReward(order){
+  try{
+    const ref = STATE.settings.referral;
+    if(!ref || !ref.active) return;
+    if(!STATE.account) return;
+    const threshold = Number(ref.minPurchase) || 0;
+    const orderPurchaseAmount = (order.subtotal||0) + (order.shipping||0);
+    if(orderPurchaseAmount < threshold) return;
+    const profile = await getOwnProfileRow(STATE.account.id);
+    const referrerId = profile ? (profile.referred_by || profile.referredBy) : null;
+    const alreadyRewarded = profile ? !!(profile.referral_rewarded || profile.referralRewarded) : false;
+    if(!referrerId || alreadyRewarded) return;
+
+    const percent = Math.min(100, Math.max(0, Number(ref.percent) || 0));
+    if(percent<=0) return;
+    const minSubtotal = Math.max(0, Number(ref.couponMinSubtotal) || 0);
+    const maxDiscount = Math.max(0, Number(ref.couponMaxDiscount) || 0);
+
+    const invitedCoupon = {
+      id: uid(), code: 'REF-'+randomCouponSuffix(), type:'percent', value:percent,
+      active:true, minSubtotal, maxDiscount, restrictToAccountId: STATE.account.id, source:'referral-invitee'
+    };
+    const referrerCoupon = {
+      id: uid(), code: 'REF-'+randomCouponSuffix(), type:'percent', value:percent,
+      active:true, minSubtotal, maxDiscount, restrictToAccountId: referrerId, source:'referral-referrer'
+    };
+    const newSettings = { ...STATE.settings, coupons: [...(STATE.settings.coupons||[]), invitedCoupon, referrerCoupon] };
+    STATE.settings = newSettings;
+    await saveSettingsRemote(newSettings);
+
+    if(supabaseClient){
+      await supabaseClient.from('profiles').update({ referral_rewarded: true }).eq('id', STATE.account.id);
+    }else{
+      const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
+      const idx = list.findIndex(p=>p.id===STATE.account.id);
+      if(idx>-1){ list[idx].referral_rewarded = true; localStorage.setItem('wr-profiles', JSON.stringify(list)); }
+    }
+
+    await sendAdminMessageToAccount(STATE.account.id, `کد تخفیف ${percent}٪ دعوت دوستان شما فعال شد: ${invitedCoupon.code}`);
+    await sendAdminMessageToAccount(referrerId, `دوستی که دعوت کردید خرید کرد! کد تخفیف ${percent}٪ شما: ${referrerCoupon.code}`);
+  }catch(e){ console.error('referral reward error', e); }
+}
+
+async function loadAndRenderReferralStatus(){
+  const box = document.getElementById('referralStatusBox');
+  const copyBtn = document.getElementById('copyReferralLinkBtn');
+  if(copyBtn) copyBtn.onclick = ()=>{
+    const input = document.getElementById('referralLinkInput');
+    if(input){
+      input.select();
+      try{ navigator.clipboard.writeText(input.value); }catch(e){ document.execCommand('copy'); }
+      showToast('لینک کپی شد ✓');
+    }
+  };
+  if(!box || !STATE.account) return;
+  const profile = await getOwnProfileRow(STATE.account.id);
+  const referredBy = profile ? (profile.referred_by || profile.referredBy) : null;
+  const rewarded = profile ? !!(profile.referral_rewarded || profile.referralRewarded) : false;
+  let statusHtml = '';
+  if(referredBy){
+    statusHtml = rewarded
+      ? `<p style="color:var(--ok)">شما با کد دعوت یک دوست ثبت‌نام کرده‌اید و پاداش شما فعال شده — کد تخفیف خود را در «اطلاع‌رسانی‌ها» ببینید.</p>`
+      : `<p>شما با کد دعوت یک دوست ثبت‌نام کرده‌اید. با اولین خرید بالای ${RIAL(STATE.settings.referral?.minPurchase||0)}، کد تخفیف شما فعال می‌شود.</p>`;
+  }else{
+    statusHtml = `<p>هنوز از کد دعوت کسی استفاده نکرده‌اید.</p>`;
+  }
+  box.innerHTML = statusHtml;
+}
+
 // renders the shipping-cost line; when the order qualifies for free shipping,
 // the normal cost is shown struck-through next to "رایگان".
 function shippingLineHtml(subtotal, province, city){
@@ -8144,6 +8584,7 @@ window.closeCartUI = closeCart;
    ADMIN PANEL
 ====================================================================== */
 let adminSection = 'dashboard';
+let adminOrderDetailId = null;
 let adminProductCategoryFilter = 'all';
 let adminProductStockFilter = false;
 let adminReviewStatusFilter = 'pending';
@@ -8162,8 +8603,9 @@ async function isAdminLoggedIn(){
 }
 
 async function renderAdmin(path){
-  const loggedIn = await isAdminLoggedIn();
   const box = $('#adminApp');
+
+  const loggedIn = await isAdminLoggedIn();
 
   if(path==='/admin-login' || (!loggedIn)){
     box.innerHTML = adminLoginScreen();
@@ -8172,6 +8614,7 @@ async function renderAdmin(path){
   }
 
   if(path==='/admin/orders') adminSection='orders';
+  else if(path.startsWith('/admin/order/')){ adminSection='orderDetail'; adminOrderDetailId = decodeURIComponent(path.split('/admin/order/')[1]||''); }
   else if(path==='/admin/stats') adminSection='stats';
   else if(path==='/admin/products' || path.startsWith('/admin/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); }
   else if(path==='/admin/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; }
@@ -8182,6 +8625,7 @@ async function renderAdmin(path){
   else if(path==='/admin/comments' || path.startsWith('/admin/comments')){ adminSection='comments'; adminCommentsTab='messages'; }
   else if(path==='/admin/magazine' || path.startsWith('/admin/magazine')) adminSection='magazine';
   else if(path==='/admin/stock-notify') adminSection='stockNotify';
+  else if(path==='/admin/users') adminSection='users';
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
@@ -8202,6 +8646,10 @@ async function renderAdmin(path){
   if(freshSubscribers) STATE.newsletterSubscribers = freshSubscribers;
   const freshStockNotify = await loadStockNotifyRequests();
   if(freshStockNotify) STATE.stockNotifyRequests = freshStockNotify;
+  const freshProfiles = await loadProfiles();
+  if(freshProfiles) STATE.profiles = freshProfiles;
+  const freshAllAddresses = await loadAllAddresses();
+  if(freshAllAddresses) STATE.allAddresses = freshAllAddresses;
   hideLoading();
 
   box.innerHTML = adminShell();
@@ -8334,12 +8782,13 @@ function adminShell(){
         <a href="/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
         <a href="/admin/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
         <a href="/admin/stock-notify" data-link class="${adminSection==='stockNotify'?'active':''}">اطلاع‌رسانی موجودی${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length}</span>` : ''}</a>
+        <a href="/admin/users" data-link class="${adminSection==='users'?'active':''}">کاربران کلاغ سفید</a>
         <a href="/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
         <a href="/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
         <a href="/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminSection==='users'?adminUsers():adminSection==='orderDetail'?adminOrderDetail(adminOrderDetailId):adminOrders()}
       </div>
     </div>
   </div>
@@ -9131,180 +9580,350 @@ function bindAdminStockNotify(){
     };
   });
 }
-function adminOrders(){
-  const rev = STATE.orders.slice().reverse();
+function bestAddressForAccount(accountId){
+  const list = (STATE.allAddresses||[]).filter(a=>a.accountId===accountId);
+  if(!list.length) return null;
+  return list.find(a=>a.isDefault) || list[0];
+}
+function adminUsers(){
+  const list = STATE.profiles || [];
   return `
-  <h2 class="admin-title">سفارش‌ها</h2>
+  <h2 class="admin-title">کاربران کلاغ سفید</h2>
+  <p style="color:var(--text-dim);font-size:12.5px;margin:-8px 0 18px">تمام افرادی که در سایت ثبت‌نام کرده‌اند؛ برای هرکدام یک شناسه کاربری مجزا ثبت می‌شود. از دکمهٔ «ارسال پیام» می‌توانید برای هرکدام پیام بفرستید تا در حساب کاربری‌شان نمایش داده شود.</p>
+  <div class="form-field" style="max-width:420px;margin-bottom:16px">
+    <input type="text" id="adminUsersSearch" placeholder="جستجو با نام، ایمیل، شماره یا شناسه کاربری...">
+  </div>
   <div class="table-wrap">
     <table class="admin-table">
-      <thead><tr><th>شماره سفارش</th><th>مشتری</th><th>اقلام</th><th>مبلغ نهایی</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th></tr></thead>
-      <tbody>
-        ${rev.map(o=>`<tr${o.status==='لغو شده'?' style="background:rgba(220,60,60,.06)"':''}>
-          <td style="color:var(--gold-light)">${o.id}</td>
-<td>${escapeHtml(
-  typeof o.customer === 'object' && o.customer !== null
-    ? (o.customer.name || 'مهمان')
-    : (o.customer || 'مهمان')
-)}</td>
-
-          <td>${o.items.reduce((s,i)=>s+i.qty,0)} قلم</td>
-          <td>${RIAL(o.total)}${o.couponCode?`<div style="font-size:11px;color:var(--ok);margin-top:3px">کد: ${escapeHtml(o.couponCode)} (${RIAL(o.discount||0)}-)</div>`:''}</td>
-          <td>
-            <select onchange="updateOrderStatus('${o.id}',this.value)" style="background:var(--bg-card);border:1px solid var(--line);color:var(--text);padding:5px 8px;font-size:12px">
-              ${ORDER_STATUSES.map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
-            </select>
-          </td>
-          <td>${new Date(o.createdAt).toLocaleDateString('fa-IR')}</td>
-<td>
-  <button
-    type="button"
-    onclick="showOrderDetails('${o.id}')"
-    style="
-      background:var(--bg-card);
-      color:var(--gold-light);
-      border:1px solid var(--gold-dim);
-      border-radius:8px;
-      padding:5px 9px;
-      font-size:11px;
-      cursor:pointer;
-    "
-  >
-    جزئیات
-  </button>
-
-  ${o.status==='لغو شده' ? `
-  <button
-    type="button"
-    onclick="acknowledgeCancelledOrder('${o.id}')"
-    style="
-      background:#5c1717;
-      color:#fff;
-      border:0;
-      border-radius:8px;
-      padding:5px 9px;
-      font-size:11px;
-      cursor:pointer;
-    "
-  >
-    لغو شد ✓
-  </button>` : `
-  <button
-    type="button"
-    onclick="deleteOrder('${o.id}')"
-    style="
-      background:#5c1717;
-      color:#fff;
-      border:0;
-      border-radius:8px;
-      padding:5px 9px;
-      font-size:11px;
-      cursor:pointer;
-    "
-  >
-    حذف
-  </button>`}
-</td>
-        </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</td></tr>`}
-      </tbody>
+      <thead><tr><th>ردیف</th><th>شناسه کاربری</th><th>نام و نام‌خانوادگی</th><th>ایمیل</th><th>شماره تماس</th><th>آدرس</th><th>تاریخ ثبت‌نام</th><th>عملیات</th></tr></thead>
+      <tbody id="adminUsersTbody">${adminUsersRowsHtml(list)}</tbody>
     </table>
   </div>`;
 }
-
-function showOrderDetails(orderId){
-  const order = STATE.orders.find(o => o.id === orderId);
-
-  if(!order){
-    showToast('سفارش پیدا نشد');
-    return;
+function adminUsersRowsHtml(list){
+  if(!list.length) return `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز هیچ کاربری ثبت‌نام نکرده است</td></tr>`;
+  return list.map((u,i)=>{
+    const id = u.id;
+    const name = u.full_name || u.name || '—';
+    const email = u.email || '—';
+    const phone = u.phone || '—';
+    const raw = u.created_at || u.createdAt;
+    const dt = raw ? new Date(raw) : null;
+    const dateStr = dt && !isNaN(dt) ? dt.toLocaleDateString('fa-IR') : '—';
+    const addr = bestAddressForAccount(id);
+    const addrCell = addr
+      ? `<span class="admin-addr-peek" data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" style="font-size:10.5px;color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:6px;padding:2px 7px;cursor:pointer;white-space:nowrap">📍 ${escapeHtml(addr.city || 'مشاهده')}</span>`
+      : `<span style="color:var(--text-faint);font-size:11.5px">—</span>`;
+    return `<tr data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" class="admin-user-row" style="cursor:pointer">
+      <td>${(i+1).toLocaleString('fa-IR')}</td>
+      <td style="font-family:monospace;font-size:10.5px;color:var(--text-dim);user-select:all">${escapeHtml(id)}</td>
+      <td>${escapeHtml(name)}</td>
+      <td>${escapeHtml(email)}</td>
+      <td>${escapeHtml(phone)}</td>
+      <td>${addrCell}</td>
+      <td>${dateStr}</td>
+      <td><button type="button" class="admin-send-msg-btn" data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" style="background:var(--bg-card);color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer">ارسال پیام</button></td>
+    </tr>`;
+  }).join('');
+}
+function bindAdminUsers(){
+  const search = $('#adminUsersSearch');
+  if(search){
+    search.oninput = ()=>{
+      const q = search.value.trim().toLowerCase();
+      const list = (STATE.profiles||[]).filter(u=>{
+        if(!q) return true;
+        return [u.id, u.full_name||u.name, u.email, u.phone].some(v=> (v||'').toString().toLowerCase().includes(q));
+      });
+      $('#adminUsersTbody').innerHTML = adminUsersRowsHtml(list);
+      bindAdminUsersRowButtons();
+    };
   }
-
-  const customer = typeof order.customer === 'object'
-    ? order.customer
-    : { name: order.customer || 'مهمان' };
-
-  const items = (order.items || []).map(item => `
-    <div style="padding:10px 0;border-bottom:1px solid var(--line)">
-      <b>${escapeHtml(item.name || 'محصول')}</b>
-      <div style="font-size:12px;color:var(--text-faint);margin-top:5px">
-        سایز: ${escapeHtml(item.size || '-')}
-        ${item.color ? `· رنگ: ${escapeHtml(item.color.label || colorLabel(item.color))}` : ''}
-        · تعداد: ${item.qty || 0}
-        · قیمت: ${RIAL(item.unitPrice || 0)}
-      </div>
-    </div>
-  `).join('');
-
+  bindAdminUsersRowButtons();
+}
+function bindAdminUsersRowButtons(){
+  $$('.admin-send-msg-btn').forEach(btn=>{
+    btn.onclick = (e)=>{ e.stopPropagation(); openAdminUserMessageModal(btn.dataset.uid, btn.dataset.name); };
+  });
+  $$('.admin-addr-peek').forEach(el=>{
+    el.onclick = (e)=>{ e.stopPropagation(); openAdminUserAddressModal(el.dataset.uid, el.dataset.name); };
+  });
+  $$('.admin-user-row').forEach(row=>{
+    row.onclick = ()=> openAdminUserOrdersPanel(row.dataset.uid, row.dataset.name);
+  });
+}
+function openAdminUserAddressModal(accountId, name){
+  const addr = bestAddressForAccount(accountId);
   const box = document.createElement('div');
-
-  box.style.cssText = `
-    position:fixed;
-    inset:0;
-    z-index:9999;
-    background:rgba(0,0,0,.7);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-  `;
-
+  box.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px';
   box.innerHTML = `
-    <div style="
-      background:var(--bg-card);
-      border:1px solid var(--line);
-      padding:25px;
-      border-radius:12px;
-      width:min(600px,100%);
-      max-height:90vh;
-      overflow:auto;
-    ">
-
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 class="serif">جزئیات سفارش</h3>
-        <button id="closeOrderDetails"
-          style="background:none;border:0;color:var(--text);font-size:20px">
-          ✕
-        </button>
+    <div style="background:var(--bg-card);border:1px solid var(--line);padding:25px;border-radius:12px;width:min(420px,100%)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 class="serif" style="font-size:16px">آدرس ${escapeHtml(name||'کاربر')}</h3>
+        <button id="adminAddrCloseBtn" style="background:none;border:0;color:var(--text);font-size:20px;cursor:pointer">✕</button>
       </div>
-
-      <hr style="border-color:var(--line);margin:15px 0">
-
-      <h4>اطلاعات مشتری</h4>
-
-      <p>نام: ${escapeHtml(customer.name || '-')}</p>
-      <p>شماره همراه: ${escapeHtml(customer.phone || '-')}</p>
-      <p>استان: ${escapeHtml(customer.province || '-')}</p>
-      <p>شهر: ${escapeHtml(customer.city || '-')}</p>
-      <p>کد پستی: ${escapeHtml(customer.postalCode || '-')}</p>
-      <p>آدرس: ${escapeHtml(customer.address || '-')}</p>
-
-      <hr style="border-color:var(--line);margin:20px 0">
-
-      <h4>محصولات سفارش</h4>
-
-      ${items || '<p>محصولی ثبت نشده</p>'}
-
-      <hr style="border-color:var(--line);margin:20px 0">
-
-      <p>جمع محصولات: ${RIAL(order.subtotal || 0)}</p>
-      <p>هزینه ارسال: ${order.shipping ? RIAL(order.shipping) : 'رایگان'}</p>
-      <strong>مبلغ نهایی: ${RIAL(order.total || 0)}</strong>
-
-    </div>
-  `;
-
+      ${addr ? `
+        <p style="font-size:13px;margin-bottom:6px">گیرنده: ${escapeHtml((addr.firstName||'')+' '+(addr.lastName||'') || '-')}</p>
+        <p style="font-size:13px;margin-bottom:6px">شماره تماس: ${escapeHtml(addr.phone || '-')}</p>
+        <p style="font-size:13px;margin-bottom:6px">استان: ${escapeHtml(addr.province || '-')}</p>
+        <p style="font-size:13px;margin-bottom:6px">شهر: ${escapeHtml(addr.city || '-')}</p>
+        <p style="font-size:13px;margin-bottom:6px">کد پستی: ${escapeHtml(addr.postalCode || '-')}</p>
+        <p style="font-size:13px">آدرس کامل: ${escapeHtml(addr.address || '-')}</p>
+      ` : `<p style="color:var(--text-faint);font-size:13px">آدرسی برای این کاربر ثبت نشده است.</p>`}
+    </div>`;
   document.body.appendChild(box);
+  box.onclick = e=>{ if(e.target===box) box.remove(); };
+  $('#adminAddrCloseBtn').onclick = ()=> box.remove();
+}
+/* ---- per-user orders side panel (opened from the "کاربران کلاغ سفید" table) ----
+   Shows every order placed with this account: a short, fixed-height card per
+   order (total + up to 3 product names, "+N" if more) that expands in place
+   to the full breakdown (products, subtotal, shipping, coupon discount, final
+   total, status) when clicked. */
+function openAdminUserOrdersPanel(accountId, name){
+  const orders = (STATE.orders||[])
+    .filter(o=> o.customer && typeof o.customer==='object' && o.customer.accountId === accountId)
+    .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
 
-  document.getElementById('closeOrderDetails').onclick = () => {
-    box.remove();
-  };
+  const existing = document.getElementById('adminUserOrdersPanel');
+  if(existing) existing.remove();
+  const existingOverlay = document.getElementById('adminUserOrdersOverlay');
+  if(existingOverlay) existingOverlay.remove();
 
-  box.onclick = e => {
-    if(e.target === box) box.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'adminUserOrdersOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,.55)';
+  overlay.onclick = ()=>{ overlay.remove(); const p = document.getElementById('adminUserOrdersPanel'); if(p) p.remove(); };
+  document.body.appendChild(overlay);
+
+  const panel = document.createElement('div');
+  panel.id = 'adminUserOrdersPanel';
+  panel.style.cssText = 'position:fixed;top:0;bottom:0;left:0;width:min(420px,92vw);background:var(--bg-card);border-inline-end:1px solid var(--line);z-index:9998;overflow-y:auto;box-shadow:8px 0 30px rgba(0,0,0,.4);padding:20px';
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h3 class="serif" style="font-size:16px">سفارش‌های ${escapeHtml(name||'کاربر')}</h3>
+      <button id="adminUserOrdersClose" style="background:none;border:0;color:var(--text);font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <p style="font-size:11.5px;color:var(--text-faint);margin-bottom:16px">${orders.length.toLocaleString('fa-IR')} سفارش — روی هر سفارش کلیک کنید تا جزئیات کامل پرداخت و محصولات آن باز شود.</p>
+    <div id="adminUserOrdersList" style="display:flex;flex-direction:column;gap:10px">
+      ${orders.length ? orders.map(o=>adminUserOrderCompactHtml(o)).join('') : `<p style="color:var(--text-faint);font-size:13px">این کاربر هنوز سفارشی ثبت نکرده است.</p>`}
+    </div>`;
+  document.body.appendChild(panel);
+  $('#adminUserOrdersClose').onclick = ()=>{ panel.remove(); overlay.remove(); };
+  panel.onclick = e=> e.stopPropagation();
+  bindAdminUserOrdersPanel();
+}
+function adminUserOrderCompactHtml(order){
+  const dt = new Date(order.createdAt);
+  const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
+  const items = order.items||[];
+  const visible = items.slice(0,3);
+  const extra = items.length - visible.length;
+  const namesLine = visible.map(it=>escapeHtml(it.name||'محصول')).join('، ') + (extra>0 ? ` +${extra.toLocaleString('fa-IR')}` : '');
+  return `
+  <div class="admin-user-order-card" data-oid="${escapeHtml(order.id)}" style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;max-height:78px;overflow:hidden;transition:max-height .2s ease">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <span style="font-size:11px;color:var(--gold-light)">${escapeHtml(order.id)}</span>
+      <span style="font-size:10.5px;color:var(--text-faint)">${dateStr}</span>
+    </div>
+    <div style="font-size:12.5px;margin-top:5px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${namesLine || 'بدون محصول'}</div>
+    <div style="font-size:13px;margin-top:5px;font-weight:600">${RIAL(order.total||0)}</div>
+    <div class="admin-user-order-details" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line);display:none"></div>
+  </div>`;
+}
+function adminUserOrderFullHtml(order){
+  const items = order.items||[];
+  const itemsHtml = items.map(it=>`
+    <div style="padding:6px 0;border-bottom:1px solid var(--line);font-size:12px">
+      <b>${escapeHtml(it.name||'محصول')}</b>
+      <div style="color:var(--text-faint);margin-top:2px">
+        ${it.size?`سایز: ${escapeHtml(it.size)}`:''}${it.color?` · رنگ: ${escapeHtml(it.color.label||colorLabel(it.color))}`:''} · تعداد: ${it.qty||0} · قیمت: ${RIAL(it.unitPrice||0)}
+      </div>
+    </div>`).join('') || `<p style="color:var(--text-faint);font-size:12px">محصولی ثبت نشده</p>`;
+  return `
+  ${itemsHtml}
+  <div style="margin-top:10px;font-size:12.5px;display:flex;flex-direction:column;gap:4px">
+    <div style="display:flex;justify-content:space-between"><span style="color:var(--text-faint)">جمع محصولات</span><span>${RIAL(order.subtotal||0)}</span></div>
+    <div style="display:flex;justify-content:space-between"><span style="color:var(--text-faint)">هزینه ارسال</span><span>${order.shipping?RIAL(order.shipping):'رایگان'}</span></div>
+    ${order.couponCode ? `<div style="display:flex;justify-content:space-between"><span style="color:var(--text-faint)">کد تخفیف (${escapeHtml(order.couponCode)})</span><span style="color:var(--ok)">-${RIAL(order.discount||0)}</span></div>` : ''}
+    <div style="display:flex;justify-content:space-between;font-weight:600;margin-top:4px"><span>مبلغ نهایی</span><span>${RIAL(order.total||0)}</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="color:var(--text-faint)">وضعیت</span><span>${escapeHtml(order.status||'')}</span></div>
+  </div>`;
+}
+function bindAdminUserOrdersPanel(){
+  $$('.admin-user-order-card').forEach(card=>{
+    card.onclick = ()=>{
+      const detailsBox = card.querySelector('.admin-user-order-details');
+      const isOpen = detailsBox.style.display === 'block';
+      if(isOpen){
+        detailsBox.style.display = 'none';
+        card.style.maxHeight = '78px';
+      }else{
+        const order = (STATE.orders||[]).find(o=>o.id===card.dataset.oid);
+        if(order){
+          detailsBox.innerHTML = adminUserOrderFullHtml(order);
+          detailsBox.style.display = 'block';
+          card.style.maxHeight = '2000px';
+        }
+      }
+    };
+  });
+}
+function openAdminUserMessageModal(accountId, name){
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--line);padding:25px;border-radius:12px;width:min(460px,100%)">
+      <h3 style="margin-bottom:4px">ارسال پیام به ${escapeHtml(name||'کاربر')}</h3>
+      <p style="font-size:11.5px;color:var(--text-faint);margin-bottom:14px">این پیام در حساب کاربری این شخص، در بخش اطلاع‌رسانی‌ها، نمایش داده می‌شود.</p>
+      <div class="form-field"><textarea id="adminUserMsgText" rows="4" placeholder="متن پیام..."></textarea></div>
+      <div class="err-msg" id="adminUserMsgErr"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button type="button" class="btn btn-solid" id="adminUserMsgSendBtn" style="flex:1">ارسال</button>
+        <button type="button" class="btn btn-ghost" id="adminUserMsgCancelBtn" style="flex:1">انصراف</button>
+      </div>
+    </div>`;
+  document.body.appendChild(box);
+  box.onclick = e=>{ if(e.target===box) box.remove(); };
+  $('#adminUserMsgCancelBtn').onclick = ()=> box.remove();
+  $('#adminUserMsgSendBtn').onclick = async ()=>{
+    const text = $('#adminUserMsgText').value.trim();
+    const err = $('#adminUserMsgErr');
+    if(!text){ err.textContent = 'متن پیام را وارد کنید.'; return; }
+    const sendBtn = $('#adminUserMsgSendBtn');
+    sendBtn.disabled = true; sendBtn.textContent = 'در حال ارسال...';
+    const ok = await sendAdminMessageToAccount(accountId, text);
+    sendBtn.disabled = false; sendBtn.textContent = 'ارسال';
+    if(ok){ showToast('پیام ارسال شد ✓'); box.remove(); }
+    else{ err.textContent = 'ارسال پیام انجام نشد. دوباره تلاش کنید.'; }
   };
 }
+function adminOrders(){
+  const rev = STATE.orders.slice().reverse();
+  if(!rev.length){
+    return `<h2 class="admin-title">سفارش‌ها</h2><p style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</p>`;
+  }
+  return `
+  <h2 class="admin-title">سفارش‌ها</h2>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    ${rev.map(o=>{
+      const customer = typeof o.customer === 'object' && o.customer !== null ? o.customer : { name: o.customer || 'مهمان' };
+      const itemCount = (o.items||[]).reduce((s,i)=>s+(i.qty||0),0);
+      const cancelled = o.status==='لغو شده';
+      return `
+      <div class="admin-order-card" data-oid="${escapeHtml(o.id)}" style="
+        display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+        padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+        cursor:pointer;background:${cancelled?'rgba(220,60,60,.06)':'var(--bg-card)'};
+      ">
+        <div style="min-width:110px">
+          <div style="font-size:10.5px;color:var(--text-faint)">شماره سفارش</div>
+          <div style="color:var(--gold-light);font-size:12.5px">${escapeHtml(o.id)}</div>
+        </div>
+        <div style="min-width:130px;flex:1">
+          <div style="font-size:10.5px;color:var(--text-faint)">مشتری</div>
+          <div style="font-size:12.5px">${escapeHtml(customer.name || 'مهمان')}</div>
+          ${customer.accountId ? `<div style="font-family:monospace;font-size:9.5px;color:var(--text-faint);margin-top:1px">${escapeHtml(customer.accountId)}</div>` : ''}
+        </div>
+        <div style="min-width:70px">
+          <div style="font-size:10.5px;color:var(--text-faint)">تعداد</div>
+          <div style="font-size:12.5px">${itemCount} قلم</div>
+        </div>
+        <div style="min-width:110px">
+          <div style="font-size:10.5px;color:var(--text-faint)">مبلغ نهایی</div>
+          <div style="font-size:12.5px">${RIAL(o.total)}</div>
+        </div>
+        <div style="min-width:100px">
+          <div style="font-size:10.5px;color:var(--text-faint)">وضعیت</div>
+          <div style="font-size:12.5px">${escapeHtml(o.status||'')}</div>
+        </div>
+        <div style="min-width:90px">
+          <div style="font-size:10.5px;color:var(--text-faint)">تاریخ</div>
+          <div style="font-size:12.5px">${new Date(o.createdAt).toLocaleDateString('fa-IR')}</div>
+        </div>
+        <div style="color:var(--gold-light);font-size:13px;padding:0 4px">›</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+function bindAdminOrders(){
+  $$('.admin-order-card').forEach(card=>{
+    card.onclick = ()=> navigate(`/admin/order/${encodeURIComponent(card.dataset.oid)}`);
+  });
+}
+function adminOrderDetail(orderId){
+  const order = STATE.orders.find(o=>o.id===orderId);
+  if(!order){
+    return `<button type="button" onclick="navigate('/admin/orders')" style="background:none;border:0;color:var(--gold-light);font-size:13px;cursor:pointer;margin-bottom:14px">‹ بازگشت به سفارش‌ها</button>
+    <p style="text-align:center;padding:30px;color:var(--text-faint)">سفارش پیدا نشد</p>`;
+  }
+  const customer = typeof order.customer === 'object' && order.customer !== null ? order.customer : { name: order.customer || 'مهمان' };
+  const profile = customer.accountId ? (STATE.profiles||[]).find(p=>p.id===customer.accountId) : null;
+  const customerEmail = profile?.email || customer.email || '';
+  const items = (order.items||[]).map(item=>`
+    <div style="padding:12px 0;border-bottom:1px solid var(--line)">
+      <b>${escapeHtml(item.name||'محصول')}</b>
+      <div style="font-size:12px;color:var(--text-faint);margin-top:5px">
+        سایز: ${escapeHtml(item.size||'-')}
+        ${item.color?`· رنگ: ${escapeHtml(item.color.label||colorLabel(item.color))}`:''}
+        · تعداد: ${item.qty||0}
+        · قیمت واحد: ${RIAL(item.unitPrice||0)}
+      </div>
+    </div>`).join('') || `<p style="color:var(--text-faint);font-size:13px">محصولی ثبت نشده</p>`;
+  return `
+  <button type="button" onclick="navigate('/admin/orders')" style="background:none;border:0;color:var(--gold-light);font-size:13px;cursor:pointer;margin-bottom:14px">‹ بازگشت به سفارش‌ها</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+    <h2 class="admin-title" style="margin:0">سفارش ${escapeHtml(order.id)}</h2>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="orderDetailStatusSelect" style="background:var(--bg-card);border:1px solid var(--line);color:var(--text);padding:7px 10px;font-size:12.5px;border-radius:6px">
+        ${ORDER_STATUSES.map(s=>`<option ${order.status===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+      ${order.status==='لغو شده'
+        ? `<button type="button" id="orderDetailAckBtn" style="background:#5c1717;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer">لغو شد ✓</button>`
+        : `<button type="button" id="orderDetailDeleteBtn" style="background:#5c1717;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer">حذف سفارش</button>`}
+    </div>
+  </div>
 
-window.showOrderDetails = showOrderDetails;
+  <div style="background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:700px">
+    <h4>اطلاعات سفارش</h4>
+    <p>شماره سفارش: ${escapeHtml(order.id||'-')}</p>
+    <p>تاریخ ثبت: ${order.createdAt ? new Date(order.createdAt).toLocaleString('fa-IR') : '-'}</p>
+    <p>وضعیت: ${escapeHtml(order.status||'-')}</p>
+    <p>روش پرداخت: ${escapeHtml(customer.paymentMethod||'-')}</p>
 
+    <hr style="border-color:var(--line);margin:20px 0">
+
+    <h4>اطلاعات مشتری</h4>
+    <p>شناسه کاربری: ${customer.accountId ? `<span style="font-family:monospace;font-size:11px;user-select:all">${escapeHtml(customer.accountId)}</span>` : 'مهمان (بدون حساب کاربری)'}</p>
+    <p>نام: ${escapeHtml(customer.name||'-')}</p>
+    <p>ایمیل: ${escapeHtml(customerEmail||'-')}</p>
+    <p>شماره همراه: ${escapeHtml(customer.phone||'-')}</p>
+    <p>استان: ${escapeHtml(customer.province||'-')}</p>
+    <p>شهر: ${escapeHtml(customer.city||'-')}</p>
+    <p>کد پستی: ${escapeHtml(customer.postalCode||'-')}</p>
+    <p>آدرس: ${escapeHtml(customer.address||'-')}</p>
+
+    <hr style="border-color:var(--line);margin:20px 0">
+
+    <h4>محصولات سفارش</h4>
+    ${items}
+
+    <hr style="border-color:var(--line);margin:20px 0">
+
+    <p>جمع محصولات: ${RIAL(order.subtotal||0)}</p>
+    <p>هزینه ارسال: ${order.shipping?RIAL(order.shipping):'رایگان'}</p>
+    ${order.couponCode?`<p style="color:var(--ok)">کد تخفیف (${escapeHtml(order.couponCode)}): -${RIAL(order.discount||0)}</p>`:''}
+    <strong>مبلغ نهایی: ${RIAL(order.total||0)}</strong>
+  </div>`;
+}
+function bindAdminOrderDetail(orderId){
+  const sel = $('#orderDetailStatusSelect');
+  if(sel) sel.onchange = ()=> updateOrderStatus(orderId, sel.value);
+  const ackBtn = $('#orderDetailAckBtn');
+  if(ackBtn) ackBtn.onclick = ()=> acknowledgeCancelledOrder(orderId);
+  const delBtn = $('#orderDetailDeleteBtn');
+  if(delBtn) delBtn.onclick = ()=> deleteOrder(orderId);
+}
 
 window.updateOrderStatus = async (id, status)=>{
   const o = STATE.orders.find(x=>x.id===id);
@@ -9315,6 +9934,10 @@ window.updateOrderStatus = async (id, status)=>{
     o.status = status;
     await withLoading(()=>updateOrderStatusRemote(id, status));
     showToast('وضعیت سفارش بروزرسانی شد');
+    if(adminSection==='orderDetail'){
+      $('#adminMain').innerHTML = adminOrderDetail(adminOrderDetailId);
+      bindAdminOrderDetail(adminOrderDetailId);
+    }
   }
 };
 async function deleteOrder(id) {
@@ -9344,7 +9967,8 @@ async function deleteOrder(id) {
 
   alert('سفارش با موفقیت حذف شد ✓');
 
-  router();
+  if(adminSection==='orderDetail') navigate('/admin/orders');
+  else router();
 }
 async function acknowledgeCancelledOrder(id) {
   const ok = confirm('با تایید این پیام، لغو سفارش را تایید می‌کنید و محصولی برای آن ارسال نخواهد شد. سفارش برای همیشه حذف می‌شود. ادامه می‌دهید؟');
@@ -9373,7 +9997,8 @@ async function acknowledgeCancelledOrder(id) {
 
   alert('لغو سفارش تایید و حذف شد ✓');
 
-  router();
+  if(adminSection==='orderDetail') navigate('/admin/orders');
+  else router();
 }
 window.acknowledgeCancelledOrder = acknowledgeCancelledOrder;
 
@@ -10075,6 +10700,7 @@ function adminDescriptions(){
     previewPercentSign = 1;
     pendingCoupons = (s.coupons||[]).map(c=>({...c}));
     editingCouponId = null;
+    pendingReferral = {...defaultSettings().referral, ...(s.referral||{})};
     pendingDescriptionsInit = true;
   }
   return `
@@ -10177,6 +10803,35 @@ function adminDescriptions(){
       </div>
     </div>
     <div id="couponListBox" style="margin-top:18px">${couponListHtml()}</div>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">دعوت دوستان (رفرال)</h3>
+    <p class="settings-desc">هر مشتری یک کد/لینک دعوت اختصاصی دارد (در حساب کاربری او نمایش داده می‌شود). وقتی فردی که تاکنون ثبت‌نام نکرده با این لینک ثبت‌نام کند و حداقل مبلغ تعیین‌شده زیر را خرید کند، هم به او و هم به دعوت‌کننده، یک کد تخفیف اختصاصی و شخصی (فقط قابل استفاده توسط خودشان) با درصد زیر تعلق می‌گیرد. حداقل مبلغ خرید برای استفاده از این کدهای پاداش، و سقف مبلغ تخفیف را هم می‌توانید تعیین کنید.</p>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:14px">
+      <input type="checkbox" id="referralActiveInput" ${pendingReferral.active?'checked':''}> فعال باشد
+    </label>
+    <div class="form-row2">
+      <div class="form-field">
+        <label>درصد تخفیف (برای هر دو نفر)</label>
+        <input type="number" inputmode="numeric" min="0" max="100" step="1" id="referralPercentInput" value="${pendingReferral.percent}">
+      </div>
+      <div class="form-field">
+        <label>حداقل مبلغ خرید برای فعال شدن پاداش (تومان) — شامل هزینه ارسال</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="referralMinPurchaseInput" value="${pendingReferral.minPurchase}">
+      </div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field">
+        <label>حداقل مبلغ خرید برای استفاده از کد پاداش (تومان) — اختیاری</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="referralCouponMinSubtotalInput" value="${pendingReferral.couponMinSubtotal||''}" placeholder="بدون محدودیت">
+      </div>
+      <div class="form-field">
+        <label>سقف مبلغ تخفیف کد پاداش (تومان) — اختیاری</label>
+        <input type="number" inputmode="numeric" min="0" step="1000" id="referralCouponMaxDiscountInput" value="${pendingReferral.couponMaxDiscount||''}" placeholder="بدون سقف">
+      </div>
+    </div>
+    <button type="button" class="btn btn-solid" id="saveReferralBtn" style="margin-top:6px">ذخیره</button>
   </div>
   `;
 }
@@ -10324,6 +10979,26 @@ function bindCouponRowEvents(){
       bindCouponRowEvents();
     };
   });
+}
+
+function bindReferralUI(){
+  const saveBtn = $('#saveReferralBtn');
+  if(!saveBtn) return; // not on the descriptions page
+  saveBtn.onclick = async ()=>{
+    const percent = Math.min(100, Math.max(0, Number($('#referralPercentInput').value) || 0));
+    const minPurchase = Math.max(0, Number($('#referralMinPurchaseInput').value) || 0);
+    const couponMinSubtotal = Math.max(0, Number($('#referralCouponMinSubtotalInput').value) || 0);
+    const couponMaxDiscountVal = $('#referralCouponMaxDiscountInput').value;
+    const couponMaxDiscount = (couponMaxDiscountVal && Number(couponMaxDiscountVal)>0) ? Number(couponMaxDiscountVal) : 0;
+    pendingReferral = {
+      active: $('#referralActiveInput').checked,
+      percent, minPurchase, couponMinSubtotal, couponMaxDiscount
+    };
+    const newSettings = {...STATE.settings, referral: pendingReferral};
+    STATE.settings = newSettings;
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('تنظیمات دعوت دوستان ذخیره شد ✓');
+  };
 }
 
 function shippingRateListHtml(){
@@ -10555,6 +11230,9 @@ function bindAdminShell(){
   }
 
   if(adminSection==='stockNotify') bindAdminStockNotify();
+  if(adminSection==='users') bindAdminUsers();
+  if(adminSection==='orders') bindAdminOrders();
+  if(adminSection==='orderDetail') bindAdminOrderDetail(adminOrderDetailId);
   if(adminSection==='stats') loadGA4Stats();
 
   const addBtn = $('#addProductBtn');
@@ -11696,6 +12374,7 @@ let previewPercentValue = 0;
 let previewPercentSign = 1;
 let pendingCoupons = [];
 let editingCouponId = null;
+let pendingReferral = {active:false, percent:10, minPurchase:1000000, couponMinSubtotal:0, couponMaxDiscount:0};
 let pendingAnnouncementIcon = '';
 let pendingAnnouncementBars = [];
 let pendingAnnouncementInit = false;
@@ -11968,6 +12647,7 @@ function bindCategoryRowEvents(){
 function bindDescriptionsUI(){
   bindShippingRatesUI();
   bindCouponsUI();
+  bindReferralUI();
 
   const saveShippingBtn = $('#saveShippingBtn');
   if(!saveShippingBtn) return; // not on the descriptions page
