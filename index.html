@@ -46,7 +46,16 @@
   var l = window.location;
   if(l.search[1] === '/'){
     var decoded = l.search.slice(1).split('&').map(function(s){ return s.replace(/~and~/g, '&'); }).join('?');
-    window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+    // امنیت: فقط کاراکترهایی که توی یک مسیر/کوئری‌استرینگ عادی معنا دارن مجازن
+    // (حروف، اعداد، و علائم استاندارد URL). هر چیز دیگه (مثل < > " ' که می‌تونه
+    // برای XSS استفاده بشه) حذف می‌شه، حتی اگه جایی بعداً innerHTML بشه.
+    decoded = decoded.replace(/[^\w\-./?&=%~ٱ-ی]/g, '');
+    var newPath = l.pathname.slice(0, -1) + decoded + l.hash;
+    // فقط اگه مسیر نهایی هنوز با / شروع بشه (یعنی از دستکاری location.pathname
+    // بیرون نزده باشیم) اعمالش کن
+    if(newPath.indexOf('/') === 0){
+      window.history.replaceState(null, null, newPath);
+    }
   }
 })();
 </script>
@@ -3945,8 +3954,40 @@ function postAuthNavigate(){
 
 /* ---------------- init ---------------- */
 
+// روی موبایل و با نت ضعیف، ممکن است یکی از درخواست‌های زیر (محصولات، سفارش‌ها،
+// تنظیمات و...) fail شود. قبلاً این باعث می‌شد کل init() با خطا متوقف شود و
+// bindGlobalUI/router هرگز اجرا نشوند — یعنی دکمه‌های سبد خرید و دسته‌بندی در
+// پایین صفحه هیچ واکنشی نشان نمی‌دادند تا کاربر صفحه را رفرش می‌کرد. این تابع
+// یک بار خودکار retry می‌کند تا خطاهای موقتی شبکه بدون نیاز به رفرش دستی حل شوند.
+async function loadInitialDataWithRetry(){
+  const loaders = ()=>Promise.all([
+    loadProducts(),
+    loadOrders(),
+    loadMessagesRemote(),
+    loadSettings(),
+    sGet('cart', false),
+    getCurrentAccount(),
+    sGet('wishlist', false),
+    loadAllReviews(),
+    loadMagazinePosts()
+  ]);
+  try{
+    return await loaders();
+  }catch(e){
+    console.error('Initial data load failed, retrying once…', e);
+    await new Promise(r=>setTimeout(r, 1200));
+    try{
+      return await loaders();
+    }catch(e2){
+      console.error('Initial data load failed again, continuing with defaults', e2);
+      return [null, null, null, null, null, null, null, null, null];
+    }
+  }
+}
+
 async function init(){
   showLoading();
+  let loadFailed = false;
   try{
   const [
     products,
@@ -3958,17 +3999,8 @@ async function init(){
     wishlist,
     reviews,
     magazinePosts
-  ] = await Promise.all([
-    loadProducts(),
-    loadOrders(),
-    loadMessagesRemote(),
-    loadSettings(),
-    sGet('cart', false),
-    getCurrentAccount(),
-    sGet('wishlist', false),
-    loadAllReviews(),
-    loadMagazinePosts()
-  ]);
+  ] = await loadInitialDataWithRetry();
+  loadFailed = !products;
 
   let finalProducts = products;
 
@@ -4032,6 +4064,22 @@ async function init(){
   renderCart();
   renderWishlistBadge();
   renderAccountNotifBadge();
+
+  if(loadFailed){
+    showToast('مشکلی در اتصال پیش آمد — برای اطلاعات کامل صفحه را رفرش کنید');
+  }
+  }catch(e){
+    // اگر با وجود retry، خطای غیرمنتظره‌ای رخ داد، حداقل رابط کاربری (دکمه‌های
+    // سبد خرید/دسته‌بندی، منوها و...) را فعال می‌کنیم تا صفحه کاملاً بی‌واکنش نماند.
+    console.error('init() failed unexpectedly', e);
+    try{
+      STATE.products = STATE.products || [];
+      STATE.settings = STATE.settings || defaultSettings();
+      bindGlobalUI();
+      window.addEventListener('popstate', ()=>{ router(); trackPageView(); });
+      router();
+    }catch(e2){ console.error('fallback UI bind also failed', e2); }
+    showToast('مشکلی در اتصال پیش آمد — لطفاً صفحه را رفرش کنید');
   }finally{
     hideLoading();
     // بعد از لودینگ اولیه، آیکون حذف می‌شود تا در لودینگ‌های بعدی نمایش داده نشود
@@ -4211,6 +4259,52 @@ function bindGlobalUI(){
   function closeMobile(){ $('#mobileNav').classList.remove('open'); $('#mobileOverlay').classList.remove('open'); }
   $$('#mobileNav a').forEach(a=>a.addEventListener('click', closeMobile));
   $('#mobileNav').addEventListener('click', (e)=>{ if(e.target.closest('a')) closeMobile(); });
+
+  // swipe-to-close: drag the mobile category/menu drawer to the right (the direction it opens from) to dismiss it
+  (function initMobileNavSwipeToClose(){
+    const drawer = $('#mobileNav');
+    if(!drawer) return;
+    let startX = 0, startY = 0, dragging = false, isHorizontal = false;
+    const threshold = 90; // px dragged right before it counts as a close swipe
+
+    drawer.addEventListener('touchstart', e=>{
+      if(!drawer.classList.contains('open')) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      dragging = true;
+      isHorizontal = false;
+      drawer.style.transition = 'none';
+    }, {passive:true});
+
+    drawer.addEventListener('touchmove', e=>{
+      if(!dragging) return;
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      if(!isHorizontal){
+        if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        isHorizontal = Math.abs(dx) > Math.abs(dy);
+        if(!isHorizontal){ dragging = false; return; }
+      }
+      if(dx > 0){ // only allow dragging toward the closed (right) side
+        drawer.style.transform = `translateX(${dx}px)`;
+        const overlay = $('#mobileOverlay');
+        if(overlay) overlay.style.opacity = String(Math.max(0, 1 - dx/300));
+      }
+    }, {passive:true});
+
+    function endDrag(e){
+      if(!dragging || !isHorizontal) { dragging = false; return; }
+      dragging = false;
+      drawer.style.transition = '';
+      drawer.style.transform = '';
+      const overlay = $('#mobileOverlay');
+      if(overlay) overlay.style.opacity = '';
+      const endX = (e.changedTouches ? e.changedTouches[0].clientX : startX);
+      if(endX - startX > threshold) closeMobile();
+    }
+    drawer.addEventListener('touchend', endDrag);
+    drawer.addEventListener('touchcancel', endDrag);
+  })();
 
   const mobileProductsDrop = $('#mobileProductsDrop');
   const mobileProductsTrigger = $('#mobileProductsTrigger');
