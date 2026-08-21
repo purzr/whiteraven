@@ -1,0 +1,21 @@
+RewriteEngine On
+
+# 1) اجبار HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2) یکسان‌سازی دامنه: حذف www (اگر ترجیح می‌دهی www اصلی باشد، این خط را برعکس کن)
+RewriteCond %{HTTP_HOST} ^www\.whiteraven\.ir$ [NC]
+RewriteRule ^ https://whiteraven.ir%{REQUEST_URI} [L,R=301]
+
+# 3) فایل‌ها و پوشه‌های واقعی (عکس‌ها، css، js و ...) مستقیم سرو شوند
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 4) بقیه‌ی مسیرها (/product/xxx و ...) مستقیماً توسط خود index.html سرو شوند
+#    (نه از طریق 404 — این‌طوری هیچ ری‌دایرکتی لازم نیست و لوپ هم پیش نمی‌آید)
+RewriteRule ^ index.html [L]
+
+# اگر به هر دلیلی هاست از mod_rewrite پشتیبانی نکرد، این‌ها fallback هستند:
+ErrorDocument 404 /404.html

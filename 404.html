@@ -1,27 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
-<title>White Raven</title>
-<!--
-  گیت‌هاب‌پیجز فقط فایل استاتیک سرو می‌کند و از مسیرهای واقعی مثل
-  /product/123 خبر ندارد — برای هر آدرسی غیر از فایل‌های واقعی، همین
-  صفحه‌ی 404.html را نشان می‌دهد. این اسکریپت مسیر درخواستی را به یک
-  کوئری‌استرینگ تبدیل می‌کند و کاربر را به index.html هدایت می‌کند؛
-  اسکریپت داخل index.html هم آن را دوباره به مسیر اصلی برمی‌گرداند.
-  (بر پایه‌ی روش استاندارد rafgraph/spa-github-pages)
--->
+<meta charset="UTF-8">
+<title>در حال انتقال...</title>
 <script>
-  var pathSegmentsToKeep = 0; // اگر سایت روی دامنه‌ی اختصاصی (whiteraven.ir) است این عدد 0 بماند
+(function(){
   var l = window.location;
+  // اگر همین الان روی یک لینک ری‌دایرکت‌شده هستیم (یعنی already has ?/...),
+  // دوباره ری‌دایرکت نکن تا لوپ نشود.
+  if (l.search[1] === '/') { return; }
+
+  var path = l.pathname + l.search.replace('?','&') + l.hash;
+  path = path.replace(/&/g, '~and~');
+
   l.replace(
     l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-    l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-    l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-    (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-    l.hash
+    '/?/' + path.slice(1)
   );
+})();
 </script>
 </head>
-<body></body>
+<body>
+  <p>در حال انتقال به صفحه...</p>
+</body>
 </html>
