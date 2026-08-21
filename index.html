@@ -310,6 +310,15 @@ header.site{
   backdrop-filter:blur(16px) saturate(160%);
   border-bottom:1px solid color-mix(in srgb, var(--line) 60%, transparent);
   box-shadow:0 8px 32px rgba(var(--shadow-color),.06);
+  transform:translateZ(0);
+  will-change:transform;
+}
+@-moz-document url-prefix(){
+  header.site{
+    background:var(--bg);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
 }
 .header-row{
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
@@ -463,6 +472,18 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
   border-top:1px solid color-mix(in srgb, var(--line) 60%, transparent);
   padding-bottom:env(safe-area-inset-bottom,0px);
   box-shadow:0 -8px 32px rgba(var(--shadow-color),.06);
+  transform:translateZ(0);
+  will-change:transform;
+}
+@supports not (-webkit-backdrop-filter: blur(1px)) and not (backdrop-filter: blur(1px)) {
+  .mobile-bottom-nav{ background:var(--bg); }
+}
+@-moz-document url-prefix(){
+  .mobile-bottom-nav{
+    background:var(--bg);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
 }
 .mobile-bottom-nav-row{display:flex;align-items:stretch;justify-content:space-around}
 .mbn-item{
@@ -738,6 +759,19 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .shop-sort-option.active{color:var(--gold-light);font-weight:600}
 .shop-sort-option svg{width:15px;height:15px;flex:none;opacity:.75}
 .shop-sort-option.active svg{color:var(--gold-light);opacity:1}
+.shop-filter-count{position:absolute;top:-2px;left:-2px;background:var(--gold);color:#0a0a0b;font-size:9.5px;font-weight:700;min-width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+.shop-filter-menu{min-width:220px;padding:12px}
+.shop-filter-group{margin-bottom:12px}
+.shop-filter-group:last-of-type{margin-bottom:0}
+.shop-filter-group-title{font-size:11px;color:var(--text-faint);margin-bottom:8px}
+.shop-filter-chips{display:flex;flex-wrap:wrap;gap:7px}
+.shop-filter-chip{border:1px solid var(--line);background:none;color:var(--text);font-family:inherit;font-size:11.5px;padding:5px 11px;border-radius:20px;cursor:pointer;white-space:nowrap}
+.shop-filter-chip:hover{border-color:var(--gold-light)}
+.shop-filter-chip.active{background:var(--gold);border-color:var(--gold);color:#0a0a0b;font-weight:600}
+.shop-filter-color{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);cursor:pointer;padding:0;position:relative}
+.shop-filter-color.active{box-shadow:0 0 0 2px var(--bg-card),0 0 0 4px var(--gold)}
+.shop-filter-clear{width:100%;text-align:center;border:none;background:none;color:var(--text-faint);font-family:inherit;font-size:11.5px;padding:9px 4px 2px;cursor:pointer;border-top:1px solid var(--line);margin-top:10px}
+.shop-filter-clear:hover{color:var(--gold-light)}
 
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;min-width:0}
 .grid>*{min-width:0}
@@ -946,7 +980,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .pd-gallery-arrow.next{left:12px}
 .pd-gallery-arrow.prev{right:12px}
 .pd-gallery-thumbs-row{display:flex;align-items:center;gap:8px;margin-top:12px}
-.pd-gallery-thumbs{display:flex;gap:10px;flex:1;min-width:0;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}
+.pd-gallery-thumbs{display:flex;gap:10px;flex:1;min-width:0;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;justify-content:center}
 .pd-gallery-thumbs::-webkit-scrollbar{display:none}
 .pd-gallery-thumbs button{width:64px;height:64px;flex:none;border:1px solid var(--line);border-radius:6px;overflow:hidden;opacity:.55;transition:.2s;padding:0}
 .pd-gallery-thumbs button.active{opacity:1;border-color:var(--gold)}
@@ -1342,8 +1376,8 @@ footer.site{font-family:var(--font-footer)}
 /* ===== Toast ===== */
 .toast{
   position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(30px);
-  background:var(--gold);color:#0a0a0b;padding:14px 26px;font-size:13.5px;
-  z-index:400;opacity:0;transition:all .35s;display:flex;align-items:center;gap:10px;
+  background:var(--gold);color:#0a0a0b;padding:7px 14px;font-size:11px;
+  z-index:400;opacity:0;transition:all .35s;display:flex;align-items:center;gap:6px;
   box-shadow:0 12px 30px rgba(0,0,0,.4);
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -1459,25 +1493,25 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .logo-upload-box:hover{border-color:var(--gold)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal-box{background:var(--bg-alt);border:1px solid var(--line);border-radius:14px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:30px}
-.modal-box h3{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:20px}
+.modal-box{background:var(--bg-alt);border:1px solid var(--line);border-radius:12px;max-width:400px;width:100%;max-height:88vh;overflow-y:auto;padding:16px;font-size:12px}
+.modal-box h3{font-family:'Cormorant Garamond',serif;font-size:16px;margin-bottom:11px}
 .modal-close-row{display:flex;justify-content:flex-end;margin-bottom:6px}
 
 /* ===== notify-me bottom sheet (product out of stock) ===== */
 .notify-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;display:none;align-items:flex-end;justify-content:center}
 .notify-sheet-overlay.open{display:flex}
-.notify-sheet{background:var(--bg-card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px 20px 26px;transform:translateY(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);max-height:85vh;overflow-y:auto}
+.notify-sheet{background:var(--bg-card);width:100%;max-width:380px;border-radius:14px 14px 0 0;padding:11px 13px 16px;transform:translateY(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);max-height:85vh;overflow-y:auto}
 .notify-sheet-overlay.open .notify-sheet{transform:translateY(0)}
-.notify-sheet-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--line)}
-.notify-sheet-head h3{font-family:var(--font-header);font-size:16px;font-weight:600;margin:0}
-.notify-sheet-close{background:none;border:none;color:var(--text);cursor:pointer;padding:4px;display:flex;font-size:16px}
-.notify-sheet-q{font-size:14px;font-weight:600;margin-bottom:16px;text-align:center;color:var(--text)}
-.notify-opt-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 2px}
+.notify-sheet-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--line)}
+.notify-sheet-head h3{font-family:var(--font-header);font-size:12px;font-weight:600;margin:0}
+.notify-sheet-close{background:none;border:none;color:var(--text);cursor:pointer;padding:3px;display:flex;font-size:12px}
+.notify-sheet-q{font-size:11px;font-weight:600;margin-bottom:10px;text-align:center;color:var(--text)}
+.notify-opt-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 2px}
 .notify-opt-row+.notify-opt-row{border-top:1px solid var(--line)}
-.notify-opt-label{flex:1;color:var(--text);font-size:13px}
-.notify-opt-input{flex:1;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);font-size:12.5px;margin-inline-start:10px}
-.notify-opt-row input[type=checkbox]{width:19px;height:19px;accent-color:var(--gold);flex:none;cursor:pointer}
-.notify-sheet-submit{width:100%;margin-top:18px;padding:13px;border-radius:8px;border:none;background:var(--line);color:var(--text-faint);font-size:14px;font-weight:600;cursor:not-allowed}
+.notify-opt-label{flex:1;color:var(--text);font-size:10.5px}
+.notify-opt-input{flex:1;min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);font-size:10px;margin-inline-start:10px}
+.notify-opt-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--gold);flex:none;cursor:pointer}
+.notify-sheet-submit{width:100%;margin-top:11px;padding:8px;border-radius:8px;border:none;background:var(--line);color:var(--text-faint);font-size:11.5px;font-weight:600;cursor:not-allowed}
 .notify-sheet-submit.enabled{background:var(--gold);color:#1a1512;cursor:pointer}
 .notify-bell-btn{flex:none;width:52px;height:52px;padding:0;display:flex;align-items:center;justify-content:center}
 .notify-me-btn{background:rgba(201,160,102,.14) !important;border:1.5px solid var(--gold) !important;color:var(--gold-light) !important;box-shadow:none !important;position:relative;overflow:hidden}
@@ -1741,10 +1775,10 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
   <div class="container">
     <div class="foot-grid">
       <div class="foot-col">
-        <img id="footerLogoImgDarkDesktop" class="footer-logo-img footer-logo-desktop footer-logo-dark" alt="لوگوی فوتر - تم مشکی - دسکتاپ">
-        <img id="footerLogoImgClassicDesktop" class="footer-logo-img footer-logo-desktop footer-logo-classic" alt="لوگوی فوتر - تم روشن - دسکتاپ">
-        <img id="footerLogoImgDarkMobile" class="footer-logo-img footer-logo-mobile footer-logo-dark" alt="لوگوی فوتر - تم مشکی - موبایل">
-        <img id="footerLogoImgClassicMobile" class="footer-logo-img footer-logo-mobile footer-logo-classic" alt="لوگوی فوتر - تم روشن - موبایل">
+        <img loading="lazy" decoding="async" id="footerLogoImgDarkDesktop" class="footer-logo-img footer-logo-desktop footer-logo-dark" alt="لوگوی فوتر - تم مشکی - دسکتاپ">
+        <img loading="lazy" decoding="async" id="footerLogoImgClassicDesktop" class="footer-logo-img footer-logo-desktop footer-logo-classic" alt="لوگوی فوتر - تم روشن - دسکتاپ">
+        <img loading="lazy" decoding="async" id="footerLogoImgDarkMobile" class="footer-logo-img footer-logo-mobile footer-logo-dark" alt="لوگوی فوتر - تم مشکی - موبایل">
+        <img loading="lazy" decoding="async" id="footerLogoImgClassicMobile" class="footer-logo-img footer-logo-mobile footer-logo-classic" alt="لوگوی فوتر - تم روشن - موبایل">
         <h5 class="serif no-underline" style="font-family:var(--font-footer);font-size:17px;letter-spacing:.14em;background:none;-webkit-background-clip:initial;background-clip:initial;-webkit-text-fill-color:var(--gold-light);color:var(--gold-light);padding-bottom:0">WHITE RAVEN</h5>
         <p style="margin-top:10px" id="footerTaglineText">زیبایی در جزئیات، اعتماد به نفس در هر لحظه. لباس زیر زنانه و مردانه با کیفیت برتر و طراحی خاص.</p>
         <div class="foot-social">
@@ -2025,7 +2059,7 @@ function showLoading(){
   // safety net: never let the overlay stay stuck forever if something
   // forgets to call hideLoading() or a request hangs unexpectedly.
   // Admin panel gets a much shorter cap (2s) than the storefront (20s).
-  const isAdminRoute = currentPath().startsWith('/admin');
+  const isAdminRoute = currentPath().startsWith('/purzr');
   _glSafetyTimer = setTimeout(()=>{
     _glCount = 0;
     if(el) el.classList.remove('show');
@@ -2208,11 +2242,15 @@ let supabaseClient = null;
 if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY' && window.supabase) {
   try {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    supabaseClient.auth.onAuthStateChange((event, session)=>{
+    supabaseClient.auth.onAuthStateChange(async (event, session)=>{
       if(event === 'SIGNED_OUT'){
         STATE.account = null;
-      }else if(session?.user && session.user.email !== 'purzrshop@gmail.com'){
-        STATE.account = accountFromSupabaseUser(session.user);
+        _isAdminCache = null;
+      }else if(session?.user){
+        if(event === 'SIGNED_IN') _isAdminCache = null;
+        if(!(await isAdminEmail(session.user.email))){
+          STATE.account = accountFromSupabaseUser(session.user);
+        }
       }
     });
   }
@@ -2231,6 +2269,43 @@ function rowToProduct(row){
     createdAt: row.created_at||null, fabricFeatures: row.fabric_features||[], colors: row.colors||[],
     discountUpdatedAt: row.discount_updated_at||null
   };
+}
+
+/* فشرده‌سازی سمت کاربر پیش از آپلود: تصویر را حداکثر تا maxDim پیکسل (طول ضلع بزرگ‌تر)
+   کوچک می‌کند و برای jpg/webp با کیفیت quality دوباره encode می‌شود تا حجم فایل کم شود.
+   PNG برای حفظ شفافیت (لوگو/آیکون) به همان فرمت باقی می‌ماند و فقط رزایز می‌شود.
+   اگر فایل از قبل کوچک/سبک بود یا فشرده‌سازی کمکی نکرد، فایل اصلی بدون تغییر برگردانده می‌شود. */
+function compressImage(file, {maxDim = 1600, quality = 0.82} = {}){
+  return new Promise(resolve=>{
+    if(!file || !file.type || !file.type.startsWith('image/') || file.type==='image/gif' || file.type==='image/svg+xml'){
+      resolve(file); return;
+    }
+    const objUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      URL.revokeObjectURL(objUrl);
+      const {width, height} = img;
+      if(width <= maxDim && height <= maxDim && file.size < 300*1024){
+        resolve(file); return;
+      }
+      const ratio = Math.min(1, maxDim / Math.max(width, height));
+      const w = Math.max(1, Math.round(width * ratio));
+      const h = Math.max(1, Math.round(height * ratio));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const isPng = file.type === 'image/png';
+      const outType = isPng ? 'image/png' : 'image/jpeg';
+      canvas.toBlob(blob=>{
+        if(!blob || blob.size >= file.size){ resolve(file); return; }
+        const newName = file.name.replace(/\.\w+$/, isPng ? '.png' : '.jpg');
+        resolve(new File([blob], newName, {type: outType}));
+      }, outType, isPng ? undefined : quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(objUrl); resolve(file); };
+    img.src = objUrl;
+  });
 }
 
 function base64ToBlob(dataUrl){
@@ -2309,7 +2384,8 @@ function normalizeImages(p){
 function rowToOrder(row){
   return {
     id: row.id, items: row.items, subtotal: row.subtotal, shipping: row.shipping,
-    total: row.total, status: row.status, createdAt: row.created_at, customer: row.customer
+    total: row.total, status: row.status, createdAt: row.created_at, customer: row.customer,
+    couponCode: row.coupon_code || '', discount: row.discount || 0
   };
 }
 
@@ -2455,7 +2531,8 @@ async function uploadMagazineImage(file){
 /* sets <title> and the meta-description tag for SEO on a given page —
    restores the site default when leaving that page */
 const DEFAULT_TITLE = document.title;
-function setPageMeta(title, description){
+const DEFAULT_OG_IMAGE = document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+function setPageMeta(title, description, image){
   document.title = title || DEFAULT_TITLE;
   let metaDesc = document.querySelector('meta[name="description"]');
   if(!metaDesc){
@@ -2464,7 +2541,7 @@ function setPageMeta(title, description){
     document.head.appendChild(metaDesc);
   }
   if(description) metaDesc.setAttribute('content', description);
-  // og:title / og:description را هم برای همین صفحه به‌روز می‌کنیم — کراولرهای
+  // og:title / og:description / og:image را هم برای همین صفحه به‌روز می‌کنیم — کراولرهای
   // شبکه‌های اجتماعی این تغییر را نمی‌بینند (چون جاوااسکریپت اجرا نمی‌کنند و
   // مقدار استاتیک <head> را می‌گیرند)، اما گوگل که جاوااسکریپت را اجرا می‌کند
   // نسخه‌ی به‌روزشده‌ی هر صفحه را برای ایندکس می‌بیند.
@@ -2474,6 +2551,15 @@ function setPageMeta(title, description){
   if(ogDesc && description) ogDesc.setAttribute('content', description);
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if(ogUrl) ogUrl.setAttribute('content', location.origin + currentPath());
+  const finalImage = image || DEFAULT_OG_IMAGE;
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if(ogImage && finalImage) ogImage.setAttribute('content', finalImage);
+  const twTitle = document.querySelector('meta[name="twitter:title"]');
+  if(twTitle) twTitle.setAttribute('content', title || DEFAULT_TITLE);
+  const twDesc = document.querySelector('meta[name="twitter:description"]');
+  if(twDesc && description) twDesc.setAttribute('content', description);
+  const twImage = document.querySelector('meta[name="twitter:image"]');
+  if(twImage && finalImage) twImage.setAttribute('content', finalImage);
   removeProductJsonLd();
 }
 
@@ -2618,9 +2704,9 @@ async function updateReviewReplyRemote(id, reply){
   }
   return replyAt;
 }
-async function updateReviewLikesRemote(id, likes){
+async function updateReviewLikesRemote(id, delta){
   if(supabaseClient){
-    const {error} = await supabaseClient.rpc('set_review_likes', {review_id: id, new_likes: likes});
+    const {error} = await supabaseClient.rpc('adjust_review_likes', {review_id: id, delta});
     if(error) console.error(error);
   } else {
     const r = STATE.reviews.find(x=>x.id===id);
@@ -2628,7 +2714,7 @@ async function updateReviewLikesRemote(id, likes){
       const key = 'productReviews__'+r.productId;
       const list = (await sGet(key, true)) || [];
       const item = list.find(x=>x.id===id);
-      if(item) item.likes = likes;
+      if(item) item.likes = Math.max(0, (item.likes||0) + delta);
       await sSet(key, list, true);
     }
   }
@@ -2650,7 +2736,8 @@ async function insertOrderRemote(order){
   if(supabaseClient){
     const {error} = await supabaseClient.from('orders').insert({
       id: order.id, items: order.items, subtotal: order.subtotal, shipping: order.shipping,
-      total: order.total, status: order.status, created_at: order.createdAt, customer: order.customer
+      total: order.total, status: order.status, created_at: order.createdAt, customer: order.customer,
+      coupon_code: order.couponCode || null, discount: order.discount || 0
     });
     if(error) console.error(error);
   } else {
@@ -3378,7 +3465,7 @@ fbq('track', 'PageView');`;
 }
 function trackPageView(){
   const path = currentPath();
-  if(path.startsWith('/admin')) return; // آمار و ریتارگتینگ فقط برای بازدید مشتری‌ها ثبت می‌شود
+  if(path.startsWith('/purzr')) return; // آمار و ریتارگتینگ فقط برای بازدید مشتری‌ها ثبت می‌شود
   if(typeof gtag === 'function' && STATE.settings?.gaId){
     gtag('event', 'page_view', { page_path: path });
   }
@@ -3580,7 +3667,7 @@ let STATE = {
   selectedAddressId: null,
   magazinePosts: [],
   route: '/',
-  filters:{category:'all', q:'', section:null, sort:''},
+  filters:{category:'all', q:'', section:null, sort:'', sizes:[], colorKeys:[]},
   admin: {loggedIn:false},
   settings: defaultSettings()
 };
@@ -3710,9 +3797,15 @@ async function finalizePendingStockNotify(){
      created_at timestamptz default now()
    );
    alter table account_notifications enable row level security;
-   create policy "anyone can insert" on account_notifications for insert with check (true);
    create policy "anyone can read" on account_notifications for select using (true);
    create policy "anyone can update" on account_notifications for update using (true);
+   -- INSERT is admin-only now (see the RLS lockdown note). createAccountNotification()
+   -- below and sendAdminMessageToAccount() are only ever called from an admin
+   -- session (after saving a product, or from the admin panel's own "پیام به
+   -- کاربر" tool), so they still work fine as plain inserts. Customer-triggered
+   -- notifications (signup welcome, referral reward) go through the
+   -- rpc_send_signup_welcome / rpc_grant_referral_reward RPCs instead — see
+   -- their definitions further down this file, next to where they're used.
 */
 async function loadAccountNotifications(accountId){
   if(!accountId) return [];
@@ -3745,8 +3838,35 @@ async function createAccountNotification(accountId, product){
 async function markAccountNotificationsRead(accountId){
   if(!accountId) return;
   if(supabaseClient){
-    const { error } = await supabaseClient.from('account_notifications').update({read:true}).eq('account_id', accountId).eq('read', false);
+    // writing to account_notifications is admin-only under RLS now, so a
+    // customer marking their OWN notifications as read can no longer do a
+    // plain .update() — it fails silently and the unread flag never clears
+    // on the server. Uses "rpc_mark_own_notifications_read" instead, which
+    // only ever touches rows where account_id = auth.uid().
+    //
+    // Required Supabase SQL (run once in the SQL editor):
+    //
+    //   create or replace function rpc_mark_own_notifications_read()
+    //   returns void
+    //   language plpgsql
+    //   security definer
+    //   set search_path = public
+    //   as $$
+    //   begin
+    //     if auth.uid() is null then
+    //       raise exception 'auth required';
+    //     end if;
+    //     update account_notifications
+    //     set read = true
+    //     where account_id = auth.uid() and read = false;
+    //   end;
+    //   $$;
+    //   revoke all on function rpc_mark_own_notifications_read() from public;
+    //   grant execute on function rpc_mark_own_notifications_read() to authenticated;
+    //
+    const { error } = await supabaseClient.rpc('rpc_mark_own_notifications_read');
     if(!error) return;
+    console.error('markAccountNotificationsRead RPC error', error);
   }
   try{
     const key = 'wr-account-notifs-'+accountId;
@@ -3930,7 +4050,7 @@ async function getCurrentAccount(){
     const { data, error } = await supabaseClient.auth.getUser();
     if(error || !data?.user) return null;
     // the admin's own login shouldn't show up as a customer account
-    if(data.user.email === 'purzrshop@gmail.com') return null;
+    if(await isAdminEmail(data.user.email)) return null;
     return accountFromSupabaseUser(data.user);
   }catch(e){ return null; }
 }
@@ -4112,7 +4232,7 @@ function router(preserveScroll){
   STATE.route = path;
 
   // admin routes render into #adminApp, hide storefront
-  if(path.startsWith('/admin')){
+  if(path.startsWith('/purzr')){
     $('#storefront').classList.add('hidden');
     $('#adminApp').classList.remove('hidden');
     renderAdmin(path);
@@ -4557,6 +4677,161 @@ function sizeColorQty(s, colorKey){
   const m = s.colors.find(c=>colorKeyOf(c)===colorKey);
   return m ? (Number(m.qty)||0) : 0;
 }
+
+/* ---------------- فیلتر سایز/رنگ در صفحه فروشگاه ---------------- */
+/* لیست سایزهای یک محصول (از p.sizes)؛ اگر سایز ندارد آرایه خالی */
+function productSizeList(p){
+  if(!p.sizes || !p.sizes.length) return [];
+  return p.sizes.map(normSizeObj).map(s=>s.size).filter(Boolean);
+}
+/* لیست رنگ‌های یک محصول: اگر رنگ‌ها زیرمجموعه‌ی هر سایز باشند از آنجا جمع می‌شوند،
+   وگرنه از رنگ‌های سطح‌بالای محصول (p.colors) خوانده می‌شود */
+function productColorList(p){
+  const map = new Map();
+  if(p.sizes && p.sizes.length){
+    p.sizes.map(normSizeObj).forEach(s=>{
+      (s.colors||[]).forEach(c=>{ const k = colorKeyOf(c); if(k && !map.has(k)) map.set(k, {...c, key:k}); });
+    });
+  }
+  if(!map.size){
+    (p.colors||[]).filter(c=>c && c.c1).forEach(c=>{ const k = colorKeyOf(c); if(k && !map.has(k)) map.set(k, {...c, key:k}); });
+  }
+  return [...map.values()];
+}
+const SIZE_SORT_ORDER = ['XXS','XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL','5XL'];
+function sortSizeStrings(sizes){
+  return sizes.slice().sort((a,b)=>{
+    const ai = SIZE_SORT_ORDER.indexOf(String(a).toUpperCase());
+    const bi = SIZE_SORT_ORDER.indexOf(String(b).toUpperCase());
+    if(ai!==-1 && bi!==-1) return ai-bi;
+    if(ai!==-1) return -1;
+    if(bi!==-1) return 1;
+    const an = Number(a), bn = Number(b);
+    if(!isNaN(an) && !isNaN(bn)) return an-bn;
+    return String(a).localeCompare(String(b),'fa');
+  });
+}
+/* لیست تمام سایزها/رنگ‌های موجود در کل فروشگاه، برای نمایش گزینه‌های فیلتر */
+function shopAvailableSizes(){
+  const set = new Set();
+  STATE.products.forEach(p=> productSizeList(p).forEach(s=> set.add(s)));
+  return sortSizeStrings([...set]);
+}
+function shopAvailableColors(){
+  const map = new Map();
+  STATE.products.forEach(p=> productColorList(p).forEach(c=>{ if(!map.has(c.key)) map.set(c.key, c); }));
+  return [...map.values()];
+}
+/* اعمال فیلتر سایز/رنگ انتخاب‌شده روی یک لیست محصول (قبل از مرتب‌سازی اجرا می‌شود) */
+function applyShopSizeColorFilter(list){
+  let out = list;
+  const selSizes = STATE.filters.sizes || [];
+  const selColors = STATE.filters.colorKeys || [];
+  if(selSizes.length){
+    out = out.filter(p=>{
+      const ps = productSizeList(p);
+      return ps.length===0 ? false : ps.some(s=> selSizes.includes(s));
+    });
+  }
+  if(selColors.length){
+    out = out.filter(p=>{
+      const pc = productColorList(p);
+      return pc.length===0 ? false : pc.some(c=> selColors.includes(c.key));
+    });
+  }
+  return out;
+}
+function shopFilterPanelHtml(){
+  const sizes = shopAvailableSizes();
+  const colors = shopAvailableColors();
+  if(!sizes.length && !colors.length) return '';
+  const selSizes = STATE.filters.sizes || [];
+  const selColors = STATE.filters.colorKeys || [];
+  const activeCount = selSizes.length + selColors.length;
+  return `
+  <div class="shop-sort-dropdown" id="shopFilterDropdown">
+    <button type="button" class="shop-sort-btn${activeCount?' is-active':''}" id="shopFilterBtn" aria-haspopup="true" aria-expanded="false" title="فیلتر" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      ${activeCount ? `<span class="shop-filter-count">${activeCount}</span>` : ''}
+    </button>
+    <div class="shop-sort-menu shop-filter-menu" id="shopFilterMenu" role="menu">
+      ${sizes.length ? `
+      <div class="shop-filter-group">
+        <div class="shop-filter-group-title">سایز</div>
+        <div class="shop-filter-chips">
+          ${sizes.map(s=>`<button type="button" class="shop-filter-chip${selSizes.includes(s)?' active':''}" data-filter-size="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('')}
+        </div>
+      </div>` : ''}
+      ${colors.length ? `
+      <div class="shop-filter-group">
+        <div class="shop-filter-group-title">رنگ</div>
+        <div class="shop-filter-chips">
+          ${colors.map(c=>`<button type="button" class="shop-filter-color${selColors.includes(c.key)?' active':''}" data-filter-color="${c.key}" title="${escapeHtml(c.label||colorLabel(c))}" style="${colorSwatchStyle(c)}"></button>`).join('')}
+        </div>
+      </div>` : ''}
+      ${activeCount ? `<button type="button" class="shop-filter-clear" id="shopFilterClearBtn">پاک کردن فیلترها</button>` : ''}
+    </div>
+  </div>`;
+}
+function bindShopFilterDropdown(){
+  const dd = $('#shopFilterDropdown');
+  if(!dd) return;
+  const btn = $('#shopFilterBtn', dd);
+  const menu = $('#shopFilterMenu', dd);
+  const close = ()=>{ dd.classList.remove('is-open'); btn.setAttribute('aria-expanded','false'); };
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const willOpen = !dd.classList.contains('is-open');
+    dd.classList.toggle('is-open', willOpen);
+    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+  });
+  $$('[data-filter-size]', menu).forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const val = chip.dataset.filterSize;
+      const sel = STATE.filters.sizes || (STATE.filters.sizes = []);
+      const i = sel.indexOf(val);
+      if(i===-1) sel.push(val); else sel.splice(i,1);
+      STATE.filters.page = 1;
+      refreshShopToolbar();
+      renderShopGridAndPagination();
+    });
+  });
+  $$('[data-filter-color]', menu).forEach(dot=>{
+    dot.addEventListener('click', ()=>{
+      const val = dot.dataset.filterColor;
+      const sel = STATE.filters.colorKeys || (STATE.filters.colorKeys = []);
+      const i = sel.indexOf(val);
+      if(i===-1) sel.push(val); else sel.splice(i,1);
+      STATE.filters.page = 1;
+      refreshShopToolbar();
+      renderShopGridAndPagination();
+    });
+  });
+  const clearBtn = $('#shopFilterClearBtn', menu);
+  if(clearBtn){
+    clearBtn.addEventListener('click', ()=>{
+      STATE.filters.sizes = [];
+      STATE.filters.colorKeys = [];
+      STATE.filters.page = 1;
+      refreshShopToolbar();
+      renderShopGridAndPagination();
+    });
+  }
+  document.addEventListener('click', e=>{
+    if(!dd.contains(e.target)) close();
+  });
+}
+/* بازسازی دکمه فیلتر (بعد از تغییر انتخاب) بدون این‌که کل نوار ابزار از نو رندر شود؛
+   موقعیت باز/بسته بودن منوهای دیگر (مثل مرتب‌سازی) دست‌نخورده می‌ماند */
+function refreshShopToolbar(){
+  const old = $('#shopFilterDropdown');
+  if(!old) return;
+  const wasOpen = old.classList.contains('is-open');
+  old.outerHTML = shopFilterPanelHtml();
+  if(wasOpen) $('#shopFilterDropdown')?.classList.add('is-open');
+  bindShopFilterDropdown();
+}
+
 function colorSectionHtml(p){
   const colors = (p.colors||[]).filter(c=>c && c.c1);
   if(!colors.length) return '';
@@ -4725,7 +5000,7 @@ async function bindReviewLikes(){
     }
     countEl.textContent = r.likes.toLocaleString('fa-IR');
     await sSet('likedReviews', Array.from(likedIds));
-    updateReviewLikesRemote(id, r.likes);
+    updateReviewLikesRemote(id, isLiked ? -1 : 1);
   });
 }
 
@@ -5708,6 +5983,7 @@ function pageShop(catRaw){
     const sec = specialSections[catRaw];
     let list = sec.build();
     if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+    list = applyShopSizeColorFilter(list);
     list = applyShopSort(list, STATE.filters.sort);
     STATE.filters.page = 1;
     const pg = paginateList(list, STATE.filters.page);
@@ -5753,7 +6029,7 @@ function pageShop(catRaw){
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
               <input id="shopSearch" placeholder="جستجو..." value="${escapeHtml(STATE.filters.q||'')}">
             </div>
-            ${shopSortSelectHtml()}
+            ${shopSortSelectHtml()}${shopFilterPanelHtml()}
           </div>
           <div class="grid" id="shopGrid" style="position:relative;z-index:1;margin-top:20px">${pg.items.map(productCard).join('') || emptyState('محصولی یافت نشد')}</div>
           <div id="shopPagination" style="position:relative;z-index:1">${paginationBarHtml(pg.page, pg.totalPages, 'goToShopPage')}</div>
@@ -5767,7 +6043,8 @@ function pageShop(catRaw){
   let list = STATE.products.slice();
   if(cat!=='all') list = list.filter(p=>p.category===cat);
   if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
-  list = applyShopSort(list, STATE.filters.sort);
+  list = applyShopSizeColorFilter(list);
+    list = applyShopSort(list, STATE.filters.sort);
   STATE.filters.page = 1;
   const pg2 = paginateList(list, STATE.filters.page);
 
@@ -5789,7 +6066,7 @@ function pageShop(catRaw){
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           <input id="shopSearch" placeholder="جستجو در این دسته..." value="${escapeHtml(STATE.filters.q||'')}">
         </div>
-        ${shopSortSelectHtml()}
+        ${shopSortSelectHtml()}${shopFilterPanelHtml()}
       </div>
       <div class="grid" id="shopGrid">${pg2.items.map(productCard).join('') || emptyState('محصولی در این دسته یافت نشد')}</div>
       <div id="shopPagination">${paginationBarHtml(pg2.page, pg2.totalPages, 'goToShopPage')}</div>
@@ -5805,7 +6082,8 @@ function pageOthers(id){
   STATE.filters.page = 1;
   let list = STATE.filters.othersList;
   if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
-  list = applyShopSort(list, STATE.filters.sort);
+  list = applyShopSizeColorFilter(list);
+    list = applyShopSort(list, STATE.filters.sort);
   const pg = paginateList(list, STATE.filters.page);
   return `
   <div class="page-head">
@@ -5823,7 +6101,7 @@ function pageOthers(id){
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           <input id="shopSearch" placeholder="جستجو..." value="${escapeHtml(STATE.filters.q||'')}">
         </div>
-        ${shopSortSelectHtml()}
+        ${shopSortSelectHtml()}${shopFilterPanelHtml()}
       </div>
       <div class="grid" id="shopGrid">${pg.items.map(productCard).join('') || emptyState('محصولی یافت نشد')}</div>
       <div id="shopPagination">${paginationBarHtml(pg.page, pg.totalPages, 'goToShopPage')}</div>
@@ -5896,6 +6174,18 @@ function applyShopSort(list, sortKey){
   if(sortKey==='price-asc') return sorted.sort((a,b)=> (a.stock<=0?1:0) - (b.stock<=0?1:0) || (a.price - b.price));
   if(sortKey==='price-desc') return sorted.sort((a,b)=> (a.stock<=0?1:0) - (b.stock<=0?1:0) || (b.price - a.price));
   if(sortKey==='newest') return sorted.sort((a,b)=> (a.stock<=0?1:0) - (b.stock<=0?1:0) || (new Date(b.createdAt||0) - new Date(a.createdAt||0)));
+  if(sortKey==='bestseller'){
+    // از همان شمارش واقعی فروش که در محصولات پرفروش صفحه اول استفاده می‌شود
+    const counts = {};
+    STATE.orders.forEach(o=>{
+      if(o.status==='لغو شده' || o.status==='مرجوع شده') return;
+      (o.items||[]).forEach(it=>{
+        if(!it.productId) return;
+        counts[it.productId] = (counts[it.productId]||0) + (it.qty||0);
+      });
+    });
+    return sorted.sort((a,b)=> (a.stock<=0?1:0) - (b.stock<=0?1:0) || ((counts[b.id]||0) - (counts[a.id]||0)));
+  }
   return sorted;
 }
 function shopSortSelectHtml(){
@@ -5903,6 +6193,7 @@ function shopSortSelectHtml(){
   const opts = [
     ['', 'پیش‌فرض', `<circle cx="12" cy="12" r="1.5"/><circle cx="6" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/>`],
     ['newest', 'جدیدترین', `<path d="M12 20V4"/><path d="M6 10l6-6 6 6"/>`],
+    ['bestseller', 'پرفروش‌ترین', `<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>`],
     ['price-asc', 'ارزان‌ترین', `<path d="M3 6h18"/><path d="M6 12h9"/><path d="M9 18h4"/>`],
     ['price-desc', 'گران‌ترین', `<path d="M9 18h4"/><path d="M6 12h9"/><path d="M3 6h18"/>`]
   ];
@@ -5959,7 +6250,8 @@ function pageProduct(id){
   if(!p) return page404();
   setPageMeta(
     p.name + ' | WHITE RAVEN',
-    (p.desc || '').replace(/<[^>]*>/g,'').slice(0,160)
+    (p.desc || '').replace(/<[^>]*>/g,'').slice(0,160),
+    (p.images && p.images[0]) || p.image || ''
   );
   setProductJsonLd(p);
   const off = p.compareAt && p.compareAt > p.price;
@@ -6149,7 +6441,8 @@ function pageMagazineArticle(slug){
   }
   setPageMeta(
     (p.metaTitle || p.title) + ' | مجله WHITE RAVEN',
-    p.metaDescription || p.excerpt || ''
+    p.metaDescription || p.excerpt || '',
+    p.coverImage || ''
   );
   const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '';
   const others = publishedPosts().filter(x=>x.id!==p.id).slice(0,3);
@@ -7482,6 +7775,7 @@ function bindPageUI(){
     });
   }
   bindShopSortDropdown();
+  bindShopFilterDropdown();
 
   const notifyMeBtn = $('#notifyMeBtn');
   const notifyBellBtn = $('#notifyBellBtn');
@@ -7697,6 +7991,17 @@ if (messageInput && messageCounter) {
       if(error) throw error;
       STATE.account = accountFromSupabaseUser(data.user);
       await upsertProfile(STATE.account);
+      // if this is the first login after an email-confirmation signup, the
+      // welcome message(s) couldn't be sent yet (no session = no auth.uid()
+      // for the RPC) — send them now, once, and clear the flag.
+      try{
+        const pendingKey = 'wr-pending-welcome-'+STATE.account.id;
+        const pending = localStorage.getItem(pendingKey);
+        if(pending !== null){
+          localStorage.removeItem(pendingKey);
+          await sendSignupWelcomeMessages(STATE.account, pending === '1');
+        }
+      }catch(e){}
       const remoteWishlist = await loadWishlistRemote(STATE.account.id);
       STATE.wishlist = remoteWishlist !== null ? remoteWishlist : [];
       STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
@@ -7773,8 +8078,7 @@ if (messageInput && messageCounter) {
         STATE.account = accountFromSupabaseUser(data.user);
         await upsertProfile(STATE.account);
         const wasReferred = await applyPendingReferral(STATE.account.id, referralCode);
-        await sendPlainWelcomeMessage(STATE.account);
-        if(wasReferred) await sendReferralWelcomeMessage(STATE.account);
+        await sendSignupWelcomeMessages(STATE.account, wasReferred);
         STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
         STATE.addresses = await loadAddressesRemote(STATE.account.id);
         const notifyRegistered = await finalizePendingStockNotify();
@@ -7785,8 +8089,11 @@ if (messageInput && messageCounter) {
         const newAccount = accountFromSupabaseUser(data.user);
         await upsertProfile(newAccount);
         const wasReferred = await applyPendingReferral(data.user.id, referralCode);
-        await sendPlainWelcomeMessage(newAccount);
-        if(wasReferred) await sendReferralWelcomeMessage(newAccount);
+        // no active session yet here (email confirmation pending) so there is
+        // no auth.uid() for the RPC to attach the notification to. Stash the
+        // fact that this account still owes a welcome message; the login
+        // handler below sends it (once) the first time they actually sign in.
+        try{ localStorage.setItem('wr-pending-welcome-'+newAccount.id, wasReferred ? '1' : '0'); }catch(e){}
         showToast('ثبت‌نام انجام شد. لطفاً ایمیل خود را تایید کنید.');
         STATE.accountAuthTab = 'login';
         router();
@@ -8056,18 +8363,21 @@ function filteredShopList(){
   if(STATE.filters.othersList){
     let list = STATE.filters.othersList;
     if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
-    return applyShopSort(list, STATE.filters.sort);
+    list = applyShopSizeColorFilter(list);
+  return applyShopSort(list, STATE.filters.sort);
   }
   if(STATE.filters.section){
     const sec = homeSectionDefs()[STATE.filters.section];
     let list = sec ? sec.build() : STATE.products.slice();
     if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
-    return applyShopSort(list, STATE.filters.sort);
+    list = applyShopSizeColorFilter(list);
+  return applyShopSort(list, STATE.filters.sort);
   }
   const cat = STATE.filters.category;
   let list = STATE.products.slice();
   if(cat && cat!=='all') list = list.filter(p=>p.category===cat);
   if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+  list = applyShopSizeColorFilter(list);
   return applyShopSort(list, STATE.filters.sort);
 }
 
@@ -8211,8 +8521,9 @@ async function findAccountIdByReferralCode(code){
   const norm = (code||'').trim().toUpperCase();
   if(!norm) return null;
   if(supabaseClient){
-    // profiles select policy is open ("anyone can select"), so we can scan client-side
-    const { data, error } = await supabaseClient.from('profiles').select('id');
+    // این کوئری فقط از یک VIEW عمومی (فقط ستون id) می‌خواند، نه از جدول اصلی
+    // profiles — چون جدول اصلی الان محدود شده به «فقط خود کاربر یا ادمین».
+    const { data, error } = await supabaseClient.from('profile_referral_ids').select('id');
     if(error) return null;
     const match = (data||[]).find(p=> referralCodeForAccount(p.id)===norm);
     return match ? match.id : null;
@@ -8258,100 +8569,247 @@ async function applyPendingReferral(accountId, explicitCode){
 }
 // sends the invited user a separate message explaining their referral discount
 // (sent in addition to the standard welcome message, only for referred signups)
-async function sendReferralWelcomeMessage(account){
-  const ref = STATE.settings.referral;
-  if(!ref || !ref.active || !account) return;
-  const firstName = (account.name||'').trim().split(/\s+/)[0] || '';
-  const percent = Math.min(100, Math.max(0, Number(ref.percent) || 0));
-  const minPurchase = Math.max(0, Number(ref.minPurchase) || 0);
-  const greeting = firstName ? `${firstName} عزیز، ` : '';
-  const message = `${greeting ? `${firstName} عزیز 🌿` : 'خوش اومدی 🌿'}
-
-با اولین خریدت به ارزش حداقل ${RIAL(minPurchase)}، یه کد تخفیف ${percent}٪ برای خرید بعدیت برات فعال می‌شه؛
-و قشنگ‌تر اینکه این کد هم برای خودت قابل استفاده‌ست، هم برای دوستی که دعوتت کرده.
-
-🔺تو هم می‌تونی کد دعوتت رو با دوستات به اشتراک بذاری و با هر دعوت، از تخفیف‌های بیشتری بهره‌مند بشی.
-
-ما فقط می‌خوایم چیزی که به دستت می‌رسه، ارزش هزینه‌ای که کردی رو داشته باشه؛ ساده، باکیفیت و بی نقص.
-
-امیدواریم این شروع یه خرید خوب باشه.🤍`;
-  await sendAdminMessageToAccount(account.id, message);
-}
-// sends the plain welcome message to every brand-new signup (referred or not)
-async function sendPlainWelcomeMessage(account){
-  if(!account) return;
-  const firstName = (account.name||'').trim().split(/\s+/)[0] || '';
-  const namePart = firstName ? `${firstName} جان، ` : '';
-  const message = `${namePart}خوش اومدی 🤍
-
-خوشحالیم که سر از اینجا درآوردی و اینجایی.
-ما سعی می‌کنیم ساده و درست کار کنیم؛ چیزی که می‌بینی، همون چیزیه که تحویل می‌گیری
-بدون تعریف اضافه و حرف‌های الکی.
-
-برامون مهمه از چیزی که از ما می‌گیری راضی باشی و سفارشت رو با حس خوب تحویل بگیری
-هر وقت سوالی داشتی یا کمکی خواستی، راحت پیام بده؛ ما کنارتیم
-
-خوشحالیم که اینجایی 🤍
-
-🌿📦`;
-  await sendAdminMessageToAccount(account.id, message);
+//
+// NOTE: writing to account_notifications now requires admin rights under RLS,
+// so this can no longer insert directly from the customer session. It calls
+// the "rpc_send_signup_welcome" RPC instead (see SQL below), which runs with
+// elevated rights but only ever touches the caller's OWN account (auth.uid())
+// and only ever inserts the two fixed, server-built welcome messages — so it
+// can't be abused to write arbitrary notifications to other accounts.
+//
+// Required Supabase SQL (run once in the SQL editor):
+//
+//   create or replace function rpc_send_signup_welcome(p_referred boolean)
+//   returns void
+//   language plpgsql
+//   security definer
+//   set search_path = public
+//   as $$
+//   declare
+//     v_account_id uuid := auth.uid();
+//     v_ref jsonb;
+//     v_percent int;
+//     v_min_purchase numeric;
+//   begin
+//     if v_account_id is null then
+//       raise exception 'auth required';
+//     end if;
+//
+//     insert into account_notifications (account_id, product_id, product_name, message, read)
+//     values (v_account_id, null, null,
+//       'خوش اومدی 🤍' || chr(10) || chr(10) ||
+//       'خوشحالیم که سر از اینجا درآوردی و اینجایی.' || chr(10) ||
+//       'ما سعی می‌کنیم ساده و درست کار کنیم؛ چیزی که می‌بینی، همون چیزیه که تحویل می‌گیری' || chr(10) ||
+//       'بدون تعریف اضافه و حرف‌های الکی.' || chr(10) || chr(10) ||
+//       'برامون مهمه از چیزی که از ما می‌گیری راضی باشی و سفارشت رو با حس خوب تحویل بگیری' || chr(10) ||
+//       'هر وقت سوالی داشتی یا کمکی خواستی، راحت پیام بده؛ ما کنارتیم' || chr(10) || chr(10) ||
+//       'خوشحالیم که اینجایی 🤍' || chr(10) || chr(10) || '🌿📦',
+//       false);
+//
+//     if p_referred then
+//       select data->'referral' into v_ref from settings where id = 'site';
+//       if v_ref is not null and coalesce((v_ref->>'active')::boolean, false) then
+//         v_percent := greatest(0, least(100, coalesce((v_ref->>'percent')::int, 0)));
+//         v_min_purchase := greatest(0, coalesce((v_ref->>'minPurchase')::numeric, 0));
+//         insert into account_notifications (account_id, product_id, product_name, message, read)
+//         values (v_account_id, null, null,
+//           'خوش اومدی 🌿' || chr(10) || chr(10) ||
+//           'با اولین خریدت به ارزش حداقل ' || trim(to_char(v_min_purchase, '999,999,999')) || ' تومان، یه کد تخفیف ' || v_percent || '٪ برای خرید بعدیت برات فعال می‌شه؛' || chr(10) ||
+//           'و قشنگ‌تر اینکه این کد هم برای خودت قابل استفاده‌ست، هم برای دوستی که دعوتت کرده.' || chr(10) || chr(10) ||
+//           '🔺تو هم می‌تونی کد دعوتت رو با دوستات به اشتراک بذاری و با هر دعوت، از تخفیف‌های بیشتری بهره‌مند بشی.' || chr(10) || chr(10) ||
+//           'ما فقط می‌خوایم چیزی که به دستت می‌رسه، ارزش هزینه‌ای که کردی رو داشته باشه؛ ساده، باکیفیت و بی نقص.' || chr(10) || chr(10) ||
+//           'امیدواریم این شروع یه خرید خوب باشه.🤍',
+//           false);
+//       end if;
+//     end if;
+//   end;
+//   $$;
+//   revoke all on function rpc_send_signup_welcome(boolean) from public;
+//   grant execute on function rpc_send_signup_welcome(boolean) to authenticated;
+//
+async function sendSignupWelcomeMessages(account, wasReferred){
+  if(!account || !supabaseClient) return;
+  try{
+    const { error } = await supabaseClient.rpc('rpc_send_signup_welcome', { p_referred: !!wasReferred });
+    if(error) console.error('sendSignupWelcomeMessages error', error);
+  }catch(e){ console.error('sendSignupWelcomeMessages error', e); }
 }
 function randomCouponSuffix(){
   return Math.random().toString(36).slice(2,8).toUpperCase();
 }
 // referral reward coupons are personal & single-use — once used in an order, deactivate it
 // so the same account (and no one else, since it's already account-restricted) can't reuse it
+//
+// NOTE: writing to `settings` now requires admin rights under RLS, so a
+// customer session can no longer upsert the whole settings row (which would
+// also let anyone tamper with unrelated settings — coupons, prices, banners,
+// etc — while they're at it). This calls the "rpc_deactivate_own_coupon" RPC
+// instead, which only ever flips `active:false` on ONE coupon, and only when
+// that coupon's restrictToAccountId already matches the caller (auth.uid()).
+//
+// Required Supabase SQL (run once in the SQL editor):
+//
+//   create or replace function rpc_deactivate_own_coupon(p_coupon_id text)
+//   returns void
+//   language plpgsql
+//   security definer
+//   set search_path = public
+//   as $$
+//   declare
+//     v_account_id uuid := auth.uid();
+//   begin
+//     if v_account_id is null then
+//       raise exception 'auth required';
+//     end if;
+//
+//     update settings
+//     set data = jsonb_set(
+//       data, '{coupons}',
+//       (
+//         select coalesce(jsonb_agg(
+//           case
+//             when c->>'id' = p_coupon_id and c->>'restrictToAccountId' = v_account_id::text
+//               then c || '{"active": false}'::jsonb
+//             else c
+//           end
+//         ), '[]'::jsonb)
+//         from jsonb_array_elements(coalesce(data->'coupons', '[]'::jsonb)) c
+//       )
+//     )
+//     where id = 'site';
+//   end;
+//   $$;
+//   revoke all on function rpc_deactivate_own_coupon(text) from public;
+//   grant execute on function rpc_deactivate_own_coupon(text) to authenticated;
+//
 async function deactivateOneTimeCoupon(couponId){
   try{
+    // optimistic local update so the UI reflects it immediately
     const coupons = (STATE.settings.coupons||[]).map(c=> c.id===couponId ? {...c, active:false} : c);
-    const newSettings = {...STATE.settings, coupons};
-    STATE.settings = newSettings;
-    await saveSettingsRemote(newSettings);
+    STATE.settings = {...STATE.settings, coupons};
+    if(supabaseClient){
+      const { error } = await supabaseClient.rpc('rpc_deactivate_own_coupon', { p_coupon_id: couponId });
+      if(error) console.error('deactivateOneTimeCoupon RPC error', error);
+    }else{
+      await saveSettingsRemote(STATE.settings);
+    }
   }catch(e){ console.error('deactivateOneTimeCoupon error', e); }
 }
 // called right after a logged-in customer's order is placed — if they were referred by
 // someone and this order finally crosses the configured minimum, both people get a
 // one-time personal discount coupon at the percentage/limits set in admin › coupon.
+//
+// NOTE: this used to build the two coupons in the browser and upsert the
+// *entire* settings row directly from the customer session — which, besides
+// now being blocked by the admin-only RLS policy, also meant any customer
+// session could've overwritten unrelated settings (prices, banners, other
+// coupons) at the same time. It's replaced with the "rpc_grant_referral_reward"
+// RPC, which does everything server-side: re-checks eligibility itself off
+// the `profiles`/`settings` tables (not values handed to it by the client),
+// generates the coupon codes, appends just those two coupons to the JSON
+// array, flips `referral_rewarded`, and inserts both notifications — all
+// scoped to auth.uid() and whoever they were actually referred by.
+//
+// Required Supabase SQL (run once in the SQL editor):
+//
+//   create or replace function rpc_grant_referral_reward(p_order_subtotal numeric, p_order_shipping numeric)
+//   returns jsonb
+//   language plpgsql
+//   security definer
+//   set search_path = public
+//   as $$
+//   declare
+//     v_account_id uuid := auth.uid();
+//     v_referrer_id uuid;
+//     v_already_rewarded boolean;
+//     v_ref jsonb;
+//     v_percent int;
+//     v_min_purchase numeric;
+//     v_min_subtotal numeric;
+//     v_max_discount numeric;
+//     v_invited_code text;
+//     v_referrer_code text;
+//     v_invited_coupon jsonb;
+//     v_referrer_coupon jsonb;
+//   begin
+//     if v_account_id is null then
+//       raise exception 'auth required';
+//     end if;
+//
+//     select referred_by, coalesce(referral_rewarded, false)
+//       into v_referrer_id, v_already_rewarded
+//       from profiles where id = v_account_id;
+//
+//     if v_referrer_id is null or v_already_rewarded then
+//       return null;
+//     end if;
+//
+//     select data->'referral' into v_ref from settings where id = 'site';
+//     if v_ref is null or not coalesce((v_ref->>'active')::boolean, false) then
+//       return null;
+//     end if;
+//
+//     v_min_purchase := greatest(0, coalesce((v_ref->>'minPurchase')::numeric, 0));
+//     if coalesce(p_order_subtotal,0) + coalesce(p_order_shipping,0) < v_min_purchase then
+//       return null;
+//     end if;
+//
+//     v_percent := greatest(0, least(100, coalesce((v_ref->>'percent')::int, 0)));
+//     if v_percent <= 0 then
+//       return null;
+//     end if;
+//     v_min_subtotal := greatest(0, coalesce((v_ref->>'couponMinSubtotal')::numeric, 0));
+//     v_max_discount := greatest(0, coalesce((v_ref->>'couponMaxDiscount')::numeric, 0));
+//
+//     v_invited_code := 'REF-' || upper(substr(md5(random()::text || clock_timestamp()::text), 1, 6));
+//     v_referrer_code := 'REF-' || upper(substr(md5(random()::text || clock_timestamp()::text), 1, 6));
+//
+//     v_invited_coupon := jsonb_build_object(
+//       'id', gen_random_uuid()::text, 'code', v_invited_code, 'type', 'percent', 'value', v_percent,
+//       'active', true, 'minSubtotal', v_min_subtotal, 'maxDiscount', v_max_discount,
+//       'restrictToAccountId', v_account_id::text, 'source', 'referral-invitee'
+//     );
+//     v_referrer_coupon := jsonb_build_object(
+//       'id', gen_random_uuid()::text, 'code', v_referrer_code, 'type', 'percent', 'value', v_percent,
+//       'active', true, 'minSubtotal', v_min_subtotal, 'maxDiscount', v_max_discount,
+//       'restrictToAccountId', v_referrer_id::text, 'source', 'referral-referrer'
+//     );
+//
+//     update settings
+//     set data = jsonb_set(
+//       data, '{coupons}',
+//       coalesce(data->'coupons', '[]'::jsonb) || jsonb_build_array(v_invited_coupon, v_referrer_coupon)
+//     )
+//     where id = 'site';
+//
+//     update profiles set referral_rewarded = true where id = v_account_id;
+//
+//     insert into account_notifications (account_id, product_id, product_name, message, read)
+//     values (v_account_id, null, null, 'کد تخفیف ' || v_percent || '٪ دعوت دوستان شما فعال شد: ' || v_invited_code, false);
+//     insert into account_notifications (account_id, product_id, product_name, message, read)
+//     values (v_referrer_id, null, null, 'دوستی که دعوت کردید خرید کرد! کد تخفیف ' || v_percent || '٪ شما: ' || v_referrer_code, false);
+//
+//     return jsonb_build_object('invitedCoupon', v_invited_coupon, 'referrerCoupon', v_referrer_coupon);
+//   end;
+//   $$;
+//   revoke all on function rpc_grant_referral_reward(numeric, numeric) from public;
+//   grant execute on function rpc_grant_referral_reward(numeric, numeric) to authenticated;
+//
 async function checkAndGrantReferralReward(order){
   try{
     const ref = STATE.settings.referral;
     if(!ref || !ref.active) return;
     if(!STATE.account) return;
-    const threshold = Number(ref.minPurchase) || 0;
-    const orderPurchaseAmount = (order.subtotal||0) + (order.shipping||0);
-    if(orderPurchaseAmount < threshold) return;
-    const profile = await getOwnProfileRow(STATE.account.id);
-    const referrerId = profile ? (profile.referred_by || profile.referredBy) : null;
-    const alreadyRewarded = profile ? !!(profile.referral_rewarded || profile.referralRewarded) : false;
-    if(!referrerId || alreadyRewarded) return;
-
-    const percent = Math.min(100, Math.max(0, Number(ref.percent) || 0));
-    if(percent<=0) return;
-    const minSubtotal = Math.max(0, Number(ref.couponMinSubtotal) || 0);
-    const maxDiscount = Math.max(0, Number(ref.couponMaxDiscount) || 0);
-
-    const invitedCoupon = {
-      id: uid(), code: 'REF-'+randomCouponSuffix(), type:'percent', value:percent,
-      active:true, minSubtotal, maxDiscount, restrictToAccountId: STATE.account.id, source:'referral-invitee'
-    };
-    const referrerCoupon = {
-      id: uid(), code: 'REF-'+randomCouponSuffix(), type:'percent', value:percent,
-      active:true, minSubtotal, maxDiscount, restrictToAccountId: referrerId, source:'referral-referrer'
-    };
-    const newSettings = { ...STATE.settings, coupons: [...(STATE.settings.coupons||[]), invitedCoupon, referrerCoupon] };
-    STATE.settings = newSettings;
-    await saveSettingsRemote(newSettings);
-
-    if(supabaseClient){
-      await supabaseClient.from('profiles').update({ referral_rewarded: true }).eq('id', STATE.account.id);
-    }else{
-      const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
-      const idx = list.findIndex(p=>p.id===STATE.account.id);
-      if(idx>-1){ list[idx].referral_rewarded = true; localStorage.setItem('wr-profiles', JSON.stringify(list)); }
-    }
-
-    await sendAdminMessageToAccount(STATE.account.id, `کد تخفیف ${percent}٪ دعوت دوستان شما فعال شد: ${invitedCoupon.code}`);
-    await sendAdminMessageToAccount(referrerId, `دوستی که دعوت کردید خرید کرد! کد تخفیف ${percent}٪ شما: ${referrerCoupon.code}`);
+    if(!supabaseClient) return; // local/offline mode has no RLS to work around
+    const { data, error } = await supabaseClient.rpc('rpc_grant_referral_reward', {
+      p_order_subtotal: order.subtotal||0,
+      p_order_shipping: order.shipping||0
+    });
+    if(error){ console.error('checkAndGrantReferralReward RPC error', error); return; }
+    if(!data) return; // not eligible (already rewarded, below threshold, referral off, etc.)
+    // reflect the two new coupons locally without a full settings re-fetch
+    const coupons = [...(STATE.settings.coupons||[]), data.invitedCoupon, data.referrerCoupon];
+    STATE.settings = {...STATE.settings, coupons};
   }catch(e){ console.error('referral reward error', e); }
 }
 
@@ -8684,6 +9142,25 @@ let adminProductStockFilter = false;
 let adminReviewStatusFilter = 'pending';
 let editingProductId = null;
 
+/* آیا ایمیل داده‌شده متعلق به ادمین است؟ به‌جای مقایسهٔ مستقیم ایمیل در کد
+   جاوااسکریپت (که هرکسی با «مشاهده کد صفحه» می‌تواند ببیند)، این تابع یک
+   تابع پایگاه‌داده (RPC) به نام is_admin را روی سرور Supabase صدا می‌زند؛
+   ایمیل واقعی ادمین فقط در تنظیمات سمت سرور نگه داشته می‌شود و هیچ‌وقت در
+   کد سایت ظاهر نمی‌شود. نتیجه برای همان نشست کاربر کش می‌شود تا هر بار
+   دوباره پرسیده نشود. */
+let _isAdminCache = null;
+async function isAdminEmail(email){
+  if(!supabaseClient || !email) return false;
+  if(_isAdminCache !== null) return _isAdminCache;
+  try{
+    const { data, error } = await supabaseClient.rpc('is_admin');
+    _isAdminCache = !error && data === true;
+  }catch(e){
+    _isAdminCache = false;
+  }
+  return _isAdminCache;
+}
+
 async function isAdminLoggedIn(){
   if(!supabaseClient) return false;
 
@@ -8693,7 +9170,7 @@ async function isAdminLoggedIn(){
     return false;
   }
 
-  return data.user.email === 'purzrshop@gmail.com';
+  return await isAdminEmail(data.user.email);
 }
 
 async function renderAdmin(path){
@@ -8701,25 +9178,25 @@ async function renderAdmin(path){
 
   const loggedIn = await isAdminLoggedIn();
 
-  if(path==='/admin-login' || (!loggedIn)){
+  if(path==='/purzr-login' || (!loggedIn)){
     box.innerHTML = adminLoginScreen();
     bindAdminLogin();
     return;
   }
 
-  if(path==='/admin/orders') adminSection='orders';
-  else if(path.startsWith('/admin/order/')){ adminSection='orderDetail'; adminOrderDetailId = decodeURIComponent(path.split('/admin/order/')[1]||''); }
-  else if(path==='/admin/stats') adminSection='stats';
-  else if(path==='/admin/products' || path.startsWith('/admin/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); }
-  else if(path==='/admin/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; }
-  else if(path==='/admin/product-reviews'){ adminSection='comments'; adminCommentsTab='productReviews'; adminReviewStatusFilter='pending'; }
-  else if(path==='/admin/settings'){ adminSection='settings'; pendingCategoriesInit=false; pendingBannersInit=false; pendingAnnouncementInit=false; }
-  else if(path==='/admin/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
-  else if(path==='/admin/content'){ adminSection='content'; pendingContentInit=false; pendingFaqInit=false; }
-  else if(path==='/admin/comments' || path.startsWith('/admin/comments')){ adminSection='comments'; adminCommentsTab='messages'; }
-  else if(path==='/admin/magazine' || path.startsWith('/admin/magazine')) adminSection='magazine';
-  else if(path==='/admin/stock-notify') adminSection='stockNotify';
-  else if(path==='/admin/users') adminSection='users';
+  if(path==='/purzr/orders') adminSection='orders';
+  else if(path.startsWith('/purzr/order/')){ adminSection='orderDetail'; adminOrderDetailId = decodeURIComponent(path.split('/purzr/order/')[1]||''); }
+  else if(path==='/purzr/stats') adminSection='stats';
+  else if(path==='/purzr/products' || path.startsWith('/purzr/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); }
+  else if(path==='/purzr/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; }
+  else if(path==='/purzr/product-reviews'){ adminSection='comments'; adminCommentsTab='productReviews'; adminReviewStatusFilter='pending'; }
+  else if(path==='/purzr/settings'){ adminSection='settings'; pendingCategoriesInit=false; pendingBannersInit=false; pendingAnnouncementInit=false; }
+  else if(path==='/purzr/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
+  else if(path==='/purzr/content'){ adminSection='content'; pendingContentInit=false; pendingFaqInit=false; }
+  else if(path==='/purzr/comments' || path.startsWith('/purzr/comments')){ adminSection='comments'; adminCommentsTab='messages'; }
+  else if(path==='/purzr/magazine' || path.startsWith('/purzr/magazine')) adminSection='magazine';
+  else if(path==='/purzr/stock-notify') adminSection='stockNotify';
+  else if(path==='/purzr/users') adminSection='users';
   else adminSection='dashboard';
 
   // always pull the latest stock/orders so the panel never shows stale data
@@ -8761,7 +9238,6 @@ function adminLoginScreen(){
         <input
           type="email"
           id="adminEmail"
-          value="purzrshop@gmail.com"
           autocomplete="username"
           placeholder="ایمیل مدیریت"
         >
@@ -8833,7 +9309,7 @@ function bindAdminLogin(){
         throw new Error('ورود انجام نشد');
       }
 
-      navigate('/admin');
+      navigate('/purzr');
 
     }catch(error){
       console.error('Admin login error:', error);
@@ -8868,18 +9344,18 @@ function adminShell(){
     </div>
     <div class="admin-shell">
       <div class="admin-side">
-        <a href="/admin" data-link class="${adminSection==='dashboard'?'active':''}">داشبورد</a>
-        <a href="/admin/stats" data-link class="${adminSection==='stats'?'active':''}">آمار و گزارش‌ها</a>
-        <a href="/admin/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
-        <a href="/admin/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
-        <a href="/admin/comments" data-link class="${adminSection==='comments'?'active':''}">نظرات${(STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length) ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
-        <a href="/admin/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
-        <a href="/admin/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
-        <a href="/admin/stock-notify" data-link class="${adminSection==='stockNotify'?'active':''}">اطلاع‌رسانی موجودی${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length}</span>` : ''}</a>
-        <a href="/admin/users" data-link class="${adminSection==='users'?'active':''}">کاربران کلاغ سفید</a>
-        <a href="/admin/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
-        <a href="/admin/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
-        <a href="/admin/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
+        <a href="/purzr" data-link class="${adminSection==='dashboard'?'active':''}">داشبورد</a>
+        <a href="/purzr/stats" data-link class="${adminSection==='stats'?'active':''}">آمار و گزارش‌ها</a>
+        <a href="/purzr/products" data-link class="${adminSection==='products'?'active':''}">محصولات</a>
+        <a href="/purzr/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
+        <a href="/purzr/comments" data-link class="${adminSection==='comments'?'active':''}">نظرات${(STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length) ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
+        <a href="/purzr/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
+        <a href="/purzr/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
+        <a href="/purzr/stock-notify" data-link class="${adminSection==='stockNotify'?'active':''}">اطلاع‌رسانی موجودی${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${(STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length}</span>` : ''}</a>
+        <a href="/purzr/users" data-link class="${adminSection==='users'?'active':''}">کاربران کلاغ سفید</a>
+        <a href="/purzr/settings" data-link class="${adminSection==='settings'?'active':''}">تنظیمات ظاهری</a>
+        <a href="/purzr/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
+        <a href="/purzr/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
       </div>
       <div class="admin-main" id="adminMain">
         ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminSection==='users'?adminUsers():adminSection==='orderDetail'?adminOrderDetail(adminOrderDetailId):adminOrders()}
@@ -9094,10 +9570,10 @@ function adminStats(){
     <div class="stat-card"><div class="num">${phones.size}</div><div class="lbl">مشتریان یکتا (بر اساس شماره تماس)</div></div>
     <div class="stat-card"><div class="num">${newsletterCount}</div><div class="lbl">مشترکین خبرنامه</div></div>
     <div class="stat-card"><div class="num">${STATE.products.length}</div><div class="lbl">تعداد محصولات</div></div>
-    <a href="/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام (≤۳ عدد)</div></a>
+    <a href="/purzr/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام (≤۳ عدد)</div></a>
     <div class="stat-card"><div class="num">${outOfStock}</div><div class="lbl">محصولات ناموجود</div></div>
-    <a href="/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${unreadMessages}</div><div class="lbl">پیام‌های خوانده‌نشده</div></a>
-    <a href="/admin/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${pendingReviews}</div><div class="lbl">نظرات در انتظار تایید</div></a>
+    <a href="/purzr/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${unreadMessages}</div><div class="lbl">پیام‌های خوانده‌نشده</div></a>
+    <a href="/purzr/comments" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${pendingReviews}</div><div class="lbl">نظرات در انتظار تایید</div></a>
     <div class="stat-card"><div class="num">${approvedReviews}</div><div class="lbl">نظرات تاییدشده</div></div>
   </div>
 
@@ -9140,7 +9616,7 @@ function adminDashboard(){
     <div class="stat-card"><div class="num">${STATE.products.length}</div><div class="lbl">تعداد محصولات</div></div>
     <div class="stat-card"><div class="num">${totalOrders}</div><div class="lbl">تعداد سفارش‌ها</div></div>
     <div class="stat-card"><div class="num">${RIAL(totalRevenue)}</div><div class="lbl">مجموع فروش</div></div>
-    <a href="/admin/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام</div></a>
+    <a href="/purzr/products?lowstock=1" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit"><div class="num">${lowStock}</div><div class="lbl">محصولات رو به اتمام</div></a>
   </div>
 <div class="stat-card">
   <div class="num">${totalMessages}</div>
@@ -9171,9 +9647,9 @@ function adminComments(){
   return `
   <h2 class="admin-title">نظرات</h2>
   <div class="admin-side" style="border:none;padding:0;display:flex;gap:6px;margin-bottom:24px;overflow-x:auto">
-    <a href="/admin/comments" data-comments-tab="messages" class="${subTab==='messages'?'active':''}" style="border-radius:6px">پیام‌های تماس با ما</a>
-    <a href="/admin/comments" data-comments-tab="newsletter" class="${subTab==='newsletter'?'active':''}" style="border-radius:6px">خبرنامه</a>
-    <a href="/admin/comments" data-comments-tab="productReviews" class="${subTab==='productReviews'?'active':''}" style="border-radius:6px">نظرات محصولات${STATE.reviews.filter(r=>r.status==='pending').length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
+    <a href="/purzr/comments" data-comments-tab="messages" class="${subTab==='messages'?'active':''}" style="border-radius:6px">پیام‌های تماس با ما</a>
+    <a href="/purzr/comments" data-comments-tab="newsletter" class="${subTab==='newsletter'?'active':''}" style="border-radius:6px">خبرنامه</a>
+    <a href="/purzr/comments" data-comments-tab="productReviews" class="${subTab==='productReviews'?'active':''}" style="border-radius:6px">نظرات محصولات${STATE.reviews.filter(r=>r.status==='pending').length ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.reviews.filter(r=>r.status==='pending').length}</span>` : ''}</a>
   </div>
   ${subTab==='newsletter' ? adminNewsletterList() : subTab==='productReviews' ? adminProductReviews() : adminMessagesList()}`;
 }
@@ -9303,7 +9779,7 @@ function adminProducts(){
   ${adminProductStockFilter ? `
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;background:rgba(214,167,79,.08);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;flex-wrap:wrap">
     <span style="color:var(--gold-light);font-size:13px">نمایش محصولات رو به اتمام (موجودی ۳ یا کمتر)</span>
-    <a href="/admin/products" data-link style="margin-inline-start:auto;font-size:12.5px;cursor:pointer;color:var(--text-dim)">✕ حذف فیلتر</a>
+    <a href="/purzr/products" data-link style="margin-inline-start:auto;font-size:12.5px;cursor:pointer;color:var(--text-dim)">✕ حذف فیلتر</a>
   </div>` : ''}
   <div class="chip-row" style="margin-bottom:18px">
     <button type="button" class="chip admin-cat-chip ${activeCat==='all'?'active':''}" data-cat="all">همه (${STATE.products.length})</button>
@@ -9942,13 +10418,13 @@ function adminOrders(){
 }
 function bindAdminOrders(){
   $$('.admin-order-card').forEach(card=>{
-    card.onclick = ()=> navigate(`/admin/order/${encodeURIComponent(card.dataset.oid)}`);
+    card.onclick = ()=> navigate(`/purzr/order/${encodeURIComponent(card.dataset.oid)}`);
   });
 }
 function adminOrderDetail(orderId){
   const order = STATE.orders.find(o=>o.id===orderId);
   if(!order){
-    return `<button type="button" onclick="navigate('/admin/orders')" style="background:none;border:0;color:var(--gold-light);font-size:13px;cursor:pointer;margin-bottom:14px">‹ بازگشت به سفارش‌ها</button>
+    return `<button type="button" onclick="navigate('/purzr/orders')" style="background:none;border:0;color:var(--gold-light);font-size:13px;cursor:pointer;margin-bottom:14px">‹ بازگشت به سفارش‌ها</button>
     <p style="text-align:center;padding:30px;color:var(--text-faint)">سفارش پیدا نشد</p>`;
   }
   const customer = typeof order.customer === 'object' && order.customer !== null ? order.customer : { name: order.customer || 'مهمان' };
@@ -9965,7 +10441,7 @@ function adminOrderDetail(orderId){
       </div>
     </div>`).join('') || `<p style="color:var(--text-faint);font-size:13px">محصولی ثبت نشده</p>`;
   return `
-  <button type="button" onclick="navigate('/admin/orders')" style="background:none;border:0;color:var(--gold-light);font-size:13px;cursor:pointer;margin-bottom:14px">‹ بازگشت به سفارش‌ها</button>
+  <button type="button" onclick="navigate('/purzr/orders')" style="background:none;border:0;color:var(--gold-light);font-size:13px;cursor:pointer;margin-bottom:14px">‹ بازگشت به سفارش‌ها</button>
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
     <h2 class="admin-title" style="margin:0">سفارش ${escapeHtml(order.id)}</h2>
     <div style="display:flex;gap:8px;align-items:center">
@@ -10061,7 +10537,7 @@ async function deleteOrder(id) {
 
   alert('سفارش با موفقیت حذف شد ✓');
 
-  if(adminSection==='orderDetail') navigate('/admin/orders');
+  if(adminSection==='orderDetail') navigate('/purzr/orders');
   else router();
 }
 async function acknowledgeCancelledOrder(id) {
@@ -10091,7 +10567,7 @@ async function acknowledgeCancelledOrder(id) {
 
   alert('لغو سفارش تایید و حذف شد ✓');
 
-  if(adminSection==='orderDetail') navigate('/admin/orders');
+  if(adminSection==='orderDetail') navigate('/purzr/orders');
   else router();
 }
 window.acknowledgeCancelledOrder = acknowledgeCancelledOrder;
@@ -12198,10 +12674,11 @@ function bindMultiUploadInput(){
   const input = $('#productImageInput');
   if(!input) return;
   input.onchange = ()=>{
-    [...input.files].forEach(file=>{
+    [...input.files].forEach(async file=>{
+      const compressed = await compressImage(file, {maxDim: 1600, quality: 0.82});
       const reader = new FileReader();
       reader.onload = ()=>{ editingImages.push(reader.result); renderMultiUploadGrid(); };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(compressed);
     });
   };
 }
@@ -13548,6 +14025,8 @@ async function uploadSettingImage(file, prefix){
   if(!supabaseClient) {
     throw new Error('Supabase در دسترس نیست');
   }
+
+  file = await compressImage(file, {maxDim: 1920, quality: 0.82});
 
   const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
   const path = `settings/${prefix}-${Date.now()}.${ext}`;
