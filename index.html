@@ -10133,9 +10133,18 @@ async function renderAdmin(path){
 
   const loggedIn = await isAdminLoggedIn();
 
-  if(path==='/purzr-login' || (!loggedIn)){
+  if(!loggedIn){
+    if(path!=='/purzr-login'){
+      navigate('/purzr-login');
+      return;
+    }
     box.innerHTML = adminLoginScreen();
     bindAdminLogin();
+    return;
+  }
+
+  if(path==='/purzr-login'){
+    navigate('/purzr');
     return;
   }
 
