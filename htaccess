@@ -1,4 +1,10 @@
 RewriteEngine On
+DirectorySlash Off
+
+# 0) حذف اسلش انتهایی از مسیرهایی مثل /product/xxx/ که باعث لوپ ریدایرکت می‌شد
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/(.+)/$
+RewriteRule ^ /%1 [L,R=301]
 
 # 1) اجبار HTTPS
 RewriteCond %{HTTPS} off
