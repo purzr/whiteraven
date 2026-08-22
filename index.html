@@ -327,6 +327,20 @@ header.site{
     backdrop-filter:none;
   }
 }
+/* @-moz-document دیگر در فایرفاکس‌های مدرن کار نمی‌کند (برای صفحات وب معمولی
+   حذف شده)، پس بلوک بالا عملاً کد مرده است و افکت شیشه‌ای هدر همین الان هم
+   در فایرفاکس فعال است. مشکل واقعی‌ای که در فایرفاکس موبایل دیده می‌شود
+   (هدر/نوار پایین حین اسکرول کمی جابه‌جا می‌شوند) از ترکیب position:sticky
+   یا fixed با transform + will-change می‌آید — این ترکیب باعث یک باگ شناخته‌شده
+   در کامپوزیتور فایرفاکس موبایل می‌شود. با تشخیص مدرن فایرفاکس
+   (@supports (-moz-appearance:none) که هنوز در صفحات وب کار می‌کند) این دو
+   خاصیت را فقط برای فایرفاکس حذف می‌کنیم، بدون تاثیر روی افکت شیشه‌ای. */
+@supports (-moz-appearance:none){
+  header.site{
+    transform:none;
+    will-change:auto;
+  }
+}
 .header-row{
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   min-height:62px;
@@ -490,6 +504,14 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
     background:var(--bg);
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
+  }
+}
+/* همان توضیح بالا: @-moz-document دیگر کار نمی‌کند؛ رفع واقعی باگ جابه‌جایی
+   حین اسکرول در فایرفاکس موبایل با حذف transform/will-change مخصوص فایرفاکس. */
+@supports (-moz-appearance:none){
+  .mobile-bottom-nav{
+    transform:none;
+    will-change:auto;
   }
 }
 .mobile-bottom-nav-row{display:flex;align-items:stretch;justify-content:space-around}
@@ -6700,25 +6722,9 @@ function defaultFaqItems(){
     { q:'روش‌های پرداخت کدام‌اند؟', a:`می‌توانید از طریق درگاه بانکی آنلاین پرداخت کنید یا در صورت فعال بودن، هزینه را هنگام تحویل کالا به پیک پرداخت نمایید.` }
   ];
 }
-function productFaqHtml(){
-  const items = (STATE.settings.faqItems && STATE.settings.faqItems.length) ? STATE.settings.faqItems : defaultFaqItems();
-  return `
-  <div class="pd-faq" id="pdFaq">
-    <div class="pd-faq-title">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2 1.7-2.3 3.2M12 17h.01"/></svg>
-      سوالات متداول
-    </div>
-    ${items.map((it,i)=>`
-    <div class="pd-faq-item${i===0?' open':''}" data-i="${i}">
-      <button type="button" class="pd-faq-q">
-        <span>${escapeHtml(it.q)}</span>
-        <svg class="pd-faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
-      <div class="pd-faq-a"><p>${escapeHtml(it.a)}</p></div>
-    </div>`).join('')}
-  </div>`;
-}
-
+// یادداشت: تابع productFaqHtml قبلاً اینجا بود ولی هیچ‌جای کد صدا زده نمی‌شد
+// (کد مرده) — چون سوالات متداول از طریق panelHtml در تب محصول رندر می‌شود؛
+// برای جلوگیری از سردرگمی و آیدی تکراری pdFaq حذف شد.
 function productPageExtraSectionsHtml(){
   return (STATE.settings.productPageSections||[]).map(sec=>{
     const list = (sec.productIds||[]).map(id=> findProduct(id)).filter(Boolean);
