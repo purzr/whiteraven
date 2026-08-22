@@ -21,7 +21,7 @@ const STATIC_PAGES = [
 ];
 
 async function fetchProducts(){
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=id,updated_at`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=id,created_at`, {
     headers: {
       apikey: SUPABASE_ANON_KEY,
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`
@@ -56,7 +56,7 @@ function buildSitemap(products){
     urls.push(
       `  <url>\n` +
       `    <loc>${SITE_URL}/product/${row.id}</loc>\n` +
-      `    <lastmod>${formatDate(row.updated_at)}</lastmod>\n` +
+      `    <lastmod>${formatDate(row.created_at)}</lastmod>\n` +
       `    <changefreq>weekly</changefreq>\n` +
       `    <priority>0.8</priority>\n` +
       `  </url>`
