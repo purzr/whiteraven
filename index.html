@@ -115,6 +115,7 @@
   --ok:#7a9b6e;
   --radius:10px;
   --maxw:1520px;
+  --maxw-wide:1800px;
   --shadow-color:0,0,0;
   --shadow-sm:0 2px 10px rgba(var(--shadow-color),.28);
   --shadow-md:0 14px 34px rgba(var(--shadow-color),.38);
@@ -250,6 +251,7 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
 img{max-width:100%;display:block}
 ul{list-style:none}
 .container{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+header.site .container,footer.site .container{max-width:var(--maxw-wide)}
 @media(max-width:640px){.container{padding:0 18px}}
 
 .eyebrow{
