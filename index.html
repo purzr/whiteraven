@@ -4343,25 +4343,38 @@ async function markAccountNotificationsRead(accountId){
      full_name text,
      email text,
      phone text,
+     user_code text unique,
      created_at timestamptz default now()
    );
    alter table profiles enable row level security;
    create policy "anyone can insert" on profiles for insert with check (true);
    create policy "anyone can select" on profiles for select using (true);
    create policy "anyone can update" on profiles for update using (true);
+
+   -- برای دیتابیس‌های موجود که قبلاً بدون ستون user_code ساخته شده‌اند، فقط این خط کافیست:
+   -- alter table profiles add column if not exists user_code text unique;
 */
 async function upsertProfile(account){
   if(!account || !account.id) return;
   if(supabaseClient){
+    // اگر پروفایل از قبل وجود دارد، کد کاربری قبلی‌اش حفظ می‌شود؛ فقط برای
+    // کاربر تازه یک کد جدید ساخته می‌شود (تا شناسه‌اش هر بار عوض نشود)
+    let userCode = null;
+    try{
+      const { data: existing } = await supabaseClient.from('profiles').select('user_code').eq('id', account.id).maybeSingle();
+      userCode = existing?.user_code || null;
+    }catch(e){}
+    if(!userCode) userCode = genUserCode();
     const { error } = await supabaseClient.from('profiles').upsert({
-      id: account.id, full_name: account.name||'', email: account.email||'', phone: account.phone||''
+      id: account.id, full_name: account.name||'', email: account.email||'', phone: account.phone||'', user_code: userCode
     }, { onConflict: 'id' });
     if(!error) return;
   }
   try{
     const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
     const idx = list.findIndex(p=>p.id===account.id);
-    const row = { id: account.id, full_name: account.name||'', email: account.email||'', phone: account.phone||'', created_at: idx>-1 ? list[idx].created_at : new Date().toISOString() };
+    const userCode = (idx>-1 && list[idx].user_code) ? list[idx].user_code : genUserCode();
+    const row = { id: account.id, full_name: account.name||'', email: account.email||'', phone: account.phone||'', user_code: userCode, created_at: idx>-1 ? list[idx].created_at : new Date().toISOString() };
     if(idx>-1) list[idx] = row; else list.push(row);
     localStorage.setItem('wr-profiles', JSON.stringify(list));
   }catch(e){}
@@ -7350,11 +7363,16 @@ function pageAccount(tab, trackOrderPrefillId){
   }
 
   if(acc){
+    setTimeout(renderAccountIdsBox, 0);
     return `
     <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">حساب کاربری</h1></div>
     <div class="section"><div class="container narrow">
       <p style="margin-bottom:6px;color:var(--text-dim)">خوش آمدید،</p>
       <h3 class="serif" style="font-size:24px;margin-bottom:24px">${escapeHtml(acc.name || acc.email)}</h3>
+      <div id="accIdsBox" style="margin-bottom:24px">
+        ${idCopyRowHtml('شناسه کوتاه', null)}
+        ${idCopyRowHtml('شناسه اصلی', acc.id, {marginBottom:false})}
+      </div>
       ${accountMenuHtml()}
     </div></div>`;
   }
@@ -8352,6 +8370,7 @@ function bindPageUI(){
   initInstagramFeedSlider();
   initMyOrdersList();
   initOrderDetailPage();
+  bindIdCopyButtons();
   $$('#pdFaqPage .pd-faq-item').forEach(item=>{
     item.querySelector('.pd-faq-q').onclick = ()=> item.classList.toggle('open');
   });
@@ -9557,6 +9576,62 @@ async function sendSignupWelcomeMessages(account, wasReferred){
 function randomCouponSuffix(){
   return Math.random().toString(36).slice(2,8).toUpperCase();
 }
+/* شناسهٔ کاربری نمایشی (user_code): یک کد ۶ کاراکتری خوانا برای هر کاربر،
+   شامل حرف انگلیسی بزرگ و عدد (هر دو حتماً حاضرند). این کد جایگزین نمایش
+   UUID خام حساب کاربری (accountId) در پنل ادمین است؛ خودِ UUID همچنان
+   به‌عنوان کلید اصلی/خارجی در دیتابیس (profiles.id و بقیهٔ جدول‌ها) دست‌نخورده
+   باقی می‌ماند چون Supabase Auth آن را می‌سازد و قابل تغییر نیست.
+   کاراکترهای شبیه به هم (O/0 و I/1) حذف شده‌اند تا کد با چشم/تلفن اشتباه خوانده نشود. */
+function genUserCode(){
+  const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // بدون I, O
+  const digits = '23456789'; // بدون 0, 1
+  const all = letters + digits;
+  let code;
+  do{
+    code = '';
+    for(let i=0;i<6;i++) code += all[Math.floor(Math.random()*all.length)];
+  }while(!/[A-Z]/.test(code) || !/[0-9]/.test(code));
+  return code;
+}
+/* یک ردیف نمایش شناسه با دکمه‌ی کپی کنارش — برای «شناسه اصلی» (UUID) و
+   «شناسه کوتاه» (user_code) هم در حساب کاربری خود مشتری و هم در پنل ادمین
+   استفاده می‌شود. مقدار در data-copy-value نگه داشته می‌شود تا نیازی به
+   خواندن از innerHTML (و درگیر شدن با escape) نباشد. */
+function idCopyRowHtml(label, value, opts){
+  opts = opts || {};
+  const v = value || '—';
+  const canCopy = !!value;
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;${opts.marginBottom!==false?'margin-bottom:8px':''}">
+    <div style="min-width:0">
+      <div style="font-size:10.5px;color:var(--text-faint);margin-bottom:2px">${escapeHtml(label)}</div>
+      <div style="font-family:monospace;font-size:12px;letter-spacing:.03em;word-break:break-all">${escapeHtml(v)}</div>
+    </div>
+    ${canCopy ? `<button type="button" class="id-copy-btn" data-copy-value="${escapeHtml(value)}" title="کپی" aria-label="کپی ${escapeHtml(label)}" style="flex:none;background:none;border:1px solid var(--line);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>` : ''}
+  </div>`;
+}
+function bindIdCopyButtons(){
+  $$('.id-copy-btn').forEach(btn=>{
+    if(btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.onclick = ()=>{
+      const text = btn.dataset.copyValue || '';
+      if(!text) return;
+      try{ navigator.clipboard.writeText(text); }
+      catch(e){
+        try{
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); ta.remove();
+        }catch(e2){}
+      }
+      showToast('کپی شد ✓');
+    };
+  });
+}
 // referral reward coupons are personal & single-use — once used in an order, deactivate it
 // so the same account (and no one else, since it's already account-restricted) can't reuse it
 //
@@ -9733,6 +9808,17 @@ async function checkAndGrantReferralReward(order){
   }catch(e){ console.error('referral reward error', e); }
 }
 
+async function renderAccountIdsBox(){
+  const box = document.getElementById('accIdsBox');
+  if(!box || !STATE.account) return;
+  const profile = await getOwnProfileRow(STATE.account.id);
+  const userCode = profile ? (profile.user_code || profile.userCode) : null;
+  box.innerHTML = `
+    ${idCopyRowHtml('شناسه کوتاه', userCode)}
+    ${idCopyRowHtml('شناسه اصلی', STATE.account.id, {marginBottom:false})}
+  `;
+  bindIdCopyButtons();
+}
 async function loadAndRenderReferralStatus(){
   const box = document.getElementById('referralStatusBox');
   const copyBtn = document.getElementById('copyReferralLinkBtn');
@@ -11263,6 +11349,7 @@ function adminUsersRowsHtml(list){
   if(!list.length) return `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز هیچ کاربری ثبت‌نام نکرده است</td></tr>`;
   return list.map((u,i)=>{
     const id = u.id;
+    const userCode = u.user_code || u.userCode || '—';
     const name = u.full_name || u.name || '—';
     const email = u.email || '—';
     const phone = u.phone || '—';
@@ -11275,7 +11362,7 @@ function adminUsersRowsHtml(list){
       : `<span style="color:var(--text-faint);font-size:11.5px">—</span>`;
     return `<tr data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" class="admin-user-row" style="cursor:pointer">
       <td>${(i+1).toLocaleString('fa-IR')}</td>
-      <td style="font-family:monospace;font-size:10.5px;color:var(--text-dim);user-select:all">${escapeHtml(id)}</td>
+      <td style="font-family:monospace;font-size:11.5px;color:var(--text-dim);user-select:all;letter-spacing:.5px">${escapeHtml(userCode)}</td>
       <td>${escapeHtml(name)}</td>
       <td>${escapeHtml(email)}</td>
       <td>${escapeHtml(phone)}</td>
@@ -11292,7 +11379,7 @@ function bindAdminUsers(){
       const q = search.value.trim().toLowerCase();
       const list = (STATE.profiles||[]).filter(u=>{
         if(!q) return true;
-        return [u.id, u.full_name||u.name, u.email, u.phone].some(v=> (v||'').toString().toLowerCase().includes(q));
+        return [u.user_code||u.userCode, u.id, u.full_name||u.name, u.email, u.phone].some(v=> (v||'').toString().toLowerCase().includes(q));
       });
       $('#adminUsersTbody').innerHTML = adminUsersRowsHtml(list);
       bindAdminUsersRowButtons();
@@ -11467,6 +11554,8 @@ function adminOrders(){
   <div style="display:flex;flex-direction:column;gap:8px">
     ${rev.map(o=>{
       const customer = typeof o.customer === 'object' && o.customer !== null ? o.customer : { name: o.customer || 'مهمان' };
+      const customerProfile = customer.accountId ? (STATE.profiles||[]).find(p=>p.id===customer.accountId) : null;
+      const customerUserCode = customerProfile ? (customerProfile.user_code || customerProfile.userCode) : null;
       const itemCount = (o.items||[]).reduce((s,i)=>s+(i.qty||0),0);
       const cancelled = o.status==='لغو شده';
       return `
@@ -11482,7 +11571,7 @@ function adminOrders(){
         <div style="min-width:130px;flex:1">
           <div style="font-size:10.5px;color:var(--text-faint)">مشتری</div>
           <div style="font-size:12.5px">${escapeHtml(customer.name || 'مهمان')}</div>
-          ${customer.accountId ? `<div style="font-family:monospace;font-size:9.5px;color:var(--text-faint);margin-top:1px">${escapeHtml(customer.accountId)}</div>` : ''}
+          ${customerUserCode ? `<div style="font-family:monospace;font-size:9.5px;color:var(--text-faint);margin-top:1px">${escapeHtml(customerUserCode)}</div>` : ''}
         </div>
         <div style="min-width:70px">
           <div style="font-size:10.5px;color:var(--text-faint)">تعداد</div>
@@ -11553,7 +11642,12 @@ function adminOrderDetail(orderId){
     <hr style="border-color:var(--line);margin:20px 0">
 
     <h4>اطلاعات مشتری</h4>
-    <p>شناسه کاربری: ${customer.accountId ? `<span style="font-family:monospace;font-size:11px;user-select:all">${escapeHtml(customer.accountId)}</span>` : 'مهمان (بدون حساب کاربری)'}</p>
+    ${customer.accountId ? `
+    <div style="max-width:420px;margin:0 0 12px">
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px">شناسه کاربری</div>
+      ${idCopyRowHtml('شناسه کوتاه', profile ? (profile.user_code||profile.userCode) : null)}
+      ${idCopyRowHtml('شناسه اصلی', customer.accountId, {marginBottom:false})}
+    </div>` : `<p>شناسه کاربری: مهمان (بدون حساب کاربری)</p>`}
     <p>نام: ${escapeHtml(customer.name||'-')}</p>
     <p>ایمیل: ${escapeHtml(customerEmail||'-')}</p>
     <p>شماره همراه: ${escapeHtml(customer.phone||'-')}</p>
@@ -11576,6 +11670,7 @@ function adminOrderDetail(orderId){
   </div>`;
 }
 function bindAdminOrderDetail(orderId){
+  bindIdCopyButtons();
   const sel = $('#orderDetailStatusSelect');
   if(sel) sel.onchange = ()=> updateOrderStatus(orderId, sel.value);
   const ackBtn = $('#orderDetailAckBtn');
