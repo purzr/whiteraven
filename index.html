@@ -4579,7 +4579,7 @@ async function init(){
 
   let finalProducts = products;
 
-  if(!finalProducts || !finalProducts.length){
+  if((!finalProducts || !finalProducts.length) && !(settings && settings.productsSeeded)){
     // first run — seed demo products
     finalProducts = SEED_PRODUCTS;
 
@@ -4590,6 +4590,13 @@ async function init(){
     }else{
       await sSet('products', finalProducts, true);
     }
+
+    const seededSettings = {...(settings || defaultSettings()), productsSeeded: true};
+    await saveSettingsRemote(seededSettings);
+    STATE.settings = seededSettings;
+  } else {
+    finalProducts = finalProducts || [];
+    STATE.settings = settings || defaultSettings();
   }
 
   STATE.products = finalProducts.map(p => ({
@@ -4618,7 +4625,7 @@ async function init(){
     await finalizePendingStockNotify();
   }
 
-  STATE.settings = settings || defaultSettings();
+  STATE.settings = STATE.settings || settings || defaultSettings();
 
   applySettingsToDOM(STATE.settings);
 
