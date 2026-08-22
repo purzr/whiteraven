@@ -4,6 +4,9 @@
 // باز کنه، فوراً (با meta refresh + جاوااسکریپت) به همون آدرس تو سایت اصلی
 // (SPA) ریدایرکت می‌شه — یعنی چیزی برای کاربر عوض نمی‌شه، فقط بات‌های
 // تلگرام/واتساپ/اینستاگرام (که جاوااسکریپت اجرا نمی‌کنن) og:tags درست رو می‌بینن.
+//
+// این نسخه علاوه بر ساخت/به‌روزرسانی صفحات، صفحات محصولاتی که دیگه توی
+// دیتابیس نیستن (یتیم شدن) رو هم از پوشه product/ حذف می‌کنه (sync کامل).
 
 const fs = require('fs');
 const path = require('path');
@@ -15,6 +18,7 @@ const SITE_URL = 'https://whiteraven.ir';
 // ریپو از "/ (root)" پابلیش می‌شه (نه از پوشه‌ی docs)، خروجی مستقیم توی
 // ریشه‌ی ریپو (کنار index.html) ساخته می‌شه.
 const OUTPUT_ROOT = path.join(__dirname, '..');
+const PRODUCT_DIR = path.join(OUTPUT_ROOT, 'product');
 
 function escapeHtml(str){
   return String(str || '')
@@ -81,19 +85,50 @@ function buildHtml(row){
 </html>`;
 }
 
+// پاک‌سازی پوشه‌های محصولاتی که دیگه توی دیتابیس نیستن.
+// ساختار فعلی product/{id}/index.html هست، پس هر زیرپوشه‌ی مستقیم product/
+// که اسمش (id) توی مجموعه‌ی idهای فعلی نباشه، یتیمه و حذف می‌شه.
+function removeOrphanPages(validIds){
+  if(!fs.existsSync(PRODUCT_DIR)) return [];
+
+  const entries = fs.readdirSync(PRODUCT_DIR, { withFileTypes: true });
+  const removed = [];
+
+  for(const entry of entries){
+    if(!entry.isDirectory()) continue; // فایل‌های دیگه (مثلاً README) رو دست نمی‌زنیم
+    const id = entry.name;
+    if(validIds.has(id)) continue;
+
+    const dirToRemove = path.join(PRODUCT_DIR, id);
+    fs.rmSync(dirToRemove, { recursive: true, force: true });
+    removed.push(id);
+  }
+
+  return removed;
+}
+
 async function main(){
   const products = await fetchProducts();
   console.log(`Fetched ${products.length} products`);
 
-  fs.mkdirSync(OUTPUT_ROOT, { recursive: true });
+  fs.mkdirSync(PRODUCT_DIR, { recursive: true });
+
+  const validIds = new Set(products.map(row => String(row.id)));
 
   for(const row of products){
-    const dir = path.join(OUTPUT_ROOT, 'product', String(row.id));
+    const dir = path.join(PRODUCT_DIR, String(row.id));
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, 'index.html'), buildHtml(row), 'utf8');
   }
 
-  console.log(`Generated ${products.length} product pages in ${OUTPUT_ROOT}/product/*/index.html`);
+  console.log(`Generated ${products.length} product pages in ${PRODUCT_DIR}/*/index.html`);
+
+  const removed = removeOrphanPages(validIds);
+  if(removed.length){
+    console.log(`Removed ${removed.length} orphan product page(s): ${removed.join(', ')}`);
+  } else {
+    console.log('No orphan product pages found.');
+  }
 }
 
 main().catch(err => {
