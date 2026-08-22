@@ -49,7 +49,16 @@ function productImage(row){
 }
 
 function buildHtml(row){
+  // آدرس «تمیز» صفحه محصول — همینی که برای سئو/کراولرها (canonical, og:url) نشون
+  // داده می‌شه و کاربر نهایتاً توی نوار آدرس مرورگرش می‌بینه.
   const productUrl = `${SITE_URL}/product/${row.id}`;
+  // آدرس واقعی که کاربر واقعی (با جاوااسکریپت) بهش ریدایرکت می‌شه. چون این
+  // صفحه‌ی استاتیک خودش دقیقاً روی مسیر /product/{id}/ نشسته، ریدایرکت مستقیم
+  // به همون مسیر یعنی خود همین فایل دوباره لود بشه => حلقه‌ی بی‌نهایت رفرش.
+  // به‌جاش با همون ترفند spa-github-pages که 404.html/index.html این سایت
+  // استفاده می‌کنن (فرمت /?/مسیر) به SPA واقعی هدایت می‌کنیم؛ index.html این
+  // فرمت رو تشخیص می‌ده و با pushState به مسیر واقعی (/product/{id}) برمی‌گردونه.
+  const redirectUrl = `${SITE_URL}/?/product/${row.id}`;
   const title = `${row.name || 'محصول'} | White Raven`;
   const priceText = row.price ? ` — ${Number(row.price).toLocaleString('fa-IR')} تومان` : '';
   const description = (row.desc && String(row.desc).slice(0, 200)) ||
@@ -76,8 +85,8 @@ function buildHtml(row){
 <!-- کاربر واقعی (که جاوااسکریپت اجرا می‌کنه) فوراً به صفحه‌ی محصول تو
      سایت اصلی (SPA) هدایت می‌شه. بات‌ها این خط رو اجرا نمی‌کنن و همینجا
      می‌مونن، پس og:tags بالا رو می‌بینن. -->
-<meta http-equiv="refresh" content="0; url=${escapeHtml(productUrl)}">
-<script>location.replace(${JSON.stringify(productUrl)});</script>
+<meta http-equiv="refresh" content="0; url=${escapeHtml(redirectUrl)}">
+<script>location.replace(${JSON.stringify(redirectUrl)});</script>
 </head>
 <body>
 <p>در حال انتقال به <a href="${escapeHtml(productUrl)}">${escapeHtml(row.name || 'صفحه محصول')}</a>...</p>
