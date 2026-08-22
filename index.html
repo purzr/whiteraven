@@ -114,7 +114,7 @@
   --danger:#c0563f;
   --ok:#7a9b6e;
   --radius:10px;
-  --maxw:1320px;
+  --maxw:1520px;
   --shadow-color:0,0,0;
   --shadow-sm:0 2px 10px rgba(var(--shadow-color),.28);
   --shadow-md:0 14px 34px rgba(var(--shadow-color),.38);
@@ -653,7 +653,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 @media(min-width:761px){
   .banner-slider-wrap{padding:0}
   .banner-slider{border-radius:0}
-  .banner-slide{aspect-ratio:21/6.2;max-height:460px}
+  .banner-slide{aspect-ratio:21/8;max-height:380px}
 }
 .banner-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px 0 4px;direction:ltr}
 .banner-dot{width:8px;height:8px;border-radius:50%;background:transparent;border:1.5px solid var(--gold-dim);padding:0;cursor:pointer;transition:background .3s ease,transform .3s ease,width .3s ease}
@@ -2514,13 +2514,30 @@ async function upsertProductRemote(p){
     await sSet('products', STATE.products, true);
   }
 }
-async function deleteProductRemote(id){
+function storagePathFromPublicUrl(url){
+  if(typeof url !== 'string') return null;
+  const marker = '/site-assets/';
+  const idx = url.indexOf(marker);
+  if(idx === -1) return null;
+  return url.slice(idx + marker.length).split('?')[0];
+}
+
+async function deleteProductImagesRemote(images){
+  if(!supabaseClient || !Array.isArray(images) || !images.length) return;
+  const paths = images.map(storagePathFromPublicUrl).filter(Boolean);
+  if(!paths.length) return;
+  const {error} = await supabaseClient.storage.from('site-assets').remove(paths);
+  if(error) console.error('Delete product images error:', error);
+}
+
+async function deleteProductRemote(id, images){
   if(supabaseClient){
     const {error} = await supabaseClient.from('products').delete().eq('id', id);
     if(error){
       console.error(error);
       throw error;
     }
+    await deleteProductImagesRemote(images);
   } else {
     await sSet('products', STATE.products, true);
   }
@@ -4818,20 +4835,33 @@ function bindGlobalUI(){
     if(!headerEl) return;
     let ticking = false;
     let lastY = window.scrollY;
+    // مقدار حرکت پیوسته‌ی جمع‌شده در جهت فعلی. تا وقتی این مقدار از آستانه‌ی
+    // HYSTERESIS بیشتر نشه، کلاس toggle نمی‌شه — این جلوی «پرپر زدن» منو رو
+    // می‌گیره که با چرخ موس (به‌خاطر انیمیشن نرم چندفریمی مرورگر روی هر تیک
+    // چرخ) پیش میاد: بدون این آستانه، نوسان چند پیکسلی بین فریم‌ها باعث
+    // اضافه/حذف سریع کلاس nav-hidden می‌شد.
+    let accum = 0;
+    const HYSTERESIS = 8;
     function updateScrollState(){
       const y = window.scrollY;
       const isMobile = window.innerWidth <= 900;
 
       // دسکتاپ: منو زیر هدر برود وقتی پایین می‌رویم، برگردد وقتی بالا می‌رویم
       if(!isMobile){
-        if(y > lastY && y > 96){
-          headerEl.classList.add('nav-hidden');
-        } else if(y < lastY){
+        const dy = y - lastY;
+        if(y <= 96){
           headerEl.classList.remove('nav-hidden');
+          accum = 0;
+        } else if(dy > 0){
+          accum = accum > 0 ? accum + dy : dy;
+          if(accum > HYSTERESIS) headerEl.classList.add('nav-hidden');
+        } else if(dy < 0){
+          accum = accum < 0 ? accum + dy : dy;
+          if(accum < -HYSTERESIS) headerEl.classList.remove('nav-hidden');
         }
-        if(y <= 96) headerEl.classList.remove('nav-hidden');
       } else {
         headerEl.classList.remove('nav-hidden');
+        accum = 0;
       }
 
       lastY = y;
@@ -13891,14 +13921,38 @@ function renderMultiUploadGrid(){
   });
   bindMultiUploadInput();
 }
+// نگهداری امضای عکس‌هایی که همین الان (در این جلسه‌ی ویرایش محصول) اضافه
+// شده‌اند، تا اگه به هر دلیلی (رویداد change دوبار fire بشه، یا کاربر با
+// اشتباه دوباره همون فایل‌ها رو انتخاب کنه) یه عکس دوبار به editingImages
+// اضافه نشه و در نتیجه دوبار آپلود نشه.
+let addedImageSignatures = new Set();
 function bindMultiUploadInput(){
   const input = $('#productImageInput');
   if(!input) return;
   input.onchange = ()=>{
-    [...input.files].forEach(async file=>{
+    const files = [...input.files];
+    // اگه input بلافاصله دوباره change بفرسته (باگ شناخته‌شده در بعضی
+    // مرورگرهای موبایل)، این جلوی پردازش دوباره‌ی همون FileList رو می‌گیره.
+    if(input.dataset.processing==='1') return;
+    input.dataset.processing = '1';
+
+    const pending = files.filter(file=>{
+      const sig = `${file.name}_${file.size}_${file.lastModified}`;
+      if(addedImageSignatures.has(sig)) return false;
+      addedImageSignatures.add(sig);
+      return true;
+    });
+
+    let remaining = pending.length;
+    const done = ()=>{ remaining--; if(remaining<=0) input.dataset.processing = '0'; };
+
+    if(remaining===0){ input.dataset.processing = '0'; return; }
+
+    pending.forEach(async file=>{
       const compressed = await compressImage(file, {maxDim: 1600, quality: 0.82});
       const reader = new FileReader();
-      reader.onload = ()=>{ editingImages.push(reader.result); renderMultiUploadGrid(); };
+      reader.onload = ()=>{ editingImages.push(reader.result); renderMultiUploadGrid(); done(); };
+      reader.onerror = done;
       reader.readAsDataURL(compressed);
     });
   };
@@ -15408,6 +15462,7 @@ function openProductModal(id){
   }) : [];
   renderSizeQtyRows();
   editingImages = p ? normalizeImages(p).slice() : [];
+  addedImageSignatures = new Set();
   renderMultiUploadGrid();
   editingFabricFeatures = p?.fabricFeatures?.length ? p.fabricFeatures.map(f=>({icon:f.icon||'', label:f.label||'', size:f.size||11.5})) : [];
   renderFabricFeatureRows();
@@ -15419,9 +15474,11 @@ window.editProduct = openProductModal;
 window.deleteProduct = async (id)=>{
   if(!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
   const backup = STATE.products;
+  const target = backup.find(p=>p.id===id);
+  const targetImages = target ? normalizeImages(target) : [];
   STATE.products = STATE.products.filter(p=>p.id!==id);
   try{
-    await withLoading(()=>deleteProductRemote(id));
+    await withLoading(()=>deleteProductRemote(id, targetImages));
     showToast('محصول حذف شد');
   }catch(error){
     STATE.products = backup;
