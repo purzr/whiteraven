@@ -3577,7 +3577,8 @@ function defaultSettings(){
     metaPixelId: '',
     homeSectionsEnabled: { newest:true, deals:true, featured:true, bestsellers:true },
     featuresPosition: 'after_icons_top',
-    maintenanceMode: false
+    maintenanceMode: false,
+    productsSeeded: false
   };
 }
 /* سازگاری با نسخه قبلی: قبلاً هر سایت فقط یک "logo" و یک "heroImage" داشت که
@@ -3652,7 +3653,8 @@ function rowToSettings(row){
     metaPixelId: data.metaPixelId ?? d.metaPixelId,
     homeSectionsEnabled: {...d.homeSectionsEnabled, ...(data.homeSectionsEnabled||{})},
     featuresPosition: data.featuresPosition ?? d.featuresPosition,
-    maintenanceMode: data.maintenanceMode ?? d.maintenanceMode
+    maintenanceMode: data.maintenanceMode ?? d.maintenanceMode,
+    productsSeeded: data.productsSeeded ?? d.productsSeeded
   };
 }
 async function loadSettings(){
@@ -10830,21 +10832,33 @@ function bindAdminProductsBulkUI(){
     if(!confirm(`آیا از حذف ${ids.length} محصول انتخاب‌شده مطمئن هستید؟ این عمل قابل بازگشت نیست.`)) return;
     bulkDeleteBtn.disabled = true;
     showLoading();
+    const failedNames = [];
     try{
-      const results = await Promise.allSettled(ids.map(id=>deleteProductRemote(id)));
-      const failed = results.filter(r=>r.status==='rejected');
-      const succeededIds = ids.filter((id,i)=>results[i].status==='fulfilled');
-      STATE.products = STATE.products.filter(p=>!succeededIds.includes(p.id));
-      adminSelectedProductIds.clear();
-      if(failed.length){
-        console.error('Bulk delete errors:', failed.map(f=>f.reason));
-        showToast(`${succeededIds.length} حذف شد، ${failed.length} مورد با خطا مواجه شد: ${failed[0].reason?.message||''}`);
+      // sequential, not parallel — avoids rate limits / auth race conditions on large batches
+      for(const id of ids){
+        try{
+          await deleteProductRemote(id);
+          STATE.products = STATE.products.filter(p=>p.id!==id);
+          adminSelectedProductIds.delete(id);
+        }catch(error){
+          console.error('Delete failed for product', id, error);
+          const prod = STATE.products.find(p=>p.id===id);
+          failedNames.push((prod && prod.name) || id);
+        }
+      }
+      // re-sync from the database so the UI always reflects what's actually stored,
+      // even if some deletes silently matched 0 rows (e.g. RLS or id mismatch)
+      const freshProducts = await loadProducts();
+      if(freshProducts) STATE.products = freshProducts.map(p=>({...p, images: normalizeImages(p), image: normalizeImages(p)[0]||''}));
+
+      if(failedNames.length){
+        showToast(`${ids.length - failedNames.length} حذف شد. حذف این موارد ناموفق بود: ${failedNames.join('، ')}`);
       } else {
         showToast('محصولات انتخاب‌شده حذف شدند');
       }
     }catch(error){
       console.error('Bulk delete error:', error);
-      showToast('حذف برخی محصولات با خطا مواجه شد: ' + (error?.message||''));
+      showToast('حذف با خطا مواجه شد: ' + (error?.message||''));
     }finally{
       hideLoading();
       $('#adminMain').innerHTML = adminProducts();
