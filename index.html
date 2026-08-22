@@ -10151,7 +10151,7 @@ async function renderAdmin(path){
   if(path==='/purzr/orders') adminSection='orders';
   else if(path.startsWith('/purzr/order/')){ adminSection='orderDetail'; adminOrderDetailId = decodeURIComponent(path.split('/purzr/order/')[1]||''); }
   else if(path==='/purzr/stats') adminSection='stats';
-  else if(path==='/purzr/products' || path.startsWith('/purzr/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); }
+  else if(path==='/purzr/products' || path.startsWith('/purzr/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); adminSelectedProductIds.clear(); }
   else if(path==='/purzr/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; }
   else if(path==='/purzr/product-reviews'){ adminSection='comments'; adminCommentsTab='productReviews'; adminReviewStatusFilter='pending'; }
   else if(path==='/purzr/settings'){ adminSection='settings'; pendingCategoriesInit=false; pendingBannersInit=false; pendingInstagramFeedInit=false; pendingAnnouncementInit=false; }
@@ -10734,11 +10734,17 @@ function adminNewsletterList(){
   </div>`;
 }
 
+let adminSelectedProductIds = new Set();
 function adminProducts(){
   const cats = STATE.settings.categories||[];
   const activeCat = adminProductCategoryFilter || 'all';
   let list = activeCat==='all' ? STATE.products : STATE.products.filter(p=>p.category===activeCat);
   if(adminProductStockFilter) list = list.filter(p=>p.stock<=3);
+  // drop selections for products no longer in the visible list (filter changed, etc.)
+  const visibleIds = new Set(list.map(p=>p.id));
+  adminSelectedProductIds.forEach(id=>{ if(!visibleIds.has(id)) adminSelectedProductIds.delete(id); });
+  const selCount = adminSelectedProductIds.size;
+  const allSelected = list.length>0 && list.every(p=>adminSelectedProductIds.has(p.id));
   return `
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
     <h2 class="admin-title" style="margin:0">مدیریت محصولات</h2>
@@ -10753,12 +10759,19 @@ function adminProducts(){
     <button type="button" class="chip admin-cat-chip ${activeCat==='all'?'active':''}" data-cat="all">همه (${STATE.products.length})</button>
     ${cats.map(c=>`<button type="button" class="chip admin-cat-chip ${activeCat===c.slug?'active':''}" data-cat="${c.slug}">${escapeHtml(c.label)} (${STATE.products.filter(p=>p.category===c.slug).length})</button>`).join('')}
   </div>
+  ${selCount>0 ? `
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;background:rgba(192,86,63,.10);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;flex-wrap:wrap">
+    <span style="color:var(--danger);font-size:13px">${selCount} محصول انتخاب شده</span>
+    <button type="button" class="btn" id="bulkDeleteProductsBtn" style="padding:6px 14px;font-size:12.5px;color:var(--danger);border-color:var(--danger)">حذف موارد انتخاب‌شده</button>
+    <button type="button" id="clearProductSelectionBtn" style="background:none;border:0;color:var(--text-dim);font-size:12.5px;cursor:pointer;margin-inline-start:auto">لغو انتخاب</button>
+  </div>` : ''}
   <div class="table-wrap">
     <table class="admin-table">
-      <thead><tr><th>تصویر</th><th>نام</th><th>دسته</th><th>قیمت</th><th>موجودی</th><th>وضعیت</th><th></th></tr></thead>
+      <thead><tr><th><input type="checkbox" id="selectAllProductsChk" ${allSelected?'checked':''}></th><th>تصویر</th><th>نام</th><th>دسته</th><th>قیمت</th><th>موجودی</th><th>وضعیت</th><th></th></tr></thead>
       <tbody>
         ${list.map(p=>`
         <tr>
+          <td><input type="checkbox" class="product-row-chk" data-id="${p.id}" ${adminSelectedProductIds.has(p.id)?'checked':''}></td>
           <td>${p.image?`<img src="${p.image}" loading="lazy" decoding="async">`:`<div style="width:44px;height:54px;background:#0d0d0e;border:1px solid var(--line)"></div>`}</td>
           <td style="color:var(--text)">${escapeHtml(p.name)}</td>
           <td>${catLabel(p.category)}</td>
@@ -10769,10 +10782,58 @@ function adminProducts(){
             <button onclick="editProduct('${p.id}')">ویرایش</button>
             <button class="danger" onclick="deleteProduct('${p.id}')">حذف</button>
           </div></td>
-        </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-faint)">${activeCat==='all'?'محصولی ثبت نشده است':'محصولی در این دسته ثبت نشده است'}</td></tr>`}
+        </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint)">${activeCat==='all'?'محصولی ثبت نشده است':'محصولی در این دسته ثبت نشده است'}</td></tr>`}
       </tbody>
     </table>
   </div>`;
+}
+function bindAdminProductsBulkUI(){
+  const selectAllChk = $('#selectAllProductsChk');
+  if(selectAllChk){
+    selectAllChk.onchange = ()=>{
+      $$('.product-row-chk').forEach(chk=>{
+        if(selectAllChk.checked) adminSelectedProductIds.add(chk.dataset.id);
+        else adminSelectedProductIds.delete(chk.dataset.id);
+      });
+      $('#adminMain').innerHTML = adminProducts();
+      bindAdminShell();
+    };
+  }
+  $$('.product-row-chk').forEach(chk=>{
+    chk.onchange = ()=>{
+      if(chk.checked) adminSelectedProductIds.add(chk.dataset.id);
+      else adminSelectedProductIds.delete(chk.dataset.id);
+      $('#adminMain').innerHTML = adminProducts();
+      bindAdminShell();
+    };
+  });
+  const clearBtn = $('#clearProductSelectionBtn');
+  if(clearBtn) clearBtn.onclick = ()=>{
+    adminSelectedProductIds.clear();
+    $('#adminMain').innerHTML = adminProducts();
+    bindAdminShell();
+  };
+  const bulkDeleteBtn = $('#bulkDeleteProductsBtn');
+  if(bulkDeleteBtn) bulkDeleteBtn.onclick = async ()=>{
+    const ids = Array.from(adminSelectedProductIds);
+    if(!ids.length) return;
+    if(!confirm(`آیا از حذف ${ids.length} محصول انتخاب‌شده مطمئن هستید؟ این عمل قابل بازگشت نیست.`)) return;
+    bulkDeleteBtn.disabled = true;
+    showLoading();
+    try{
+      await Promise.all(ids.map(id=>deleteProductRemote(id)));
+      STATE.products = STATE.products.filter(p=>!ids.includes(p.id));
+      adminSelectedProductIds.clear();
+      showToast('محصولات انتخاب‌شده حذف شدند');
+    }catch(error){
+      console.error('Bulk delete error:', error);
+      showToast('حذف برخی محصولات با خطا مواجه شد');
+    }finally{
+      hideLoading();
+      $('#adminMain').innerHTML = adminProducts();
+      bindAdminShell();
+    }
+  };
 }
 
 /* ---------------- admin: magazine ---------------- */
@@ -12842,10 +12903,13 @@ function bindAdminShell(){
   $$('.admin-cat-chip').forEach(chip=>{
     chip.onclick = ()=>{
       adminProductCategoryFilter = chip.dataset.cat;
+      adminSelectedProductIds.clear();
       $('#adminMain').innerHTML = adminProducts();
       bindAdminShell();
     };
   });
+
+  if(adminSection==='products') bindAdminProductsBulkUI();
 
   const modalOverlay = $('#productModalOverlay');
   const closeModalBtn = $('#modalCloseBtn');
