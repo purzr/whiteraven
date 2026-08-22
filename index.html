@@ -38,6 +38,17 @@
   ]
 }
 </script>
+<!-- Schema.org WebSite — جدا از Organization؛ به گوگل معرفی می‌کند که این
+     آدرس یک «سایت» با این نام است (نه فقط یک برند) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "White Raven",
+  "alternateName": "کلاغ سفید",
+  "url": "https://whiteraven.ir/"
+}
+</script>
 <!-- دیکودر همتای 404.html: اگر کاربر از یک آدرس واقعی (مثل /product/123) از
      طریق 404.html به این‌جا هدایت شده، مسیر اصلی را از کوئری‌استرینگ بازیابی
      و با pushState به نوار آدرس مرورگر برمی‌گرداند — قبل از اجرای باقی اسکریپت‌ها. -->
@@ -217,10 +228,27 @@ html[data-theme="classic"] #addToCartBtn:hover,
 html[data-theme="classic"] .pd-action-row .btn-solid:hover{
   background:#1a5533;border-color:#1a5533;
 }
+/* فلش‌های گالری و راهنمای بزرگ‌نمایی در صفحه محصول — تم روشن: طلایی روشن با پس‌زمینه طلایی تیره و شفاف */
+html[data-theme="classic"] .pd-gallery-arrow{
+  background:rgba(20,16,4,.55);
+  color:#f5d78e;
+  -webkit-backdrop-filter:blur(2px);
+  backdrop-filter:blur(2px);
+}
+html[data-theme="classic"] .pd-gallery-arrow:hover{
+  background:var(--gold);
+  color:#0a0a0b;
+}
+html[data-theme="classic"] .pd-gallery-hint{
+  background:rgba(20,16,4,.55);
+  color:#f5d78e;
+  -webkit-backdrop-filter:blur(2px);
+  backdrop-filter:blur(2px);
+}
 
 *, *::before, *::after{transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%}
+html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip;max-width:100%}
 body{
   background:var(--bg);
   color:var(--text);
@@ -304,6 +332,10 @@ html.wr-desktop-ua .pd-related-eyebrow{font-size:8px !important;letter-spacing:.
   display:flex;align-items:center;justify-content:center;gap:8px;
   position:relative;z-index:61;
 }
+.announcement-bar[data-size="medium"]{padding:9px 14px;font-size:calc(13px * var(--scale-body))}
+.announcement-bar[data-size="medium"] img{width:18px;height:18px}
+.announcement-bar[data-size="large"]{padding:14px 14px;font-size:calc(14.5px * var(--scale-body))}
+.announcement-bar[data-size="large"] img{width:20px;height:20px}
 .announcement-bar.has-link{cursor:pointer}
 .announcement-bar.has-link:hover{opacity:.88}
 .announcement-bar img{width:16px;height:16px;object-fit:contain;flex:none}
@@ -411,7 +443,26 @@ nav.main-nav a.active::after{content:"";position:absolute;bottom:0;right:0;left:
 .header-search-mobile{display:none}
 .header-theme-mobile{display:none}
 .header-search-mobile-inline{display:none}
-.header-search-desktop{display:none;align-items:center;gap:10px;max-width:520px;background:rgba(11,110,79,.12);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border:1px solid rgba(255,255,255,.22);box-shadow:0 8px 28px rgba(11,110,79,.18),inset 0 1px 0 rgba(255,255,255,.15);border-radius:22px;padding:0;height:44px;width:44px;overflow:hidden;justify-self:start;cursor:pointer;transition:width .35s ease,border-radius .35s ease,padding .35s ease,background .3s ease;will-change:width}
+.header-search-desktop{display:none;align-items:center;gap:10px;max-width:520px;background:rgba(11,110,79,.12);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border:1px solid rgba(255,255,255,.22);box-shadow:0 8px 28px rgba(11,110,79,.18),inset 0 1px 0 rgba(255,255,255,.15);border-radius:22px;padding:0;height:44px;width:44px;overflow:hidden;justify-self:start;cursor:pointer;transition:width .35s ease,border-radius .35s ease,padding .35s ease,background .3s ease;will-change:width;position:relative}
+.search-pill-deco-img{
+  position:absolute;
+  top:0; left:0; bottom:0;
+  height:100%;
+  width:auto;
+  max-width:none;
+  object-fit:contain;
+  object-position:left center;
+  pointer-events:none;
+  z-index:0;
+  opacity:0;
+  border-radius:inherit;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  -webkit-mask-image:linear-gradient(to right, #000 0%, rgba(0,0,0,.85) 20%, rgba(0,0,0,.55) 40%, rgba(0,0,0,.3) 55%, rgba(0,0,0,.12) 70%, transparent 92%);
+  mask-image:linear-gradient(to right, #000 0%, rgba(0,0,0,.85) 20%, rgba(0,0,0,.55) 40%, rgba(0,0,0,.3) 55%, rgba(0,0,0,.12) 70%, transparent 92%);
+  transition:opacity .3s ease .1s;
+}
+.header-search-desktop.expanded .search-pill-deco-img{opacity:.85}
 html:not([data-theme="classic"]) .header-search-desktop{background:rgba(30,150,110,.20);border-color:rgba(255,255,255,.32);-webkit-backdrop-filter:blur(26px) saturate(200%);backdrop-filter:blur(26px) saturate(200%)}
 .header-search-desktop.expanded{width:100%;flex:1;border-radius:14px;padding:0 16px;cursor:text;background:rgba(11,110,79,.32)}
 html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba(30,150,110,.38)}
@@ -421,6 +472,26 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
 .header-search-desktop.expanded input{width:100%;opacity:1}
 .header-search-desktop #searchInputDesktopPlaceholder{color:rgba(255,255,255,.75)!important}
 #searchOverlay{background:rgba(11,110,79,.38) !important;border-top:1px solid rgba(255,255,255,.22) !important;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);box-shadow:0 12px 36px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.12)}
+/* عکس تزئینی سمت چپ پنل جستجو — فقط دسکتاپ، بدون تاثیر روی input/متن/انیمیشن */
+#searchOverlay{position:relative;overflow:hidden}
+.search-deco-img{
+  position:absolute;
+  top:0; left:0; bottom:0;
+  height:100%;
+  width:min(340px, 34vw);
+  object-fit:contain;
+  object-position:left center;
+  pointer-events:none;
+  z-index:0;
+  opacity:.9;
+  border-radius:inherit;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  -webkit-mask-image:linear-gradient(to right, #000 0%, rgba(0,0,0,.85) 25%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.3) 60%, rgba(0,0,0,.12) 75%, transparent 95%);
+  mask-image:linear-gradient(to right, #000 0%, rgba(0,0,0,.85) 25%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.3) 60%, rgba(0,0,0,.12) 75%, transparent 95%);
+}
+#searchOverlay .container{position:relative;z-index:1}
+@media(max-width:900px){ .search-deco-img{display:none} }
 .header-account-desktop{position:relative;display:none;align-items:center;gap:7px;color:var(--text-dim);white-space:nowrap;transition:color .2s,background .2s,border-color .2s;background:var(--bg-alt);border:1px solid var(--line);border-radius:999px;padding:9px 18px}
 .header-account-desktop:hover{color:var(--gold-light);border-color:var(--gold-light)}
 .header-account-desktop.logged-in{background:none;border:none;padding:0}
@@ -452,10 +523,29 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
     border:1px solid rgba(255,255,255,.22);
     box-shadow:0 8px 24px rgba(11,110,79,.18),inset 0 1px 0 rgba(255,255,255,.15);
     border-radius:22px;padding:0 14px;min-width:0;
-    clip-path:inset(0 0 0 100%);
+    clip-path:inset(0 0 0 100% round 22px);
     pointer-events:none;
     transition:clip-path .38s cubic-bezier(.65,0,.35,1);
     will-change:clip-path;
+    position:relative;
+    overflow:hidden;
+  }
+  .search-mobile-deco-img{
+    position:absolute;
+    top:0; left:0; bottom:0;
+    height:100%;
+    width:160px;
+    max-width:none;
+    object-fit:contain;
+    object-position:left center;
+    pointer-events:none;
+    z-index:0;
+    opacity:1;
+    border-radius:inherit;
+    transform:translateZ(0);
+    -webkit-transform:translateZ(0);
+    -webkit-mask-image:linear-gradient(to right, #000 0%, rgba(0,0,0,.85) 15%, rgba(0,0,0,.55) 30%, rgba(0,0,0,.3) 42%, rgba(0,0,0,.12) 55%, transparent 75%);
+    mask-image:linear-gradient(to right, #000 0%, rgba(0,0,0,.85) 15%, rgba(0,0,0,.55) 30%, rgba(0,0,0,.3) 42%, rgba(0,0,0,.12) 55%, transparent 75%);
   }
   html:not([data-theme="classic"]) .header-search-mobile-inline{
     background:rgba(30,150,110,.36);
@@ -470,9 +560,10 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
   .header-search-mobile-inline #searchInputMobileInlinePlaceholder{color:rgba(255,255,255,.75)!important}
   .header-search-mobile-inline #searchCloseBtnMobileInline{
     flex:none;background:none;border:none;color:#fff;font-size:12px;font-family:inherit;
+    opacity:0;
   }
   .header-row.mobile-search-open .header-search-mobile-inline{
-    clip-path:inset(0 0 0 0);pointer-events:auto;
+    clip-path:inset(0 0 0 0 round 22px);pointer-events:auto;
   }
   .header-row.mobile-search-open .header-right,
   .header-row.mobile-search-open .logo{
@@ -682,6 +773,12 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .banner-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px 0 4px;direction:ltr}
 .banner-dot{width:8px;height:8px;border-radius:50%;background:transparent;border:1.5px solid var(--gold-dim);padding:0;cursor:pointer;transition:background .3s ease,transform .3s ease,width .3s ease}
 .banner-dot.active{background:var(--gold);border-color:var(--gold);width:22px;border-radius:5px}
+@media(max-width:760px){
+  .banner-dots{display:none}
+}
+@media(min-width:761px){
+  .banner-dots{position:absolute;left:0;right:0;bottom:16px;padding:0;z-index:2}
+}
 
 /* ===== Section heading ===== */
 .section{padding:96px 0}
@@ -907,7 +1004,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .view-all-card:hover .view-all-card-inner svg{transform:translateX(-4px)}
 .view-all-card-inner span{font-size:13.5px;font-weight:600}
 
-.card-thumbs{display:flex;gap:6px;padding:8px 2px 0}
+.card-thumbs{display:flex;gap:6px;padding:8px 2px 0;justify-content:center}
 .card-thumb{flex:0 0 44px;width:44px;aspect-ratio:1/1;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:var(--bg-alt)}
 .card-thumb img{width:100%;height:100%;object-fit:cover}
 .card-discount{position:absolute;top:10px;left:10px;z-index:3;background:var(--danger);color:#fff;font-size:calc(11px * var(--scale-product));font-weight:600;padding:4px 9px;border-radius:6px;letter-spacing:.02em;box-shadow:0 4px 10px rgba(0,0,0,.25)}
@@ -1009,10 +1106,10 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .pd-gallery-arrow.next{left:12px}
 .pd-gallery-arrow.prev{right:12px}
 .pd-gallery-thumbs-row{display:flex;align-items:center;gap:8px;margin-top:12px}
-.pd-gallery-thumbs{display:flex;gap:10px;flex:1;min-width:0;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;justify-content:center}
+.pd-gallery-thumbs{display:flex;gap:14px;flex:1;min-width:0;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;justify-content:center}
 .pd-gallery-thumbs::-webkit-scrollbar{display:none}
 .pd-gallery-thumbs button{width:64px;height:64px;flex:none;border:1px solid var(--line);border-radius:6px;overflow:hidden;opacity:.55;transition:.2s;padding:0}
-.pd-gallery-thumbs button.active{opacity:1;border-color:var(--gold)}
+.pd-gallery-thumbs button.active{opacity:1;border-color:var(--gold);transform:scale(1.06);transform-origin:center;position:relative;z-index:1}
 .pd-gallery-thumbs img{width:100%;height:100%;object-fit:cover}
 .pd-gallery-thumbs-arrow{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text-dim);transition:.2s;background:var(--bg-card)}
 .pd-gallery-thumbs-arrow:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
@@ -1687,16 +1784,18 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
       </button>
     </div>
     <div class="header-search-mobile-inline" id="headerSearchMobileInline">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint);flex:none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <div style="position:relative;flex:1">
+      <img class="search-mobile-deco-img" src="data:image/webp;base64,UklGRioGAABXRUJQVlA4IB4GAACwLQCdASqQAYYAPmEwlEikIyIhIFgI0IAMCWlu5LLHgEa1L3PDtO2lEvmvMh4W6cial5ivqngTg19aM6QQigEBB2MCUolmG/RGK8KW8KW8I5SdSew4Z01xNlZjcSq3skYQxPR3ehTlVZHOMzHWfD68Q8uU1joLXGGtbsyyvmUuEezoHpYy+GBuALAJwDKOYltjL3JVtTSMXgo1ic+cqL9hy6IeID+l3OS05c3gz+zJ3byD0gha9uNgz2EQZJ/gIdRSvJdAHHxS8Pmasro4ZT4TmNNXYaSzgMq2iAnD8IklFDPPeAgXE9Tkiy3jxLLGwq3R5lboey7gRWEQoQT1jPZ2lYrJi+SWrkx3JnMjSTFMRI3MXnADsxNcNtr69EZX5+HtEalBU9YLWO/3ROzU6kB6DKDvQNS/v0Cuqkq94jHZr+6k9fVYwdl5wTA2rc5pc0bECfjiJtutyHEnd3Op1zJZxFrxe9vuc4bW/NR+Fn4A9xFwLqpUAAD+/1HRPGB030LXBYGWH1n69+/f9Y31T6WvrXOrwCDT60bXVXffng2ogHe7ROb5E1dW4jna4ts2JyfhbxMIxwbay7uUs7FnMn6hzwUysDfR82I2rhmQeEAP+vjIfkc9+wvSZJZJaGQ5jRZI/2ZDmd63YarVueXov2yfIbI3EU9r5ON5sUDpePoal7cp9VEQp6zRiNwe2NP3hcS5LqM1aTVqoIm1YlDVEZcd0QolMiX7tcsjgb8Ivd1xPR5goDWgEvKC4w6r1+HDJA8WbvQM9Wv1VcmRYjPzlCzUjd2Vz/E89hzXxn+UevuEI/mVLvjOP0EjmUh0RiykyNO+fK5ZbqE3kCAiWYtrLdwmOxFyhRMxcMpFRv8qhj1B0WSsIf3JWynh4zHWvbZPjGMf1N37PUIQTtvBW7KseHU/laKz61+VgYgOixbzHYYitvuKZfq8YLuTWIchgvVTTXCeGdX2JSo4OFspu98JwnD/wudyzIRAOeqjuR4xUabLQdmQhOpDL37wk5M76m8iPXun0tg6d9w//gOWuEOT4j1R3NMpVvmGwOzSoLLm1Yn5hP6yfzM4nO9yYLDmuX3zK5I0HPRANv2fAh/79Dz6v8lAxXswS0FaUUhgbncmKiFj7aBwou9u2xvnTE5KS4qDhqZlPFM8ntDhePr3Fa85j+tQmd4zAZqnrLprNjd5LZ5hKbTbbgbLw4FR1z1DXVI5OfO5leWSHOSX3PMkuC6EVMcAMvYlm58ONlQpBDHT7CR3iLjvpxJh1pqFxfcUyLVBvctbTc1fRBp3v/9h6oz3p4ogQHQwpR6Ezx9W8Tme6OA0Cq44J+iDix6/W8Q8TPM00EhLz+bRwf7gISO+7BZraF498CY6spTlnInjrMCnwKtYO1wfqMZOCKA7HgLBwDmoxkl6HWUyhp8RL5B32WJMLT81Ve5kaThZ3Nv6c1nf5fu7hZYYOXeWh2srmJ5E+DP+UYFCID/nozcibWuGsd8gYqBRmxfIiInOfkC5NDfqhMR+bjTHULCC8nOq0RF+TbxAaz2aawbOgmcqlbgrR5yQE7mCXq/aOTMi0Km3r/2uaRi2Zmi4ljZt2HZOEhs+n8QwiGhnHRsAYoXeqmIrsgrzvq6QBoQojtXcYnBC0en2VA1ePCVO7FzCXf7vILAr9Xe8SS6NHlNybfN9hxC/rsc//cQuzFyTM0b0jRew67ySiRmhBLvsoRPvh9NtScFiXmSBvvPOWDySVjVDvgZX9x/qsr1Tkvy/5pkOT4B1B9vi8Cs1GGhLuxJtFX2pKC6N5rJ1zuN1nKu+v3WLgsv9zASue+kCcwAANwyLPaL+j8bRTLJKEXIZyU7YK7ROnXg9CpoxwQIZfgyNhyYWr1m/4i0zZlFqjYKS5gapNRFAreXmsB+AaSwHRe/i6oCnqEXvIrSoeoJ7kflsW5suUhzLwMc3qArm/aLp0h5TbMMY+u5pMWCcFt1gEgzzK9kWZOaLhSU+iJzdM2V5dk2sU80BUK5OM0t9PNXQbigRqGH8Y6jt42+B7ig/yoxQSIbJ+NZuuSruHf7/6d99pmB3jyoehIUdxm5HXK7s/vaVqjMP5M7AAAA=" alt="" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint);flex:none;position:relative;z-index:1"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div style="position:relative;z-index:1;flex:1">
         <div id="searchInputMobileInlinePlaceholder" style="position:absolute;inset:0;display:flex;align-items:center;pointer-events:none;font-size:inherit;font-family:inherit;white-space:nowrap;color:var(--text-faint)">جستجو در <span style="font-size:1.1em;font-weight:700;margin-inline-start:.3em"><span style="color:#fff">کلاغ</span> <span style="color:#000">سفید</span></span></div>
         <input id="searchInputMobileInline" type="text" placeholder="" style="width:100%">
       </div>
-      <button type="button" id="searchCloseBtnMobileInline" title="بستن">✕</button>
+      <button type="button" id="searchCloseBtnMobileInline" title="بستن" style="position:relative;z-index:1">✕</button>
     </div>
     <div class="header-search-desktop" id="headerSearchDesktop">
-      <svg id="searchIconDesktop" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint);flex:none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <div style="position:relative;flex:1">
+      <img class="search-pill-deco-img" src="data:image/webp;base64,UklGRioGAABXRUJQVlA4IB4GAACwLQCdASqQAYYAPmEwlEikIyIhIFgI0IAMCWlu5LLHgEa1L3PDtO2lEvmvMh4W6cial5ivqngTg19aM6QQigEBB2MCUolmG/RGK8KW8KW8I5SdSew4Z01xNlZjcSq3skYQxPR3ehTlVZHOMzHWfD68Q8uU1joLXGGtbsyyvmUuEezoHpYy+GBuALAJwDKOYltjL3JVtTSMXgo1ic+cqL9hy6IeID+l3OS05c3gz+zJ3byD0gha9uNgz2EQZJ/gIdRSvJdAHHxS8Pmasro4ZT4TmNNXYaSzgMq2iAnD8IklFDPPeAgXE9Tkiy3jxLLGwq3R5lboey7gRWEQoQT1jPZ2lYrJi+SWrkx3JnMjSTFMRI3MXnADsxNcNtr69EZX5+HtEalBU9YLWO/3ROzU6kB6DKDvQNS/v0Cuqkq94jHZr+6k9fVYwdl5wTA2rc5pc0bECfjiJtutyHEnd3Op1zJZxFrxe9vuc4bW/NR+Fn4A9xFwLqpUAAD+/1HRPGB030LXBYGWH1n69+/f9Y31T6WvrXOrwCDT60bXVXffng2ogHe7ROb5E1dW4jna4ts2JyfhbxMIxwbay7uUs7FnMn6hzwUysDfR82I2rhmQeEAP+vjIfkc9+wvSZJZJaGQ5jRZI/2ZDmd63YarVueXov2yfIbI3EU9r5ON5sUDpePoal7cp9VEQp6zRiNwe2NP3hcS5LqM1aTVqoIm1YlDVEZcd0QolMiX7tcsjgb8Ivd1xPR5goDWgEvKC4w6r1+HDJA8WbvQM9Wv1VcmRYjPzlCzUjd2Vz/E89hzXxn+UevuEI/mVLvjOP0EjmUh0RiykyNO+fK5ZbqE3kCAiWYtrLdwmOxFyhRMxcMpFRv8qhj1B0WSsIf3JWynh4zHWvbZPjGMf1N37PUIQTtvBW7KseHU/laKz61+VgYgOixbzHYYitvuKZfq8YLuTWIchgvVTTXCeGdX2JSo4OFspu98JwnD/wudyzIRAOeqjuR4xUabLQdmQhOpDL37wk5M76m8iPXun0tg6d9w//gOWuEOT4j1R3NMpVvmGwOzSoLLm1Yn5hP6yfzM4nO9yYLDmuX3zK5I0HPRANv2fAh/79Dz6v8lAxXswS0FaUUhgbncmKiFj7aBwou9u2xvnTE5KS4qDhqZlPFM8ntDhePr3Fa85j+tQmd4zAZqnrLprNjd5LZ5hKbTbbgbLw4FR1z1DXVI5OfO5leWSHOSX3PMkuC6EVMcAMvYlm58ONlQpBDHT7CR3iLjvpxJh1pqFxfcUyLVBvctbTc1fRBp3v/9h6oz3p4ogQHQwpR6Ezx9W8Tme6OA0Cq44J+iDix6/W8Q8TPM00EhLz+bRwf7gISO+7BZraF498CY6spTlnInjrMCnwKtYO1wfqMZOCKA7HgLBwDmoxkl6HWUyhp8RL5B32WJMLT81Ve5kaThZ3Nv6c1nf5fu7hZYYOXeWh2srmJ5E+DP+UYFCID/nozcibWuGsd8gYqBRmxfIiInOfkC5NDfqhMR+bjTHULCC8nOq0RF+TbxAaz2aawbOgmcqlbgrR5yQE7mCXq/aOTMi0Km3r/2uaRi2Zmi4ljZt2HZOEhs+n8QwiGhnHRsAYoXeqmIrsgrzvq6QBoQojtXcYnBC0en2VA1ePCVO7FzCXf7vILAr9Xe8SS6NHlNybfN9hxC/rsc//cQuzFyTM0b0jRew67ySiRmhBLvsoRPvh9NtScFiXmSBvvPOWDySVjVDvgZX9x/qsr1Tkvy/5pkOT4B1B9vi8Cs1GGhLuxJtFX2pKC6N5rJ1zuN1nKu+v3WLgsv9zASue+kCcwAANwyLPaL+j8bRTLJKEXIZyU7YK7ROnXg9CpoxwQIZfgyNhyYWr1m/4i0zZlFqjYKS5gapNRFAreXmsB+AaSwHRe/i6oCnqEXvIrSoeoJ7kflsW5suUhzLwMc3qArm/aLp0h5TbMMY+u5pMWCcFt1gEgzzK9kWZOaLhSU+iJzdM2V5dk2sU80BUK5OM0t9PNXQbigRqGH8Y6jt42+B7ig/yoxQSIbJ+NZuuSruHf7/6d99pmB3jyoehIUdxm5HXK7s/vaVqjMP5M7AAAA=" alt="" aria-hidden="true">
+      <svg id="searchIconDesktop" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint);flex:none;position:relative;z-index:1"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div style="position:relative;z-index:1;flex:1">
         <div id="searchInputDesktopPlaceholder" style="position:absolute;inset:0;display:flex;align-items:center;pointer-events:none;font-size:inherit;font-family:inherit;white-space:nowrap;color:var(--text-faint)">جستجو در <span style="font-size:1.1em;font-weight:700;margin-inline-start:.3em"><span style="color:#fff">کلاغ</span> <span style="color:#000">سفید</span></span></div>
         <input id="searchInputDesktop" type="text" placeholder="" style="width:100%">
       </div>
@@ -1756,6 +1855,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
 
   <!-- search overlay -->
   <div id="searchOverlay" style="display:none">
+    <img class="search-deco-img" src="data:image/webp;base64,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" alt="" aria-hidden="true">
     <div class="container" style="padding:22px 32px;display:flex;gap:14px;align-items:center">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:#fff;flex:none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <div style="position:relative;flex:1">
@@ -2926,6 +3026,9 @@ function setPageMeta(title, description, image){
   const twImage = document.querySelector('meta[name="twitter:image"]');
   if(twImage && finalImage) twImage.setAttribute('content', finalImage);
   removeProductJsonLd();
+  removeCategoryJsonLd();
+  removeArticleJsonLd();
+  removeBreadcrumbJsonLd();
 }
 
 /* injects/removes a JSON-LD <script type="application/ld+json"> of type Product
@@ -2966,6 +3069,97 @@ function setProductJsonLd(p){
   const script = document.createElement('script');
   script.type = 'application/ld+json';
   script.id = 'productJsonLd';
+  script.textContent = JSON.stringify(data);
+  document.head.appendChild(script);
+}
+
+/* همان الگوی productJsonLd بالا، ولی برای صفحات دسته‌بندی/فروشگاه —
+   نوع ItemList استاندارد schema.org برای معرفی یک صفحه‌ی لیست محصولات
+   به گوگل است (نه یک محصول تکی). فقط لینک و ترتیب هر محصول را می‌دهد؛
+   جزئیات قیمت/موجودی هر محصول در JSON-LD خودِ صفحه محصول (بالا) است. */
+function removeCategoryJsonLd(){
+  const el = document.getElementById('categoryJsonLd');
+  if(el) el.remove();
+}
+function setCategoryJsonLd(items, name){
+  removeCategoryJsonLd();
+  if(!items || !items.length) return;
+  const siteUrl = location.origin;
+  const data = {
+    '@context': 'https://schema.org/',
+    '@type': 'ItemList',
+    name: name || 'محصولات',
+    itemListElement: items.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: siteUrl + '/product/' + p.id
+    }))
+  };
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = 'categoryJsonLd';
+  script.textContent = JSON.stringify(data);
+  document.head.appendChild(script);
+}
+
+/* همان الگو، برای صفحه‌ی تک‌مقاله‌ی مجله — نوع Article باعث می‌شود گوگل
+   نویسنده/تاریخ انتشار/تصویر کاور مقاله را بشناسد و در نتایج جستجوی خبری/
+   مقاله‌ای بهتر نمایش دهد. */
+function removeArticleJsonLd(){
+  const el = document.getElementById('articleJsonLd');
+  if(el) el.remove();
+}
+function setArticleJsonLd(p){
+  removeArticleJsonLd();
+  const siteUrl = location.origin;
+  const data = {
+    '@context': 'https://schema.org/',
+    '@type': 'Article',
+    headline: p.metaTitle || p.title,
+    description: (p.metaDescription || p.excerpt || '').replace(/<[^>]*>/g,'').slice(0,300),
+    image: p.coverImage ? [p.coverImage] : [],
+    datePublished: p.createdAt || undefined,
+    dateModified: p.updatedAt || p.createdAt || undefined,
+    author: { '@type': 'Organization', name: 'White Raven' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'White Raven',
+      logo: { '@type': 'ImageObject', url: siteUrl + '/logo.png' }
+    },
+    mainEntityOfPage: siteUrl + '/magazine/' + encodeURIComponent(p.slug)
+  };
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = 'articleJsonLd';
+  script.textContent = JSON.stringify(data);
+  document.head.appendChild(script);
+}
+
+/* Schema.org BreadcrumbList — دقیقاً همان مسیر (خانه / محصولات / دسته‌بندی /
+   نام محصول) که breadcrumb بصری بالای صفحه محصول نشان می‌دهد، این‌بار به
+   شکل ساختاریافته برای گوگل. items آرایه‌ای از {name, url} به ترتیب از خانه
+   تا صفحه‌ی فعلی است؛ url آخرین آیتم اختیاری است (خود صفحه‌ی جاری). */
+function removeBreadcrumbJsonLd(){
+  const el = document.getElementById('breadcrumbJsonLd');
+  if(el) el.remove();
+}
+function setBreadcrumbJsonLd(items){
+  removeBreadcrumbJsonLd();
+  if(!items || !items.length) return;
+  const siteUrl = location.origin;
+  const data = {
+    '@context': 'https://schema.org/',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      ...(it.url ? { item: siteUrl + it.url } : {})
+    }))
+  };
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = 'breadcrumbJsonLd';
   script.textContent = JSON.stringify(data);
   document.head.appendChild(script);
 }
@@ -3583,6 +3777,7 @@ function defaultSettings(){
     announcementBg: '#0a0a0b',
     announcementColor: '#f2efe8',
     announcementLink: '',
+    announcementBarSize: 'small',
     announcementBars: [
       {id:'ann_default1', enabled:true, text:'ارسال سفارش‌ها در روزهای تعطیل با تاخیر انجام می‌شود', icon:'lib:bell', bg:'#0a0a0b', color:'#f2efe8', link:'', seconds:6, label:'اطلاعیه', labelColor:'#cda05c'}
     ],
@@ -3676,6 +3871,7 @@ function rowToSettings(row){
     announcementColor: data.announcementColor ?? d.announcementColor,
     announcementLink: data.announcementLink ?? d.announcementLink,
     announcementBars: Array.isArray(data.announcementBars) ? data.announcementBars : d.announcementBars,
+    announcementBarSize: data.announcementBarSize ?? d.announcementBarSize,
     emptyStateIconDark: data.emptyStateIconDark ?? data.emptyStateIcon ?? d.emptyStateIconDark,
     emptyStateIconClassic: data.emptyStateIconClassic ?? d.emptyStateIconClassic,
     newestColor: data.newestColor ?? d.newestColor,
@@ -3774,6 +3970,7 @@ async function loadSettings(){
         announcementColor: s.announcementColor ?? defaultSettings().announcementColor,
         announcementLink: s.announcementLink ?? defaultSettings().announcementLink,
         announcementBars: Array.isArray(s.announcementBars) ? s.announcementBars : defaultSettings().announcementBars,
+        announcementBarSize: s.announcementBarSize ?? defaultSettings().announcementBarSize,
         emptyStateIconDark: s.emptyStateIconDark ?? s.emptyStateIcon ?? defaultSettings().emptyStateIconDark,
         emptyStateIconClassic: s.emptyStateIconClassic ?? defaultSettings().emptyStateIconClassic,
         newestColor: s.newestColor ?? defaultSettings().newestColor,
@@ -4054,6 +4251,7 @@ function applySettingsToDOM(settings){
   // نوار اعلان بالای صفحه (پشتیبانی از چند نوار چرخشی)
   const annBar = $('#announcementBar');
   if(annBar){
+    annBar.dataset.size = settings.announcementBarSize || 'small';
     if(window.__annRotateTimer){ clearTimeout(window.__annRotateTimer); window.__annRotateTimer = null; }
     let bars = Array.isArray(settings.announcementBars) ? settings.announcementBars.filter(b=>b && b.enabled && (b.text||'').trim()) : [];
     // سازگاری با تنظیمات قدیمی تک‌نواره
@@ -5939,7 +6137,7 @@ function bindProductGallery(p){
     $$('#pdGalDots button').forEach((d,di)=>d.classList.toggle('active', di===idx));
     $$('#pdGalThumbs button').forEach((d,di)=>d.classList.toggle('active', di===idx));
     const activeThumb = $(`#pdGalThumbs button[data-i="${idx}"]`);
-    if(activeThumb) activeThumb.scrollIntoView({behavior:'smooth', inline:'nearest', block:'nearest'});
+    if(activeThumb) activeThumb.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
   }
   $('#pdGalNext') && ($('#pdGalNext').onclick = ()=> goTo(idx+1));
   $('#pdGalPrev') && ($('#pdGalPrev').onclick = ()=> goTo(idx-1));
@@ -6091,7 +6289,7 @@ function wireLightbox(){
 function productCard(p){
   const off = p.compareAt && p.compareAt > p.price;
   const discountPct = off ? Math.round((p.compareAt - p.price) / p.compareAt * 100) : 0;
-  const extraImgs = normalizeImages(p).slice(1, 5);
+  const extraImgs = normalizeImages(p).slice(1, 4);
   return `
   <div class="card">
     <a href="/product/${p.id}" data-link>
@@ -6610,6 +6808,7 @@ function pageShop(catRaw){
           <svg class="m9" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="currentColor" stroke="none"/><line x1="15.3" y1="8.7" x2="9.7" y2="14.3"/><circle cx="10.3" cy="9.3" r="1"/><circle cx="14.7" cy="13.7" r="1"/></svg>
         </div>` : '';
     const customBg = glassClass ? '' : (()=>{ const rgb = hexToRgbStr(color) || '201,162,75'; return `background:linear-gradient(160deg,rgba(${rgb},.20),rgba(${rgb},.05) 60%,rgba(255,255,255,.06));`; })();
+    setCategoryJsonLd(pg.items, sec.title);
     return `
     <section class="section glass-band ${glassClass}" style="padding-top:34px">
       <div class="container">
@@ -6651,6 +6850,7 @@ function pageShop(catRaw){
   const pg2 = paginateList(list, STATE.filters.page);
 
   const cats = STATE.settings.categories||[];
+  setCategoryJsonLd(pg2.items, cat==='all' ? 'همه محصولات' : catLabel(cat));
   return `
   <div class="page-head">
     <span class="eyebrow">SHOP</span>
@@ -6687,6 +6887,7 @@ function pageOthers(id){
   list = applyShopSizeColorFilter(list);
     list = applyShopSort(list, STATE.filters.sort);
   const pg = paginateList(list, STATE.filters.page);
+  setCategoryJsonLd(pg.items, 'دیگر محصولات');
   return `
   <div class="page-head">
     <span class="eyebrow">MORE PRODUCTS</span>
@@ -6840,6 +7041,12 @@ function pageProduct(id){
     (p.images && p.images[0]) || p.image || ''
   );
   setProductJsonLd(p);
+  setBreadcrumbJsonLd([
+    { name: 'خانه', url: '/' },
+    { name: 'محصولات', url: '/shop/all' },
+    { name: catLabel(p.category), url: '/shop/' + p.category },
+    { name: p.name }
+  ]);
   const off = p.compareAt && p.compareAt > p.price;
   const related = STATE.products.filter(x=>x.category===p.category && x.id!==p.id).slice(0,4);
   const others = shuffleArray(STATE.products.filter(x=>x.id!==p.id)).slice(0,12);
@@ -7030,6 +7237,7 @@ function pageMagazineArticle(slug){
     p.metaDescription || p.excerpt || '',
     p.coverImage || ''
   );
+  setArticleJsonLd(p);
   const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('fa-IR') : '';
   const others = publishedPosts().filter(x=>x.id!==p.id).slice(0,3);
   // every link inside article content is forced to open in a new tab so the
@@ -12164,6 +12372,7 @@ function adminSettings(){
     } else {
       pendingAnnouncementBars = [];
     }
+    pendingAnnouncementBarSize = s.announcementBarSize || 'small';
     pendingAnnouncementInit = true;
   }
   const fontOptionsHtml = (selected)=> FONT_OPTIONS.map(f=>`<option value="${f.id}" ${f.id===selected?'selected':''}>${f.label}</option>`).join('');
@@ -12237,6 +12446,14 @@ function adminSettings(){
   <div class="settings-card">
     <h3 class="serif">نوارهای اعلان بالای صفحه</h3>
     <p class="settings-desc">می‌توانید چند نوار اعلان بسازید که به‌ترتیب و به‌صورت خودکار در بالای سایت، قبل از هدر، جایگزین هم می‌شوند. برای هر نوار متن، لینک، رنگ پس‌زمینه، رنگ متن و مدت‌زمان نمایش (به ثانیه) را جداگانه تعیین کنید.</p>
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:12.5px;color:var(--text-dim);margin-bottom:6px">ارتفاع نوار اعلان</label>
+      <select id="announcementBarSizeSelect" style="max-width:220px">
+        <option value="small" ${pendingAnnouncementBarSize==='small'?'selected':''}>کوچک</option>
+        <option value="medium" ${pendingAnnouncementBarSize==='medium'?'selected':''}>متوسط</option>
+        <option value="large" ${pendingAnnouncementBarSize==='large'?'selected':''}>بزرگ</option>
+      </select>
+    </div>
     <div id="announcementListBox">${announcementListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addAnnouncementBtn" style="margin-top:14px">+ افزودن نوار جدید</button>
     <button type="button" class="btn btn-solid" id="saveAnnouncementBtn" style="margin-top:14px;margin-inline-start:10px">ذخیره نوارهای اعلان</button>
@@ -14043,13 +14260,17 @@ function bindAdminSettingsUI(){
   if(saveAnnouncementBtn) saveAnnouncementBtn.onclick = async ()=>{
     const cleaned = pendingAnnouncementBars.filter(b=> (b.text||'').trim());
     pendingAnnouncementBars = cleaned;
-    const newSettings = {...STATE.settings, announcementBars: cleaned};
+    const newSettings = {...STATE.settings, announcementBars: cleaned, announcementBarSize: pendingAnnouncementBarSize};
     STATE.settings = newSettings;
     applySettingsToDOM(newSettings);
     await withLoading(()=>saveSettingsRemote(newSettings));
     $('#announcementListBox').innerHTML = announcementListHtml();
     bindAnnouncementRowEvents();
     showToast('نوارهای اعلان ذخیره شد ✓');
+  };
+  const announcementBarSizeSelect = $('#announcementBarSizeSelect');
+  if(announcementBarSizeSelect) announcementBarSizeSelect.onchange = ()=>{
+    pendingAnnouncementBarSize = announcementBarSizeSelect.value;
   };
 
   ['Dark','Classic'].forEach(mode=>{
@@ -14254,6 +14475,7 @@ let editingCouponId = null;
 let pendingReferral = {active:false, percent:10, minPurchase:1000000, couponMinSubtotal:0, couponMaxDiscount:0};
 let pendingAnnouncementIcon = '';
 let pendingAnnouncementBars = [];
+let pendingAnnouncementBarSize = 'small';
 let pendingAnnouncementInit = false;
 let pendingEmptyStateIcon = {Dark:'', Classic:''};
 
@@ -15496,6 +15718,18 @@ window.deleteProduct = async (id)=>{
   $('#adminMain').innerHTML = adminProducts();
   bindAdminShell();
 };
+</script>
+<script>
+// ثبت Service Worker برای کش‌کردن ساده (عکس‌ها/فونت‌ها) و بارگذاری سریع‌تر
+// در بازدید دوم. اگر ثبت با خطا مواجه شود (مثلاً مرورگر پشتیبانی نکند)،
+// سایت دقیقاً مثل قبل و بدون کش کار می‌کند — این افزودنی اختیاری است.
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
 </script>
 </body>
 </html>
