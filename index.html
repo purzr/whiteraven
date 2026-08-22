@@ -2517,7 +2517,10 @@ async function upsertProductRemote(p){
 async function deleteProductRemote(id){
   if(supabaseClient){
     const {error} = await supabaseClient.from('products').delete().eq('id', id);
-    if(error) console.error(error);
+    if(error){
+      console.error(error);
+      throw error;
+    }
   } else {
     await sSet('products', STATE.products, true);
   }
@@ -10828,13 +10831,20 @@ function bindAdminProductsBulkUI(){
     bulkDeleteBtn.disabled = true;
     showLoading();
     try{
-      await Promise.all(ids.map(id=>deleteProductRemote(id)));
-      STATE.products = STATE.products.filter(p=>!ids.includes(p.id));
+      const results = await Promise.allSettled(ids.map(id=>deleteProductRemote(id)));
+      const failed = results.filter(r=>r.status==='rejected');
+      const succeededIds = ids.filter((id,i)=>results[i].status==='fulfilled');
+      STATE.products = STATE.products.filter(p=>!succeededIds.includes(p.id));
       adminSelectedProductIds.clear();
-      showToast('محصولات انتخاب‌شده حذف شدند');
+      if(failed.length){
+        console.error('Bulk delete errors:', failed.map(f=>f.reason));
+        showToast(`${succeededIds.length} حذف شد، ${failed.length} مورد با خطا مواجه شد: ${failed[0].reason?.message||''}`);
+      } else {
+        showToast('محصولات انتخاب‌شده حذف شدند');
+      }
     }catch(error){
       console.error('Bulk delete error:', error);
-      showToast('حذف برخی محصولات با خطا مواجه شد');
+      showToast('حذف برخی محصولات با خطا مواجه شد: ' + (error?.message||''));
     }finally{
       hideLoading();
       $('#adminMain').innerHTML = adminProducts();
@@ -15299,9 +15309,16 @@ function openProductModal(id){
 window.editProduct = openProductModal;
 window.deleteProduct = async (id)=>{
   if(!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
+  const backup = STATE.products;
   STATE.products = STATE.products.filter(p=>p.id!==id);
-  await withLoading(()=>deleteProductRemote(id));
-  showToast('محصول حذف شد');
+  try{
+    await withLoading(()=>deleteProductRemote(id));
+    showToast('محصول حذف شد');
+  }catch(error){
+    STATE.products = backup;
+    console.error('Delete product error:', error);
+    showToast('حذف انجام نشد: ' + (error?.message || 'خطای ناشناخته'));
+  }
   $('#adminMain').innerHTML = adminProducts();
   bindAdminShell();
 };
