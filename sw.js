@@ -78,16 +78,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // ۳) ناوبری/صفحه‌ی اصلی (خود index.html): network-first با fallback به کش
+  // ۳) ناوبری/صفحه‌ی اصلی (خود index.html): network-first با fallback به کش.
+  // توجه: فقط پاسخ خودِ مسیر ریشه («/») به‌عنوان «پوسته‌ی اصلی اپ» کش می‌شود —
+  // نه هر صفحه‌ای که کاربر مستقیم بازش کرده. چون بعضی مسیرها (مثل
+  // /product/{id}/) فایل HTML کاملاً متفاوتی دارند (صفحات مخصوص سئو که به
+  // اپ اصلی ریدایرکت می‌کنند)، کش‌کردنشان زیر کلید «/» باعث می‌شد در حالت
+  // آفلاین به‌جای خود سایت، آن صفحه‌ی ریدایرکت خالی نشان داده شود.
   if(request.mode === 'navigate' || request.destination === 'document'){
     event.respondWith(
       (async () => {
         const cache = await caches.open(PAGE_CACHE);
         try{
           const res = await fetch(request);
-          if(res && res.ok) cache.put('/', res.clone());
+          if(res && res.ok && url.pathname === '/'){
+            cache.put('/', res.clone());
+          }
           return res;
         }catch(err){
+          // آفلاین یا خطای شبکه: به‌جای هر صفحه، همیشه پوسته‌ی اصلی اپ را
+          // نشان می‌دهیم (که خودش می‌تواند بعداً با اتصال دوباره، مسیر
+          // درست را از نو بارگذاری کند)
           const cached = await cache.match('/');
           return cached || Response.error();
         }
