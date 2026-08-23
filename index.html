@@ -197,8 +197,8 @@ html[data-theme="classic"] .section-head .divider{
 html[data-theme="classic"] .feature:nth-of-type(odd) svg{color:#f3ecd9;background:rgba(243,236,217,.12);border-color:rgba(243,236,217,.28)}
 html[data-theme="classic"] .feature:nth-of-type(even) svg{color:#b88a44;background:rgba(184,138,68,.12);border-color:rgba(184,138,68,.28)}
 html[data-theme="classic"] .feature:hover{background:rgba(20,67,42,.06)}
-html[data-theme="classic"] .card-badge{box-shadow:0 4px 10px rgba(20,67,42,.35)}
-html[data-theme="classic"] .card-discount{box-shadow:0 4px 10px rgba(184,138,68,.35)}
+html[data-theme="classic"] .card-badge{box-shadow:0 4px 14px rgba(192,86,63,.28)}
+html[data-theme="classic"] .card-discount{box-shadow:0 4px 14px rgba(192,86,63,.28)}
 html[data-theme="classic"] .chip.active,
 html[data-theme="classic"] .chip:hover{box-shadow:0 3px 10px rgba(184,138,68,.20)}
 html[data-theme="classic"] .color-preset-dot.selected{box-shadow:0 0 0 2px rgba(184,138,68,.40)}
@@ -385,15 +385,15 @@ header.site{
 .logo .wordmark small{display:block;font-family:var(--font-header);font-size:calc(8px * var(--scale-header));letter-spacing:.28em;color:var(--text-faint);margin-top:2px;white-space:nowrap;text-align:center}
 .header-right{display:flex;align-items:center;gap:16px;grid-column:1;grid-row:1;justify-self:start;min-width:0}
 nav.main-nav{display:flex;gap:18px;min-width:0;align-items:center}
-nav.main-nav a,nav.main-nav .nav-drop-trigger{font-family:var(--font-header);font-size:calc(11px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s,font-size .25s ease,font-weight .25s ease;white-space:nowrap}
+nav.main-nav a,nav.main-nav .nav-drop-trigger{font-family:var(--font-header);font-size:calc(9.5px * var(--scale-header));color:var(--text-dim);position:relative;padding:6px 0;transition:color .2s,transform .25s ease,font-weight .25s ease;white-space:nowrap;display:inline-block;transform-origin:center}
 nav.main-nav a:hover,nav.main-nav a.active,nav.main-nav .nav-drop-trigger:hover,nav.main-nav .nav-drop-trigger.active{color:var(--gold-light)}
-nav.main-nav a.active,nav.main-nav .nav-drop-trigger.active{font-size:calc(12.5px * var(--scale-header));font-weight:700}
+nav.main-nav a.active,nav.main-nav .nav-drop-trigger.active{transform:scale(1.13);font-weight:700}
 nav.main-nav a.active::after,nav.main-nav .nav-drop-trigger.active::after{width:100%}
 nav.main-nav a::after,nav.main-nav .nav-drop-trigger::after{content:"";position:absolute;bottom:-3px;right:0;width:0;height:1px;background:var(--gold);transition:width .35s ease}
 nav.main-nav a:hover::after,nav.main-nav .nav-drop-trigger:hover::after{width:100%}
-nav.main-nav.nav-hovering a,nav.main-nav.nav-hovering .nav-drop-trigger{font-size:calc(11px * var(--scale-header));font-weight:400}
+nav.main-nav.nav-hovering a,nav.main-nav.nav-hovering .nav-drop-trigger{transform:scale(1);font-weight:400}
 nav.main-nav.nav-hovering a::after,nav.main-nav.nav-hovering .nav-drop-trigger::after{width:0}
-nav.main-nav.nav-hovering a:hover,nav.main-nav.nav-hovering .nav-drop-trigger:hover{font-size:calc(12.5px * var(--scale-header));font-weight:700}
+nav.main-nav.nav-hovering a:hover,nav.main-nav.nav-hovering .nav-drop-trigger:hover{transform:scale(1.13);font-weight:700}
 nav.main-nav.nav-hovering a:hover::after,nav.main-nav.nav-hovering .nav-drop-trigger:hover::after{width:100%}
 
 /* ---- Products dropdown (mega menu) ---- */
@@ -768,7 +768,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 
 /* ===== Homepage banner slider (replaces hero) ===== */
 .banner-slider-wrap{position:relative;padding:14px 0 0}
-.banner-slider{position:relative;overflow:hidden;border-radius:0;direction:ltr;cursor:grab;user-select:none}
+.banner-slider{position:relative;overflow:hidden;border-radius:16px;direction:ltr;cursor:grab;user-select:none}
 .banner-track{display:flex;transition:transform .5s cubic-bezier(.16,1,.3,1);direction:ltr}
 .banner-slide{
   flex:0 0 100%;position:relative;display:block;
@@ -778,11 +778,11 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 }
 @media(max-width:760px){
   /* small peek of neighboring slides so it's clear this is a slider */
-  .banner-slide{flex:0 0 88%}
+  .banner-slide{flex:0 0 88%;border-radius:16px}
 }
 @media(min-width:761px){
-  .banner-slider-wrap{padding:0}
-  .banner-slider{border-radius:0}
+  .banner-slider-wrap{padding:0 0 14px}
+  .banner-slider{border-radius:16px}
   .banner-slide{aspect-ratio:21/8;max-height:380px}
 }
 .banner-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px 0 4px;direction:ltr}
@@ -812,11 +812,14 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
   .banner-arrow-btn.next{opacity:1}
   .banner-arrow-btn.prev{background:rgba(255,255,255,.5);opacity:.75}
   .banner-arrow-btn.prev:hover{opacity:1}
+  html:not([data-theme="classic"]) .banner-arrow-btn{background:rgba(120,120,120,.55);color:#eee}
+  html:not([data-theme="classic"]) .banner-arrow-btn.prev{background:rgba(120,120,120,.3)}
 }
 .banner-slide-cta-group{
   position:absolute;top:50%;left:24px;transform:translateY(-50%);
   display:flex;align-items:center;gap:10px;z-index:4;direction:ltr;
 }
+.banner-slide-cta-group.cta-shift-right{left:64px}
 .banner-slide-cta{
   padding:11px 20px;font-family:var(--font-header);font-size:13px;font-weight:600;
   white-space:nowrap;border-radius:4px;transition:background .25s ease,color .25s ease,border-color .25s ease;
@@ -827,6 +830,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .banner-slide-cta-outline:hover{background:rgba(255,255,255,.16)}
 @media(max-width:760px){
   .banner-slide-cta-group{left:14px;gap:8px}
+  .banner-slide-cta-group.cta-shift-right{left:30px}
   .banner-slide-cta{padding:9px 14px;font-size:12px}
   .banner-slide-cta-solid{padding-left:20px;padding-right:20px}
   .banner-slide-cta-outline{padding-left:15px;padding-right:15px}
@@ -845,7 +849,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
   display:flex;flex-wrap:wrap;justify-content:center;gap:14px;background:none;
 }
 .cat-panel{
-  position:relative;aspect-ratio:3/2;background:var(--bg-card);
+  position:relative;aspect-ratio:16/9;background:var(--bg-card);
   display:flex;align-items:flex-end;padding:18px;
   overflow:hidden;transition:box-shadow .45s ease;
   border-radius:20px;
@@ -854,7 +858,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 }
 @media(min-width:761px){
   .cat-split{gap:22px}
-  .cat-panel{aspect-ratio:3/2;padding:28px;flex:0 0 calc(25% - 16.5px)}
+  .cat-panel{aspect-ratio:16/9;padding:28px;flex:0 0 calc(25% - 16.5px)}
 }
 .cat-panel .cat-bg{position:absolute;inset:0;opacity:1;transition:transform .8s cubic-bezier(.16,1,.3,1),filter .6s ease}
 .cat-panel .cat-bg-mobile{display:none}
@@ -977,7 +981,7 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
 .card:hover .card-img img{transform:scale(1.06)}
 .card-img .ph{color:var(--text-faint);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.1em;text-align:center;padding:20px}
-.card-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0a0a0b;font-size:calc(10px * var(--scale-product));padding:4px 9px;border-radius:6px;letter-spacing:.05em;box-shadow:0 4px 10px rgba(185,151,94,.3)}
+.card-badge{position:absolute;top:10px;right:10px;background:rgba(192,86,63,.35);color:#fff;font-size:calc(10px * var(--scale-product));padding:4px 9px;border-radius:6px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(192,86,63,.28);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(8px) saturate(160%);backdrop-filter:blur(8px) saturate(160%)}
 .new-arrivals-scroll{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
 .new-arrivals-scroll::-webkit-scrollbar{display:none;height:0}
 .new-arrivals-scroll .card{flex:0 0 260px;scroll-snap-align:start}
@@ -1060,9 +1064,14 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .card-thumbs{display:flex;gap:6px;padding:8px 2px 0;justify-content:center}
 .card-thumb{flex:0 0 44px;width:44px;aspect-ratio:1/1;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:var(--bg-alt)}
 .card-thumb img{width:100%;height:100%;object-fit:cover}
-.card-discount{position:absolute;top:10px;left:10px;z-index:3;background:var(--danger);color:#fff;font-size:calc(11px * var(--scale-product));font-weight:600;padding:4px 9px;border-radius:6px;letter-spacing:.02em;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.card-discount{position:absolute;top:10px;left:10px;z-index:3;background:rgba(192,86,63,.35);color:#fff;font-size:calc(11px * var(--scale-product));font-weight:600;padding:4px 9px;border-radius:6px;letter-spacing:.02em;box-shadow:0 4px 14px rgba(192,86,63,.28);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(8px) saturate(160%);backdrop-filter:blur(8px) saturate(160%)}
 .card-out{position:absolute;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(1px);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
-.card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:rgba(192,86,63,.92);color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px}
+.card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:rgba(192,86,63,.35);color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px;border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(8px) saturate(160%);backdrop-filter:blur(8px) saturate(160%)}
+@media(min-width:761px){
+  .card-badge{font-size:calc(12px * var(--scale-product));padding:6px 12px}
+  .card-discount{font-size:calc(13px * var(--scale-product));padding:6px 12px}
+  .card-lowstock{font-size:calc(12.5px * var(--scale-product));padding:7px 11px}
+}
 .pd-lowstock{color:var(--danger);font-weight:600}
 .card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product);min-width:0}
 .card-body .cat-tag{font-size:calc(10.5px * var(--scale-product));letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
@@ -1122,21 +1131,23 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
   display:none;
   position:absolute;top:14px;left:14px;z-index:4;
   align-items:center;
-  background:var(--bg-card);
-  color:var(--gold);
-  border:1px solid var(--gold-dim);
+  background:rgba(192,86,63,.35);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.35);
   border-radius:8px;
   padding:5px 12px;
   font-family:var(--font-product);
   font-size:6px;
   font-weight:600;
   letter-spacing:.05em;
-  box-shadow:var(--shadow-sm);
+  box-shadow:0 4px 14px rgba(192,86,63,.28);
+  -webkit-backdrop-filter:blur(8px) saturate(160%);
+  backdrop-filter:blur(8px) saturate(160%);
 }
 @media(min-width:861px){
   .pd-new-badge{
-    padding:4px 9px;
-    font-size:5px;
+    padding:6px 13px;
+    font-size:11px;
     border-radius:6px;
     top:10px;left:10px;
   }
@@ -1208,6 +1219,8 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .pd-info-tab-panel p{font-size:12.5px;line-height:1.9;color:var(--text-dim);margin:0;overflow-wrap:break-word;word-break:break-word}
 .pd-info-tab-empty{color:var(--text-faint) !important;font-style:italic}
 .pd-sizeguide-table-wrap{overflow-x:auto}
+.pd-sizeguide-image-wrap{margin-bottom:20px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg-alt)}
+.pd-sizeguide-image-wrap img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain}
 .pd-sizeguide-table{width:100%;border-collapse:collapse;font-size:11.5px}
 .pd-sizeguide-table th,.pd-sizeguide-table td{padding:8px 12px;text-align:center;border:1px solid var(--line);white-space:nowrap}
 .pd-sizeguide-table th{background:var(--bg-alt);color:var(--text);font-weight:700}
@@ -1241,9 +1254,9 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 }
 
 .pd-info .cat-tag{font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase}
-.pd-product-badge{display:block;width:fit-content;font-family:var(--font-product);font-size:calc(9px * var(--scale-product));letter-spacing:.05em;padding:3px 10px;border-radius:6px;background:var(--gold);color:#0a0a0b;font-weight:600;margin-bottom:10px}
-.pd-product-badge-new{background:var(--bg-card);color:var(--gold);border:1px solid var(--gold-dim)}
-@media(min-width:861px){.pd-product-badge{font-size:calc(7.5px * var(--scale-product));padding:2px 8px;letter-spacing:.08em}}
+.pd-product-badge{display:block;width:fit-content;font-family:var(--font-product);font-size:calc(9px * var(--scale-product));letter-spacing:.05em;padding:3px 10px;border-radius:6px;background:rgba(192,86,63,.35);color:#fff;font-weight:600;margin-bottom:10px;border:1px solid rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(192,86,63,.28);-webkit-backdrop-filter:blur(8px) saturate(160%);backdrop-filter:blur(8px) saturate(160%)}
+.pd-product-badge-new{background:rgba(192,86,63,.35);color:#fff;border:1px solid rgba(255,255,255,.35)}
+@media(min-width:861px){.pd-product-badge{font-size:calc(11px * var(--scale-product));padding:5px 12px;letter-spacing:.08em}}
 .pd-info h1{font-family:var(--font-product);font-size:calc(32px * var(--scale-product));margin:8px 0 12px;line-height:1.25}
 .pd-price{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;font-family:var(--font-product);flex-wrap:wrap;min-width:0}
 .pd-price .now{font-size:calc(24px * var(--scale-product));color:var(--gold-light);font-weight:600}
@@ -1511,7 +1524,8 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .form-row3 .btn{height:44px}
 
 /* ===== Footer ===== */
-footer.site{position:relative;border-top:1px solid var(--line);background:var(--bg-alt);padding:22px 0 10px}
+footer.site{position:relative;border-top:1px solid var(--line);background:var(--bg-alt);padding:22px 0 10px;opacity:0;transition:opacity .25s ease}
+footer.site.wr-footer-ready{opacity:1}
 .footer-logo-img{display:none;max-width:140px;max-height:52px;object-fit:contain;margin-bottom:8px}
 html:not([data-theme="classic"]) .footer-logo-desktop.footer-logo-dark{display:block}
 html[data-theme="classic"] .footer-logo-desktop.footer-logo-classic{display:block}
@@ -1733,7 +1747,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#8a5f22 !important}
 .pd-page-section{padding-top:28px}
 @media(min-width:861px){
   .pd-page-section{padding-top:18px}
-  .pd-page-section .breadcrumb{font-size:4.5px;letter-spacing:.02em;margin-bottom:10px;color:var(--text-dim)}
+  .pd-page-section .breadcrumb{font-size:12.5px;letter-spacing:.02em;margin-bottom:10px;color:var(--text-dim)}
   .pd-page-section .pd-wrap>.pd-gallery-col{top:88px}
 }
 
@@ -5049,6 +5063,11 @@ async function init(){
   renderWishlistBadge();
   renderAccountNotifBadge();
 
+  requestAnimationFrame(()=>{
+    const _footerEl = $('#siteFooter');
+    if(_footerEl) _footerEl.classList.add('wr-footer-ready');
+  });
+
   if(loadFailed){
     showToast('مشکلی در اتصال پیش آمد — برای اطلاعات کامل صفحه را رفرش کنید');
   }
@@ -5062,6 +5081,8 @@ async function init(){
       bindGlobalUI();
       window.addEventListener('popstate', ()=>{ router(); trackPageView(); });
       router();
+      const _footerEl2 = $('#siteFooter');
+      if(_footerEl2) _footerEl2.classList.add('wr-footer-ready');
     }catch(e2){ console.error('fallback UI bind also failed', e2); }
     showToast('مشکلی در اتصال پیش آمد — لطفاً صفحه را رفرش کنید');
   }finally{
@@ -5836,16 +5857,21 @@ function pdInfoTabsHtml(p){
       </div>` : `<p class="pd-info-tab-empty">سوالی ثبت نشده است.</p>`;
     }
     if(t.sizeGuideTab){
+      const sgImage = (STATE.settings.sizeGuideImages||[]).find(sg=> sg.id === p.sizeGuideImageId && sg.image);
       const table = (p.sizeGuideTable && p.sizeGuideTable.rows && p.sizeGuideTable.rows.length) ? p.sizeGuideTable : STATE.settings.defaultSizeGuideTable;
       const hasTable = table && table.rows && table.rows.length;
-      const textPart = t.content.trim() ? `<p style="margin-bottom:${hasTable?'18px':'0'}">${textToHtml(t.content)}</p>` : '';
+      const textPart = t.content.trim() ? `<p style="margin-bottom:${(hasTable||sgImage)?'18px':'0'}">${textToHtml(t.content)}</p>` : '';
       const howToText = (STATE.settings.sizeGuideHowTo && STATE.settings.sizeGuideHowTo.trim()) ? STATE.settings.sizeGuideHowTo : defaultSizeGuideHowToText();
       const howToHtml = `
         <div class="pd-sizeguide-howto">
           <h4>چطور سایز خود را پیدا کنید؟</h4>
           <p>${textToHtml(howToText)}</p>
         </div>`;
-      if(!hasTable && !textPart) return howToHtml;
+      const imageHtml = sgImage ? `
+        <div class="pd-sizeguide-image-wrap">
+          <img src="${sgImage.image}" alt="${escapeHtml(sgImage.name||'راهنمای سایز')}" loading="lazy" decoding="async">
+        </div>` : '';
+      if(!hasTable && !textPart && !sgImage) return howToHtml;
       const tableHtml = hasTable ? `
         <div class="pd-sizeguide-table-wrap">
           <table class="pd-sizeguide-table">
@@ -5856,7 +5882,7 @@ function pdInfoTabsHtml(p){
           </table>
           ${table.note ? `<p class="pd-sizeguide-note">${escapeHtml(table.note)}</p>` : ''}
         </div>` : '';
-      return `${textPart}<div class="pd-sizeguide-flex">${tableHtml}${howToHtml}</div>`;
+      return `${textPart}${imageHtml}<div class="pd-sizeguide-flex">${tableHtml}${howToHtml}</div>`;
     }
     if(t.detailsTab){
       const rows = (p.productDetailsTable && p.productDetailsTable.rows && p.productDetailsTable.rows.length) ? p.productDetailsTable.rows : defaultProductDetailsRows();
@@ -6515,7 +6541,7 @@ function bannerSlideHtml(b, i){
   const solidText = (b.ctaSolid ?? 'مشاهده این محصول').trim();
   const outlineText = (b.ctaOutline || '').trim();
   const ctaGroup = (solidText || outlineText) ? `
-    <span class="banner-slide-cta-group">
+    <span class="banner-slide-cta-group${b.ctaShiftRight ? ' cta-shift-right' : ''}">
       ${solidText ? `<span class="banner-slide-cta banner-slide-cta-solid">${escapeHtml(solidText)}</span>` : ''}
       ${outlineText ? `<span class="banner-slide-cta banner-slide-cta-outline">${escapeHtml(outlineText)}</span>` : ''}
     </span>` : '';
@@ -10714,7 +10740,7 @@ async function renderAdmin(path){
   else if(path.startsWith('/purzr/order/')){ adminSection='orderDetail'; adminOrderDetailId = decodeURIComponent(path.split('/purzr/order/')[1]||''); }
   else if(path==='/purzr/stats') adminSection='stats';
   else if(path==='/purzr/products' || path.startsWith('/purzr/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); adminSelectedProductIds.clear(); }
-  else if(path==='/purzr/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; }
+  else if(path==='/purzr/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; pendingSizeGuideImagesInit=false; }
   else if(path==='/purzr/product-reviews'){ adminSection='comments'; adminCommentsTab='productReviews'; adminReviewStatusFilter='pending'; }
   else if(path==='/purzr/settings'){ adminSection='settings'; pendingCategoriesInit=false; pendingBannersInit=false; pendingInstagramFeedInit=false; pendingAnnouncementInit=false; }
   else if(path==='/purzr/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
@@ -10965,6 +10991,13 @@ function adminShell(){
             <label style="font-size:11px">یادداشت پایین جدول <span style="color:var(--text-faint);font-weight:400">(اختیاری)</span></label>
             <input id="pSizeGuideNote" placeholder="اندازه‌ها از روی خود لباس گرفته شده است.">
           </div>
+        </div>
+        <div class="form-field">
+          <label>عکس راهنمای سایز <span style="color:var(--text-faint);font-weight:400">(اختیاری — یکی از راهنماهای تصویری ثبت‌شده در تنظیمات ▸ محصولات را انتخاب کنید تا در تب «راهنمای سایز» این محصول نمایش داده شود)</span></label>
+          <select id="pSizeGuideImage">
+            <option value="">— بدون عکس راهنمای سایز —</option>
+            ${(STATE.settings.sizeGuideImages||[]).map(sg=>`<option value="${sg.id}">${escapeHtml(sg.name||'بدون نام')}</option>`).join('')}
+          </select>
         </div>
         <div class="form-field">
           <label>محتوای تب «جزئیات محصول»</label>
@@ -12272,6 +12305,10 @@ function adminProductSettings(){
     pendingIconPanels.footer = (s.iconPanelsFooter||[]).map(ip=>({...ip, productIds:(ip.productIds||[]).slice()}));
     pendingIconPanelsInit.footer = true;
   }
+  if(!pendingSizeGuideImagesInit){
+    pendingSizeGuideImages = (s.sizeGuideImages||[]).map(sg=>({...sg}));
+    pendingSizeGuideImagesInit = true;
+  }
   return `
   <h2 class="admin-title">تنظیمات محصولات</h2>
 
@@ -12388,6 +12425,14 @@ function adminProductSettings(){
       <textarea id="defaultSizeGuideHowTo" placeholder="${escapeHtml(defaultSizeGuideHowToText())}">${escapeHtml(s.sizeGuideHowTo || '')}</textarea>
     </div>
     <button type="button" class="btn btn-solid" id="saveDefaultSizeGuideBtn" style="margin-top:14px">ذخیره جدول پیش‌فرض</button>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">راهنمای سایز تصویری (بر اساس نوع لباس)</h3>
+    <p class="settings-desc">برای هر نوع لباس (مثلاً تی‌شرت، پیراهن، هودی) یک عکس راهنمای سایز آپلود کنید و برایش اسم بگذارید. سپس هنگام افزودن یا ویرایش هر محصول، از بخش «عکس راهنمای سایز» همین نام را انتخاب کنید تا همان عکس در تب «راهنمای سایز» صفحه‌ی آن محصول نمایش داده شود.</p>
+    <div id="sizeGuideImageListBox">${sizeGuideImageListHtml()}</div>
+    <button type="button" class="btn btn-ghost" id="addSizeGuideImageBtn" style="margin-top:14px">+ افزودن راهنمای سایز جدید</button>
+    <button type="button" class="btn btn-solid" id="saveSizeGuideImagesBtn" style="margin-top:14px;margin-right:10px">ذخیره راهنماهای سایز</button>
   </div>
   `;
 }
@@ -13579,6 +13624,7 @@ function bindAdminShell(){
     tabDesc: $('#pTabDesc').value.trim(),
     sizeGuide: $('#pSizeGuide').value.trim(),
     sizeGuideTable: readSizeGuideTable(),
+    sizeGuideImageId: $('#pSizeGuideImage') ? $('#pSizeGuideImage').value : '',
     productDetails: $('#pProductDetails').value.trim(),
     productDetailsTable: readProductDetailsRows(),
     images: editingImages.slice(),
@@ -13862,6 +13908,28 @@ function bindAdminProductSettingsUI(){
     $('#adminMain').innerHTML = adminProductSettings();
     bindAdminShell();
     showToast('آیکون‌ها ذخیره شد ✓');
+  };
+
+  bindSizeGuideImageRowEvents();
+  const addSizeGuideImageBtn = $('#addSizeGuideImageBtn');
+  if(addSizeGuideImageBtn) addSizeGuideImageBtn.onclick = ()=>{
+    pendingSizeGuideImages.push({id:'sg_'+uid(), name:'', image:''});
+    $('#sizeGuideImageListBox').innerHTML = sizeGuideImageListHtml();
+    bindSizeGuideImageRowEvents();
+    const inputs = $$('.sg-edit-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  };
+  const saveSizeGuideImagesBtn = $('#saveSizeGuideImagesBtn');
+  if(saveSizeGuideImagesBtn) saveSizeGuideImagesBtn.onclick = async ()=>{
+    pendingSizeGuideImages.forEach(sg=>{ sg.name = (sg.name||'').trim(); });
+    const cleaned = pendingSizeGuideImages.map(sg=>({...sg}));
+    const newSettings = {...STATE.settings, sizeGuideImages: cleaned};
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    $('#adminMain').innerHTML = adminProductSettings();
+    bindAdminShell();
+    showToast('راهنماهای سایز ذخیره شد ✓');
   };
 }
 
@@ -14523,7 +14591,7 @@ function bindAdminSettingsUI(){
   bindBannerRowEvents();
   const addBannerBtn = $('#addBannerBtn');
   if(addBannerBtn) addBannerBtn.onclick = ()=>{
-    pendingBanners.push({id:'banner_'+uid(), imageDark:'', imageClassic:'', link:'', ctaSolid:'', ctaOutline:''});
+    pendingBanners.push({id:'banner_'+uid(), imageDark:'', imageClassic:'', link:'', ctaSolid:'', ctaOutline:'', ctaShiftRight:false});
     $('#bannerListBox').innerHTML = bannerListHtml();
     bindBannerRowEvents();
   };
@@ -14676,6 +14744,8 @@ let pendingProductPanels = [];
 let pendingProductPanelsInit = false;
 let pendingIconPanels = {top:[], footer:[]};
 let pendingIconPanelsInit = {top:false, footer:false};
+let pendingSizeGuideImages = [];
+let pendingSizeGuideImagesInit = false;
 let pendingDescriptionsInit = false;
 let pendingContent = {};
 let pendingContentInit = false;
@@ -14780,6 +14850,9 @@ function bindBannerRowEvents(){
   });
   $$('.banner-edit-cta-outline').forEach(inp=>{
     inp.oninput = ()=>{ pendingBanners[Number(inp.dataset.idx)].ctaOutline = inp.value; };
+  });
+  $$('.banner-edit-cta-shift').forEach(inp=>{
+    inp.onchange = ()=>{ pendingBanners[Number(inp.dataset.idx)].ctaShiftRight = inp.checked; };
   });
   $$('.banner-edit-delete').forEach(btn=>{
     btn.onclick = ()=>{
@@ -15500,6 +15573,69 @@ function bindIconPanelRowEvents(group){
   });
 }
 
+function sizeGuideImageListHtml(){
+  if(!pendingSizeGuideImages.length){
+    return `<p style="color:var(--text-faint);font-size:13px">هنوز راهنمای سایزی ثبت نشده — یکی اضافه کنید.</p>`;
+  }
+  return `<div style="display:flex;flex-direction:column;gap:16px">
+    ${pendingSizeGuideImages.map((sg,i)=>`
+      <div class="sg-edit-row" data-idx="${i}" style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;padding:14px;border:1px solid var(--line)">
+        <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:10px">
+          <input class="sg-edit-name" data-idx="${i}" value="${escapeHtml(sg.name||'')}" placeholder="نام (مثلاً: تی‌شرت، پیراهن، هودی)">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:10.5px;color:var(--text-faint)">عکس راهنمای سایز</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="logo-upload-box sg-edit-img" data-idx="${i}" style="width:90px;height:90px">
+              ${sg.image ? `<img loading="lazy" decoding="async" src="${sg.image}" alt="${escapeHtml(sg.name||'')}" style="object-fit:contain">` : `<span style="font-size:9px;color:var(--text-faint);text-align:center;padding:4px">بدون عکس</span>`}
+              <input type="file" accept="image/*" class="sg-edit-img-input" data-idx="${i}">
+            </div>
+            ${sg.image ? `<button type="button" class="btn btn-ghost sg-edit-remove-img" data-idx="${i}" style="padding:5px 10px;font-size:11px">حذف</button>` : ''}
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost sg-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف</button>
+      </div>`).join('')}
+  </div>`;
+}
+function bindSizeGuideImageRowEvents(){
+  const rerender = ()=>{ $('#sizeGuideImageListBox').innerHTML = sizeGuideImageListHtml(); bindSizeGuideImageRowEvents(); };
+  $$('.sg-edit-name').forEach(inp=>{
+    inp.oninput = ()=>{ pendingSizeGuideImages[Number(inp.dataset.idx)].name = inp.value; };
+  });
+  $$('.sg-edit-delete').forEach(btn=>{
+    btn.onclick = ()=>{
+      pendingSizeGuideImages.splice(Number(btn.dataset.idx),1);
+      rerender();
+    };
+  });
+  $$('.sg-edit-remove-img').forEach(btn=>{
+    btn.onclick = ()=>{
+      pendingSizeGuideImages[Number(btn.dataset.idx)].image = '';
+      rerender();
+    };
+  });
+  $$('.sg-edit-img-input').forEach(input=>{
+    input.onchange = async ()=>{
+      const idx = Number(input.dataset.idx);
+      const file = input.files[0];
+      if(!file) return;
+      try{
+        input.disabled = true;
+        showLoading();
+        const url = await uploadSettingImage(file, `sizeguide-${pendingSizeGuideImages[idx].id}`);
+        pendingSizeGuideImages[idx].image = url;
+        rerender();
+      }catch(error){
+        console.error('Size guide image upload error:', error);
+        showToast('آپلود عکس راهنمای سایز انجام نشد');
+      }finally{
+        input.disabled = false;
+        hideLoading();
+      }
+    };
+  });
+}
+
 function promoBannerListHtml(){
   if(!pendingPromoBanners.length){
     return `<p style="color:var(--text-faint);font-size:13px">هنوز بنری ثبت نشده — یکی اضافه کنید.</p>`;
@@ -15753,6 +15889,10 @@ function bannerListHtml(){
             <input class="banner-edit-link" data-idx="${i}" value="${escapeHtml(b.link||'')}" placeholder="لینک با کلیک روی بنر (مثلاً /shop/all یا آدرس کامل)">
             <input class="banner-edit-cta-solid" data-idx="${i}" value="${escapeHtml(b.ctaSolid||'')}" placeholder="متن بج توپر (مثلاً: مشاهده این محصول) — خالی بگذارید تا نمایش داده نشود">
             <input class="banner-edit-cta-outline" data-idx="${i}" value="${escapeHtml(b.ctaOutline||'')}" placeholder="متن بج توخالی (سمت چپ بج توپر) — خالی بگذارید تا نمایش داده نشود">
+            <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-dim);cursor:pointer">
+              <input type="checkbox" class="banner-edit-cta-shift" data-idx="${i}" ${b.ctaShiftRight?'checked':''}>
+              فاصله بیشتر از گوشه چپ (بج‌ها را به راست بیاور)
+            </label>
             <span style="font-size:10.5px;color:var(--text-faint)">فقط کافیست عکس یک تم را بگذارید؛ اگر تصویر تم دیگری خالی باشد همان عکس نمایش داده می‌شود.</span>
           </div>
           <button type="button" class="btn btn-ghost banner-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف بنر</button>
@@ -15909,6 +16049,8 @@ function openProductModal(id){
   renderSizeGuideTableUI();
   const sizeGuideNoteInput = $('#pSizeGuideNote');
   if(sizeGuideNoteInput) sizeGuideNoteInput.value = p?.sizeGuideTable?.note || '';
+  const sizeGuideImageSelect = $('#pSizeGuideImage');
+  if(sizeGuideImageSelect) sizeGuideImageSelect.value = p?.sizeGuideImageId || '';
   $('#pProductDetails').value = p?.productDetails || '';
   editingProductDetailsRows = p?.productDetailsTable?.rows?.length ? p.productDetailsTable.rows.map(r=>[r[0]||'',r[1]||'']) : defaultProductDetailsRows().map(r=>r.slice());
   renderProductDetailsRowsUI();
