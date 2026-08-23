@@ -767,8 +767,8 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
 
 /* ===== Homepage banner slider (replaces hero) ===== */
-.banner-slider-wrap{position:relative;padding:14px 0 0}
-.banner-slider{position:relative;overflow:hidden;border-radius:16px;direction:ltr;cursor:grab;user-select:none}
+.banner-slider-wrap{position:relative;padding:14px 0 0;margin-bottom:18px}
+.banner-slider{position:relative;overflow:hidden;border-radius:0;direction:ltr;cursor:grab;user-select:none}
 .banner-track{display:flex;transition:transform .5s cubic-bezier(.16,1,.3,1);direction:ltr}
 .banner-slide{
   flex:0 0 100%;position:relative;display:block;
@@ -778,11 +778,11 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 }
 @media(max-width:760px){
   /* small peek of neighboring slides so it's clear this is a slider */
-  .banner-slide{flex:0 0 88%;border-radius:16px}
+  .banner-slide{flex:0 0 88%;border-radius:8px;box-sizing:border-box;padding:0 6px;background-clip:content-box}
 }
 @media(min-width:761px){
   .banner-slider-wrap{padding:0 0 14px}
-  .banner-slider{border-radius:16px}
+  .banner-slider{border-radius:0}
   .banner-slide{aspect-ratio:21/8;max-height:380px}
 }
 .banner-dots{display:flex;justify-content:center;align-items:center;gap:9px;padding:14px 0 4px;direction:ltr}
@@ -1170,9 +1170,9 @@ html[data-theme="classic"] .hero-bg.has-photo ~ .container .hero-inner .eyebrow{
 .pd-gallery-arrow.next{left:12px}
 .pd-gallery-arrow.prev{right:12px}
 .pd-gallery-thumbs-row{display:flex;align-items:center;gap:8px;margin-top:12px}
-.pd-gallery-thumbs{display:flex;gap:14px;flex:1;min-width:0;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;justify-content:center}
+.pd-gallery-thumbs{display:flex;gap:14px;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;justify-content:center;padding:4px 5px}
 .pd-gallery-thumbs::-webkit-scrollbar{display:none}
-.pd-gallery-thumbs button{width:64px;height:64px;flex:none;border:1px solid var(--line);border-radius:6px;overflow:hidden;opacity:.55;transition:.2s;padding:0}
+.pd-gallery-thumbs button{width:64px;height:64px;flex:none;border:1px solid var(--line);border-radius:6px;overflow:hidden;opacity:.55;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s ease,border-color .25s ease;padding:0}
 .pd-gallery-thumbs button.active{opacity:1;border-color:var(--gold);transform:scale(1.06);transform-origin:center;position:relative;z-index:1}
 .pd-gallery-thumbs img{width:100%;height:100%;object-fit:cover}
 .pd-gallery-thumbs-arrow{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text-dim);transition:.2s;background:var(--bg-card)}
@@ -5816,7 +5816,7 @@ function productGalleryHtml(p){
       <div class="pd-gallery-dots" id="pdGalDots">${imgs.map((_,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"></button>`).join('')}</div>`:''}
       <span class="pd-gallery-hint">برای بزرگ‌نمایی کلیک کنید</span>
     </div>
-    ${imgs.length>1?`<div class="pd-gallery-thumbs-row" id="pdGalThumbsRow">
+    ${imgs.length>1?`<div class="pd-gallery-thumbs-row" id="pdGalThumbsRow" dir="ltr">
       ${imgs.length>4?`<button type="button" class="pd-gallery-thumbs-arrow prev" id="pdGalThumbsPrev" aria-label="قبلی"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>`:''}
       <div class="pd-gallery-thumbs" id="pdGalThumbs" dir="ltr">
         ${imgs.map((src,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"><img src="${src}" alt="" loading="lazy" decoding="async"></button>`).join('')}
@@ -6345,20 +6345,33 @@ function bindProductGallery(p){
     track.style.transform = `translateX(${-idx*100}%)`;
     $$('#pdGalDots button').forEach((d,di)=>d.classList.toggle('active', di===idx));
     $$('#pdGalThumbs button').forEach((d,di)=>d.classList.toggle('active', di===idx));
+    centerActiveThumb();
+  }
+  function centerActiveThumb(){
+    const strip = $('#pdGalThumbs');
     const activeThumb = $(`#pdGalThumbs button[data-i="${idx}"]`);
-    if(activeThumb) activeThumb.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+    if(!strip || !activeThumb) return;
+    const target = activeThumb.offsetLeft + activeThumb.offsetWidth/2 - strip.clientWidth/2;
+    const maxScroll = strip.scrollWidth - strip.clientWidth;
+    strip.scrollTo({left: Math.max(0, Math.min(target, maxScroll)), behavior:'smooth'});
   }
   $('#pdGalNext') && ($('#pdGalNext').onclick = ()=> goTo(idx+1));
   $('#pdGalPrev') && ($('#pdGalPrev').onclick = ()=> goTo(idx-1));
   $$('#pdGalDots button').forEach(d=> d.onclick = ()=> goTo(Number(d.dataset.i)));
   $$('#pdGalThumbs button').forEach(d=> d.onclick = ()=> goTo(Number(d.dataset.i)));
+  // prevent the browser's default "scroll focused element into view" behavior —
+  // without this, clicking a thumbnail near the row's edge makes the whole page
+  // jump up/down to bring the button fully into the viewport.
+  $$('#pdGalThumbs button, #pdGalDots button, #pdGalNext, #pdGalPrev').forEach(el=>{
+    el.addEventListener('mousedown', e=> e.preventDefault());
+  });
 
   const thumbsStrip = $('#pdGalThumbs');
   const thumbsPrev = $('#pdGalThumbsPrev');
   const thumbsNext = $('#pdGalThumbsNext');
   if(thumbsStrip && (thumbsPrev || thumbsNext)){
     const thumbBtn = thumbsStrip.querySelector('button');
-    const thumbStep = thumbBtn ? (thumbBtn.offsetWidth + 10) : 74;
+    const thumbStep = thumbBtn ? (thumbBtn.offsetWidth + 14) : 78;
     const updateThumbArrows = ()=>{
       const maxScroll = thumbsStrip.scrollWidth - thumbsStrip.clientWidth;
       if(thumbsPrev) thumbsPrev.disabled = thumbsStrip.scrollLeft <= 1;
@@ -6366,6 +6379,8 @@ function bindProductGallery(p){
     };
     thumbsNext && (thumbsNext.onclick = ()=> thumbsStrip.scrollBy({left: thumbStep, behavior:'smooth'}));
     thumbsPrev && (thumbsPrev.onclick = ()=> thumbsStrip.scrollBy({left: -thumbStep, behavior:'smooth'}));
+    thumbsPrev && thumbsPrev.addEventListener('mousedown', e=> e.preventDefault());
+    thumbsNext && thumbsNext.addEventListener('mousedown', e=> e.preventDefault());
     thumbsStrip.addEventListener('scroll', updateThumbArrows);
     updateThumbArrows();
   }
@@ -6404,8 +6419,6 @@ function bindProductGallery(p){
 
   goTo(0);
 }
-
-/* ---------------- lightbox: click-to-zoom image viewer with blurred backdrop ---------------- */
 const LB = {images:[], index:0, zoomed:false, panX:0, panY:0, dragging:false, startX:0, startY:0, swipeStartX:0};
 function openLightbox(images, index=0){
   LB.images = images; LB.index = index; LB.zoomed = false; LB.panX = 0; LB.panY = 0;
