@@ -8305,6 +8305,7 @@ function renderCartPageRecent(){
   const items = getRecentlyViewedProducts(15);
   el.innerHTML = recommendedProductsGridHtml(items, 'بازدیدهای اخیر');
 }
+function pageCheckout(){
   if(!STATE.cart.length){
     return `<div class="section"><div class="container narrow" style="text-align:center">
       ${emptyState('سبد خرید شما خالی است')}
