@@ -1778,10 +1778,10 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 .insta-follow-grid{display:flex;gap:14px;width:100%;transition:transform .45s cubic-bezier(.16,1,.3,1);border-radius:12px}
 .insta-follow-item{flex:0 0 calc((100% - 42px)/4);border-radius:12px;overflow:hidden;aspect-ratio:3/3.6}
 .insta-follow-item img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.insta-follow-arrow{position:absolute;top:-52px;width:36px;height:36px;border-radius:50%;background:#000;border:1px solid rgba(255,255,255,.25);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
-.insta-follow-arrow:hover{background:#2a2620}
-.insta-follow-arrow-next{left:calc(50% + 8px)}
-.insta-follow-arrow-prev{left:calc(50% - 44px);right:auto}
+.insta-follow-arrow{position:absolute;right:10px;left:auto;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
+.insta-follow-arrow:hover{background:#000}
+.insta-follow-arrow-next{top:10px}
+.insta-follow-arrow-prev{top:54px}
 @media (max-width:640px){
   .insta-follow-box{padding:14px;gap:14px;flex-wrap:nowrap;align-items:center}
   .insta-follow-info{flex:0 0 auto;order:2;text-align:right;flex-direction:column;align-items:flex-start;gap:8px}
@@ -1791,11 +1791,10 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
   .insta-follow-btn{padding:6px 12px;font-size:11px}
   .insta-follow-viewport{order:1;flex:1 1 auto;min-width:0;margin-top:44px}
   .insta-follow-item{flex:0 0 calc((100% - 14px)/2)}
-  .insta-follow-arrow{top:-44px;width:32px;height:32px}
-  .insta-follow-arrow-next{left:calc(50% + 6px)}
-  .insta-follow-arrow-prev{left:calc(50% - 38px)}
+  .insta-follow-arrow{width:32px;height:32px;right:8px}
+  .insta-follow-arrow-next{top:8px}
+  .insta-follow-arrow-prev{top:48px}
   .insta-follow-arrow:hover,.insta-follow-arrow:active,.insta-follow-arrow:focus{background:#000}
-  .insta-follow-arrow-prev{opacity:.6}
 }
 @media (max-width:420px){
   .insta-follow-box{gap:10px}
