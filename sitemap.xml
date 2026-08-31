@@ -39,12 +39,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://whiteraven.ir/product/id_mt8qz30ul1qs4h</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://whiteraven.ir/product/d59d620d-84dc-4419-bafb-736be0d9f151</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -65,6 +59,12 @@
   <url>
     <loc>https://whiteraven.ir/product/de67f78b-1d35-49ca-8130-7854a07dc205</loc>
     <lastmod>2026-08-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://whiteraven.ir/product/id_mt8qz30ul1qs4h</loc>
+    <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -579,12 +579,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://whiteraven.ir/product/b31d683f-bb79-43fc-aa9b-ede1b6ea3d8c</loc>
-    <lastmod>2026-08-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://whiteraven.ir/product/4028b72a-b399-4fcc-a565-3cb5c8e519b4</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -598,6 +592,12 @@
   </url>
   <url>
     <loc>https://whiteraven.ir/product/a53827bd-434e-45d9-b7cd-7533bca366f8</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://whiteraven.ir/product/b31d683f-bb79-43fc-aa9b-ede1b6ea3d8c</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
