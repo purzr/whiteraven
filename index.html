@@ -3852,6 +3852,34 @@ async function expireOwnOrderIfDue(order){
   return true;
 }
 
+// درخواست ساخت پرداخت را بسته به درگاه انتخاب‌شده (زرین‌پال/پی‌پینگ) برای این
+// سفارش می‌فرستد و آدرس صفحه‌ی درگاه را برمی‌گرداند؛ در صورت هر خطایی، خودش یک
+// پیام مناسب به کاربر نشان می‌دهد و null برمی‌گرداند (بدون ریست‌شدن مهلت ۱۵
+// دقیقه‌ای سفارش — آن مهلت فقط یک‌بار، هنگام ثبت سفارش تعیین می‌شود).
+async function requestGatewayPaymentUrl(order){
+  if(!supabaseClient){
+    showToast('اتصال به سرور پرداخت برقرار نیست');
+    return null;
+  }
+  try{
+    if(order.paymentProvider === 'payping'){
+      const { data, error } = await supabaseClient.functions.invoke('create-payment', {
+        body: { order_id: order.id, amount: order.total, mobile: order.customer?.phone || undefined }
+      });
+      if(!error && data?.url) return data.url;
+      console.error('payping create-payment error', error, data);
+    }else{
+      const { data, error } = await supabaseClient.functions.invoke('zarinpal-request', {
+        body: { order_id: order.id, amount: order.total, mobile: order.customer?.phone || undefined }
+      });
+      if(!error && data?.payment_url) return data.payment_url;
+      console.error('zarinpal-request error', error, data);
+    }
+  }catch(e){ console.error('gateway request exception', e); }
+  showToast('اتصال به درگاه پرداخت ناموفق بود — لطفاً دوباره تلاش کنید');
+  return null;
+}
+
 /* ---------------- appearance settings (logo / fonts / sizes / buy link) ----------------
    Editable from admin ▸ تنظیمات ظاهری. Stored shared so the change applies to every
    visitor (same shared-storage mechanism as products/orders — see loadSettings below). */
@@ -5292,7 +5320,12 @@ function router(preserveScroll){
     }
     app.innerHTML = pageCheckout();
   }
-  else if(path.startsWith('/order-confirmed/')) app.innerHTML = pageOrderConfirmed(path.split('/order-confirmed/')[1]);
+  else if(path.startsWith('/order-confirmed/')){
+    const ocId = path.split('/order-confirmed/')[1];
+    app.innerHTML = pageOrderConfirmed(ocId);
+    const ocOrder = STATE.orders.find(o=>o.id===ocId);
+    if(ocOrder) bindOrderPendingPaymentUI(ocOrder);
+  }
   else if(path==='/payment-callback'){ app.innerHTML = pagePaymentCallback(); runPaymentCallback(); }
   else if(path==='/wishlist') app.innerHTML = pageAccount('wishlist'); // قدیمی — به تب علاقه‌مندی‌ها در حساب کاربری هدایت می‌شود
   else if(path.startsWith('/track-order')) app.innerHTML = pageTrackOrder(decodeURIComponent(path.split('/track-order/')[1]||''));
@@ -8611,6 +8644,7 @@ async function initOrderDetailPage(){
         <button type="button" id="orderDetailCancelBtn" class="btn btn-ghost" style="padding:8px 18px;font-size:12.5px;color:var(--danger);border-color:var(--danger)">لغو سفارش</button>
       </div>` : ''}
     </div>`;
+  bindOrderPendingPaymentUI(order);
   const cancelBtn = $('#orderDetailCancelBtn');
   if(cancelBtn){
     cancelBtn.onclick = async ()=>{
@@ -8657,7 +8691,10 @@ function pageOrderConfirmed(orderId){
     <h1 class="serif" style="font-size:30px;margin-bottom:12px">سفارش شما ثبت شد</h1>
     <p style="color:var(--text-dim);margin-bottom:6px">شماره سفارش: <span style="color:var(--gold-light)">${orderId}</span></p>
     ${order?`<p style="color:var(--text-dim);margin-bottom:6px">مبلغ نهایی: ${RIAL(order.total)}</p>`:''}
-    ${order?.couponCode?`<p style="color:var(--ok);margin-bottom:30px;font-size:13px">کد تخفیف «${escapeHtml(order.couponCode)}» اعمال شد (${RIAL(order.discount||0)}- تومان)</p>`:(order?`<div style="margin-bottom:30px"></div>`:'')}
+    ${order?.couponCode?`<p style="color:var(--ok);margin-bottom:24px;font-size:13px">کد تخفیف «${escapeHtml(order.couponCode)}» اعمال شد (${RIAL(order.discount||0)}- تومان)</p>`:''}
+    ${order && order.status==='در انتظار پرداخت' ? `
+    <div style="max-width:420px;margin:0 auto 24px;text-align:right">${orderStatusTimelineHtml(order)}</div>
+    ` : (order?`<div style="margin-bottom:30px"></div>`:'')}
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="/shop/all" data-link class="btn btn-solid">ادامه خرید ‹</a>
       <a href="${STATE.account ? '/account/order/'+encodeURIComponent(orderId) : '/track-order/'+encodeURIComponent(orderId)}" data-link class="btn btn-ghost">پیگیری این سفارش</a>
@@ -8758,21 +8795,9 @@ async function renderPaymentFailedWithCountdown(box, orderId){
   const retryBtn = $('#paymentRetryBtn');
   if(retryBtn) retryBtn.onclick = async ()=>{
     retryBtn.disabled = true; retryBtn.textContent = 'در حال انتقال به درگاه...';
-    try{
-      if(order.paymentProvider === 'payping'){
-        const { data: reqData, error: reqError } = await supabaseClient.functions.invoke('create-payment', {
-          body: { order_id: order.id, amount: order.total, mobile: order.customer?.phone || undefined }
-        });
-        if(!reqError && reqData?.url){ window.location.href = reqData.url; return; }
-      }else{
-        const { data: reqData, error: reqError } = await supabaseClient.functions.invoke('zarinpal-request', {
-          body: { order_id: order.id, amount: order.total, mobile: order.customer?.phone || undefined }
-        });
-        if(!reqError && reqData?.payment_url){ window.location.href = reqData.payment_url; return; }
-      }
-    }catch(e){}
+    const url = await requestGatewayPaymentUrl(order);
+    if(url){ window.location.href = url; return; }
     retryBtn.disabled = false; retryBtn.textContent = 'تلاش مجدد برای پرداخت';
-    showToast('اتصال به درگاه ناموفق بود — لطفاً دوباره تلاش کنید');
   };
 }
 async function runPaymentCallback(){
@@ -8856,7 +8881,7 @@ function myOrderFullDetailHtml(order){
     : { name: order.customer || '' };
   const addressParts = [customer.province, customer.city, customer.address].filter(Boolean);
   return `
-  ${orderStatusTimelineHtml(order.status)}
+  ${orderStatusTimelineHtml(order)}
   <div style="margin-top:20px">
     <p style="font-size:12.5px;color:var(--text-faint);margin-bottom:8px">آدرس ارسال</p>
     ${addressParts.length ? `
@@ -8877,11 +8902,15 @@ function myOrderFullDetailHtml(order){
     <div class="cart-sum-row total" style="margin-top:6px"><span>مبلغ نهایی پرداخت‌شده</span><span>${RIAL(order.total)}</span></div>
   </div>`;
 }
-function orderStatusTimelineHtml(status){
+function orderStatusTimelineHtml(order){
+  const status = order.status;
   if(status==='در انتظار پرداخت'){
-    return `<div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(185,151,94,.1);border:1px solid var(--gold-dim);color:var(--gold-light)">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      <span>در انتظار پرداخت — تا ۱۵ دقیقه پس از ثبت، سفارش رزرو می‌ماند</span>
+    return `<div style="padding:16px;background:rgba(185,151,94,.1);border:1px solid var(--gold-dim);color:var(--gold-light)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span>در انتظار پرداخت — <span id="orderPayCountdown-${escapeHtml(order.id)}">--:--</span> تا لغو خودکار سفارش</span>
+      </div>
+      <button type="button" id="orderPayBtn-${escapeHtml(order.id)}" class="btn btn-solid" style="margin-top:14px">پرداخت سفارش</button>
     </div>`;
   }
   if(status==='لغو شده'){
@@ -8906,6 +8935,40 @@ function orderStatusTimelineHtml(status){
       ${i<ORDER_STEPS.length-1?`<div class="track-line ${i<idx?'done':''}"></div>`:''}
     `).join('')}
   </div>`;
+}
+
+// دکمه‌ی «پرداخت سفارش» و شمارش‌معکوس را برای سفارش‌های «در انتظار پرداخت» در
+// صفحات پیگیری سفارش/جزئیات سفارش فعال می‌کند (بعد از قرارگرفتن HTML در صفحه صدا زده شود).
+function bindOrderPendingPaymentUI(order){
+  if(!order || order.status !== 'در انتظار پرداخت' || !order.expiresAt) return;
+  const btn = document.getElementById('orderPayBtn-'+order.id);
+  const clockEl = document.getElementById('orderPayCountdown-'+order.id);
+  if(!btn && !clockEl) return;
+  let timer = null;
+  const tick = async ()=>{
+    if(!document.body.contains(btn||clockEl)){ if(timer) clearInterval(timer); return; }
+    const msLeft = new Date(order.expiresAt) - new Date();
+    if(msLeft <= 0){
+      if(timer) clearInterval(timer);
+      await expireOwnOrderIfDue(order);
+      if(clockEl) clockEl.textContent = '۰۰:۰۰';
+      if(btn){ btn.disabled = true; btn.textContent = 'مهلت پرداخت به پایان رسید'; }
+      showToast('مهلت پرداخت این سفارش به پایان رسید و سفارش لغو شد');
+      return;
+    }
+    const totalSec = Math.floor(msLeft/1000);
+    const mm = String(Math.floor(totalSec/60)).padStart(2,'0');
+    const ss = String(totalSec%60).padStart(2,'0');
+    if(clockEl) clockEl.textContent = `${mm}:${ss}`;
+  };
+  tick();
+  timer = setInterval(tick, 1000);
+  if(btn) btn.onclick = async ()=>{
+    btn.disabled = true; btn.textContent = 'در حال انتقال به درگاه...';
+    const url = await requestGatewayPaymentUrl(order);
+    if(url){ window.location.href = url; return; }
+    btn.disabled = false; btn.textContent = 'پرداخت سفارش';
+  };
 }
 
 function pageTrackOrder(prefillId){
@@ -9575,6 +9638,7 @@ if (messageInput && messageCounter) {
       }
       await expireOwnOrderIfDue(order);
       resultBox.innerHTML = orderTrackResultHtml(order);
+      bindOrderPendingPaymentUI(order);
     };
   }
 
@@ -10123,25 +10187,14 @@ const order = {
     // behaviour (go straight to the confirmation page) so checkout never
     // gets stuck — the order itself is already saved either way.
     if(supabaseClient && order.total > 0){
-      try{
-        if(order.paymentProvider === 'payping'){
-          const { data: reqData, error: reqError } = await supabaseClient.functions.invoke('create-payment', {
-            body: { order_id: order.id, amount: order.total, mobile: customer.phone || undefined }
-          });
-          if(!reqError && reqData?.url){
-            window.location.href = reqData.url;
-            return;
-          }
-        }else{
-          const { data: reqData, error: reqError } = await supabaseClient.functions.invoke('zarinpal-request', {
-            body: { order_id: order.id, amount: order.total, mobile: customer.phone || undefined }
-          });
-          if(!reqError && reqData?.payment_url){
-            window.location.href = reqData.payment_url;
-            return; // leaving the page — no need to hideLoading()/navigate() below
-          }
-        }
-      }catch(e){ /* fall through to confirmation page below */ }
+      const gatewayUrl = await requestGatewayPaymentUrl(order);
+      if(gatewayUrl){
+        window.location.href = gatewayUrl;
+        return; // leaving the page — no need to hideLoading()/navigate() below
+      }
+      // اتصال به درگاه ناموفق بود — پیام خطا از requestGatewayPaymentUrl نمایش
+      // داده شده؛ سفارش با وضعیت «در انتظار پرداخت» و مهلت ۱۵ دقیقه‌ای ثبت شده
+      // و کاربر می‌تواند از صفحه‌ی پیگیری سفارش دوباره تلاش کند.
     }
     hideLoading();
     navigate('/order-confirmed/'+order.id);
