@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>در حال بررسی پرداخت...</title>
+  <style>
+    body{font-family:Tahoma,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f7f5f0}
+    .box{text-align:center;padding:30px;border-radius:10px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+    .success{color:#1a7a3c}
+    .fail{color:#c0392b}
+  </style>
+</head>
+<body>
+  <div class="box" id="result">در حال بررسی نتیجه پرداخت، لطفاً صبر کنید...</div>
+
+  <script>
+    const SUPABASE_URL = "https://zcnfhjjzhfqvhbmkiqnh.supabase.co"; // همون آدرس پروژه Supabase
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjbmZoamp6aGZxdmhibWtpcW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDY0MjMsImV4cCI6MjEwMTY4MjQyM30.jHwlq7o5kM0thdhLgdXQW3YJ6jAnq2qOrPvPyHhq2lQ";
+
+    // پی‌پینگ بعد از پرداخت، پارامترهای refId و amount رو به این صفحه (returnUrl) اضافه می‌کند
+    const params = new URLSearchParams(window.location.search);
+    const refId = params.get("refid") || params.get("refId");
+    const amount = params.get("amount");
+    const status = params.get("status"); // اگر status=-1 یعنی کاربر پرداخت را لغو کرده
+
+    const resultBox = document.getElementById("result");
+
+    if (status && status !== "1" && status !== "OK") {
+      resultBox.innerHTML = '<span class="fail">پرداخت لغو شد یا ناموفق بود.</span>';
+    } else if (!refId || !amount) {
+      resultBox.innerHTML = '<span class="fail">اطلاعات پرداخت ناقص است.</span>';
+    } else {
+      fetch(`${SUPABASE_URL}/functions/v1/verify-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ refId, amount: Number(amount) }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.verified) {
+            resultBox.innerHTML = '<span class="success">پرداخت با موفقیت انجام شد. متشکریم!</span>';
+            // اینجا می‌توانید کاربر را بعد از چند ثانیه به صفحه سفارش‌ها یا خانه هدایت کنید:
+            // setTimeout(() => window.location.href = "/account/orders", 3000);
+          } else {
+            resultBox.innerHTML = '<span class="fail">پرداخت تأیید نشد.</span>';
+          }
+        })
+        .catch(() => {
+          resultBox.innerHTML = '<span class="fail">خطا در بررسی پرداخت.</span>';
+        });
+    }
+  </script>
+</body>
+</html>
