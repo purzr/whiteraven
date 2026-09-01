@@ -6638,14 +6638,14 @@ function wireLightbox(){
 
   $('#lightboxCloseBtn').onclick = closeLightbox;
   overlay.addEventListener('click', e=>{ if(e.target===overlay || e.target===stage) closeLightbox(); });
-  $('#lightboxNextBtn').onclick = ()=> lbGoTo(LB.index+1);
-  $('#lightboxPrevBtn').onclick = ()=> lbGoTo(LB.index-1);
+  $('#lightboxNextBtn').onclick = ()=> lbGoTo(LB.index-1);
+  $('#lightboxPrevBtn').onclick = ()=> lbGoTo(LB.index+1);
 
   document.addEventListener('keydown', e=>{
     if(!overlay.classList.contains('open')) return;
     if(e.key==='Escape') closeLightbox();
-    else if(e.key==='ArrowLeft') lbGoTo(LB.index+1);
-    else if(e.key==='ArrowRight') lbGoTo(LB.index-1);
+    else if(e.key==='ArrowLeft') lbGoTo(LB.index-1);
+    else if(e.key==='ArrowRight') lbGoTo(LB.index+1);
   });
 
   // click toggles zoom in/out; when zoomed, drag pans the image
