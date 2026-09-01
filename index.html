@@ -1428,14 +1428,27 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .cart-page-summary .cart-sum-row{font-size:15px}
 .cart-page-summary .cart-sum-row.total{font-size:18px;font-weight:700;color:var(--text)}
 /* بخش‌های پیشنهادی زیر سبد خرید — کوچک و کم‌رنگ‌تر تا حواس از خودِ سبد و جزئیات خرید پرت نشود */
-.cart-recs-compact .recs-section{margin-top:30px}
-.cart-recs-compact .glass-panel{padding:14px 16px}
-.cart-recs-compact .section-head{margin-bottom:6px}
-.cart-recs-compact .section-head .eyebrow{font-size:9px;padding:3px 9px;margin-bottom:6px}
-.cart-recs-compact .section-head h2{font-size:15px;-webkit-text-fill-color:var(--text-dim);background:none}
-.cart-recs-compact .section-head .divider{margin:8px auto;width:40px}
-.cart-recs-compact .glass-scroll .card{flex:0 0 140px}
-@media(max-width:640px){.cart-recs-compact .glass-scroll .card{flex-basis:118px}}
+.cart-recs-compact .recs-section{margin-top:22px !important}
+.cart-recs-compact .glass-panel{padding:12px 14px !important}
+.cart-recs-compact .section-head{margin-bottom:4px !important}
+.cart-recs-compact .section-head .eyebrow{font-size:9px !important;padding:3px 9px !important;margin-bottom:4px !important}
+.cart-recs-compact .section-head h2{font-size:14px !important;-webkit-text-fill-color:var(--text-dim) !important;background:none !important}
+.cart-recs-compact .section-head .divider{margin:6px auto !important;width:36px !important}
+.cart-recs-compact .glass-scroll{gap:10px !important;padding:6px 2px 8px !important}
+.cart-recs-compact .glass-scroll .card{flex:0 0 108px !important}
+@media(max-width:640px){.cart-recs-compact .glass-scroll .card{flex-basis:92px !important}}
+.cart-recs-compact .glass-scroll .card .cat-tag,
+.cart-recs-compact .glass-scroll .card .card-thumbs,
+.cart-recs-compact .glass-scroll .card .card-actions,
+.cart-recs-compact .glass-scroll .card .card-discount,
+.cart-recs-compact .glass-scroll .card .card-out,
+.cart-recs-compact .glass-scroll .card .card-lowstock,
+.cart-recs-compact .glass-scroll .card .was{display:none !important}
+.cart-recs-compact .glass-scroll .card-img{aspect-ratio:1/1.05 !important;padding:6px !important}
+.cart-recs-compact .glass-scroll .card-body{padding:4px 6px 8px !important;gap:2px !important}
+.cart-recs-compact .glass-scroll .card-body h3{font-size:10.5px !important;line-height:1.3 !important;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.cart-recs-compact .glass-scroll .card-price{margin-top:2px !important}
+.cart-recs-compact .glass-scroll .card-price .now{font-size:11px !important}
 .cart-sum-row.total{color:var(--text);font-size:calc(17px * var(--scale-body));font-weight:600;margin:14px 0}
 
 /* ===== Auth / account ===== */
@@ -11144,7 +11157,7 @@ window.closeCartUI = closeCart;
 
 function pageCart(){
   return `
-  <div class="section" style="padding-top:28px">
+  <div class="section" style="padding-top:18px;padding-bottom:24px">
     <div class="container">
       <h1 class="serif" style="font-size:26px;margin-bottom:22px">سبد خرید <span style="color:var(--text-faint);font-size:15px">(${cartCount()} کالا)</span></h1>
       <div class="cart-page-grid">
