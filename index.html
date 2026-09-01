@@ -1419,6 +1419,23 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .cart-page-items{background:var(--bg-card);border:1px solid var(--line);border-radius:14px;padding:8px 22px}
 .cart-page-items .cart-line:last-child{border-bottom:none}
 .cart-page-summary{background:var(--bg-card);border:1px solid var(--line);border-radius:14px;padding:22px;position:sticky;top:90px}
+.cart-page-items .cart-line{gap:20px;padding:24px 4px}
+.cart-page-items .cart-line .thumb{width:104px;height:126px}
+.cart-page-items .cart-line h4{font-size:17px;font-weight:600}
+.cart-page-items .cart-line .ci-meta{font-size:12.5px}
+.cart-page-items .cart-line .ci-price{font-size:16px}
+.cart-page-items .cart-line .ci-qty{transform:scale(1.08);transform-origin:right center}
+.cart-page-summary .cart-sum-row{font-size:15px}
+.cart-page-summary .cart-sum-row.total{font-size:18px;font-weight:700;color:var(--text)}
+/* بخش‌های پیشنهادی زیر سبد خرید — کوچک و کم‌رنگ‌تر تا حواس از خودِ سبد و جزئیات خرید پرت نشود */
+.cart-recs-compact .recs-section{margin-top:30px}
+.cart-recs-compact .glass-panel{padding:14px 16px}
+.cart-recs-compact .section-head{margin-bottom:6px}
+.cart-recs-compact .section-head .eyebrow{font-size:9px;padding:3px 9px;margin-bottom:6px}
+.cart-recs-compact .section-head h2{font-size:15px;-webkit-text-fill-color:var(--text-dim);background:none}
+.cart-recs-compact .section-head .divider{margin:8px auto;width:40px}
+.cart-recs-compact .glass-scroll .card{flex:0 0 140px}
+@media(max-width:640px){.cart-recs-compact .glass-scroll .card{flex-basis:118px}}
 .cart-sum-row.total{color:var(--text);font-size:calc(17px * var(--scale-body));font-weight:600;margin:14px 0}
 
 /* ===== Auth / account ===== */
@@ -11134,15 +11151,17 @@ function pageCart(){
         <div class="cart-page-items cart-items" id="cartItemsWrap"></div>
         <div class="cart-page-summary cart-foot" id="cartFoot"></div>
       </div>
-      <div id="recsSectionCart" style="padding:0"></div>
-      <div id="recentlyViewedSection" style="padding:0"></div>
+      <div class="cart-recs-compact">
+        <div id="recsSectionCart" style="padding:0"></div>
+        <div id="recentlyViewedSection" style="padding:0"></div>
+      </div>
     </div>
   </div>`;
 }
 async function initCartPage(){
   renderCart();
   if(STATE.cart.length){
-    renderRecommendationsInto('recsSectionCart', 'به سبد شما می‌خوره', 15);
+    renderRecommendationsInto('recsSectionCart', 'با این سفارش، این‌ها هم مناسبن', 15);
   }
   const cartProductIds = STATE.cart.map(ci=>ci.productId);
   const recent = recentlyViewedProducts(cartProductIds, 15);
