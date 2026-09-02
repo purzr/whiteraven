@@ -235,7 +235,7 @@ html[data-theme="classic"] .pd-gallery-arrow:hover{
   color:#0a0a0b;
 }
 html[data-theme="classic"] .pd-gallery-hint{
-  background:rgba(20,16,4,.55);
+  background:rgba(20,16,4,.32);
   color:#f2cf6b;
   -webkit-backdrop-filter:blur(2px);
   backdrop-filter:blur(2px);
@@ -1117,7 +1117,7 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .pd-gallery-thumbs button{width:64px;height:64px;flex:none;border:1px solid var(--line);border-radius:6px;overflow:hidden;opacity:.55;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s ease,border-color .25s ease;padding:0}
 .pd-gallery-thumbs button.active{opacity:1;border-color:var(--gold);transform:scale(1.06);transform-origin:center;position:relative;z-index:1}
 .pd-gallery-thumbs img{width:100%;height:100%;object-fit:cover}
-.pd-gallery-hint{position:absolute;bottom:14px;left:14px;z-index:3;background:rgba(10,10,11,.55);color:var(--text-dim);font-size:10.5px;padding:5px 10px;border-radius:20px;letter-spacing:.03em;pointer-events:none}
+.pd-gallery-hint{position:absolute;bottom:14px;left:14px;z-index:3;background:rgba(10,10,11,.32);color:var(--text-dim);font-size:8.5px;padding:3px 7px;border-radius:20px;letter-spacing:.03em;pointer-events:none}
 
 /* نوار مزایا زیر گالری تصاویر محصول */
 .pd-perks-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:16px;padding:14px 6px;border:1px solid var(--line);border-radius:12px;background:var(--bg-card)}
@@ -1658,13 +1658,16 @@ table.admin-table img{width:44px;height:54px;object-fit:cover;border:1px solid v
 .settings-card{background:var(--bg-card);border:1px solid var(--line);padding:24px;margin-bottom:22px}
 .settings-card h3{font-family:'Cormorant Garamond',serif;font-size:19px;margin-bottom:4px}
 .settings-card .settings-desc{font-size:12.5px;color:var(--text-faint);margin-bottom:20px}
-details.settings-card{padding:0}
-details.settings-card summary{list-style:none;cursor:pointer;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-details.settings-card summary::-webkit-details-marker{display:none}
-details.settings-card summary h3{margin-bottom:0}
-details.settings-card summary::after{content:"";width:9px;height:9px;border-inline-end:2px solid var(--text-faint);border-bottom:2px solid var(--text-faint);transform:rotate(45deg);transition:transform .25s ease;flex:none;margin-inline-start:auto}
-details.settings-card[open] summary::after{transform:rotate(-135deg)}
-details.settings-card summary:hover::after{border-color:var(--gold-light)}
+/* ===== کارت‌های بلند: فلش جمع/باز شدن بالا-چپ کارت (به‌جای details/summary قدیمی) ===== */
+.settings-card{position:relative}
+.settings-card.card-collapsible{max-height:460px;overflow:hidden}
+.settings-card.card-collapsible:not(.card-expanded){padding-bottom:52px}
+.settings-card.card-collapsible:not(.card-expanded)::after{content:"";position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top, var(--bg-card), transparent);pointer-events:none}
+.settings-card.card-expanded{max-height:none}
+.card-expand-toggle{position:absolute;top:14px;left:14px;z-index:6;width:30px;height:30px;border-radius:50%;background:var(--bg-alt);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-sm)}
+.card-expand-toggle:hover{border-color:var(--gold-light)}
+.card-expand-toggle svg{width:13px;height:13px;stroke:var(--text-dim);transition:transform .25s ease}
+.settings-card.card-expanded .card-expand-toggle svg{transform:rotate(180deg)}
 details.settings-card .settings-card-body{padding:0 24px 24px}
 details.settings-card .settings-card-body .settings-desc{margin-top:0}
 .font-section-row{display:grid;grid-template-columns:1fr 1.2fr 1fr .8fr;gap:14px;align-items:end;padding:14px 0;border-bottom:1px solid var(--line)}
@@ -6012,8 +6015,8 @@ function productGalleryHtml(p){
         ${imgs.map((src,i)=>`<div class="pd-gallery-slide"><img src="${src}" alt="${escapeHtml(p.name)} ${i+1}" draggable="false" ${i===0?'loading="eager"':'loading="lazy"'} decoding="async"></div>`).join('')}
       </div>
       ${imgs.length>1?`
-      <button type="button" class="pd-gallery-arrow next" id="pdGalNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <button type="button" class="pd-gallery-arrow prev" id="pdGalPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button type="button" class="pd-gallery-arrow next" id="pdGalNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button type="button" class="pd-gallery-arrow prev" id="pdGalPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
       <div class="pd-gallery-dots" id="pdGalDots">${imgs.map((_,i)=>`<button type="button" data-i="${i}" class="${i===0?'active':''}"></button>`).join('')}</div>`:''}
       <span class="pd-gallery-hint">برای بزرگ‌نمایی کلیک کنید</span>
     </div>
@@ -6721,9 +6724,8 @@ function productCard(p){
 
 /* ---------------- PAGES ---------------- */
 function getBannerImageForTheme(b){
-  const m = themeMode();
-  if(m==='classic') return b.imageClassic || b.imageDark || b.image || '';
-  return b.imageDark || b.imageClassic || b.image || '';
+  // اسلایدر صفحه نخست برای هر دو تم (روشن/تیره) یکسان است.
+  return b.image || b.imageDark || b.imageClassic || '';
 }
 function bannerSlideHtml(b, i){
   const img = getBannerImageForTheme(b);
@@ -11294,10 +11296,11 @@ async function renderAdmin(path){
   else if(path.startsWith('/purzr/order/')){ adminSection='orderDetail'; adminOrderDetailId = decodeURIComponent(path.split('/purzr/order/')[1]||''); }
   else if(path==='/purzr/stats') adminSection='stats';
   else if(path==='/purzr/products' || path.startsWith('/purzr/products')){ adminSection='products'; adminProductCategoryFilter='all'; adminProductStockFilter = path.includes('lowstock'); adminSelectedProductIds.clear(); }
-  else if(path==='/purzr/product-settings'){ adminSection='productSettings'; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; pendingSizeGuideImagesInit=false; }
+  else if(path==='/purzr/product-settings'){ adminSection='productSettings'; pendingCategoriesInit=false; pendingFeaturedInit=false; pendingCustomSectionsInit=false; pendingPromoBannersInit=false; pendingProductPanelsInit=false; pendingIconPanelsInit={top:false,footer:false}; pendingSizeGuideImagesInit=false; }
   else if(path==='/purzr/product-reviews'){ adminSection='comments'; adminCommentsTab='productReviews'; adminReviewStatusFilter='pending'; }
-  else if(path==='/purzr/settings'){ adminSection='settings'; pendingCategoriesInit=false; pendingBannersInit=false; pendingInstagramFeedInit=false; pendingAnnouncementInit=false; }
+  else if(path==='/purzr/settings'){ adminSection='settings'; pendingBannersInit=false; pendingInstagramFeedInit=false; pendingAnnouncementInit=false; }
   else if(path==='/purzr/descriptions'){ adminSection='descriptions'; pendingDescriptionsInit=false; }
+  else if(path==='/purzr/marketing'){ adminSection='marketing'; pendingMarketingInit=false; }
   else if(path==='/purzr/content'){ adminSection='content'; pendingContentInit=false; pendingFaqInit=false; }
   else if(path==='/purzr/comments' || path.startsWith('/purzr/comments')){ adminSection='comments'; adminCommentsTab='messages'; }
   else if(path==='/purzr/magazine' || path.startsWith('/purzr/magazine')) adminSection='magazine';
@@ -11456,6 +11459,7 @@ function adminShell(){
         <a href="/purzr/product-settings" data-link class="${adminSection==='productSettings'?'active':''}">تنظیمات محصولات</a>
         <a href="/purzr/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
         <a href="/purzr/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
+        <a href="/purzr/marketing" data-link class="${adminSection==='marketing'?'active':''}">بازاریابی و تخفیف</a>
         <a href="/purzr/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
         <a href="/purzr/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
         <a href="/purzr/users" data-link class="${adminSection==='users'?'active':''}">اطلاعات کاربران</a>
@@ -11467,7 +11471,7 @@ function adminShell(){
         </div>
       </div>
       <div class="admin-main" id="adminMain">
-        ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminSection==='users'?adminUsers():adminSection==='shutdown'?adminShutdown():adminSection==='orderDetail'?adminOrderDetail(adminOrderDetailId):adminOrders()}
+        ${adminSection==='dashboard'?adminDashboard():adminSection==='stats'?adminStats():adminSection==='products'?adminProducts():adminSection==='productSettings'?adminProductSettings():adminSection==='productReviews'?adminProductReviews():adminSection==='comments'?adminComments():adminSection==='settings'?adminSettings():adminSection==='descriptions'?adminDescriptions():adminSection==='marketing'?adminMarketing():adminSection==='content'?adminContent():adminSection==='magazine'?adminMagazine():adminSection==='stockNotify'?adminStockNotify():adminSection==='users'?adminUsers():adminSection==='shutdown'?adminShutdown():adminSection==='orderDetail'?adminOrderDetail(adminOrderDetailId):adminOrders()}
       </div>
     </div>
   </div>
@@ -11614,6 +11618,7 @@ async function loadGA4Stats(){
 }
 
 function adminStats(){
+  const s = STATE.settings;
   const orders = STATE.orders || [];
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((s,o)=>s+(o.total||0),0);
@@ -11716,6 +11721,22 @@ function adminStats(){
         </tr>`).join('') || `<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز فروشی ثبت نشده است</td></tr>`}
       </tbody>
     </table>
+  </div>
+
+  <h3 style="font-size:15px;margin:28px 0 14px;color:var(--text-dim)">کدهای ردیابی و تبلیغات</h3>
+  <div class="settings-card">
+    <h3 class="serif">کدهای ردیابی و تبلیغات (Google Analytics / Meta Pixel)</h3>
+    <p class="settings-desc">با وارد کردن شناسه‌ها، امکان دیدن آمار بازدید سایت در Google Analytics و اجرای کمپین‌های ریتارگتینگ اینستاگرام/فیسبوک از طریق Meta Ads Manager فراهم می‌شود. کدها به‌صورت خودکار در همهٔ صفحات سایت (نه در پنل ادمین) بارگذاری می‌شوند.</p>
+    <div class="form-field">
+      <label>شناسه Google Analytics (GA4 Measurement ID) <span style="color:var(--text-faint);font-weight:400">(مثال: G-XXXXXXXXXX)</span></label>
+      <input type="text" id="gaIdInput" placeholder="G-XXXXXXXXXX" value="${escapeHtml(s.gaId||'')}" style="direction:ltr;text-align:left">
+    </div>
+    <div class="form-field">
+      <label>شناسه Meta Pixel <span style="color:var(--text-faint);font-weight:400">(عدد پیکسل، مثال: 1234567890123456)</span></label>
+      <input type="text" id="metaPixelIdInput" placeholder="1234567890123456" value="${escapeHtml(s.metaPixelId||'')}" style="direction:ltr;text-align:left">
+    </div>
+    <p class="settings-desc" style="margin-top:-4px">شناسه GA4 را از Google Analytics › Admin › Data Streams و شناسه پیکسل را از Meta Events Manager پیدا می‌کنید. اگر یکی از فیلدها را خالی بگذارید، همان کد فعال نمی‌شود.</p>
+    <button type="button" class="btn btn-solid" id="saveTrackingBtn" style="margin-top:6px">ذخیره کدهای ردیابی</button>
   </div>`;
 }
 
@@ -12831,6 +12852,10 @@ function getIntensityValue(fieldId, fallback){
 }
 function adminProductSettings(){
   const s = STATE.settings;
+  if(!pendingCategoriesInit){
+    pendingCategories = (s.categories||[]).map(c=>({...c}));
+    pendingCategoriesInit = true;
+  }
   if(!pendingFeaturedInit){
     pendingFeaturedIds = (s.featuredProductIds||[]).slice();
     pendingFeaturedMax = s.featuredMaxCount ?? 40;
@@ -12867,8 +12892,16 @@ function adminProductSettings(){
   return `
   <h2 class="admin-title">تنظیمات محصولات</h2>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">رنگ قالب پنل‌های صفحه نخست</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">دسته‌بندی محصولات</h3>
+    <p class="settings-desc">نام هر دسته‌بندی را ویرایش کنید، برایش عکس بگذارید، یا دسته‌بندی جدید اضافه کنید. این دسته‌بندی‌ها همان‌هایی هستند که در فروشگاه، فرم محصولات و صفحه نخست نمایش داده می‌شوند.</p>
+    <div id="categoryListBox">${categoryListHtml()}</div>
+    <button type="button" class="btn btn-ghost" id="addCategoryBtn" style="margin-top:14px">+ افزودن دسته‌بندی</button>
+    <button type="button" class="btn btn-solid" id="saveCategoriesBtn" style="margin-top:14px;margin-right:10px">ذخیره دسته‌بندی‌ها</button>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">رنگ قالب پنل‌های صفحه نخست</h3>
     <div class="settings-card-body">
     <p class="settings-desc">رنگ پس‌زمینه و برچسب پنل‌های «جدیدترین‌ها»، «تخفیف‌های امروز» و «محصولات پیشنهادی» در صفحه اول را انتخاب کنید. همچنین می‌توانید درجه پررنگی هر قالب را بین کم‌رنگ، معمولی و پررنگ تعیین کنید.</p>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
@@ -12888,10 +12921,10 @@ function adminProductSettings(){
     ${intensityPickerHtml('featuredIntensity', s.featuredIntensity ?? 2)}
     <button type="button" class="btn btn-solid" id="saveSectionColorsBtn" style="margin-top:8px">ذخیره رنگ قالب</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">محصولات پیشنهادی (صفحه نخست)</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">محصولات پیشنهادی (صفحه نخست)</h3>
     <div class="settings-card-body">
     <p class="settings-desc">محصولاتی که در بخش «محصولات پیشنهادی» صفحه اول نمایش داده می‌شوند را دستی انتخاب کنید. جدیدترین محصولی که اضافه می‌کنید همیشه اول لیست قرار می‌گیرد. همچنین می‌توانید سقف تعداد کل این بخش را مشخص کنید؛ اگر از سقف بیشتر شود، قدیمی‌ترین موردهای اضافه‌شده به‌طور خودکار حذف می‌شوند تا تازه‌ترین‌ها جایگزین شوند.</p>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">
@@ -12907,30 +12940,30 @@ function adminProductSettings(){
     <div id="featuredListBox">${featuredListHtml()}</div>
     <button type="button" class="btn btn-solid" id="saveFeaturedBtn" style="margin-top:14px">ذخیره محصولات پیشنهادی</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">بخش‌های دلخواه صفحه نخست</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">بخش‌های دلخواه صفحه نخست</h3>
     <div class="settings-card-body">
     <p class="settings-desc">مثل «محصولات پیشنهادی» می‌توانید بخش‌های دلخواه دیگری بسازید: یک عنوان و رنگ قالب برای آن انتخاب کنید و در صورت تمایل یک عکس نمایشی هم بگذارید (مثلاً عکس یک تیشرت تا مشتری بفهمد این بخش فقط برای تیشرت‌هاست). برای هر بخش سقف تعداد محصول را هم مشخص کنید؛ با اضافه‌شدن محصول جدید، قدیمی‌ترین محصولات آن بخش به‌طور خودکار حذف می‌شوند و محصول جدید بالای لیست قرار می‌گیرد.</p>
     <div id="customSectionListBox">${customSectionListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addCustomSectionBtn" style="margin-top:14px">+ افزودن بخش جدید</button>
     <button type="button" class="btn btn-solid" id="saveCustomSectionsBtn" style="margin-top:14px;margin-right:10px">ذخیره بخش‌های دلخواه</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">بنر تبلیغاتی عکسی صفحه نخست</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">بنر تبلیغاتی عکسی صفحه نخست</h3>
     <div class="settings-card-body">
     <p class="settings-desc">یک عکس تبلیغاتی (مثل بنر تخفیف یا معرفی کالکشن) اضافه کنید و برایش لینک بگذارید؛ با کلیک مشتری روی عکس، در یک تب جدید به آن لینک منتقل می‌شود. برای هر عکس، محل نمایش آن در صفحه نخست را از لیست بخش‌ها انتخاب کنید.</p>
     <div id="promoBannerListBox">${promoBannerListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addPromoBannerBtn" style="margin-top:14px">+ افزودن بنر جدید</button>
     <button type="button" class="btn btn-solid" id="savePromoBannersBtn" style="margin-top:14px;margin-right:10px">ذخیره بنرهای تبلیغاتی</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">قالب شیشه‌ای «محصولات مرتبط» (صفحه محصول)</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">قالب شیشه‌ای «محصولات مرتبط» (صفحه محصول)</h3>
     <div class="settings-card-body">
     <p class="settings-desc">رنگ و درجه پررنگی قالب glassmorphism بخش «محصولات مرتبط» که در پایین هر صفحه محصول نمایش داده می‌شود را تعیین کنید.</p>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
@@ -12940,51 +12973,51 @@ function adminProductSettings(){
     ${intensityPickerHtml('relatedIntensity', s.relatedIntensity ?? 0)}
     <button type="button" class="btn btn-solid" id="saveRelatedColorBtn" style="margin-top:8px">ذخیره قالب محصولات مرتبط</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">بخش‌های دلخواه پایین صفحه محصول</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">بخش‌های دلخواه پایین صفحه محصول</h3>
     <div class="settings-card-body">
     <p class="settings-desc">پایین‌تر از «محصولات مرتبط» در صفحه هر محصول، می‌توانید هر تعداد بخش دلخواه اضافه کنید و محصولاتی که خودتان انتخاب می‌کنید در آن نمایش داده شود — با اسکرول افقی نرم مثل بقیه بخش‌های سایت. برای هر بخش هم عنوان انگلیسی (بالا) و هم عنوان فارسی (پایین‌تر از آن) را وارد کنید. این بخش‌ها در تمام صفحات محصول یکسان نمایش داده می‌شوند.</p>
     <div id="productPageSectionListBox">${productPageSectionListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addProductPageSectionBtn" style="margin-top:14px">+ افزودن بخش جدید</button>
     <button type="button" class="btn btn-solid" id="saveProductPageSectionsBtn" style="margin-top:14px;margin-right:10px">ذخیره بخش‌های صفحه محصول</button>
     </div>
-  </details>
+  </div>
 
 
-  <details class="settings-card">
-    <summary><h3 class="serif">پنل‌های تصویری (بالای فوتر)</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">پنل‌های تصویری (بالای فوتر)</h3>
     <div class="settings-card-body">
     <p class="settings-desc">پنل‌هایی مثل تصویر بالای صفحه (۲تایی در موبایل، ۴تایی در دسکتاپ) که درست بالای فوتر سایت نمایش داده می‌شوند. برای هر پنل یک عنوان، یک عکس و لیستی از محصولات دلخواه انتخاب کنید؛ با کلیک روی پنل، فقط همان محصولات به مشتری نمایش داده می‌شود.</p>
     <div id="productPanelListBox">${productPanelListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addProductPanelBtn" style="margin-top:14px">+ افزودن پنل جدید</button>
     <button type="button" class="btn btn-solid" id="saveProductPanelsBtn" style="margin-top:14px;margin-right:10px">ذخیره پنل‌ها</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">آیکون‌های میانبر (زیر تخفیف‌های امروز)</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">آیکون‌های میانبر (زیر تخفیف‌های امروز)</h3>
     <div class="settings-card-body">
     <p class="settings-desc">آیکون‌های دایره‌ای کوچک با نام زیرشان (مثل شومیز زنانه، کفش زنانه و...) که درست زیر بخش «تخفیف‌های امروز» صفحه اول نمایش داده می‌شوند. برای هر آیکون یک عکس، یک اسم و لیستی از محصولات دلخواه انتخاب کنید؛ با کلیک روی آیکون، فقط همان محصولات به مشتری نمایش داده می‌شود.</p>
     <div id="iconPanelListBox_top">${iconPanelListHtml('top')}</div>
     <button type="button" class="btn btn-ghost" id="addIconPanelBtn_top" style="margin-top:14px">+ افزودن آیکون جدید</button>
     <button type="button" class="btn btn-solid" id="saveIconPanelsBtn_top" style="margin-top:14px;margin-right:10px">ذخیره آیکون‌ها</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">آیکون‌های میانبر (بالای فوتر)</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">آیکون‌های میانبر (بالای فوتر)</h3>
     <div class="settings-card-body">
     <p class="settings-desc">همان آیکون‌های دایره‌ای، این‌بار درست بالای فوتر سایت (کنار پنل‌های تصویری بالا). برای هر آیکون یک عکس، یک اسم و لیستی از محصولات دلخواه انتخاب کنید؛ با کلیک روی آیکون، فقط همان محصولات به مشتری نمایش داده می‌شود.</p>
     <div id="iconPanelListBox_footer">${iconPanelListHtml('footer')}</div>
     <button type="button" class="btn btn-ghost" id="addIconPanelBtn_footer" style="margin-top:14px">+ افزودن آیکون جدید</button>
     <button type="button" class="btn btn-solid" id="saveIconPanelsBtn_footer" style="margin-top:14px;margin-right:10px">ذخیره آیکون‌ها</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">جدول پیش‌فرض راهنمای سایز</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">جدول پیش‌فرض راهنمای سایز</h3>
     <div class="settings-card-body">
     <p class="settings-desc">این جدول به‌عنوان پیش‌فرض تب «راهنمای سایز» در همه‌ی محصولات نمایش داده می‌شود. فقط برای محصولاتی که سایزبندی‌شان با این جدول فرق دارد، در بخش ویرایش همان محصول یک جدول اختصاصی وارد کنید؛ در غیر این صورت نیازی به دست‌زدن نیست و همین جدول به‌طور خودکار نمایش داده می‌شود.</p>
     <div class="size-guide-cols" id="defaultSizeGuideColsRow"></div>
@@ -13000,17 +13033,17 @@ function adminProductSettings(){
     </div>
     <button type="button" class="btn btn-solid" id="saveDefaultSizeGuideBtn" style="margin-top:14px">ذخیره جدول پیش‌فرض</button>
     </div>
-  </details>
+  </div>
 
-  <details class="settings-card">
-    <summary><h3 class="serif">راهنمای سایز تصویری (بر اساس نوع لباس)</h3></summary>
+  <div class="settings-card">
+    <h3 class="serif">راهنمای سایز تصویری (بر اساس نوع لباس)</h3>
     <div class="settings-card-body">
     <p class="settings-desc">برای هر نوع لباس (مثلاً تی‌شرت، پیراهن، هودی) یک عکس راهنمای سایز آپلود کنید و برایش اسم بگذارید. سپس هنگام افزودن یا ویرایش هر محصول، از بخش «عکس راهنمای سایز» همین نام را انتخاب کنید تا همان عکس در تب «راهنمای سایز» صفحه‌ی آن محصول نمایش داده شود.</p>
     <div id="sizeGuideImageListBox">${sizeGuideImageListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addSizeGuideImageBtn" style="margin-top:14px">+ افزودن راهنمای سایز جدید</button>
     <button type="button" class="btn btn-solid" id="saveSizeGuideImagesBtn" style="margin-top:14px;margin-right:10px">ذخیره راهنماهای سایز</button>
     </div>
-  </details>
+  </div>
   `;
 }
 
@@ -13192,10 +13225,6 @@ window.removeReviewReply = removeReviewReply;
 
 function adminSettings(){
   const s = STATE.settings;
-  if(!pendingCategoriesInit){
-    pendingCategories = (s.categories||[]).map(c=>({...c}));
-    pendingCategoriesInit = true;
-  }
   if(!pendingBannersInit){
     pendingBanners = (s.banners||[]).map(b=>({...b}));
     pendingBannersInit = true;
@@ -13243,14 +13272,6 @@ function adminSettings(){
     <div id="instagramFeedListBox">${instagramFeedListHtml()}</div>
     <button type="button" class="btn btn-ghost" id="addInstagramFeedBtn" style="margin-top:14px">+ افزودن عکس</button>
     <button type="button" class="btn btn-solid" id="saveInstagramFeedBtn" style="margin-top:14px;margin-right:10px">ذخیره عکس‌ها</button>
-  </div>
-
-  <div class="settings-card">
-    <h3 class="serif">دسته‌بندی محصولات</h3>
-    <p class="settings-desc">نام هر دسته‌بندی را ویرایش کنید، برایش عکس بگذارید، یا دسته‌بندی جدید اضافه کنید. این دسته‌بندی‌ها همان‌هایی هستند که در فروشگاه، فرم محصولات و صفحه نخست نمایش داده می‌شوند.</p>
-    <div id="categoryListBox">${categoryListHtml()}</div>
-    <button type="button" class="btn btn-ghost" id="addCategoryBtn" style="margin-top:14px">+ افزودن دسته‌بندی</button>
-    <button type="button" class="btn btn-solid" id="saveCategoriesBtn" style="margin-top:14px;margin-right:10px">ذخیره دسته‌بندی‌ها</button>
   </div>
 
   <div class="settings-card">
@@ -13384,21 +13405,6 @@ function adminSettings(){
         ${CUSTOM_SECTION_SLOTS.map(s=>`<option value="${s.value}" ${((STATE.settings.featuresPosition||'after_icons_top')===s.value)?'selected':''}>${s.label}</option>`).join('')}
       </select>
     </div>
-  </div>
-
-  <div class="settings-card">
-    <h3 class="serif">کدهای ردیابی و تبلیغات (Google Analytics / Meta Pixel)</h3>
-    <p class="settings-desc">با وارد کردن شناسه‌ها، امکان دیدن آمار بازدید سایت در Google Analytics و اجرای کمپین‌های ریتارگتینگ اینستاگرام/فیسبوک از طریق Meta Ads Manager فراهم می‌شود. کدها به‌صورت خودکار در همهٔ صفحات سایت (نه در پنل ادمین) بارگذاری می‌شوند.</p>
-    <div class="form-field">
-      <label>شناسه Google Analytics (GA4 Measurement ID) <span style="color:var(--text-faint);font-weight:400">(مثال: G-XXXXXXXXXX)</span></label>
-      <input type="text" id="gaIdInput" placeholder="G-XXXXXXXXXX" value="${escapeHtml(s.gaId||'')}" style="direction:ltr;text-align:left">
-    </div>
-    <div class="form-field">
-      <label>شناسه Meta Pixel <span style="color:var(--text-faint);font-weight:400">(عدد پیکسل، مثال: 1234567890123456)</span></label>
-      <input type="text" id="metaPixelIdInput" placeholder="1234567890123456" value="${escapeHtml(s.metaPixelId||'')}" style="direction:ltr;text-align:left">
-    </div>
-    <p class="settings-desc" style="margin-top:-4px">شناسه GA4 را از Google Analytics › Admin › Data Streams و شناسه پیکسل را از Meta Events Manager پیدا می‌کنید. اگر یکی از فیلدها را خالی بگذارید، همان کد فعال نمی‌شود.</p>
-    <button type="button" class="btn btn-solid" id="saveTrackingBtn" style="margin-top:6px">ذخیره کدهای ردیابی</button>
   </div>
   `;
 }
@@ -13590,9 +13596,6 @@ function adminDescriptions(){
     editingShippingRateId = null;
     previewPercentValue = 0;
     previewPercentSign = 1;
-    pendingCoupons = (s.coupons||[]).map(c=>({...c}));
-    editingCouponId = null;
-    pendingReferral = {...defaultSettings().referral, ...(s.referral||{})};
     pendingDescriptionsInit = true;
   }
   return `
@@ -13662,6 +13665,19 @@ function adminDescriptions(){
       </div>
     </div>` : ''}
   </div>
+  `;
+}
+
+function adminMarketing(){
+  const s = STATE.settings;
+  if(!pendingMarketingInit){
+    pendingCoupons = (s.coupons||[]).map(c=>({...c}));
+    editingCouponId = null;
+    pendingReferral = {...defaultSettings().referral, ...(s.referral||{})};
+    pendingMarketingInit = true;
+  }
+  return `
+  <h2 class="admin-title">بازاریابی و تخفیف</h2>
 
   <div class="settings-card">
     <h3 class="serif">کدهای تخفیف (Coupon)</h3>
@@ -14126,7 +14142,19 @@ function bindAdminShell(){
   if(adminSection==='shutdown') bindAdminShutdown();
   if(adminSection==='orders') bindAdminOrders();
   if(adminSection==='orderDetail') bindAdminOrderDetail(adminOrderDetailId);
-  if(adminSection==='stats') loadGA4Stats();
+  if(adminSection==='stats'){
+    loadGA4Stats();
+    const saveTrackingBtn = $('#saveTrackingBtn');
+    if(saveTrackingBtn) saveTrackingBtn.onclick = async ()=>{
+      const gaId = ($('#gaIdInput')?.value || '').trim();
+      const metaPixelId = ($('#metaPixelIdInput')?.value || '').trim();
+      const newSettings = { ...STATE.settings, gaId, metaPixelId };
+      STATE.settings = newSettings;
+      applyTrackingScripts(newSettings);
+      await withLoading(()=>saveSettingsRemote(newSettings));
+      showToast('کدهای ردیابی ذخیره شد ✓');
+    };
+  }
 
   const addBtn = $('#addProductBtn');
   if(addBtn) addBtn.onclick = ()=> openProductModal(null);
@@ -14267,11 +14295,57 @@ function bindAdminShell(){
   bindAdminProductSettingsUI();
   bindDescriptionsUI();
   bindAdminContentUI();
+  initCardCollapse();
+}
+
+// اگر ارتفاع محتوای یک کارت تنظیمات از حد معمول بیشتر شود، به‌جای این‌که صفحه را طولانی کند،
+// یک فلش کوچک بالا-چپ همان کارت اضافه می‌شود؛ با زدنش کارت کامل باز/بسته می‌شود.
+const CARD_COLLAPSE_THRESHOLD = 460; // px
+function initCardCollapse(){
+  $$('.settings-card').forEach(card=>{
+    const oldToggle = card.querySelector('.card-expand-toggle');
+    if(oldToggle) oldToggle.remove();
+    card.classList.remove('card-collapsible','card-expanded');
+
+    if(card.scrollHeight <= CARD_COLLAPSE_THRESHOLD) return;
+
+    card.classList.add('card-collapsible');
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'card-expand-toggle';
+    toggle.setAttribute('aria-label','نمایش کامل این بخش');
+    toggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+    toggle.onclick = ()=>{ card.classList.toggle('card-expanded'); };
+    card.prepend(toggle);
+  });
 }
 
 function bindAdminProductSettingsUI(){
   const addFeaturedProductBtn = $('#addFeaturedProductBtn');
   if(!addFeaturedProductBtn) return; // not on the product settings page
+
+  bindCategoryRowEvents();
+  const addCategoryBtn = $('#addCategoryBtn');
+  if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
+    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', imageClassic:'', imageDark:''});
+    $('#categoryListBox').innerHTML = categoryListHtml();
+    bindCategoryRowEvents();
+    const inputs = $$('.cat-edit-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  };
+  const saveCategoriesBtn = $('#saveCategoriesBtn');
+  if(saveCategoriesBtn) saveCategoriesBtn.onclick = async ()=>{
+    const cleaned = pendingCategories.map(c=>({...c, label:(c.label||'').trim()})).filter(c=>c.label);
+    if(!cleaned.length){ showToast('حداقل یک دسته‌بندی باید داشته باشید'); return; }
+    pendingCategories = cleaned;
+    const newSettings = {...STATE.settings, categories: cleaned};
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    $('#categoryListBox').innerHTML = categoryListHtml();
+    bindCategoryRowEvents();
+    showToast('دسته‌بندی‌ها ذخیره شد ✓');
+  };
 
   bindFeaturedRowEvents();
   addFeaturedProductBtn.onclick = ()=>{
@@ -15057,7 +15131,7 @@ function bindMultiUploadInput(){
 }
 
 function bindAdminSettingsUI(){
-  if(!$('#categoryListBox')) return; // not on the settings page
+  if(!$('#bannerListBox')) return; // not on the settings page
 
   $$('.font-select').forEach(sel=>{
     sel.onchange = ()=>{
@@ -15178,13 +15252,13 @@ function bindAdminSettingsUI(){
   bindBannerRowEvents();
   const addBannerBtn = $('#addBannerBtn');
   if(addBannerBtn) addBannerBtn.onclick = ()=>{
-    pendingBanners.push({id:'banner_'+uid(), imageDark:'', imageClassic:'', link:'', ctaSolid:'', ctaOutline:'', ctaShiftRight:false});
+    pendingBanners.push({id:'banner_'+uid(), image:'', link:'', ctaSolid:'', ctaOutline:'', ctaShiftRight:false});
     $('#bannerListBox').innerHTML = bannerListHtml();
     bindBannerRowEvents();
   };
   const saveBannersBtn = $('#saveBannersBtn');
   if(saveBannersBtn) saveBannersBtn.onclick = async ()=>{
-    const cleaned = pendingBanners.filter(b=> b.imageDark || b.imageClassic);
+    const cleaned = pendingBanners.filter(b=> b.image || b.imageDark || b.imageClassic);
     pendingBanners = cleaned;
     const newSettings = {...STATE.settings, banners: cleaned};
     STATE.settings = newSettings;
@@ -15249,29 +15323,6 @@ function bindAdminSettingsUI(){
     showToast('عکس‌های اینستاگرام ذخیره شد ✓');
   };
 
-  bindCategoryRowEvents();
-  const addCategoryBtn = $('#addCategoryBtn');
-  if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
-    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', imageClassic:'', imageDark:''});
-    $('#categoryListBox').innerHTML = categoryListHtml();
-    bindCategoryRowEvents();
-    const inputs = $$('.cat-edit-name');
-    if(inputs.length) inputs[inputs.length-1].focus();
-  };
-  const saveCategoriesBtn = $('#saveCategoriesBtn');
-  if(saveCategoriesBtn) saveCategoriesBtn.onclick = async ()=>{
-    const cleaned = pendingCategories.map(c=>({...c, label:(c.label||'').trim()})).filter(c=>c.label);
-    if(!cleaned.length){ showToast('حداقل یک دسته‌بندی باید داشته باشید'); return; }
-    pendingCategories = cleaned;
-    const newSettings = {...STATE.settings, categories: cleaned};
-    STATE.settings = newSettings;
-    applySettingsToDOM(newSettings);
-    await withLoading(()=>saveSettingsRemote(newSettings));
-    $('#categoryListBox').innerHTML = categoryListHtml();
-    bindCategoryRowEvents();
-    showToast('دسته‌بندی‌ها ذخیره شد ✓');
-  };
-
   const saveFontsBtn = $('#saveFontsBtn');
   if(saveFontsBtn) saveFontsBtn.onclick = async ()=>{
     const fonts = {}, scales = {}, fontColors = {};
@@ -15289,17 +15340,6 @@ function bindAdminSettingsUI(){
       showToast('❌ ذخیره نشد: ' + msg);
       console.error('[saveFontsBtn] save failed:', result?.error);
     }
-  };
-
-  const saveTrackingBtn = $('#saveTrackingBtn');
-  if(saveTrackingBtn) saveTrackingBtn.onclick = async ()=>{
-    const gaId = ($('#gaIdInput')?.value || '').trim();
-    const metaPixelId = ($('#metaPixelIdInput')?.value || '').trim();
-    const newSettings = { ...STATE.settings, gaId, metaPixelId };
-    STATE.settings = newSettings;
-    applyTrackingScripts(newSettings);
-    await withLoading(()=>saveSettingsRemote(newSettings));
-    showToast('کدهای ردیابی ذخیره شد ✓');
   };
 
   $$('.home-section-toggle').forEach(tg=>{
@@ -15367,6 +15407,7 @@ let pendingIconPanelsInit = {top:false, footer:false};
 let pendingSizeGuideImages = [];
 let pendingSizeGuideImagesInit = false;
 let pendingDescriptionsInit = false;
+let pendingMarketingInit = false;
 let pendingContent = {};
 let pendingContentInit = false;
 let pendingAboutImage = {Classic:'', Dark:''};
@@ -16502,8 +16543,7 @@ function bannerListHtml(){
       <div class="banner-edit-row" data-idx="${i}" style="display:flex;flex-direction:column;gap:14px;padding:12px;border:1px solid var(--line)">
         <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">
           <div style="display:flex;gap:14px;flex-wrap:wrap">
-            ${imgBox(b,i,'imageDark','🌙 تم مشکی',140,79)}
-            ${imgBox(b,i,'imageClassic','☀️ تم روشن',140,79)}
+            ${imgBox(b,i,'image','تصویر بنر',140,79)}
           </div>
           <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">
             <input class="banner-edit-link" data-idx="${i}" value="${escapeHtml(b.link||'')}" placeholder="لینک با کلیک روی بنر (مثلاً /shop/all یا آدرس کامل)">
@@ -16513,7 +16553,6 @@ function bannerListHtml(){
               <input type="checkbox" class="banner-edit-cta-shift" data-idx="${i}" ${b.ctaShiftRight?'checked':''}>
               فاصله بیشتر از گوشه چپ (بج‌ها را به راست بیاور)
             </label>
-            <span style="font-size:10.5px;color:var(--text-faint)">فقط کافیست عکس یک تم را بگذارید؛ اگر تصویر تم دیگری خالی باشد همان عکس نمایش داده می‌شود.</span>
           </div>
           <button type="button" class="btn btn-ghost banner-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف بنر</button>
         </div>
