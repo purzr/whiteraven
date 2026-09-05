@@ -401,7 +401,7 @@ nav.main-nav.nav-hovering a:hover::after,nav.main-nav.nav-hovering .nav-drop-tri
   background:var(--bg-card);
   border:1px solid var(--line);border-radius:14px;
   box-shadow:0 20px 50px rgba(var(--shadow-color),.18);
-  display:grid;grid-template-columns:repeat(2,minmax(130px,1fr));gap:8px;
+  display:flex;flex-wrap:wrap;gap:22px;
   opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s;
   z-index:70;
@@ -410,6 +410,8 @@ nav.main-nav.nav-hovering a:hover::after,nav.main-nav.nav-hovering .nav-drop-tri
   opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);
   transition:opacity .28s ease,transform .28s ease,visibility 0s linear 0s;
 }
+.nav-mega-group{display:flex;flex-direction:column;gap:2px;min-width:130px}
+.nav-mega-group>a{font-weight:700}
 .nav-megamenu a{
   display:flex;align-items:center;gap:10px;
   padding:10px 12px;border-radius:9px;
@@ -417,8 +419,9 @@ nav.main-nav.nav-hovering a:hover::after,nav.main-nav.nav-hovering .nav-drop-tri
   white-space:nowrap;transition:background .2s ease,color .2s ease,transform .2s ease;
 }
 .nav-megamenu a:hover{background:rgba(197,164,101,.1);color:var(--gold-light)}
-.nav-megamenu .nav-mega-empty{grid-column:1/-1;font-size:12.5px;color:var(--text-faint);padding:8px 12px}
-.nav-megamenu .nav-mega-all{grid-column:1/-1;border-top:1px solid var(--line);margin-top:6px;padding-top:12px;color:var(--gold-light);font-weight:600}
+.nav-mega-sub a{font-size:12.5px;color:var(--text-faint);padding:7px 12px 7px 24px}
+.nav-mega-empty{font-size:12.5px;color:var(--text-faint);padding:8px 12px}
+.nav-mega-all{border-top:1px solid var(--line);margin-top:2px;padding-top:12px;color:var(--gold-light);font-weight:600;width:100%}
 .header-icons{display:flex;align-items:center;gap:16px}
 .header-icons-left{grid-column:3;grid-row:1;justify-self:end;gap:18px}
 .icon-btn{position:relative;color:var(--text-dim);transition:color .2s}
@@ -575,6 +578,22 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
 
 
 
+/* ===== دکمه بازگشت به بالا ===== */
+#backToTopBtn{
+  position:fixed;left:18px;bottom:26px;z-index:79;
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg-alt);border:1px solid var(--line);color:var(--text-dim);
+  box-shadow:0 8px 24px rgba(var(--shadow-color),.24);
+  opacity:0;visibility:hidden;transform:translateY(14px);
+  transition:opacity .25s ease,transform .25s ease,visibility .25s,color .2s,border-color .2s,background .2s;
+}
+#backToTopBtn.show{opacity:1;visibility:visible;transform:translateY(0)}
+#backToTopBtn:hover{color:var(--gold-light);border-color:var(--gold-light)}
+@media (max-width:900px){
+  #backToTopBtn{bottom:calc(78px + env(safe-area-inset-bottom,0px));left:14px;width:40px;height:40px}
+}
+
 /* ===== Mobile bottom nav ===== */
 .mobile-bottom-nav{
   display:none;
@@ -696,6 +715,7 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .mobile-nav-drop.open .mobile-nav-submenu{max-height:600px}
 .mobile-nav-submenu a{padding-right:16px;font-size:calc(14.5px * var(--scale-header));color:var(--text-faint)}
 .mobile-nav-submenu a.mnav-all{color:var(--gold-light)}
+.mobile-nav-submenu a.mnav-sub{padding-right:32px;font-size:calc(13px * var(--scale-header));color:var(--text-faint);opacity:.85}
 
 /* ===== Homepage banner slider ===== */
 .banner-slider-wrap{position:relative;padding:14px 0 0;margin-bottom:18px}
@@ -843,6 +863,30 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 @media(hover:hover){.icon-panel:hover .icon-panel-img{box-shadow:0 10px 24px rgba(var(--shadow-color),.22);transform:translateY(-3px)}}
 .icon-panel span{font-size:12px;color:var(--text-dim)}
 @media(min-width:761px){.icon-panel span{font-size:13px}}
+
+/* ===== Homepage blog section: 2 newest posts big + up to 3 older posts small ===== */
+.home-blog-grid{display:flex;flex-direction:column;gap:14px}
+@media(min-width:761px){.home-blog-grid{display:grid;grid-template-columns:1.5fr 1.5fr 1fr;align-items:stretch;gap:20px}}
+.home-blog-big{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:var(--bg-card);border:1px solid var(--line);transition:box-shadow .3s ease,transform .3s ease}
+@media(hover:hover){.home-blog-big:hover{box-shadow:0 14px 34px rgba(var(--shadow-color),.20);transform:translateY(-3px)}}
+.home-blog-big-img{width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--ph-bg)}
+.home-blog-big-img img{width:100%;height:100%;object-fit:cover;display:block}
+.home-blog-big-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px;flex:1}
+.home-blog-big-body h3{font-size:15px;font-weight:700;line-height:1.8;border-inline-start:3px solid var(--gold);padding-inline-start:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.home-blog-big-meta{display:flex;align-items:center;justify-content:space-between;margin-top:auto;gap:10px}
+.home-blog-date{font-size:11.5px;color:var(--text-faint);white-space:nowrap}
+.home-blog-more{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-dim);white-space:nowrap}
+.home-blog-more .arrow-circle{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#0a0a0b;display:flex;align-items:center;justify-content:center;flex:none;transition:transform .25s ease}
+.home-blog-big:hover .home-blog-more .arrow-circle,.home-blog-small-card:hover .home-blog-more .arrow-circle{transform:scale(1.08)}
+.home-blog-small-col{display:flex;flex-direction:column;gap:12px}
+.home-blog-small-card{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--bg-card);flex:1;transition:box-shadow .3s ease,border-color .3s ease}
+@media(hover:hover){.home-blog-small-card:hover{border-color:var(--gold-dim);box-shadow:0 10px 24px rgba(var(--shadow-color),.16)}}
+.home-blog-small-img{width:72px;height:72px;flex:none;border-radius:10px;overflow:hidden;background:var(--ph-bg)}
+.home-blog-small-img img{width:100%;height:100%;object-fit:cover;display:block}
+.home-blog-small-body{display:flex;flex-direction:column;justify-content:center;gap:8px;flex:1;min-width:0}
+.home-blog-small-body h4{font-size:12.5px;font-weight:600;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.home-blog-more.small .arrow-circle{width:22px;height:22px}
+.home-blog-more.small{font-size:11.5px}
 
 /* ===== Features bar ===== */
 .features{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-alt)}
@@ -1043,15 +1087,28 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .empty-state{padding:80px 20px;text-align:center;color:var(--text-faint);display:flex;flex-direction:column;align-items:center;justify-content:center}
 
 /* ===== Order tracking timeline ===== */
-.track-steps{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 4px}
-.track-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:none;width:90px;text-align:center}
-.track-step span{font-size:11.5px;color:var(--text-faint)}
-.track-step.done span{color:var(--text)}
-.track-dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-faint);background:var(--bg-card);flex:none}
+/* ===== نوار مراحل سفارش: مرحله‌ی فعلی همیشه وسط و بزرگ/بولد قرار می‌گیرد
+   و مراحل قبل/بعد هرچه از وسط دورتر باشند کوچک‌تر و کم‌رنگ‌تر می‌شوند.
+   با overflow:hidden روی ویوپورت، هر مرحله‌ای که جا نشود به‌جای بیرون‌زدگی
+   از کادر، به‌سادگی پنهان می‌شود. ===== */
+.track-steps-viewport{overflow:hidden;position:relative;padding:16px 0 34px}
+.track-steps{display:flex;position:relative;left:50%;transition:transform .35s ease}
+.track-step{flex:none;width:60px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+.track-step .track-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-faint);background:var(--bg-card);transition:all .3s ease}
 .track-step.done .track-dot{border-color:var(--gold);color:#0a0a0b;background:var(--gold)}
-.track-line{flex:1;height:1px;background:var(--line);margin-top:15px}
-.track-line.done{background:var(--gold)}
-@media(max-width:520px){.track-step{width:64px}.track-step span{font-size:10px}}
+.track-step span{margin-top:8px;font-size:10px;color:var(--text-faint);white-space:nowrap;transition:all .3s ease}
+.track-step.ts-far span{display:none}
+.track-step.ts-near .track-dot{width:30px;height:30px;opacity:.8}
+.track-step.ts-near span{font-size:10.5px;opacity:.7}
+.track-step.ts-far .track-dot{width:22px;height:22px;font-size:9.5px;opacity:.5}
+.track-step.ts-active{position:relative;z-index:1}
+.track-step.ts-active .track-dot{width:46px;height:46px;font-size:17px;font-weight:700;box-shadow:0 4px 16px rgba(var(--shadow-color),.25)}
+.track-step.ts-active span{position:absolute;top:100%;right:50%;transform:translateX(50%);width:max-content;max-width:150px;white-space:normal;line-height:1.5;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--text)}
+@media(max-width:640px){
+  .track-step{width:48px}
+  .track-step.ts-active .track-dot{width:40px;height:40px;font-size:15px}
+  .track-step.ts-active span{font-size:11.5px;max-width:120px}
+}
 .empty-state svg{color:var(--gold-dim)}
 
 /* ===== Product detail ===== */
@@ -1571,6 +1628,9 @@ footer.site{font-family:var(--font-footer)}
   box-shadow:0 12px 30px rgba(0,0,0,.4);
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){
+  .toast{bottom:calc(78px + env(safe-area-inset-bottom,0px))}
+}
 
 /* ===== Admin ===== */
 .admin-shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 73px)}
@@ -1687,6 +1747,8 @@ details.settings-card .settings-card-body .settings-desc{margin-top:0}
 .toggle-row .tr-label{font-size:13.5px}
 .logo-upload-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .logo-upload-box{width:110px;height:110px;border:1px dashed var(--line);border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;background:#0d0d0e}
+.cat-edit-row.is-dragging{opacity:.45}
+.cat-edit-row.drag-over{border-color:var(--gold-light);box-shadow:inset 0 0 0 1px var(--gold-light)}
 .theme-asset-row{display:flex;gap:32px;flex-wrap:wrap;margin-top:8px}
 .theme-asset-col{display:flex;flex-direction:column;gap:12px}
 .theme-asset-label{font-size:13px;color:var(--text-dim)}
@@ -1758,6 +1820,10 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 .page-head{padding:60px 0 40px;border-bottom:1px solid var(--line);text-align:center}
 .page-head h1{font-family:var(--font-heading);font-size:calc(42px * var(--scale-heading))}
 .page-head p{color:var(--text-dim);margin-top:10px}
+.shop-cat-banner{width:calc(100% - 40px);max-width:900px;height:200px;margin:0 auto 22px;border-radius:16px;overflow:hidden}
+.shop-cat-banner img{width:100%;height:100%;object-fit:cover;display:block}
+.shop-cat-desc{max-width:640px;margin:10px auto 0;line-height:1.9}
+@media(max-width:640px){.shop-cat-banner{height:130px}}
 
 .about-block{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 @media(max-width:800px){.about-block{grid-template-columns:1fr;gap:30px}}
@@ -1776,6 +1842,20 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 @keyframes spin{to{transform:rotate(360deg)}}
 .skeleton{background:linear-gradient(90deg,var(--bg-card) 25%,#1e1e21 37%,var(--bg-card) 63%);background-size:400% 100%;animation:sk 1.4s ease infinite}
 @keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+/* اسکلت‌های صفحه‌ی شاپ/محصول برای اورلی لودینگ اولیه (به‌جای اسپینر ساده) */
+.gl-skel-shop{width:min(1100px,92vw);max-height:80vh;overflow:hidden}
+.gl-skel-shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.gl-skel-card .skeleton{display:block;border-radius:12px}
+.gl-skel-card-img{aspect-ratio:3/4;margin-bottom:10px}
+.gl-skel-line{height:9px;border-radius:5px}
+.gl-skel-line.w60{width:60%;margin-top:8px}
+.gl-skel-line.w35{width:35%;margin-top:7px}
+.gl-skel-product{width:min(880px,92vw);display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+@media(max-width:680px){.gl-skel-product{grid-template-columns:1fr}}
+.gl-skel-product-img{aspect-ratio:3/4}
+.gl-skel-product-info .gl-skel-line{margin-top:14px}
+.gl-skel-product-info .gl-skel-line:first-child{margin-top:0}
 
 /* ===== Global loading overlay (shown during any network / async action) ===== */
 .gl-overlay{
@@ -1891,8 +1971,36 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 <!-- ============ GLOBAL LOADING OVERLAY ============ -->
 <div class="gl-overlay" id="glOverlay">
   <div class="gl-loader">
-    <img loading="lazy" decoding="async" class="gl-icon" id="glIcon" alt="" style="display:none">
-    <div class="gl-dots"><span></span><span></span><span></span></div>
+    <div id="glDefaultLoader">
+      <img loading="lazy" decoding="async" class="gl-icon" id="glIcon" alt="" style="display:none">
+      <div class="gl-dots"><span></span><span></span><span></span></div>
+    </div>
+    <!-- در لود اولیه‌ی سایت، اگر آدرس همان لحظه صفحه‌ی شاپ یا محصول باشد،
+         به‌جای اسپینر ساده‌ی بالا، یکی از این دو اسکلت (شبیه چیدمان واقعی
+         صفحه) نمایش داده می‌شود تا حس سریع‌تر بودن بدهد؛ منطق نمایش/عدم‌نمایش
+         در showLoading() است. -->
+    <div id="glSkeletonShop" class="gl-skel-shop" style="display:none">
+      <div class="gl-skel-shop-grid">
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+        <div class="gl-skel-card"><div class="skeleton gl-skel-card-img"></div><div class="skeleton gl-skel-line w60"></div><div class="skeleton gl-skel-line w35"></div></div>
+      </div>
+    </div>
+    <div id="glSkeletonProduct" class="gl-skel-product" style="display:none">
+      <div class="skeleton gl-skel-product-img"></div>
+      <div class="gl-skel-product-info">
+        <div class="skeleton gl-skel-line" style="width:40%;height:11px"></div>
+        <div class="skeleton gl-skel-line" style="width:85%;height:20px"></div>
+        <div class="skeleton gl-skel-line" style="width:30%;height:16px"></div>
+        <div class="skeleton gl-skel-line" style="width:100%;height:44px;border-radius:10px"></div>
+        <div class="skeleton gl-skel-line" style="width:100%;height:44px;border-radius:10px"></div>
+      </div>
+    </div>
     <p class="gl-warn" id="glWarn" style="display:none">مشکلی در اینترنت شما به‌وجود آمده — لطفاً صفحه را رفرش کنید.</p>
   </div>
 </div>
@@ -1984,7 +2092,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
         <div class="nav-megamenu" id="navCatLinks"></div>
       </div>
       <a href="/shop/newest" data-link data-route="/shop/newest" id="navLinkNewest">جدیدترین‌ها</a>
-      <a href="/magazine" data-link data-route="/magazine">مجله</a>
+      <a href="/magazine" data-link data-route="/magazine">وبلاگ</a>
       <a href="/about" data-link data-route="/about">درباره ما</a>
       <a href="/contact" data-link data-route="/contact">تماس با ما</a>
     </nav>
@@ -2027,7 +2135,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
     <div class="mobile-nav-submenu" id="mobileNavCatLinks"></div>
   </div>
   <div class="mobile-nav-bottom">
-    <a href="/magazine" data-link data-route="/magazine">مجله</a>
+    <a href="/magazine" data-link data-route="/magazine">وبلاگ</a>
     <a href="/about" data-link data-route="/about">درباره ما</a>
     <a href="/contact" data-link data-route="/contact">تماس با ما</a>
     <a href="/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
@@ -2059,6 +2167,9 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 </nav>
 
 <main id="app"></main>
+<button type="button" id="backToTopBtn" aria-label="بازگشت به بالا" title="بازگشت به بالا">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
 
 <footer class="site" id="siteFooter">
   <div class="container">
@@ -2098,7 +2209,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
         <a href="/contact" data-link>تماس با ما</a>
         <a href="/faq" data-link>پرسش‌های متداول</a>
         <a href="/return-policy" data-link>رویه بازگشت کالا</a>
-        <a href="/magazine" data-link>مجله</a>
+        <a href="/magazine" data-link>وبلاگ</a>
       </div>
       <div class="foot-col">
         <h5>درباره ما</h5>
@@ -2212,6 +2323,134 @@ async function trackEvent(productId, eventType){
     });
   }catch(e){ /* silent */ }
 }
+// برای «آمار فروش/بازدید به تفکیک دسته‌بندی» در پنل ادمین: تعداد رویدادهای
+// «view» (بازدید محصول) را برای هر محصول از جدول user_events می‌شمارد و
+// map زیر را برمی‌گرداند: { [productId]: تعداد بازدید }. خواندن این جدول از
+// طرف ادمین نیازمند policy زیر است (اگر قبلاً برای جدول دیگری is_admin ست
+// نشده، این را هم به SQL Editor سوپابیس اضافه کنید):
+//
+//   alter table user_events enable row level security;
+//   create policy "Admins can read user_events" on user_events
+//     for select using (is_admin());
+//   create policy "Anyone can insert their own events" on user_events
+//     for insert with check (true);
+//
+//   -- با رشد جدول user_events، کوئری زیر (select product_id where
+//   -- event_type='view') کند می‌شود؛ این ایندکس آن را سریع نگه می‌دارد:
+//   create index if not exists idx_user_events_type_product
+//     on user_events (event_type, product_id);
+//
+async function loadCategoryViewCounts(){
+  if(!supabaseClient) return {};
+  try{
+    const { data, error } = await supabaseClient
+      .from('user_events')
+      .select('product_id')
+      .eq('event_type', 'view');
+    if(error){ console.error('loadCategoryViewCounts error', error); return {}; }
+    const counts = {};
+    (data||[]).forEach(r=>{
+      if(r.product_id) counts[r.product_id] = (counts[r.product_id]||0) + 1;
+    });
+    return counts;
+  }catch(e){ console.error('loadCategoryViewCounts error', e); return {}; }
+}
+// از تعداد بازدید هر محصول (برگرفته از loadCategoryViewCounts) و از سفارش‌های
+// ثبت‌شده، آمار فروش و بازدید را بر اساس «دسته اصلی» هر محصول جمع می‌بندد.
+// محصولاتی که هنوز هیچ دسته‌بندی‌ای ندارند زیر «بدون دسته‌بندی» قرار می‌گیرند.
+function computeCategoryStats(viewCounts){
+  const stats = {}; // slug -> {label, views, qty, revenue}
+  const ensure = slug=>{
+    if(!stats[slug]) stats[slug] = { label: slug ? catLabel(slug) : 'بدون دسته‌بندی', views:0, qty:0, revenue:0 };
+    return stats[slug];
+  };
+  STATE.products.forEach(p=>{
+    const slug = primaryCategory(p);
+    const entry = ensure(slug);
+    entry.views += viewCounts[p.id] || 0;
+  });
+  (STATE.orders||[]).forEach(o=>{
+    (o.items||[]).forEach(it=>{
+      const p = it.productId ? findProduct(it.productId) : null;
+      const slug = p ? primaryCategory(p) : '';
+      const entry = ensure(slug);
+      entry.qty += (it.qty||0);
+      entry.revenue += (it.totalPrice!=null ? it.totalPrice : (it.qty||0)*(it.unitPrice||0));
+    });
+  });
+  return Object.values(stats).sort((a,b)=> b.revenue - a.revenue);
+}
+async function loadAndRenderCategoryStats(){
+  const box = document.getElementById('categoryStatsBox');
+  if(!box) return;
+  const viewCounts = await loadCategoryViewCounts();
+  const rows = computeCategoryStats(viewCounts);
+  box.innerHTML = rows.length ? `
+    <table class="admin-table">
+      <thead><tr><th>دسته‌بندی</th><th>تعداد بازدید</th><th>تعداد فروش</th><th>مجموع فروش</th></tr></thead>
+      <tbody>
+        ${rows.map(r=>`<tr>
+          <td>${escapeHtml(r.label)}</td>
+          <td>${r.views.toLocaleString('fa-IR')}</td>
+          <td>${r.qty.toLocaleString('fa-IR')}</td>
+          <td>${RIAL(r.revenue)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>` : `<p style="text-align:center;padding:30px;color:var(--text-faint)">هنوز داده‌ای برای نمایش وجود ندارد</p>`;
+  renderDeadProductsBox(viewCounts);
+}
+// «محصولات مرده»: محصولاتی که یا هیچ بازدیدی نداشته‌اند، یا هیچ فروشی — تا
+// ادمین بتواند کالاهایی که فروش نمی‌روند (و شاید باید حذف/تخفیف/تبلیغ شوند)
+// را سریع پیدا کند. تعداد فروش از سفارش‌های ثبت‌شده و تعداد بازدید از جدول
+// user_events (همان چیزی که برای آمار دسته‌بندی استفاده می‌شود) محاسبه می‌شود.
+function computeDeadProducts(viewCounts){
+  const soldMap = {};
+  (STATE.orders||[]).forEach(o=>{
+    (o.items||[]).forEach(it=>{
+      if(!it.productId) return;
+      soldMap[it.productId] = (soldMap[it.productId]||0) + (it.qty||0);
+    });
+  });
+  return STATE.products
+    .map(p=>({ p, views: viewCounts[p.id]||0, sold: soldMap[p.id]||0 }))
+    .filter(x=> x.views===0 || x.sold===0)
+    .sort((a,b)=>{
+      const aBoth = a.views===0 && a.sold===0, bBoth = b.views===0 && b.sold===0;
+      if(aBoth!==bBoth) return aBoth ? -1 : 1;
+      return (a.views+a.sold) - (b.views+b.sold);
+    });
+}
+function daysSinceCreated(p){
+  if(!p || !p.createdAt) return null;
+  const created = new Date(p.createdAt).getTime();
+  if(isNaN(created)) return null;
+  return Math.max(0, Math.floor((Date.now() - created) / (24*60*60*1000)));
+}
+function renderDeadProductsBox(viewCounts){
+  const box = document.getElementById('deadProductsBox');
+  if(!box) return;
+  const rows = computeDeadProducts(viewCounts);
+  box.innerHTML = rows.length ? `
+    <table class="admin-table">
+      <thead><tr><th>محصول</th><th>بازدید</th><th>فروش</th><th>وضعیت</th><th>مدت بارگذاری</th></tr></thead>
+      <tbody>
+        ${rows.map(({p,views,sold})=>{
+          const both = views===0 && sold===0;
+          const status = both ? 'بدون بازدید و بدون فروش' : (views===0 ? 'بدون بازدید' : 'بدون فروش');
+          const color = both ? '#e15b5b' : 'var(--text-dim)';
+          const days = daysSinceCreated(p);
+          const daysLabel = days==null ? '-' : (days===0 ? 'امروز گذاشته شده' : `${days.toLocaleString('fa-IR')} روزه`);
+          return `<tr>
+            <td>${escapeHtml(p.name)}</td>
+            <td>${views.toLocaleString('fa-IR')}</td>
+            <td>${sold.toLocaleString('fa-IR')}</td>
+            <td style="color:${color};font-weight:${both?600:400}">${status}</td>
+            <td style="white-space:nowrap;color:var(--text-dim)">${daysLabel}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>` : `<p style="text-align:center;padding:30px;color:var(--text-faint)">همه‌ی محصولات حداقل یک بازدید و یک فروش داشته‌اند 🎉</p>`;
+}
 async function getRecommendedProducts(limit=8){
   if(!supabaseClient) return [];
   try{
@@ -2222,11 +2461,11 @@ async function getRecommendedProducts(limit=8){
     return data.map(r=>findProduct(r.product_id)).filter(Boolean);
   }catch(e){ return []; }
 }
-function recommendedProductsSectionHtml(products, title, eyebrow='FOR YOU'){
+function recommendedProductsSectionHtml(products, title, eyebrow='FOR YOU', colorOverride, intensityOverride){
   if(!products?.length) return '';
-  const relColor = STATE.settings.relatedColor || '#c9a066';
+  const relColor = colorOverride || STATE.settings.relatedColor || '#c9a066';
   const relRgb = hexToRgbStr(relColor) || '201,162,75';
-  const relAlpha = glassIntensityAlphas(STATE.settings.relatedIntensity ?? 0);
+  const relAlpha = glassIntensityAlphas(intensityOverride ?? STATE.settings.relatedIntensity ?? 0);
   return `
   <div class="section glass-band recs-section" style="margin-top:60px;padding:0">
     <div class="glass-panel" style="background:linear-gradient(160deg,rgba(${relRgb},${relAlpha.a1}),rgba(${relRgb},${relAlpha.a2}) 60%,rgba(255,255,255,.06))">
@@ -2235,11 +2474,11 @@ function recommendedProductsSectionHtml(products, title, eyebrow='FOR YOU'){
     </div>
   </div>`;
 }
-async function renderRecommendationsInto(containerId, title, limit=8){
+async function renderRecommendationsInto(containerId, title, limit=8, eyebrow='FOR YOU', colorOverride, intensityOverride){
   const el = document.getElementById(containerId);
   if(!el) return;
   const items = await getRecommendedProducts(limit);
-  el.innerHTML = recommendedProductsSectionHtml(items, title);
+  el.innerHTML = recommendedProductsSectionHtml(items, title, eyebrow, colorOverride, intensityOverride);
 }
 
 // ===== لیست استان‌ها و شهرهای ایران — برای تکمیل خودکار (autocomplete) فرم آدرس =====
@@ -2413,7 +2652,8 @@ let _glSafetyTimer = null;
 let _glWarnTimer = null;
 let _glTickTimer = null;
 let _glStartedAt = 0;
-function showLoading(){
+function showLoading(opts){
+  opts = opts || {};
   _glCount++;
   clearTimeout(_glSafetyTimer);
   clearTimeout(_glWarnTimer);
@@ -2443,6 +2683,18 @@ function showLoading(){
   }else{
     const el = $('#glOverlay');
     if(el) el.classList.add('show');
+    // انتخاب حالت نمایش اورلی: اگر opts.skeletonFor پاس داده شده باشد
+    // ('shop' یا 'product')، به‌جای اسپینر ساده یک اسکلت شبیه چیدمان همان
+    // صفحه نمایش داده می‌شود (فقط در لود اولیه‌ی سایت از init() استفاده
+    // می‌شود؛ سایر فراخوانی‌های showLoading در جای دیگر سایت بدون این
+    // پارامتر صدا زده می‌شوند و همان اسپینر معمولی را می‌بینند).
+    const skeletonFor = opts.skeletonFor || null;
+    const defaultLoader = $('#glDefaultLoader');
+    const shopSkel = $('#glSkeletonShop');
+    const productSkel = $('#glSkeletonProduct');
+    if(defaultLoader) defaultLoader.style.display = skeletonFor ? 'none' : '';
+    if(shopSkel) shopSkel.style.display = skeletonFor==='shop' ? '' : 'none';
+    if(productSkel) productSkel.style.display = skeletonFor==='product' ? '' : 'none';
     // اگر لودینگ بیش از ۲۰ ثانیه طول بکشد، به‌جای بستن بی‌سروصدای اورلی،
     // یک پیام هشدار بالای اسپینر نشان می‌دهیم که کاربر را از احتمال مشکل اینترنت مطلع کند.
     _glWarnTimer = setTimeout(()=>{
@@ -2718,7 +2970,7 @@ function serializeBadges(arr){
 function rowToProduct(row){
   const images = Array.isArray(row.images) && row.images.length ? row.images : (row.image ? [row.image] : []);
   return {
-    id: row.id, name: row.name, category: row.category,
+    id: row.id, name: row.name, category: row.category, categories: (Array.isArray(row.categories) && row.categories.length) ? row.categories : (row.category ? [row.category] : []),
     price: Number(row.price)||0, compareAt: Number(row.compare_at)||0,
     stock: Number(row.stock)||0, image: images[0]||'', images,
     desc: row.desc||'', sizes: row.sizes||[], badges: parseBadges(row.badge),
@@ -2826,7 +3078,7 @@ async function migrateProductImage(productId, base64, index = 0){
 function productToRow(p){
   const images = normalizeImages(p);
   return {
-    id: p.id, name: p.name, category: p.category, price: p.price,
+    id: p.id, name: p.name, category: p.category, categories: productCategories(p), price: p.price,
     compare_at: p.compareAt||0, stock: p.stock, image: images[0]||'', images,
     desc: p.desc||'', sizes: p.sizes||[], badge: serializeBadges(p.badges),
     name_size: p.nameSize||null, cat_size: p.catSize||null,
@@ -2849,26 +3101,24 @@ function rowToOrder(row){
 
 async function loadProducts(){
   if(supabaseClient){
-    const {data, error} = await supabaseClient
+    const baseCols = `id, name, category, price, compare_at, stock, image, images, desc, sizes, created_at, fabric_features, colors, discount_updated_at`;
+    let {data, error} = await supabaseClient
       .from('products')
-      .select(`
-        id,
-        name,
-        category,
-        price,
-        compare_at,
-        stock,
-        image,
-        images,
-        desc,
-        sizes,
-        created_at,
-        fabric_features,
-        colors,
-        discount_updated_at
-      `)
+      .select(baseCols + `, categories`)
       .order('created_at', {ascending:true})
       .limit(100);
+
+    // اگر ستون categories هنوز به دیتابیس اضافه نشده باشد (مثلاً SQL migration اجرا نشده)،
+    // به‌جای خالی نشان‌دادن کل فروشگاه، بدون این ستون دوباره تلاش می‌کنیم — محصولات همچنان
+    // با category تکی قدیمی لود می‌شوند تا وقتی migration اجرا شود.
+    if(error && (error.code === '42703' || /column .*categories.* does not exist/i.test(error.message||''))){
+      console.warn('[loadProducts] ستون categories پیدا نشد — لطفاً SQL migration مربوط به دسته‌بندی چندگانه را در Supabase اجرا کنید. فعلاً بدون آن ادامه می‌دهیم.');
+      ({data, error} = await supabaseClient
+        .from('products')
+        .select(baseCols)
+        .order('created_at', {ascending:true})
+        .limit(100));
+    }
 
     if(error){
       console.error(error);
@@ -2883,7 +3133,14 @@ async function loadProducts(){
 
 async function upsertProductRemote(p){
   if(supabaseClient){
-    const {error} = await supabaseClient.from('products').upsert(productToRow(p));
+    const row = productToRow(p);
+    let {error} = await supabaseClient.from('products').upsert(row);
+    if(error && (error.code === '42703' || /column .*categories.* does not exist/i.test(error.message||''))){
+      // ستون categories هنوز در دیتابیس ساخته نشده — بدون آن ذخیره می‌کنیم تا ثبت/ویرایش محصول
+      // کامل fail نشود؛ به‌محض اجرای SQL migration، ذخیره‌های بعدی این ستون را هم پر می‌کنند.
+      const {categories, ...rowWithoutCategories} = row;
+      ({error} = await supabaseClient.from('products').upsert(rowWithoutCategories));
+    }
     if(error) console.error(error);
   } else {
     await sSet('products', STATE.products, true);
@@ -3353,7 +3610,7 @@ function setCategoryJsonLd(items, name){
   document.head.appendChild(script);
 }
 
-/* همان الگو، برای صفحه‌ی تک‌مقاله‌ی مجله — نوع Article باعث می‌شود گوگل
+/* همان الگو، برای صفحه‌ی تک‌مقاله‌ی وبلاگ — نوع Article باعث می‌شود گوگل
    نویسنده/تاریخ انتشار/تصویر کاور مقاله را بشناسد و در نتایج جستجوی خبری/
    مقاله‌ای بهتر نمایش دهد. */
 function removeArticleJsonLd(){
@@ -4111,6 +4368,14 @@ function defaultSettings(){
     featuredIntensity: 2,
     relatedColor: '#c9a066',
     relatedIntensity: 0,
+    searchRelatedColor: '#c9a066',
+    searchRelatedIntensity: 0,
+    searchForYouColor: '#c9a066',
+    searchForYouIntensity: 0,
+    cartRecsColor: '#c9a066',
+    cartRecsIntensity: 0,
+    recentlyViewedColor: '#c9a066',
+    recentlyViewedIntensity: 0,
     productPanels: [
       {id:'pp_accessories', title:'انواع اکسسوری', image:'', productIds:[]},
       {id:'pp_tshirts', title:'تیشرت و پولوشرت', image:'', productIds:[]},
@@ -4202,6 +4467,14 @@ function rowToSettings(row){
     featuredIntensity: data.featuredIntensity ?? d.featuredIntensity,
     relatedColor: data.relatedColor ?? d.relatedColor,
     relatedIntensity: data.relatedIntensity ?? d.relatedIntensity,
+    searchRelatedColor: data.searchRelatedColor ?? d.searchRelatedColor,
+    searchRelatedIntensity: data.searchRelatedIntensity ?? d.searchRelatedIntensity,
+    searchForYouColor: data.searchForYouColor ?? d.searchForYouColor,
+    searchForYouIntensity: data.searchForYouIntensity ?? d.searchForYouIntensity,
+    cartRecsColor: data.cartRecsColor ?? d.cartRecsColor,
+    cartRecsIntensity: data.cartRecsIntensity ?? d.cartRecsIntensity,
+    recentlyViewedColor: data.recentlyViewedColor ?? d.recentlyViewedColor,
+    recentlyViewedIntensity: data.recentlyViewedIntensity ?? d.recentlyViewedIntensity,
     productPanels: Array.isArray(data.productPanels) ? data.productPanels : d.productPanels,
     instagramFeed: Array.isArray(data.instagramFeed) ? data.instagramFeed : d.instagramFeed,
     instagramAvatar: data.instagramAvatar ?? d.instagramAvatar,
@@ -4302,6 +4575,14 @@ async function loadSettings(){
         featuredIntensity: s.featuredIntensity ?? defaultSettings().featuredIntensity,
         relatedColor: s.relatedColor ?? defaultSettings().relatedColor,
         relatedIntensity: s.relatedIntensity ?? defaultSettings().relatedIntensity,
+        searchRelatedColor: s.searchRelatedColor ?? defaultSettings().searchRelatedColor,
+        searchRelatedIntensity: s.searchRelatedIntensity ?? defaultSettings().searchRelatedIntensity,
+        searchForYouColor: s.searchForYouColor ?? defaultSettings().searchForYouColor,
+        searchForYouIntensity: s.searchForYouIntensity ?? defaultSettings().searchForYouIntensity,
+        cartRecsColor: s.cartRecsColor ?? defaultSettings().cartRecsColor,
+        cartRecsIntensity: s.cartRecsIntensity ?? defaultSettings().cartRecsIntensity,
+        recentlyViewedColor: s.recentlyViewedColor ?? defaultSettings().recentlyViewedColor,
+        recentlyViewedIntensity: s.recentlyViewedIntensity ?? defaultSettings().recentlyViewedIntensity,
         productPanels: Array.isArray(s.productPanels) ? s.productPanels : defaultSettings().productPanels,
         instagramFeed: Array.isArray(s.instagramFeed) ? s.instagramFeed : defaultSettings().instagramFeed,
         instagramAvatar: s.instagramAvatar ?? defaultSettings().instagramAvatar,
@@ -4401,21 +4682,33 @@ function getAboutImageForTheme(settings){
 }
 
 function renderCategoryNavLinks(settings){
-  const cats = settings.categories || [];
+  const cats = (settings.categories || []).filter(isCategoryActive);
   const curPath = STATE.route;
   const mobileSlot = document.getElementById('mobileNavCatLinks');
   if(mobileSlot){
-    const mobileCatLinks = cats.map(c=>`<a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('');
+    const mobileCatLinks = cats.map(c=>{
+      const parentLink = `<a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`;
+      const subLinks = (c.subcats||[]).map(s=>`<a href="/shop/${s.slug}" data-link data-route="/shop/${s.slug}" class="mnav-sub ${curPath==='/shop/'+s.slug?'active':''}">‹ ${escapeHtml(s.label)}</a>`).join('');
+      return parentLink + subLinks;
+    }).join('');
     mobileSlot.innerHTML = mobileCatLinks
       + `<a href="/shop/all" data-link data-route="/shop/all">جدیدترین‌ها</a>`
       + `<a href="/shop/all" data-link data-route="/shop/all" class="mnav-all ${curPath==='/shop/all'?'active':''}">همه محصولات</a>`;
   }
 
-  // Desktop mega-menu: category links (each with a small icon dot) + a link to "all"
+  // Desktop mega-menu: هر دسته یک ستون مستقل با زیردسته‌های خودش زیرش نمایش داده می‌شود
   const megaSlot = document.getElementById('navCatLinks');
   if(megaSlot){
     const megaLinks = cats.length
-      ? cats.map(c=>`<a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')
+      ? cats.map(c=>{
+          const subHtml = (c.subcats||[]).length
+            ? `<div class="nav-mega-sub">${c.subcats.map(s=>`<a href="/shop/${s.slug}" data-link data-route="/shop/${s.slug}" class="${curPath==='/shop/'+s.slug?'active':''}">${escapeHtml(s.label)}</a>`).join('')}</div>`
+            : '';
+          return `<div class="nav-mega-group">
+            <a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>
+            ${subHtml}
+          </div>`;
+        }).join('')
       : `<span class="nav-mega-empty">دسته‌بندی‌ای ثبت نشده</span>`;
     megaSlot.innerHTML = megaLinks + `<a href="/shop/all" data-link data-route="/shop/all" class="nav-mega-all">مشاهده همه محصولات ‹</a>`;
   }
@@ -5104,7 +5397,7 @@ function postAuthNavigate(){
     wantsCheckout = sessionStorage.getItem('wr-checkout-redirect') === '1';
     sessionStorage.removeItem('wr-checkout-redirect');
   }catch(e){}
-  navigate(wantsCheckout && STATE.cart.length ? '/checkout' : '/account');
+  navigate(wantsCheckout && STATE.cart.length ? '/checkout' : '/account', true);
 }
 
 /* ---------------- init ---------------- */
@@ -5141,7 +5434,13 @@ async function loadInitialDataWithRetry(){
 }
 
 async function init(){
-  showLoading();
+  // اگر آدرس همان لحظه‌ی ورود به سایت صفحه‌ی شاپ یا محصول باشد، به‌جای
+  // اسپینر ساده، اسکلت مخصوص همان صفحه در اورلی لودینگ اولیه نمایش داده می‌شود
+  const initialPath = currentPath();
+  const initialSkeleton = initialPath.startsWith('/shop') ? 'shop'
+    : initialPath.startsWith('/product/') ? 'product'
+    : null;
+  showLoading({skeletonFor: initialSkeleton});
   let loadFailed = false;
   try{
   const [
@@ -5270,8 +5569,14 @@ init();
 function currentPath(){
   return location.pathname || '/';
 }
-function navigate(path){
-  if(currentPath() === path) return;
+function navigate(path, force){
+  if(currentPath() === path){
+    // even if we're already on this URL (e.g. logging in while already
+    // sitting on /account), still re-render so the page reflects the new
+    // state (logged-in account view) instead of doing nothing.
+    if(force) router();
+    return;
+  }
   history.pushState(null, '', path);
   router();
   trackPageView();
@@ -5420,6 +5725,24 @@ function bindGlobalUI(){
     requestAnimationFrame(()=>{ updateBottomNavFooterState(); _bnfTicking = false; });
   }, {passive:true});
   window.addEventListener('resize', updateBottomNavFooterState);
+
+  // دکمه «بازگشت به بالا»: بعد از اسکرول به‌اندازه‌ی کافی نمایش داده می‌شود
+  // و با کلیک، صفحه به‌آرامی به بالا برمی‌گردد. برای صفحات طولانی وبلاگ/شاپ مفید است.
+  (function(){
+    const btn = $('#backToTopBtn');
+    if(!btn) return;
+    let ticking2 = false;
+    function updateBackToTop(){
+      if(window.scrollY > 560) btn.classList.add('show');
+      else btn.classList.remove('show');
+      ticking2 = false;
+    }
+    window.addEventListener('scroll', ()=>{
+      if(!ticking2){ requestAnimationFrame(updateBackToTop); ticking2 = true; }
+    }, {passive:true});
+    updateBackToTop();
+    btn.onclick = ()=> window.scrollTo({top:0, left:0, behavior:'smooth'});
+  })();
 
   const mainNavEl = $('#mainNav');
   if(mainNavEl){
@@ -5702,8 +6025,6 @@ function bindGlobalUI(){
   }
 
   $('#cartOpenBtn').onclick = openCart;
-  const cartCloseBtnEl = $('#cartCloseBtn'); if(cartCloseBtnEl) cartCloseBtnEl.onclick = closeCart;
-  const cartOverlayEl = $('#cartOverlay'); if(cartOverlayEl) cartOverlayEl.onclick = closeCart;
 
   document.addEventListener('click', e=>{
     const link = e.target.closest('[data-link]');
@@ -5717,58 +6038,91 @@ function bindGlobalUI(){
 function openCart(){
   navigate('/cart');
 }
-function closeCart(){ /* سبد خرید دیگر کشویی نیست؛ این تابع برای سازگاری با کدهای قبلی نگه داشته شده */ }
-
-// swipe-to-close: drag the cart drawer to the left (the direction it opens from) to dismiss it
-(function initCartSwipeToClose(){
-  const drawer = document.getElementById('cartDrawer');
-  if(!drawer) return;
-  let startX = 0, startY = 0, dragging = false, isHorizontal = false;
-  const threshold = 90; // px dragged left before it counts as a close swipe
-
-  drawer.addEventListener('touchstart', e=>{
-    if(!drawer.classList.contains('open')) return;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    dragging = true;
-    isHorizontal = false;
-    drawer.style.transition = 'none';
-  }, {passive:true});
-
-  drawer.addEventListener('touchmove', e=>{
-    if(!dragging) return;
-    const dx = e.touches[0].clientX - startX;
-    const dy = e.touches[0].clientY - startY;
-    if(!isHorizontal){
-      if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-      isHorizontal = Math.abs(dx) > Math.abs(dy);
-      if(!isHorizontal){ dragging = false; return; }
-    }
-    if(dx < 0){ // only allow dragging toward the closed (left) side
-      drawer.style.transform = `translateX(${dx}px)`;
-      const overlay = document.getElementById('cartOverlay');
-      if(overlay) overlay.style.opacity = String(Math.max(0, 1 - Math.abs(dx)/300));
-    }
-  }, {passive:true});
-
-  function endDrag(e){
-    if(!dragging || !isHorizontal) { dragging = false; return; }
-    dragging = false;
-    drawer.style.transition = '';
-    drawer.style.transform = '';
-    const overlay = document.getElementById('cartOverlay');
-    if(overlay) overlay.style.opacity = '';
-    const endX = (e.changedTouches ? e.changedTouches[0].clientX : startX);
-    if(startX - endX > threshold) closeCart();
-  }
-  drawer.addEventListener('touchend', endDrag);
-  drawer.addEventListener('touchcancel', endDrag);
-})();
 
 /* ---------------- product helpers ---------------- */
 function findProduct(id){ return STATE.products.find(p=>p.id===id); }
-function findCategory(slug){ return (STATE.settings.categories||[]).find(c=>c.slug===slug); }
+function findCategory(slug){
+  const cats = STATE.settings.categories||[];
+  const direct = cats.find(c=>c.slug===slug);
+  if(direct) return direct;
+  for(const c of cats){
+    const sub = (c.subcats||[]).find(s=>s.slug===slug);
+    if(sub) return {...sub, parentSlug:c.slug, parentLabel:c.label};
+  }
+  return null;
+}
 function catLabel(c){ const found = findCategory(c); return found ? found.label : (c==='all' ? 'محصولات' : (c||'محصولات')); }
+function isCategoryActive(c){ return c && c.active !== false; }
+/* پشتیبانی از دسته‌بندی چندگانه: هر محصول می‌تواند هم‌زمان در چند دسته باشد.
+   productCategories همیشه یک آرایه برمی‌گرداند (حتی برای محصولات قدیمی که فقط category تکی داشتند).
+   اولین عضو آرایه = «دسته اصلی» (اولویت با ترتیب انتخاب ادمین است) و برای برچسب/breadcrumb استفاده می‌شود. */
+function productCategories(p){
+  if(Array.isArray(p?.categories) && p.categories.length) return p.categories;
+  if(p?.category) return [p.category];
+  return [];
+}
+function primaryCategory(p){ return productCategories(p)[0] || ''; }
+function subcatSlugsOfParent(slug){
+  const c = (STATE.settings.categories||[]).find(x=>x.slug===slug);
+  return c ? (c.subcats||[]).map(s=>s.slug) : [];
+}
+function productInCategory(p, slug){
+  if(slug==='all') return true;
+  const pc = productCategories(p);
+  if(pc.includes(slug)) return true;
+  // انتخاب یک دسته‌ی والد باید محصولاتی که فقط زیردسته‌اش را دارند هم نشان دهد
+  return subcatSlugsOfParent(slug).some(s=>pc.includes(s));
+}
+
+/* نگاشتِ کلمات رایج جستجو به «برچسبِ» دسته‌بندی (نه اسم فنی/slug) — برای اینکه
+   اگه مثلاً کسی «سوتین» سرچ کنه ولی هیچ محصولی این کلمه رو توی اسمش نداشته باشه،
+   بشه فهمید منظورش دسته‌ی «لباس زیر زنانه»ست. چون با برچسب match می‌کنیم نه
+   slug، اگه ادمین اسم دسته‌بندی رو عوض کنه هم تا حد زیادی درست کار می‌کنه.
+   این فهرست فقط کلمات پیش‌بینی‌شده رو پوشش می‌ده؛ کلمات خارج از این لیست به
+   بخش دوم (پیشنهادهای متنوع/پرفروش) می‌رن. */
+const SEARCH_CATEGORY_KEYWORDS = [
+  { words:['سوتین','کرست','برا','نیم‌تنه','بندی زنانه','سوتین اسپرت','سوتین توری','سوتین گیپور','بند سوتین','سوتین بدون بند','سوتین پوش‌دار','سوتین شیردهی'], labels:['لباس زیر زنانه'] },
+  { words:['شرت زنانه','شورت زنانه','شرتک','شورت توری','شورت کمرکش','شورت نامرئی','شورت بدون درز'], labels:['لباس زیر زنانه'] },
+  { words:['ست لباس زیر زنانه','ست زیرپوش زنانه','ست توری زنانه','لباس خواب زنانه','لباس خواب توری'], labels:['لباس زیر زنانه'] },
+  { words:['باکسر','شرت مردانه','شورت مردانه','لباس زیر مردانه','باکسر مردانه','زیرشلواری مردانه','رکابی زیرپوش مردانه'], labels:['لباس زیر مردانه'] },
+  { words:['لباس راحتی زنانه','رکابی زنانه','شلوارک راحتی زنانه','ست راحتی زنانه','لباس خونگی زنانه','تیشرت خونگی زنانه','پیژامه زنانه','شلوار راحتی زنانه'], labels:['لباس راحتی زنانه'] },
+  { words:['لباس راحتی مردانه','شلوارک راحتی مردانه','رکابی مردانه','ست راحتی مردانه','پیژامه مردانه','شلوار راحتی مردانه','تیشرت خونگی مردانه'], labels:['لباس راحتی مردانه'] },
+  { words:['زنانه','خانم','دخترانه بزرگسال','لباس زنانه'], labels:['زنانه'] },
+  { words:['مردانه','آقایان','لباس مردانه'], labels:['مردانه'] },
+  { words:['بچگانه','کودک','کودکانه','نوزاد','دخترونه بچه','پسرونه بچه','لباس بچه'], labels:['بچگانه'] },
+  { words:['تابستانی','تابستان','خنک','نازک','آستین‌کوتاه','یقه‌باز تابستانی'], labels:['تابستانی','فصل گرم'] },
+  { words:['پاییزی','پاییز','نیم‌فصل'], labels:['پاییزی'] },
+  { words:['زمستانی','زمستان','گرم','پشمی','پلیور','ژاکت گرم','کاپشن'], labels:['زمستانی','فصل سرد'] },
+  { words:['کیف','کیف دستی','کوله','کیف پول','کیف زنانه','کیف مردانه','کیف پارچه‌ای','کیف چرم'], labels:['کیف'] },
+  { words:['کفش','صندل','دمپایی','کتونی','بوت','کفش زنانه','کفش مردانه','کفش راحتی'], labels:['کفش'] },
+  { words:['اکسسوری','جواهر','دستبند','گردنبند','گوشواره','انگشتر','کلاه','شال','روسری','کمربند','عینک آفتابی'], labels:['اکسسوری'] },
+];
+/* برای یک عبارت جستجو، لیست محصولاتِ موجودِ دسته‌بندی(های) مرتبط را برمی‌گرداند
+   (خالی اگر هیچ کلمه‌ای مطابقت نداشت یا آن دسته‌بندی روی سایت وجود نداشت). */
+function relatedCategoryProductsFor(query){
+  const q = (query||'').trim();
+  if(!q) return [];
+  const cats = (STATE.settings.categories||[]).filter(isCategoryActive);
+  if(!cats.length) return [];
+  let matchedLabels = null;
+  for(const entry of SEARCH_CATEGORY_KEYWORDS){
+    if(entry.words.some(w=> q.includes(w) || w.includes(q))){
+      matchedLabels = entry.labels;
+      break;
+    }
+  }
+  if(!matchedLabels) return [];
+  const matchedCats = cats.filter(c=> c.label && matchedLabels.some(lb=> c.label.includes(lb)));
+  if(!matchedCats.length) return [];
+  const seen = new Set();
+  const out = [];
+  matchedCats.forEach(c=>{
+    STATE.products.filter(p=> p.stock>0 && productInCategory(p, c.slug)).forEach(p=>{
+      if(!seen.has(p.id)){ seen.add(p.id); out.push(p); }
+    });
+  });
+  return out;
+}
 
 function productImgHtml(p, cls='ph'){
   if(p.image) return `<img src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async">`;
@@ -5778,6 +6132,62 @@ function productImgHtml(p, cls='ph'){
   </div>`;
 }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ===== جستجوی هوشمند (فازی) =====
+   جستجوی ساده‌ی قبلی فقط includes() بود: اگر رشته‌ی تایپ‌شده عیناً داخل متن
+   نبود، هیچ نتیجه‌ای برنمی‌گشت. این بخش سه مشکل رایج را حل می‌کند:
+   ۱) اشکال نوشتاری حروف عربی/فارسی (ي/ی، ك/ک، أ/ا و...) یکسان‌سازی می‌شود.
+   ۲) جمع/مفرد: پسوندهای رایج جمع (ها، های، ات، گان...) هنگام مقایسه کنار
+      گذاشته می‌شوند تا «شلوارها» با «شلوار» یکی حساب شود.
+   ۳) اشتباه تایپی: با «فاصله‌ی ادیت» (تعداد حروفی که باید عوض/اضافه/کم شود
+      تا دو کلمه یکی شوند) کلمات نزدیک به هم را هم منطبق در نظر می‌گیریم. */
+function normalizeFa(s){
+  return (s||'').toString()
+    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'')   // اعراب/تشدید
+    .replace(/[يى]/g,'ی').replace(/ك/g,'ک')
+    .replace(/[إأآا]/g,'ا').replace(/ة/g,'ه')
+    .replace(/[\u200c]/g,' ')                              // نیم‌فاصله → فاصله
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu,' ')                       // علائم نگارشی
+    .replace(/\s+/g,' ').trim();
+}
+function stripPluralFa(w){
+  return w.length>3 ? w.replace(/(های|ها|گان|یان|ات|ون)$/,'') : w;
+}
+function editDistance(a,b){
+  const m=a.length, n=b.length;
+  if(!m) return n; if(!n) return m;
+  let prev = Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){
+    const cur=[i];
+    for(let j=1;j<=n;j++) cur[j] = a[i-1]===b[j-1] ? prev[j-1] : 1+Math.min(prev[j-1],prev[j],cur[j-1]);
+    prev=cur;
+  }
+  return prev[n];
+}
+function fuzzyWordMatchFa(word, token){
+  if(!word || !token) return false;
+  if(word.includes(token) || token.includes(word)) return true;
+  const w = stripPluralFa(word), t = stripPluralFa(token);
+  if(w===t || w.includes(t) || t.includes(w)) return true;
+  const maxLen = Math.max(w.length, t.length);
+  const threshold = maxLen<=4 ? 1 : maxLen<=7 ? 2 : 3;
+  return editDistance(w,t) <= threshold;
+}
+function smartSearchMatch(text, query){
+  const nQuery = normalizeFa(query);
+  if(!nQuery) return true;
+  const nText = normalizeFa(text);
+  if(!nText) return false;
+  if(nText.includes(nQuery)) return true;
+  const textWords = nText.split(' ').filter(Boolean);
+  const queryWords = nQuery.split(' ').filter(Boolean);
+  return queryWords.every(qw => textWords.some(tw => fuzzyWordMatchFa(tw, qw)));
+}
+function productMatchesSearch(p, query){
+  return smartSearchMatch(p.name, query) || smartSearchMatch(p.desc||'', query);
+}
+
 
 /* محصول تا ۴۲ ساعت پس از افزودن «جدید» محسوب می‌شود */
 function isNewProduct(p){
@@ -5884,6 +6294,7 @@ function applyShopSizeColorFilter(list){
   let out = list;
   const selSizes = STATE.filters.sizes || [];
   const selColors = STATE.filters.colorKeys || [];
+  const selCats = STATE.filters.extraCats || [];
   if(selSizes.length){
     out = out.filter(p=>{
       const ps = productSizeList(p);
@@ -5896,15 +6307,30 @@ function applyShopSizeColorFilter(list){
       return pc.length===0 ? false : pc.some(c=> selColors.includes(c.key));
     });
   }
+  if(selCats.length){
+    // ترکیبی/AND: محصول باید هم‌زمان در همه‌ی دسته‌های تیک‌خورده باشد
+    out = out.filter(p=> selCats.every(slug=> productInCategory(p, slug)));
+  }
   return out;
+}
+function shopAllCategoryOptions(){
+  const cats = (STATE.settings.categories||[]).filter(isCategoryActive);
+  const opts = [];
+  cats.forEach(c=>{
+    opts.push({slug:c.slug, label:c.label, sub:false});
+    (c.subcats||[]).forEach(s=> opts.push({slug:s.slug, label:s.label, sub:true}));
+  });
+  return opts;
 }
 function shopFilterPanelHtml(){
   const sizes = shopAvailableSizes();
   const colors = shopAvailableColors();
-  if(!sizes.length && !colors.length) return '';
+  const catOpts = shopAllCategoryOptions();
+  if(!sizes.length && !colors.length && !catOpts.length) return '';
   const selSizes = STATE.filters.sizes || [];
   const selColors = STATE.filters.colorKeys || [];
-  const activeCount = selSizes.length + selColors.length;
+  const selCats = STATE.filters.extraCats || [];
+  const activeCount = selSizes.length + selColors.length + selCats.length;
   return `
   <div class="shop-sort-dropdown" id="shopFilterDropdown">
     <button type="button" class="shop-sort-btn${activeCount?' is-active':''}" id="shopFilterBtn" aria-haspopup="true" aria-expanded="false" title="فیلتر" style="position:relative">
@@ -5912,6 +6338,13 @@ function shopFilterPanelHtml(){
       ${activeCount ? `<span class="shop-filter-count">${activeCount}</span>` : ''}
     </button>
     <div class="shop-sort-menu shop-filter-menu" id="shopFilterMenu" role="menu">
+      ${catOpts.length ? `
+      <div class="shop-filter-group">
+        <div class="shop-filter-group-title">دسته‌بندی <span style="font-weight:400;color:var(--text-faint)">(ترکیبی — فقط محصولات مشترک)</span></div>
+        <div class="shop-filter-chips">
+          ${catOpts.map(o=>`<button type="button" class="shop-filter-chip${selCats.includes(o.slug)?' active':''}" data-filter-cat="${o.slug}" style="${o.sub?'opacity:.8':''}">${o.sub?'‹ ':''}${escapeHtml(o.label)}</button>`).join('')}
+        </div>
+      </div>` : ''}
       ${sizes.length ? `
       <div class="shop-filter-group">
         <div class="shop-filter-group-title">سایز</div>
@@ -5942,6 +6375,17 @@ function bindShopFilterDropdown(){
     dd.classList.toggle('is-open', willOpen);
     btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
   });
+  $$('[data-filter-cat]', menu).forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const val = chip.dataset.filterCat;
+      const sel = STATE.filters.extraCats || (STATE.filters.extraCats = []);
+      const i = sel.indexOf(val);
+      if(i===-1) sel.push(val); else sel.splice(i,1);
+      STATE.filters.page = 1;
+      refreshShopToolbar();
+      renderShopGridAndPagination();
+    });
+  });
   $$('[data-filter-size]', menu).forEach(chip=>{
     chip.addEventListener('click', ()=>{
       const val = chip.dataset.filterSize;
@@ -5969,6 +6413,7 @@ function bindShopFilterDropdown(){
     clearBtn.addEventListener('click', ()=>{
       STATE.filters.sizes = [];
       STATE.filters.colorKeys = [];
+      STATE.filters.extraCats = [];
       STATE.filters.page = 1;
       refreshShopToolbar();
       renderShopGridAndPagination();
@@ -6708,7 +7153,7 @@ function productCard(p){
       </div>` : ''}
     </a>
     <div class="card-body">
-      <span class="cat-tag">${catLabel(p.category)}</span>
+      <span class="cat-tag">${catLabel(primaryCategory(p))}</span>
       <a href="/product/${p.id}" data-link><h3>${escapeHtml(p.name)}</h3></a>
       <div class="card-price">
         <span class="now">${RIAL(p.price)}</span>
@@ -6749,14 +7194,15 @@ function catGradient(i){ return `linear-gradient(135deg,${i%2===0?'#2a2320,#0f0d
 function catPanelOne(c, i){
   const img = getCategoryImageForTheme(c);
   const bg = img ? `background:url('${img}') center/cover no-repeat` : `background:${catGradient(i)}`;
-  return `
-    <a href="/shop/${c.slug}" data-link class="cat-panel" data-real-index="${i}">
-      <div class="cat-bg cat-bg-desktop" style="${bg}"></div>
-      <div class="cat-bg cat-bg-mobile" style="${bg}"></div>
+  const content = c.showLabel ? `
       <div class="cat-content">
         <span class="eyebrow">${escapeHtml(c.tagline || c.label)}</span>
         <h3 class="serif">${escapeHtml(c.label)}</h3>
-      </div>
+      </div>` : '';
+  return `
+    <a href="/shop/${c.slug}" data-link class="cat-panel" data-real-index="${i}">
+      <div class="cat-bg cat-bg-desktop" style="${bg}"></div>
+      <div class="cat-bg cat-bg-mobile" style="${bg}"></div>${content}
     </a>`;
 }
 function catPanelsHtml(cats){
@@ -7009,7 +7455,7 @@ function pageHome(){
   <div class="container">
     <div class="cat-carousel-wrap">
       <div class="cat-split" id="catSplit">
-        ${catPanelsHtml(STATE.settings.categories||[])}
+        ${catPanelsHtml((STATE.settings.categories||[]).filter(isCategoryActive))}
       </div>
     </div>
   </div>
@@ -7118,6 +7564,8 @@ function pageHome(){
 
   ${iconPanelsSectionHtml('iconPanelsFooter', '0')}
 
+  ${homeBlogSectionHtml()}
+
   ${instagramFeedSectionHtml()}
 
   <div id="recsSectionHome"></div>
@@ -7185,6 +7633,39 @@ function emptyState(msg='هنوز محصولی ثبت نشده است'){
   </div>`;
 }
 
+/* حالت «بدون نتیجه» مخصوص جستجو: پیام «یافت نشد» را واضح نگه می‌دارد ولی
+   زیرش چند محصول پرفروش (در صورت وجود) به‌عنوان پیشنهاد نشان می‌دهد تا
+   کاربر دست‌خالی از صفحه‌ی جستجو نرود. کارت‌های پیشنهادی همان productCard
+   معمولی‌اند و مستقیماً داخل همان .grid والد قرار می‌گیرند تا چیدمانشان با
+   بقیه‌ی صفحه یکسان بماند. */
+function searchEmptyStateHtml(query){
+  // بخش اول: محصولاتِ دسته‌بندیِ مرتبط با کلمه‌ی جستجو (مثلاً «سوتین» → «لباس زیر زنانه»)
+  const related = relatedCategoryProductsFor(query);
+  const relatedIds = new Set(related.map(p=>p.id));
+
+  // بخش دوم: ترکیب پرفروش‌ترین‌ها + بقیه‌ی محصولات موجود، شافل‌شده (هر بار متفاوت)
+  // تا کاربر هر بار سرچ بی‌نتیجه، دقیقاً همون چیزهای قبلی رو نبینه
+  const bestsellers = bestsellerProducts().filter(p=> p.stock>0 && !relatedIds.has(p.id));
+  const bestsellerIds = new Set(bestsellers.map(p=>p.id));
+  const rest = shuffleArray(STATE.products.filter(p=> p.stock>0 && !relatedIds.has(p.id) && !bestsellerIds.has(p.id)));
+  const otherPool = shuffleArray([...bestsellers, ...rest]).slice(0,15);
+
+  const messageHtml = `<div style="grid-column:1/-1;text-align:center;padding:40px 16px 6px">
+    <p style="color:var(--text-faint);font-size:15px">برای «${escapeHtml(query)}» نتیجه‌ای یافت نشد</p>
+  </div>`;
+
+  // هر دو بخش دقیقاً با همان قالب/اندازه‌ی بخش «با این سفارش، این‌ها هم مناسبن»
+  // (recommendedProductsSectionHtml) نمایش داده می‌شوند تا حس یکدست و آشنایی به کاربر بدهند.
+  const relatedSection = related.length
+    ? `<div style="grid-column:1/-1">${recommendedProductsSectionHtml(related.slice(0,15), `محصولات مرتبط با «${escapeHtml(query)}»`, 'RELATED', STATE.settings.searchRelatedColor, STATE.settings.searchRelatedIntensity)}</div>`
+    : '';
+  const otherSection = otherPool.length
+    ? `<div style="grid-column:1/-1">${recommendedProductsSectionHtml(otherPool, 'شاید این محصولات را بپسندید', 'FOR YOU', STATE.settings.searchForYouColor, STATE.settings.searchForYouIntensity)}</div>`
+    : '';
+
+  return messageHtml + relatedSection + otherSection;
+}
+
 function pageShop(catRaw){
   STATE.filters.othersList = null;
   const specialSections = homeSectionDefs();
@@ -7207,7 +7688,7 @@ function pageShop(catRaw){
     STATE.filters.category = null;
     const sec = specialSections[catRaw];
     let list = sec.build();
-    if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+    if(STATE.filters.q) list = list.filter(p=> productMatchesSearch(p, STATE.filters.q));
     list = applyShopSizeColorFilter(list);
     list = applyShopSort(list, STATE.filters.sort);
     STATE.filters.page = 1;
@@ -7257,7 +7738,7 @@ function pageShop(catRaw){
             </div>
             ${shopSortSelectHtml()}${shopFilterPanelHtml()}
           </div>
-          <div class="grid" id="shopGrid" style="position:relative;z-index:1;margin-top:20px">${pg.items.map(productCard).join('') || emptyState('محصولی یافت نشد')}</div>
+          <div class="grid" id="shopGrid" style="position:relative;z-index:1;margin-top:20px">${pg.items.map(productCard).join('') || (STATE.filters.q ? searchEmptyStateHtml(STATE.filters.q) : emptyState('محصولی یافت نشد'))}</div>
           <div id="shopPagination" style="position:relative;z-index:1">${paginationBarHtml(pg.page, pg.totalPages, 'goToShopPage')}</div>
         </div>
       </div>
@@ -7267,27 +7748,55 @@ function pageShop(catRaw){
   const cat = catRaw || 'all';
   STATE.filters.category = cat;
   let list = STATE.products.slice();
-  if(cat!=='all') list = list.filter(p=>p.category===cat);
-  if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+  if(cat!=='all') list = list.filter(p=>productInCategory(p, cat));
+  if(STATE.filters.q) list = list.filter(p=> productMatchesSearch(p, STATE.filters.q));
   list = applyShopSizeColorFilter(list);
     list = applyShopSort(list, STATE.filters.sort);
   STATE.filters.page = 1;
   const pg2 = paginateList(list, STATE.filters.page);
 
   const cats = STATE.settings.categories||[];
+  const catObj = cat!=='all' ? findCategory(cat) : null;
+  const catParentObj = catObj?.parentSlug ? cats.find(x=>x.slug===catObj.parentSlug) : null;
+  // اگر دسته (یا دسته‌ی والدِ زیردسته) غیرفعال شده باشد، همان پیام استاندارد «غیرفعال» را نشان بده
+  if(catObj && !isCategoryActive(catParentObj || catObj)){
+    return `
+    <section class="section">
+      <div class="container" style="text-align:center;padding:80px 20px">
+        <h2 class="serif" style="font-size:26px;font-weight:800;margin-bottom:14px">این صفحه غیرفعال است</h2>
+        <p style="color:var(--text-faint);margin-bottom:24px">این بخش در حال حاضر توسط مدیر فروشگاه غیرفعال شده است.</p>
+        <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
+      </div>
+    </section>`;
+  }
+  const activeCats = cats.filter(isCategoryActive);
+  const catBannerImg = catObj ? getCategoryImageForTheme(catParentObj || catObj) : '';
+  const catDescText = catObj?.desc || '';
+  if(catObj && !STATE.filters.q){
+    setPageMeta(
+      catObj.label + ' | WHITE RAVEN',
+      catDescText || `خرید ${catObj.label} از فروشگاه اینترنتی وایت ریون`,
+      catBannerImg
+    );
+  } else if(!STATE.filters.q){
+    setPageMeta('محصولات | WHITE RAVEN', 'مشاهده و خرید تمام محصولات فروشگاه اینترنتی وایت ریون');
+  } else {
+    setPageMeta();
+  }
   setCategoryJsonLd(pg2.items, cat==='all' ? 'همه محصولات' : catLabel(cat));
   return `
   <div class="page-head">
+    ${catBannerImg && !STATE.filters.q ? `<div class="shop-cat-banner"><img loading="lazy" decoding="async" src="${catBannerImg}" alt="${escapeHtml(catObj.label)}"></div>` : ''}
     <span class="eyebrow">SHOP</span>
     <h1 class="serif">${cat==='all'?'همه محصولات':catLabel(cat)}</h1>
-    ${STATE.filters.q ? `<p>نتایج جستجو برای «${escapeHtml(STATE.filters.q)}»</p>` : `<p>مجموعه‌ای از باکیفیت‌ترین لباس‌های زیر</p>`}
+    ${STATE.filters.q ? `<p>نتایج جستجو برای «${escapeHtml(STATE.filters.q)}»</p>` : (catDescText ? `<p class="shop-cat-desc">${escapeHtml(catDescText)}</p>` : `<p>مجموعه‌ای از باکیفیت‌ترین لباس‌های زیر</p>`)}
   </div>
   <div class="section">
     <div class="container">
       <div class="toolbar">
         <div class="chip-row">
           <a href="/shop/all" data-link class="chip ${cat==='all'?'active':''}">همه</a>
-          ${cats.map(c=>`<a href="/shop/${c.slug}" data-link class="chip ${cat===c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')}
+          ${activeCats.map(c=>`<a href="/shop/${c.slug}" data-link class="chip ${cat===c.slug?'active':''}">${escapeHtml(c.label)}</a>`).join('')}
         </div>
         <div class="search-mini">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--text-faint)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -7295,7 +7804,7 @@ function pageShop(catRaw){
         </div>
         ${shopSortSelectHtml()}${shopFilterPanelHtml()}
       </div>
-      <div class="grid" id="shopGrid">${pg2.items.map(productCard).join('') || emptyState('محصولی در این دسته یافت نشد')}</div>
+      <div class="grid" id="shopGrid">${pg2.items.map(productCard).join('') || (STATE.filters.q ? searchEmptyStateHtml(STATE.filters.q) : emptyState('محصولی در این دسته یافت نشد'))}</div>
       <div id="shopPagination">${paginationBarHtml(pg2.page, pg2.totalPages, 'goToShopPage')}</div>
     </div>
   </div>`;
@@ -7308,7 +7817,7 @@ function pageOthers(id){
   STATE.filters.othersList = shuffleArray(excluded ? STATE.products.filter(x=>x.id!==excluded.id) : STATE.products.slice());
   STATE.filters.page = 1;
   let list = STATE.filters.othersList;
-  if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+  if(STATE.filters.q) list = list.filter(p=> productMatchesSearch(p, STATE.filters.q));
   list = applyShopSizeColorFilter(list);
     list = applyShopSort(list, STATE.filters.sort);
   const pg = paginateList(list, STATE.filters.page);
@@ -7331,7 +7840,7 @@ function pageOthers(id){
         </div>
         ${shopSortSelectHtml()}${shopFilterPanelHtml()}
       </div>
-      <div class="grid" id="shopGrid">${pg.items.map(productCard).join('') || emptyState('محصولی یافت نشد')}</div>
+      <div class="grid" id="shopGrid">${pg.items.map(productCard).join('') || (STATE.filters.q ? searchEmptyStateHtml(STATE.filters.q) : emptyState('محصولی یافت نشد'))}</div>
       <div id="shopPagination">${paginationBarHtml(pg.page, pg.totalPages, 'goToShopPage')}</div>
     </div>
   </div>`;
@@ -7466,26 +7975,30 @@ function pageProduct(id){
     (p.images && p.images[0]) || p.image || ''
   );
   setProductJsonLd(p);
+  const primCat = findCategory(primaryCategory(p));
+  const catCrumbs = primCat && primCat.parentSlug
+    ? [{ name: catLabel(primCat.parentSlug), url: '/shop/' + primCat.parentSlug }, { name: primCat.label, url: '/shop/' + primaryCategory(p) }]
+    : [{ name: catLabel(primaryCategory(p)), url: '/shop/' + primaryCategory(p) }];
   setBreadcrumbJsonLd([
     { name: 'خانه', url: '/' },
     { name: 'محصولات', url: '/shop/all' },
-    { name: catLabel(p.category), url: '/shop/' + p.category },
+    ...catCrumbs,
     { name: p.name }
   ]);
   const off = p.compareAt && p.compareAt > p.price;
-  const related = STATE.products.filter(x=>x.category===p.category && x.id!==p.id).slice(0,4);
+  const related = STATE.products.filter(x=>x.id!==p.id && productCategories(x).some(c=>productCategories(p).includes(c))).slice(0,4);
   const others = shuffleArray(STATE.products.filter(x=>x.id!==p.id)).slice(0,12);
   return `
   <div class="section pd-page-section">
     <div class="container">
       <div class="breadcrumb">
-        <a href="/" data-link>خانه</a> / <span class="breadcrumb-desktop-only"><a href="/shop/all" data-link>محصولات</a> / </span><a href="/shop/${p.category}" data-link>${catLabel(p.category)}</a> / ${escapeHtml(p.name)}
+        <a href="/" data-link>خانه</a> / <span class="breadcrumb-desktop-only"><a href="/shop/all" data-link>محصولات</a> / </span>${catCrumbs.map(c=>`<a href="${c.url}" data-link>${escapeHtml(c.name)}</a>`).join(' / ')} / ${escapeHtml(p.name)}
       </div>
       <div class="pd-wrap">
         <div class="pd-gallery-col">${productGalleryHtml(p)}</div>
         <div class="pd-info">
           ${productBadgesHtml(p)}
-          <span class="cat-tag" style="font-size:${p.catSize||10}px">${catLabel(p.category)}</span>
+          <span class="cat-tag" style="font-size:${p.catSize||10}px">${catLabel(primaryCategory(p))}</span>
           <h1 class="serif" style="font-size:${p.nameSize||26}px">${escapeHtml(p.name)}</h1>
           <div class="pd-price">
             <span class="now" style="font-size:${p.priceSize||20}px">${RIAL(p.price)}</span>
@@ -7613,6 +8126,74 @@ function pageProduct(id){
   </div>`;
 }
 
+function pdReviewDateFaShort(iso){
+  try{ return new Date(iso).toLocaleDateString('fa-IR', {year:'numeric', month:'long', day:'numeric'}); }
+  catch(e){ return ''; }
+}
+/* کارت بزرگ برای دو وبلاگ جدیدتر در صفحه اول: عکس کامل + عنوان + تاریخ + دکمه */
+function homeBlogCardBig(p){
+  return `
+  <a href="/magazine/${encodeURIComponent(p.slug)}" data-link class="home-blog-big">
+    <div class="home-blog-big-img">
+      ${p.coverImage ? `<img loading="lazy" decoding="async" src="${escapeHtml(p.coverImage)}" alt="${escapeHtml(p.title)}">` : ''}
+    </div>
+    <div class="home-blog-big-body">
+      <h3>${escapeHtml(p.title)}</h3>
+      <div class="home-blog-big-meta">
+        <span class="home-blog-more">
+          <span class="arrow-circle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></span>
+          ادامه مطلب
+        </span>
+        <span class="home-blog-date">${pdReviewDateFaShort(p.createdAt)}</span>
+      </div>
+    </div>
+  </a>`;
+}
+/* کارت کوچک برای وبلاگ‌های قدیمی‌تر (تا ۳ مورد) در ستون کنار */
+function homeBlogCardSmall(p){
+  return `
+  <a href="/magazine/${encodeURIComponent(p.slug)}" data-link class="home-blog-small-card">
+    <div class="home-blog-small-img">
+      ${p.coverImage ? `<img loading="lazy" decoding="async" src="${escapeHtml(p.coverImage)}" alt="${escapeHtml(p.title)}">` : ''}
+    </div>
+    <div class="home-blog-small-body">
+      <h4>${escapeHtml(p.title)}</h4>
+      <span class="home-blog-more small">
+        <span class="arrow-circle"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></span>
+        ادامه مطلب
+      </span>
+    </div>
+  </a>`;
+}
+/* بخش وبلاگ صفحه اول: همیشه با آخرین پست‌ها به‌روز می‌شود — دو وبلاگ جدیدتر
+   در سایز بزرگ، و تا ۳ وبلاگ قدیمی‌تر بعدی در ستون کنار، در سایز کوچک */
+function homeBlogSectionHtml(){
+  const sorted = publishedPosts().slice().sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0));
+  if(!sorted.length) return '';
+  const big = sorted.slice(0, 2);
+  const small = sorted.slice(2, 5);
+  return `
+  <section class="section glass-band" style="padding-bottom:0">
+    <div class="container">
+      <div class="glass-panel">
+        <div class="section-head" style="text-align:right;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+          <div>
+            <span class="eyebrow" style="font-size:10px">BLOG</span>
+            <h2 class="serif" style="display:inline-block;font-size:29px;font-weight:800">تازه‌های وبلاگ</h2>
+            <div class="divider" style="margin:16px 0 0"></div>
+          </div>
+          <a href="/magazine" data-link class="btn btn-ghost" style="flex:none">مشاهده همه</a>
+        </div>
+        <div class="home-blog-grid">
+          ${big[0] ? homeBlogCardBig(big[0]) : ''}
+          ${big[1] ? homeBlogCardBig(big[1]) : ''}
+          ${small.length ? `<div class="home-blog-small-col">${small.map(homeBlogCardSmall).join('')}</div>` : ''}
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
 /* ---------------- magazine (public pages) ---------------- */
 function publishedPosts(){
   return STATE.magazinePosts.filter(p=>p.published!==false);
@@ -7639,14 +8220,14 @@ function magazineCard(p){
 function pageMagazineList(){
   const posts = publishedPosts();
   setPageMeta(
-    'مجله | WHITE RAVEN',
-    'مقالات، راهنماها و اخبار مجله وایت ریون — نکات استایل، مراقبت از پوشاک و معرفی محصولات.'
+    'وبلاگ | WHITE RAVEN',
+    'مقالات، راهنماها و اخبار وبلاگ وایت ریون — نکات استایل، مراقبت از پوشاک و معرفی محصولات.'
   );
   return `
-  <div class="page-head"><span class="eyebrow">MAGAZINE</span><h1 class="serif">مجله</h1></div>
+  <div class="page-head"><span class="eyebrow">BLOG</span><h1 class="serif">وبلاگ</h1></div>
   <div class="section">
     <div class="container">
-      <div class="grid" id="magazineGrid">${posts.map(magazineCard).join('') || emptyState('هنوز مطلبی در مجله منتشر نشده است')}</div>
+      <div class="grid" id="magazineGrid">${posts.map(magazineCard).join('') || emptyState('هنوز مطلبی در وبلاگ منتشر نشده است')}</div>
     </div>
   </div>`;
 }
@@ -7657,7 +8238,7 @@ function pageMagazineArticle(slug){
     return page404();
   }
   setPageMeta(
-    (p.metaTitle || p.title) + ' | مجله WHITE RAVEN',
+    (p.metaTitle || p.title) + ' | وبلاگ WHITE RAVEN',
     p.metaDescription || p.excerpt || '',
     p.coverImage || ''
   );
@@ -7670,14 +8251,14 @@ function pageMagazineArticle(slug){
   <article class="section">
     <div class="container" style="max-width:820px">
       <div class="page-head" style="text-align:${document.documentElement.dir==='rtl'?'right':'left'};padding-bottom:0">
-        <span class="eyebrow">MAGAZINE</span>
+        <span class="eyebrow">BLOG</span>
         <h1 class="serif" style="margin-top:8px">${escapeHtml(p.title)}</h1>
         ${dateStr ? `<span style="font-size:12px;color:var(--text-faint);display:block;margin-top:10px">${dateStr}</span>` : ''}
       </div>
       ${p.coverImage ? `<img loading="lazy" decoding="async" src="${escapeHtml(p.coverImage)}" alt="${escapeHtml(p.title)}" style="width:100%;border-radius:var(--radius);margin:26px 0;object-fit:cover;max-height:460px">` : ''}
       <div class="article-content" style="font-size:15.5px;line-height:2.1;color:var(--text)">${forceExternalLinkTargets(p.content||'')}</div>
       <div style="margin-top:40px">
-        <a href="/magazine" data-link class="btn btn-ghost">‹ بازگشت به مجله</a>
+        <a href="/magazine" data-link class="btn btn-ghost">‹ بازگشت به وبلاگ</a>
       </div>
     </div>
   </article>
@@ -7850,8 +8431,8 @@ function pageContact(){
         <p class="pd-review-form-sub" style="margin:0 0 18px">${escapeHtml(STATE.account.name || STATE.account.email)} جان، پیام شما در سریع‌ترین زمان بررسی می‌شود.</p>
         ` : `
         <div class="form-row2">
-          <div class="form-field"><label>نام</label><input required placeholder="نام شما"></div>
-          <div class="form-field"><label>ایمیل</label><input required type="email" placeholder="example@gmail.com"></div>
+          <div class="form-field"><label>نام</label><input id="contactGuestName" required placeholder="نام شما"></div>
+          <div class="form-field"><label>ایمیل</label><input id="contactGuestEmail" required type="email" placeholder="example@gmail.com"></div>
         </div>
         `}
 <div class="form-field">
@@ -8687,7 +9268,7 @@ async function initOrderDetailPage(){
   await expireOwnOrderIfDue(order);
   const canCancel = CANCELABLE_ORDER_STATUSES.includes(order.status);
   box.innerHTML = `
-    <div style="background:var(--bg-card);border:1px solid var(--line);padding:24px;border-radius:12px">
+    <div style="background:var(--bg-card);border:1px solid var(--line);padding:24px;border-radius:12px;overflow-x:hidden">
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
         <div>
           <p style="font-size:12px;color:var(--text-faint)">شماره سفارش</p>
@@ -8770,7 +9351,7 @@ function pagePaymentCallback(){
 // Status/order_id from the URL, asks the "zarinpal-verify" Edge Function to
 // confirm the payment with Zarinpal and update the order's status server-side
 // (see setup guide), then shows a success/failure message accordingly.
-// صفحه‌ی «پرداخت انجام نشد» را با شمارش‌معکوس یک‌ساعته نشان می‌دهد: تا وقتی
+// صفحه‌ی «پرداخت انجام نشد» را با شمارش‌معکوس ۱۵ دقیقه‌ای نشان می‌دهد: تا وقتی
 // مهلت تمام نشده، محصول برای همین مشتری رزرو می‌ماند (موجودی از سایت کم شده
 // باقی می‌ماند) و او می‌تواند دوباره تلاش کند؛ همین‌که تایمر به صفر برسد،
 // سفارش به‌صورت خودکار لغو می‌شود، موجودی برمی‌گردد و اقلام دوباره به سبد
@@ -8792,7 +9373,10 @@ async function renderPaymentFailedWithCountdown(box, orderId){
   // or an order that never went through the gateway flow at all
   if(!order || order.status === 'لغو شده' || !order.expiresAt){
     box.innerHTML = failHeader + `
-      <p style="color:var(--text-dim);margin-bottom:24px">این سفارش لغو شده و محصولات آن به سبد خرید بازگردانده شده‌اند.</p>
+      <div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.08);border:1px solid rgba(192,86,63,.35);color:var(--danger);border-radius:8px;margin-bottom:24px;text-align:right">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex:none"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+        <span>سفارش به دلیل عدم پرداخت لغو شد و محصولات آن به سبد خرید بازگردانده شده‌اند.</span>
+      </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button type="button" class="btn btn-solid" onclick="openCart()">مشاهده سبد خرید</button>
         <a href="/shop/all" data-link class="btn btn-ghost">ادامه خرید</a>
@@ -8805,7 +9389,10 @@ async function renderPaymentFailedWithCountdown(box, orderId){
   if(new Date(order.expiresAt) <= new Date()){
     await expireOwnOrderIfDue(order);
     box.innerHTML = failHeader + `
-      <p style="color:var(--text-dim);margin-bottom:24px">مهلت ۱۵ دقیقه‌ای پرداخت این سفارش به پایان رسید، سفارش لغو شد و محصولات آن به سبد خرید بازگردانده شدند.</p>
+      <div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.08);border:1px solid rgba(192,86,63,.35);color:var(--danger);border-radius:8px;margin-bottom:24px;text-align:right">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex:none"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+        <span>سفارش به دلیل عدم پرداخت لغو شد و محصولات آن به سبد خرید بازگردانده شدند.</span>
+      </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button type="button" class="btn btn-solid" onclick="openCart()">مشاهده سبد خرید</button>
         <a href="/shop/all" data-link class="btn btn-ghost">ادامه خرید</a>
@@ -8833,7 +9420,10 @@ async function renderPaymentFailedWithCountdown(box, orderId){
       clearInterval(paymentCountdownTimer); paymentCountdownTimer = null;
       await expireOwnOrderIfDue(order);
       box.innerHTML = failHeader + `
-        <p style="color:var(--text-dim);margin-bottom:24px">مهلت ۱۵ دقیقه‌ای پرداخت این سفارش به پایان رسید، سفارش لغو شد و محصولات آن به سبد خرید بازگردانده شدند.</p>
+        <div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.08);border:1px solid rgba(192,86,63,.35);color:var(--danger);border-radius:8px;margin-bottom:24px;text-align:right">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex:none"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+          <span>سفارش به دلیل عدم پرداخت لغو شد و محصولات آن به سبد خرید بازگردانده شدند.</span>
+        </div>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
           <button type="button" class="btn btn-solid" onclick="openCart()">مشاهده سبد خرید</button>
           <a href="/shop/all" data-link class="btn btn-ghost">ادامه خرید</a>
@@ -8961,12 +9551,12 @@ function myOrderFullDetailHtml(order){
 function orderStatusTimelineHtml(order){
   const status = order.status;
   if(status==='در انتظار پرداخت'){
-    return `<div style="padding:16px;background:rgba(185,151,94,.1);border:1px solid var(--gold-dim);color:var(--gold-light)">
+    return `<div id="orderStatusBox-${escapeHtml(order.id)}" style="padding:16px;background:rgba(185,151,94,.1);border:1px solid var(--gold-dim);color:var(--gold-light)">
       <div style="display:flex;align-items:center;gap:10px">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         <span>در انتظار پرداخت — <span id="orderPayCountdown-${escapeHtml(order.id)}">--:--</span> تا لغو خودکار سفارش</span>
       </div>
-      <button type="button" id="orderPayBtn-${escapeHtml(order.id)}" class="btn btn-solid" style="margin-top:14px">پرداخت سفارش</button>
+      <button type="button" id="orderPayBtn-${escapeHtml(order.id)}" class="btn btn-solid" style="margin-top:14px;background:#0D4218;border-color:#0D4218;color:#fff">پرداخت سفارش</button>
     </div>`;
   }
   if(status==='لغو شده'){
@@ -8982,14 +9572,21 @@ function orderStatusTimelineHtml(order){
     </div>`;
   }
   const idx = Math.max(0, ORDER_STEPS.indexOf(status));
-  return `<div class="track-steps">
-    ${ORDER_STEPS.map((s,i)=>`
-      <div class="track-step ${i<=idx?'done':''}">
-        <div class="track-dot">${i<idx?'✓':i+1}</div>
-        <span>${s}</span>
-      </div>
-      ${i<ORDER_STEPS.length-1?`<div class="track-line ${i<idx?'done':''}"></div>`:''}
-    `).join('')}
+  const ITEM_W = 60;
+  // چون این ردیف راست‌به‌چپ (rtl) است، مرحله با اندیس ۰ در سمت راست ظاهر
+  // می‌شود؛ برای وسط‌چین‌کردن درست باید فاصله را از انتهای آرایه حساب کنیم.
+  const activeCenter = (ORDER_STEPS.length-1-idx)*ITEM_W + ITEM_W/2;
+  return `<div class="track-steps-viewport">
+    <div class="track-steps" style="width:${ORDER_STEPS.length*ITEM_W}px;transform:translateX(-${activeCenter}px)">
+      ${ORDER_STEPS.map((s,i)=>{
+        const dist = Math.abs(i-idx);
+        const distCls = dist===0 ? 'ts-active' : dist===1 ? 'ts-near' : 'ts-far';
+        return `<div class="track-step ${i<=idx?'done':''} ${distCls}">
+          <div class="track-dot">${i<idx?'✓':i+1}</div>
+          <span>${s}</span>
+        </div>`;
+      }).join('')}
+    </div>
   </div>`;
 }
 
@@ -9007,8 +9604,13 @@ function bindOrderPendingPaymentUI(order){
     if(msLeft <= 0){
       if(timer) clearInterval(timer);
       await expireOwnOrderIfDue(order);
-      if(clockEl) clockEl.textContent = '۰۰:۰۰';
-      if(btn){ btn.disabled = true; btn.textContent = 'مهلت پرداخت به پایان رسید'; }
+      const box = document.getElementById('orderStatusBox-'+order.id);
+      if(box){
+        box.outerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:16px;background:rgba(192,86,63,.08);border:1px solid rgba(192,86,63,.35);color:var(--danger);border-radius:8px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex:none"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+          <span>سفارش به دلیل عدم پرداخت لغو شد</span>
+        </div>`;
+      }
       showToast('مهلت پرداخت این سفارش به پایان رسید و سفارش لغو شد');
       return;
     }
@@ -9046,7 +9648,7 @@ function orderTrackResultHtml(order){
   const dt = new Date(order.createdAt);
   const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
   return `
-  <div style="background:var(--bg-card);border:1px solid var(--line);padding:24px">
+  <div style="background:var(--bg-card);border:1px solid var(--line);padding:24px;overflow-x:hidden">
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:20px">
       <div>
         <p style="font-size:12px;color:var(--text-faint)">شماره سفارش</p>
@@ -9477,11 +10079,10 @@ if(contactForm) contactForm.onsubmit = async e => {
     const rlContact = checkRateLimit('contact', {minIntervalMs:20000, maxInWindow:4, windowMs:10*60*1000});
     if(!rlContact.allowed){ showToast(rateLimitMessage(rlContact)); return; }
 
-    const inputs = contactForm.querySelectorAll('input:not(#messageSubject)');
     const textarea = contactForm.querySelector('textarea');
 
-    const name = STATE.account ? (STATE.account.name || STATE.account.email) : inputs[0].value.trim();
-    const email = STATE.account ? STATE.account.email : inputs[1].value.trim();
+    const name = STATE.account ? (STATE.account.name || STATE.account.email) : $('#contactGuestName').value.trim();
+    const email = STATE.account ? STATE.account.email : $('#contactGuestEmail').value.trim();
     const subject = $('#messageSubject').value.trim();
     const message = textarea.value.trim();
 
@@ -9982,9 +10583,20 @@ const order = {
     //         raise exception 'coupon_already_used:%', p_coupon_id;
     //       end if;
     //
-    //       -- only single-use personal coupons get deactivated on redemption;
-    //       -- ordinary reusable coupons stay active for other customers
-    //       if v_coupon ? 'restrictToAccountId' and v_coupon->>'restrictToAccountId' is not null then
+    //       if v_coupon ? 'expiresAt' and v_coupon->>'expiresAt' is not null
+    //          and (v_coupon->>'expiresAt')::timestamptz <= now()
+    //       then
+    //         raise exception 'coupon_expired:%', p_coupon_id;
+    //       end if;
+    //
+    //       -- coupons get deactivated on redemption if they're personal
+    //       -- (restrictToAccountId, e.g. referral rewards) OR admin-marked
+    //       -- "یک‌بار مصرف" (singleUse) — either way, the very next attempt
+    //       -- to use the same code (by anyone, including the same buyer)
+    //       -- sees active:false above and is rejected. Ordinary reusable
+    //       -- coupons (neither flag set) stay active for other customers.
+    //       if (v_coupon ? 'restrictToAccountId' and v_coupon->>'restrictToAccountId' is not null)
+    //          or coalesce((v_coupon->>'singleUse')::boolean, false) then
     //         update settings
     //         set data = jsonb_set(
     //           data, '{coupons}',
@@ -10164,6 +10776,12 @@ const order = {
           navigate('/checkout');
           return;
         }
+        if(String(placeError.message||'').startsWith('coupon_expired')){
+          appliedCoupon = null;
+          showToast('مدت اعتبار این کد تخفیف تمام شده — لطفاً دوباره تلاش کنید');
+          navigate('/checkout');
+          return;
+        }
         // insufficient_stock:<productId> means someone else bought the last
         // unit(s) between our pre-check above and this transaction — refresh
         // and let the person try again with corrected quantities.
@@ -10273,21 +10891,21 @@ const order = {
 function filteredShopList(){
   if(STATE.filters.othersList){
     let list = STATE.filters.othersList;
-    if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+    if(STATE.filters.q) list = list.filter(p=> productMatchesSearch(p, STATE.filters.q));
     list = applyShopSizeColorFilter(list);
   return applyShopSort(list, STATE.filters.sort);
   }
   if(STATE.filters.section){
     const sec = homeSectionDefs()[STATE.filters.section];
     let list = sec ? sec.build() : STATE.products.slice();
-    if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+    if(STATE.filters.q) list = list.filter(p=> productMatchesSearch(p, STATE.filters.q));
     list = applyShopSizeColorFilter(list);
   return applyShopSort(list, STATE.filters.sort);
   }
   const cat = STATE.filters.category;
   let list = STATE.products.slice();
-  if(cat && cat!=='all') list = list.filter(p=>p.category===cat);
-  if(STATE.filters.q) list = list.filter(p=> p.name.includes(STATE.filters.q) || (p.desc||'').includes(STATE.filters.q));
+  if(cat && cat!=='all') list = list.filter(p=>productInCategory(p, cat));
+  if(STATE.filters.q) list = list.filter(p=> productMatchesSearch(p, STATE.filters.q));
   list = applyShopSizeColorFilter(list);
   return applyShopSort(list, STATE.filters.sort);
 }
@@ -10297,7 +10915,7 @@ function renderShopGridAndPagination(){
   const pg = paginateList(list, STATE.filters.page||1);
   STATE.filters.page = pg.page;
   const grid = $('#shopGrid');
-  if(grid) grid.innerHTML = pg.items.map(productCard).join('') || emptyState('محصولی یافت نشد');
+  if(grid) grid.innerHTML = pg.items.map(productCard).join('') || (STATE.filters.q ? searchEmptyStateHtml(STATE.filters.q) : emptyState('محصولی یافت نشد'));
   const pag = $('#shopPagination');
   if(pag) pag.innerHTML = paginationBarHtml(pg.page, pg.totalPages, 'goToShopPage');
 }
@@ -10388,11 +11006,38 @@ function findCoupon(code){
   if(!norm) return null;
   const coupon = (STATE.settings.coupons||[]).find(c=> c.code.toUpperCase()===norm && c.active!==false) || null;
   if(!coupon) return null;
+  // duration-based coupons (admin-set "مدت اعتبار") stop working the instant
+  // they pass their exact expiry timestamp, regardless of active/singleUse
+  if(coupon.expiresAt && new Date(coupon.expiresAt).getTime() <= Date.now()) return null;
   // referral reward coupons are locked to the account that earned them
   if(coupon.restrictToAccountId){
     if(!STATE.account || STATE.account.id !== coupon.restrictToAccountId) return null;
   }
   return coupon;
+}
+// human-readable expiry label for the admin coupon list, e.g. "1404/06/13 14:30"
+function couponExpiryLabel(expiresAt){
+  if(!expiresAt) return '';
+  try{
+    return new Date(expiresAt).toLocaleString('fa-IR', {dateStyle:'short', timeStyle:'short'});
+  }catch(e){ return expiresAt; }
+}
+function computeCouponExpiryFromDuration(value, unit){
+  const n = Math.max(0, Number(value) || 0);
+  if(unit === 'hour'){
+    if(!n) return null;
+    return new Date(Date.now() + 3600000 * n).toISOString();
+  }
+  // day-based coupons: default to 4 days when no value is given, and always
+  // align the expiry to midnight (00:00). Day 1 is the day the coupon is
+  // created (no matter what time of day), then 3 more full days, ending at
+  // midnight at the end of day 4 — i.e. midnight exactly "days" days after
+  // today's midnight, regardless of the hour it was created.
+  const days = n || 4;
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() + days);
+  return start.toISOString();
 }
 function computeDiscount(subtotal, coupon){
   if(!coupon || subtotal<=0) return 0;
@@ -11120,10 +11765,10 @@ function renderCart(){
       if(!p) return '';
       return `
       <div class="cart-line">
-        <a href="/product/${p.id}" data-link class="thumb" onclick="closeCartUI()">${productImgHtml(p)}</a>
+        <a href="/product/${p.id}" data-link class="thumb">${productImgHtml(p)}</a>
         <div class="ci-body">
-          <a href="/product/${p.id}" data-link onclick="closeCartUI()"><h4>${escapeHtml(p.name)}</h4></a>
-          <span class="ci-meta">${ci.size?('سایز: '+ci.size):''}${ci.color?(' · رنگ: '+escapeHtml(ci.color.label||colorLabel(ci.color))):''} ${p.category?(' · '+catLabel(p.category)):''}</span>
+          <a href="/product/${p.id}" data-link><h4>${escapeHtml(p.name)}</h4></a>
+          <span class="ci-meta">${ci.size?('سایز: '+ci.size):''}${ci.color?(' · رنگ: '+escapeHtml(ci.color.label||colorLabel(ci.color))):''} ${primaryCategory(p)?(' · '+catLabel(primaryCategory(p))):''}</span>
           <div class="ci-row">
             <div class="ci-qty">
               <button onclick="updateCartQty(${idx},-1)">−</button>
@@ -11152,10 +11797,9 @@ function renderCart(){
     <div class="cart-sum-row"><span>جمع جزء</span><span>${RIAL(subtotal)}</span></div>
     <div class="cart-sum-row"><span>هزینه ارسال</span><span id="cartShippingLine">${shippingLineHtml(subtotal, savedProvince, savedCity)}</span></div>
     ${shippingNote}
-    <a href="/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''} onclick="closeCartUI()">تکمیل خرید ‹</a>
+    <a href="/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''}>تکمیل خرید ‹</a>
   `;
 }
-window.closeCartUI = closeCart;
 
 function pageCart(){
   return `
@@ -11176,12 +11820,12 @@ function pageCart(){
 async function initCartPage(){
   renderCart();
   if(STATE.cart.length){
-    renderRecommendationsInto('recsSectionCart', 'با این سفارش، این‌ها هم مناسبن', 15);
+    renderRecommendationsInto('recsSectionCart', 'با این سفارش، این‌ها هم مناسبن', 15, 'FOR YOU', STATE.settings.cartRecsColor, STATE.settings.cartRecsIntensity);
   }
   const cartProductIds = STATE.cart.map(ci=>ci.productId);
   const recent = recentlyViewedProducts(cartProductIds, 15);
   const el = document.getElementById('recentlyViewedSection');
-  if(el) el.innerHTML = recommendedProductsSectionHtml(recent, 'آخرین بازدیدهای شما', 'RECENTLY VIEWED');
+  if(el) el.innerHTML = recommendedProductsSectionHtml(recent, 'آخرین بازدیدهای شما', 'RECENTLY VIEWED', STATE.settings.recentlyViewedColor, STATE.settings.recentlyViewedIntensity);
 }
 
 /* ======================================================================
@@ -11193,6 +11837,7 @@ let adminProductCategoryFilter = 'all';
 let adminProductStockFilter = false;
 let adminReviewStatusFilter = 'pending';
 let editingProductId = null;
+let pendingProductCatOrder = []; // ترتیب انتخاب دسته‌بندی‌ها در فرم محصول؛ عضو اول = دسته اصلی
 
 /* آیا ایمیل داده‌شده متعلق به ادمین است؟ به‌جای مقایسهٔ مستقیم ایمیل در کد
    جاوااسکریپت (که هرکسی با «مشاهده کد صفحه» می‌تواند ببیند)، این تابع یک
@@ -11379,14 +12024,17 @@ function adminLoginScreen(){
   </div>`;
 }
 function bindAdminLogin(){
-  document.addEventListener('click', function handler(e){
-    const link = e.target.closest('[data-link]');
+  if(!document.body.dataset.adminLoginClickBound){
+    document.body.dataset.adminLoginClickBound = '1';
+    document.addEventListener('click', function handler(e){
+      const link = e.target.closest('[data-link]');
 
-    if(link){
-      e.preventDefault();
-      navigate(link.getAttribute('href').replace('#',''));
-    }
-  });
+      if(link){
+        e.preventDefault();
+        navigate(link.getAttribute('href').replace('#',''));
+      }
+    });
+  }
 
   const btn = $('#adminLoginBtn');
   if(!btn) return;
@@ -11460,7 +12108,7 @@ function adminShell(){
         <a href="/purzr/orders" data-link class="${adminSection==='orders'?'active':''}">سفارش‌ها</a>
         <a href="/purzr/descriptions" data-link class="${adminSection==='descriptions'?'active':''}">ارسال سفارشات</a>
         <a href="/purzr/marketing" data-link class="${adminSection==='marketing'?'active':''}">بازاریابی و تخفیف</a>
-        <a href="/purzr/magazine" data-link class="${adminSection==='magazine'?'active':''}">مجله</a>
+        <a href="/purzr/magazine" data-link class="${adminSection==='magazine'?'active':''}">وبلاگ</a>
         <a href="/purzr/content" data-link class="${adminSection==='content'?'active':''}">توضیحات</a>
         <a href="/purzr/users" data-link class="${adminSection==='users'?'active':''}">اطلاعات کاربران</a>
         <a href="/purzr/comments" data-link class="${adminSection==='comments'?'active':''}">پیام‌های کاربران${(STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length + (STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length) ? ` <span style="background:var(--gold);color:#1a1410;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${STATE.messages.filter(m=>!m.is_read).length + STATE.reviews.filter(r=>r.status==='pending').length + (STATE.stockNotifyRequests||[]).filter(r=>!r.notified).length}</span>` : ''}</a>
@@ -11494,8 +12142,9 @@ function adminShell(){
         </div>
         <div class="form-row2">
           <div class="form-field"><label>نام محصول</label><input required id="pName"></div>
-          <div class="form-field"><label>دسته‌بندی</label>
-            <select id="pCategory">${(STATE.settings.categories||[]).map(c=>`<option value="${c.slug}">${escapeHtml(c.label)}</option>`).join('')}</select>
+          <div class="form-field">
+            <label>دسته‌بندی <span style="color:var(--text-faint);font-weight:400">(می‌توانید چند دسته انتخاب کنید — اولین موردی که تیک می‌زنید «دسته اصلی» می‌شود و برای برچسب کارت محصول و مسیر صفحه استفاده می‌شود)</span></label>
+            <div id="pCategoriesBox" style="display:flex;flex-wrap:wrap;gap:8px 16px"></div>
           </div>
         </div>
         <div class="form-field">
@@ -11723,6 +12372,27 @@ function adminStats(){
     </table>
   </div>
 
+  <h3 style="font-size:15px;margin:28px 0 14px;color:var(--text-dim)">آمار فروش و بازدید به تفکیک دسته‌بندی</h3>
+  <div class="table-wrap" id="categoryStatsBox">
+    <table class="admin-table">
+      <thead><tr><th>دسته‌بندی</th><th>تعداد بازدید</th><th>تعداد فروش</th><th>مجموع فروش</th></tr></thead>
+      <tbody><tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text-faint)">در حال محاسبه...</td></tr></tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;margin:28px 0 14px;color:var(--text-dim)">محصولات بدون بازدید یا بدون فروش (محصولات مرده)</h3>
+  <div class="stat-card" style="margin-bottom:14px">
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.9">
+      محصولاتی که تا امروز هیچ بازدیدی نداشته‌اند یا هیچ فروشی نکرده‌اند اینجا لیست می‌شوند تا کالاهای «مرده»‌ی فروشگاه را سریع پیدا کنید. ردیف‌های قرمز، محصولاتی هستند که نه بازدید داشته‌اند و نه فروش.
+    </div>
+  </div>
+  <div class="table-wrap" id="deadProductsBox">
+    <table class="admin-table">
+      <thead><tr><th>محصول</th><th>بازدید</th><th>فروش</th><th>وضعیت</th><th>مدت بارگذاری</th></tr></thead>
+      <tbody><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-faint)">در حال محاسبه...</td></tr></tbody>
+    </table>
+  </div>
+
   <h3 style="font-size:15px;margin:28px 0 14px;color:var(--text-dim)">کدهای ردیابی و تبلیغات</h3>
   <div class="settings-card">
     <h3 class="serif">کدهای ردیابی و تبلیغات (Google Analytics / Meta Pixel)</h3>
@@ -11760,6 +12430,9 @@ function adminDashboard(){
   <div class="num">${totalMessages}</div>
   <div class="lbl">پیام‌های دریافتی</div>
 </div>
+  <a href="/purzr/stats" data-link class="stat-card" style="cursor:pointer;text-decoration:none;color:inherit;margin-top:16px;display:block">
+    <div class="lbl">مشاهده آمار فروش و بازدید به تفکیک دسته‌بندی ‹</div>
+  </a>
   <h3 style="font-size:15px;margin-bottom:14px;color:var(--text-dim)">آخرین سفارش‌ها</h3>
   <div class="table-wrap">
     <table class="admin-table">
@@ -11909,7 +12582,7 @@ let adminSelectedProductIds = new Set();
 function adminProducts(){
   const cats = STATE.settings.categories||[];
   const activeCat = adminProductCategoryFilter || 'all';
-  let list = activeCat==='all' ? STATE.products : STATE.products.filter(p=>p.category===activeCat);
+  let list = activeCat==='all' ? STATE.products : STATE.products.filter(p=>productInCategory(p, activeCat));
   if(adminProductStockFilter) list = list.filter(p=>p.stock<=3);
   // drop selections for products no longer in the visible list (filter changed, etc.)
   const visibleIds = new Set(list.map(p=>p.id));
@@ -11928,7 +12601,7 @@ function adminProducts(){
   </div>` : ''}
   <div class="chip-row" style="margin-bottom:18px">
     <button type="button" class="chip admin-cat-chip ${activeCat==='all'?'active':''}" data-cat="all">همه (${STATE.products.length})</button>
-    ${cats.map(c=>`<button type="button" class="chip admin-cat-chip ${activeCat===c.slug?'active':''}" data-cat="${c.slug}">${escapeHtml(c.label)} (${STATE.products.filter(p=>p.category===c.slug).length})</button>`).join('')}
+    ${cats.map(c=>`<button type="button" class="chip admin-cat-chip ${activeCat===c.slug?'active':''}" data-cat="${c.slug}">${escapeHtml(c.label)} (${STATE.products.filter(p=>productInCategory(p, c.slug)).length})</button>`).join('')}
   </div>
   ${selCount>0 ? `
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;background:rgba(192,86,63,.10);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;flex-wrap:wrap">
@@ -11945,7 +12618,7 @@ function adminProducts(){
           <td><input type="checkbox" class="product-row-chk" data-id="${p.id}" ${adminSelectedProductIds.has(p.id)?'checked':''}></td>
           <td>${p.image?`<img src="${p.image}" alt="${escapeHtml(p.name||'')}" loading="lazy" decoding="async">`:`<div style="width:44px;height:54px;background:#0d0d0e;border:1px solid var(--line)"></div>`}</td>
           <td style="color:var(--text)">${escapeHtml(p.name)}</td>
-          <td>${catLabel(p.category)}</td>
+          <td>${productCategories(p).map(catLabel).join('، ') || '—'}</td>
           <td>${RIAL(p.price)}</td>
           <td>${p.stock}</td>
           <td>${p.stock>0?'<span class="badge ok">موجود</span>':'<span class="badge no">ناموجود</span>'}</td>
@@ -12033,7 +12706,7 @@ function adminMagazine(){
   const list = STATE.magazinePosts.slice().sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0));
   return `
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-    <h2 class="admin-title" style="margin:0">مدیریت مجله</h2>
+    <h2 class="admin-title" style="margin:0">مدیریت وبلاگ</h2>
     <button class="btn btn-solid" id="addPostBtn">+ نوشتن پست جدید</button>
   </div>
   <div class="table-wrap">
@@ -12072,7 +12745,7 @@ function magazineModalHtml(){
         </div>
         <div class="form-field"><label>عنوان</label><input required id="postTitle" placeholder="عنوان مطلب"></div>
         <div class="form-field"><label>آدرس (Slug) <span style="color:var(--text-faint);font-weight:400">— برای SEO؛ خالی بگذارید تا خودکار ساخته شود</span></label><input id="postSlug" placeholder="مثلاً: راهنمای-انتخاب-سایز"></div>
-        <div class="form-field"><label>خلاصه <span style="color:var(--text-faint);font-weight:400">(در کارت‌های مجله و نتایج گوگل نمایش داده می‌شود)</span></label><textarea id="postExcerpt" rows="2" placeholder="یک یا دو جمله کوتاه درباره این مطلب"></textarea></div>
+        <div class="form-field"><label>خلاصه <span style="color:var(--text-faint);font-weight:400">(در کارت‌های وبلاگ و نتایج گوگل نمایش داده می‌شود)</span></label><textarea id="postExcerpt" rows="2" placeholder="یک یا دو جمله کوتاه درباره این مطلب"></textarea></div>
         <div class="form-field">
           <label>متن مطلب</label>
           <div class="mag-toolbar" id="magToolbar">
@@ -12085,7 +12758,7 @@ function magazineModalHtml(){
           </div>
           <div id="postContentEditor" class="mag-editor" contenteditable="true"></div>
           <input type="file" accept="image/*" id="postInlineImageInput" style="display:none">
-          <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:8px">هر متنی را انتخاب کنید و روی «لینک» بزنید — با کلیک کاربر روی آن، یک تب جدید مرورگر باز می‌شود و تب مجله همچنان باز می‌ماند.</span>
+          <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:8px">هر متنی را انتخاب کنید و روی «لینک» بزنید — با کلیک کاربر روی آن، یک تب جدید مرورگر باز می‌شود و تب وبلاگ همچنان باز می‌ماند.</span>
         </div>
         <div style="border-top:1px solid var(--line);padding-top:16px;margin-top:6px">
           <h4 style="font-size:13px;color:var(--text-dim);margin-bottom:12px">تنظیمات سئو (اختیاری)</h4>
@@ -12104,7 +12777,7 @@ function magazineModalHtml(){
 function openMagazinePostModal(id){
   editingPostId = id;
   const p = id ? findPost(id) : null;
-  $('#magazineModalTitle').textContent = p ? 'ویرایش پست مجله' : 'نوشتن پست جدید';
+  $('#magazineModalTitle').textContent = p ? 'ویرایش پست وبلاگ' : 'نوشتن پست جدید';
   $('#postTitle').value = p?.title || '';
   $('#postSlug').value = p?.slug || '';
   $('#postExcerpt').value = p?.excerpt || '';
@@ -12403,8 +13076,41 @@ function bindAdminShutdown(){
     bindAdminShutdown();
   };
 }
-function adminUsers(){
+/* صفحه‌بندی جدول کاربران ادمین (مشابه سفارش‌ها): همه‌ی کاربران یک‌جا از
+   Supabase لود می‌شوند (loadProfiles) ولی فقط یک صفحه از آن‌ها هر بار رندر
+   می‌شود؛ جستجو هم روی همان لیست کامل انجام می‌شود و بعد نتیجه صفحه‌بندی می‌شود. */
+const ADMIN_USERS_PAGE_SIZE = 25;
+function filterAdminUsersList(q){
   const list = STATE.profiles || [];
+  if(!q) return list;
+  return list.filter(u=> [u.user_code||u.userCode, u.id, u.full_name||u.name, u.email, u.phone].some(v=> (v||'').toString().toLowerCase().includes(q)));
+}
+function adminUsersRenderPage(list){
+  const totalPages = Math.max(1, Math.ceil(list.length / ADMIN_USERS_PAGE_SIZE));
+  const page = Math.min(Math.max(1, STATE.adminUsersPage||1), totalPages);
+  STATE.adminUsersPage = page;
+  const items = list.slice((page-1)*ADMIN_USERS_PAGE_SIZE, page*ADMIN_USERS_PAGE_SIZE);
+  const tbody = $('#adminUsersTbody');
+  if(tbody) tbody.innerHTML = adminUsersRowsHtml(items, (page-1)*ADMIN_USERS_PAGE_SIZE);
+  const pagerWrap = $('#adminUsersPagerWrap');
+  if(pagerWrap) pagerWrap.innerHTML = paginationBarHtml(page, totalPages, 'goToAdminUsersPage');
+  bindAdminUsersRowButtons();
+}
+window.goToAdminUsersPage = function(n){
+  STATE.adminUsersPage = n;
+  const search = $('#adminUsersSearch');
+  const q = search ? search.value.trim().toLowerCase() : '';
+  adminUsersRenderPage(filterAdminUsersList(q));
+  const tableWrap = document.querySelector('.table-wrap');
+  if(tableWrap) tableWrap.scrollIntoView({behavior:'smooth', block:'start'});
+};
+function adminUsers(){
+  STATE.adminUsersPage = STATE.adminUsersPage || 1;
+  const list = STATE.profiles || [];
+  const totalPages = Math.max(1, Math.ceil(list.length / ADMIN_USERS_PAGE_SIZE));
+  const page = Math.min(Math.max(1, STATE.adminUsersPage), totalPages);
+  STATE.adminUsersPage = page;
+  const items = list.slice((page-1)*ADMIN_USERS_PAGE_SIZE, page*ADMIN_USERS_PAGE_SIZE);
   return `
   <h2 class="admin-title">کاربران کلاغ سفید</h2>
   <p style="color:var(--text-dim);font-size:12.5px;margin:-8px 0 18px">تمام افرادی که در سایت ثبت‌نام کرده‌اند؛ برای هرکدام یک شناسه کاربری مجزا ثبت می‌شود. از دکمهٔ «ارسال پیام» می‌توانید برای هرکدام پیام بفرستید تا در حساب کاربری‌شان نمایش داده شود.</p>
@@ -12414,11 +13120,13 @@ function adminUsers(){
   <div class="table-wrap">
     <table class="admin-table">
       <thead><tr><th>ردیف</th><th>شناسه کاربری</th><th>نام و نام‌خانوادگی</th><th>ایمیل</th><th>شماره تماس</th><th>آدرس</th><th>تاریخ ثبت‌نام</th><th>عملیات</th></tr></thead>
-      <tbody id="adminUsersTbody">${adminUsersRowsHtml(list)}</tbody>
+      <tbody id="adminUsersTbody">${adminUsersRowsHtml(items, (page-1)*ADMIN_USERS_PAGE_SIZE)}</tbody>
     </table>
-  </div>`;
+  </div>
+  <div id="adminUsersPagerWrap">${paginationBarHtml(page, totalPages, 'goToAdminUsersPage')}</div>`;
 }
-function adminUsersRowsHtml(list){
+function adminUsersRowsHtml(list, startIndex){
+  startIndex = startIndex || 0;
   if(!list.length) return `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز هیچ کاربری ثبت‌نام نکرده است</td></tr>`;
   return list.map((u,i)=>{
     const id = u.id;
@@ -12434,7 +13142,7 @@ function adminUsersRowsHtml(list){
       ? `<span class="admin-addr-peek" data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" style="font-size:10.5px;color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:6px;padding:2px 7px;cursor:pointer;white-space:nowrap">📍 ${escapeHtml(addr.city || 'مشاهده')}</span>`
       : `<span style="color:var(--text-faint);font-size:11.5px">—</span>`;
     return `<tr data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" class="admin-user-row" style="cursor:pointer">
-      <td>${(i+1).toLocaleString('fa-IR')}</td>
+      <td>${(startIndex+i+1).toLocaleString('fa-IR')}</td>
       <td style="font-family:monospace;font-size:11.5px;color:var(--text-dim);user-select:all;letter-spacing:.5px">${escapeHtml(userCode)}</td>
       <td>${escapeHtml(name)}</td>
       <td>${escapeHtml(email)}</td>
@@ -12449,13 +13157,8 @@ function bindAdminUsers(){
   const search = $('#adminUsersSearch');
   if(search){
     search.oninput = ()=>{
-      const q = search.value.trim().toLowerCase();
-      const list = (STATE.profiles||[]).filter(u=>{
-        if(!q) return true;
-        return [u.user_code||u.userCode, u.id, u.full_name||u.name, u.email, u.phone].some(v=> (v||'').toString().toLowerCase().includes(q));
-      });
-      $('#adminUsersTbody').innerHTML = adminUsersRowsHtml(list);
-      bindAdminUsersRowButtons();
+      STATE.adminUsersPage = 1; // جستجوی تازه همیشه از صفحه ۱ شروع می‌شود
+      adminUsersRenderPage(filterAdminUsersList(search.value.trim().toLowerCase()));
     };
   }
   bindAdminUsersRowButtons();
@@ -12617,56 +13320,80 @@ function openAdminUserMessageModal(accountId, name){
     else{ err.textContent = 'ارسال پیام انجام نشد. دوباره تلاش کنید.'; }
   };
 }
-function adminOrders(){
-  const rev = STATE.orders.slice().reverse();
-  if(!rev.length){
-    return `<h2 class="admin-title">سفارش‌ها</h2><p style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</p>`;
-  }
+/* صفحه‌بندی لیست سفارش‌های ادمین: با رشد فروشگاه، رندر همه‌ی سفارش‌ها یک‌جا
+   کند می‌شود؛ اینجا فقط رندر (نمایش) صفحه‌بندی می‌شود — همه‌ی سفارش‌ها همچنان
+   یک‌جا از Supabase لود می‌شوند (loadOrders)، ولی هر بار فقط یک صفحه از آن‌ها
+   به DOM اضافه می‌شود. از همان paginationBarHtml/کلاس‌های .pagination-bar
+   استفاده شده که در صفحات /shop هم به کار رفته. */
+const ADMIN_ORDERS_PAGE_SIZE = 20;
+function adminOrderCardHtml(o){
+  const customer = typeof o.customer === 'object' && o.customer !== null ? o.customer : { name: o.customer || 'مهمان' };
+  const customerProfile = customer.accountId ? (STATE.profiles||[]).find(p=>p.id===customer.accountId) : null;
+  const customerUserCode = customerProfile ? (customerProfile.user_code || customerProfile.userCode) : null;
+  const itemCount = (o.items||[]).reduce((s,i)=>s+(i.qty||0),0);
+  const cancelled = o.status==='لغو شده';
   return `
-  <h2 class="admin-title">سفارش‌ها</h2>
-  <div style="display:flex;flex-direction:column;gap:8px">
-    ${rev.map(o=>{
-      const customer = typeof o.customer === 'object' && o.customer !== null ? o.customer : { name: o.customer || 'مهمان' };
-      const customerProfile = customer.accountId ? (STATE.profiles||[]).find(p=>p.id===customer.accountId) : null;
-      const customerUserCode = customerProfile ? (customerProfile.user_code || customerProfile.userCode) : null;
-      const itemCount = (o.items||[]).reduce((s,i)=>s+(i.qty||0),0);
-      const cancelled = o.status==='لغو شده';
-      return `
-      <div class="admin-order-card" data-oid="${escapeHtml(o.id)}" style="
-        display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-        padding:12px 14px;border:1px solid var(--line);border-radius:10px;
-        cursor:pointer;background:${cancelled?'rgba(220,60,60,.06)':'var(--bg-card)'};
-      ">
-        <div style="min-width:110px">
-          <div style="font-size:10.5px;color:var(--text-faint)">شماره سفارش</div>
-          <div style="color:var(--gold-light);font-size:12.5px">${escapeHtml(o.id)}</div>
-        </div>
-        <div style="min-width:130px;flex:1">
-          <div style="font-size:10.5px;color:var(--text-faint)">مشتری</div>
-          <div style="font-size:12.5px">${escapeHtml(customer.name || 'مهمان')}</div>
-          ${customerUserCode ? `<div style="font-family:monospace;font-size:9.5px;color:var(--text-faint);margin-top:1px">${escapeHtml(customerUserCode)}</div>` : ''}
-        </div>
-        <div style="min-width:70px">
-          <div style="font-size:10.5px;color:var(--text-faint)">تعداد</div>
-          <div style="font-size:12.5px">${itemCount} قلم</div>
-        </div>
-        <div style="min-width:110px">
-          <div style="font-size:10.5px;color:var(--text-faint)">مبلغ نهایی</div>
-          <div style="font-size:12.5px">${RIAL(o.total)}</div>
-        </div>
-        <div style="min-width:100px">
-          <div style="font-size:10.5px;color:var(--text-faint)">وضعیت</div>
-          <div style="font-size:12.5px">${escapeHtml(o.status||'')}</div>
-        </div>
-        <div style="min-width:90px">
-          <div style="font-size:10.5px;color:var(--text-faint)">تاریخ</div>
-          <div style="font-size:12.5px">${new Date(o.createdAt).toLocaleDateString('fa-IR')}</div>
-        </div>
-        <div style="color:var(--gold-light);font-size:13px;padding:0 4px">›</div>
-      </div>`;
-    }).join('')}
+  <div class="admin-order-card" data-oid="${escapeHtml(o.id)}" style="
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+    cursor:pointer;background:${cancelled?'rgba(220,60,60,.06)':'var(--bg-card)'};
+  ">
+    <div style="min-width:110px">
+      <div style="font-size:10.5px;color:var(--text-faint)">شماره سفارش</div>
+      <div style="color:var(--gold-light);font-size:12.5px">${escapeHtml(o.id)}</div>
+    </div>
+    <div style="min-width:130px;flex:1">
+      <div style="font-size:10.5px;color:var(--text-faint)">مشتری</div>
+      <div style="font-size:12.5px">${escapeHtml(customer.name || 'مهمان')}</div>
+      ${customerUserCode ? `<div style="font-family:monospace;font-size:9.5px;color:var(--text-faint);margin-top:1px">${escapeHtml(customerUserCode)}</div>` : ''}
+    </div>
+    <div style="min-width:70px">
+      <div style="font-size:10.5px;color:var(--text-faint)">تعداد</div>
+      <div style="font-size:12.5px">${itemCount} قلم</div>
+    </div>
+    <div style="min-width:110px">
+      <div style="font-size:10.5px;color:var(--text-faint)">مبلغ نهایی</div>
+      <div style="font-size:12.5px">${RIAL(o.total)}</div>
+    </div>
+    <div style="min-width:100px">
+      <div style="font-size:10.5px;color:var(--text-faint)">وضعیت</div>
+      <div style="font-size:12.5px">${escapeHtml(o.status||'')}</div>
+    </div>
+    <div style="min-width:90px">
+      <div style="font-size:10.5px;color:var(--text-faint)">تاریخ</div>
+      <div style="font-size:12.5px">${new Date(o.createdAt).toLocaleDateString('fa-IR')}</div>
+    </div>
+    <div style="color:var(--gold-light);font-size:13px;padding:0 4px">›</div>
   </div>`;
 }
+function adminOrdersListHtml(){
+  const rev = STATE.orders.slice().reverse();
+  if(!rev.length){
+    return `<p style="text-align:center;padding:30px;color:var(--text-faint)">هنوز سفارشی ثبت نشده است</p>`;
+  }
+  const totalPages = Math.max(1, Math.ceil(rev.length / ADMIN_ORDERS_PAGE_SIZE));
+  const page = Math.min(Math.max(1, STATE.adminOrdersPage||1), totalPages);
+  STATE.adminOrdersPage = page;
+  const items = rev.slice((page-1)*ADMIN_ORDERS_PAGE_SIZE, page*ADMIN_ORDERS_PAGE_SIZE);
+  return `
+  <div style="display:flex;flex-direction:column;gap:8px">
+    ${items.map(adminOrderCardHtml).join('')}
+  </div>
+  ${paginationBarHtml(page, totalPages, 'goToAdminOrdersPage')}`;
+}
+function adminOrders(){
+  STATE.adminOrdersPage = STATE.adminOrdersPage || 1;
+  return `<h2 class="admin-title">سفارش‌ها</h2><div id="adminOrdersListWrap">${adminOrdersListHtml()}</div>`;
+}
+window.goToAdminOrdersPage = function(n){
+  STATE.adminOrdersPage = n;
+  const wrap = $('#adminOrdersListWrap');
+  if(wrap){
+    wrap.innerHTML = adminOrdersListHtml();
+    bindAdminOrders();
+    wrap.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+};
 function bindAdminOrders(){
   $$('.admin-order-card').forEach(card=>{
     card.onclick = ()=> navigate(`/purzr/order/${encodeURIComponent(card.dataset.oid)}`);
@@ -12853,7 +13580,7 @@ function getIntensityValue(fieldId, fallback){
 function adminProductSettings(){
   const s = STATE.settings;
   if(!pendingCategoriesInit){
-    pendingCategories = (s.categories||[]).map(c=>({...c}));
+    pendingCategories = (s.categories||[]).map(c=>({...c, subcats:(c.subcats||[]).map(sc=>({...sc}))}));
     pendingCategoriesInit = true;
   }
   if(!pendingFeaturedInit){
@@ -12972,6 +13699,43 @@ function adminProductSettings(){
     </div>
     ${intensityPickerHtml('relatedIntensity', s.relatedIntensity ?? 0)}
     <button type="button" class="btn btn-solid" id="saveRelatedColorBtn" style="margin-top:8px">ذخیره قالب محصولات مرتبط</button>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h3 class="serif">قالب رنگ بخش‌های پیشنهادی محصول (سرچ، سبد خرید و بازدیدها)</h3>
+    <div class="settings-card-body">
+    <p class="settings-desc">رنگ و درجه پررنگی قالب هرکدام از این بخش‌های پیشنهاد محصول را جدا از بخش «محصولات مرتبط» صفحه محصول تعیین کنید: دو بخشی که موقع سرچ بدون نتیجه نمایش داده می‌شوند، بخش «با این سفارش، این‌ها هم مناسبن» در سبد خرید، و بخش «آخرین بازدیدهای شما».</p>
+
+    <p style="font-size:12.5px;color:var(--text-faint);margin:14px 0 6px;font-weight:600">بخش «محصولات مرتبط»</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <label style="font-size:12.5px;color:var(--text-faint)">رنگ قالب</label>
+      <input type="color" id="searchRelatedColorInput" value="${s.searchRelatedColor || '#c9a066'}" style="width:56px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;padding:2px">
+    </div>
+    ${intensityPickerHtml('searchRelatedIntensity', s.searchRelatedIntensity ?? 0)}
+
+    <p style="font-size:12.5px;color:var(--text-faint);margin:18px 0 6px;font-weight:600">بخش «شاید این محصولات را بپسندید»</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <label style="font-size:12.5px;color:var(--text-faint)">رنگ قالب</label>
+      <input type="color" id="searchForYouColorInput" value="${s.searchForYouColor || '#c9a066'}" style="width:56px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;padding:2px">
+    </div>
+    ${intensityPickerHtml('searchForYouIntensity', s.searchForYouIntensity ?? 0)}
+
+    <p style="font-size:12.5px;color:var(--text-faint);margin:18px 0 6px;font-weight:600">بخش «با این سفارش، این‌ها هم مناسبن» (سبد خرید)</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <label style="font-size:12.5px;color:var(--text-faint)">رنگ قالب</label>
+      <input type="color" id="cartRecsColorInput" value="${s.cartRecsColor || '#c9a066'}" style="width:56px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;padding:2px">
+    </div>
+    ${intensityPickerHtml('cartRecsIntensity', s.cartRecsIntensity ?? 0)}
+
+    <p style="font-size:12.5px;color:var(--text-faint);margin:18px 0 6px;font-weight:600">بخش «آخرین بازدیدهای شما»</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <label style="font-size:12.5px;color:var(--text-faint)">رنگ قالب</label>
+      <input type="color" id="recentlyViewedColorInput" value="${s.recentlyViewedColor || '#c9a066'}" style="width:56px;height:40px;border:1px solid var(--line);background:none;cursor:pointer;padding:2px">
+    </div>
+    ${intensityPickerHtml('recentlyViewedIntensity', s.recentlyViewedIntensity ?? 0)}
+
+    <button type="button" class="btn btn-solid" id="saveSearchEmptyColorsBtn" style="margin-top:8px">ذخیره قالب‌های رنگ بالا</button>
     </div>
   </div>
 
@@ -13681,7 +14445,7 @@ function adminMarketing(){
 
   <div class="settings-card">
     <h3 class="serif">کدهای تخفیف (Coupon)</h3>
-    <p class="settings-desc">کد تخفیف بسازید تا مشتری بتواند آن را در صفحه تسویه‌حساب وارد کند. نوع تخفیف می‌تواند درصدی (مثلاً ۱۰٪) یا مبلغ ثابت (مثلاً ۵۰,۰۰۰ تومان) باشد. کدهای غیرفعال در تسویه‌حساب پذیرفته نمی‌شوند. همچنین می‌توانید حداقل مبلغ خرید برای استفاده از کد، و حداکثر مبلغ تخفیفی که به مشتری تعلق می‌گیرد را تعیین کنید (مثلاً تخفیف ۱۰٪ ولی حداکثر ۲۰۰,۰۰۰ تومان).</p>
+    <p class="settings-desc">کد تخفیف بسازید تا مشتری بتواند آن را در صفحه تسویه‌حساب وارد کند. نوع تخفیف می‌تواند درصدی (مثلاً ۱۰٪) یا مبلغ ثابت (مثلاً ۵۰,۰۰۰ تومان) باشد. کدهای غیرفعال در تسویه‌حساب پذیرفته نمی‌شوند. همچنین می‌توانید حداقل مبلغ خرید برای استفاده از کد، و حداکثر مبلغ تخفیفی که به مشتری تعلق می‌گیرد را تعیین کنید (مثلاً تخفیف ۱۰٪ ولی حداکثر ۲۰۰,۰۰۰ تومان). با «مدت اعتبار» می‌توانید تعیین کنید کد دقیقاً چند ساعت یا چند روز دیگر منقضی شود (بعد از آن لحظه دیگر قابل استفاده نیست)، و با «یک‌بار مصرف» کد را طوری بسازید که همین که یک نفر یک‌بار از آن استفاده کرد، برای همیشه — حتی برای همان نفر — دیگر کار نکند.</p>
     <div class="form-row3">
       <div class="form-field">
         <label>کد تخفیف</label>
@@ -13709,6 +14473,21 @@ function adminMarketing(){
         <label>حداکثر مبلغ تخفیف (تومان) — اختیاری</label>
         <input type="number" inputmode="numeric" min="0" step="1000" id="newCouponMaxDiscount" placeholder="مثلاً 200000">
       </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;align-items:end">
+      <div class="form-field" style="margin-bottom:0">
+        <label>مدت اعتبار — اختیاری (خالی = ۴ روز، تا نیمه‌شب روز چهارم)</label>
+        <div style="display:flex;gap:8px">
+          <input type="number" inputmode="numeric" min="0" step="1" id="newCouponDurationValue" placeholder="پیش‌فرض: ۴ روز" style="flex:1">
+          <select id="newCouponDurationUnit" style="flex:1">
+            <option value="hour">ساعت</option>
+            <option value="day" selected>روز</option>
+          </select>
+        </div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px">
+        <input type="checkbox" id="newCouponSingleUse"> فقط یک‌بار قابل استفاده (پس از اولین استفاده، حتی برای همان کاربر، دوباره کار نمی‌کند)
+      </label>
     </div>
     <div id="couponListBox" style="margin-top:18px">${couponListHtml()}</div>
   </div>
@@ -13766,17 +14545,39 @@ function couponListHtml(){
           <div style="display:flex;align-items:end;gap:12px;flex-wrap:wrap">
             <div class="form-field" style="margin-bottom:0;flex:1;min-width:160px"><label>حداقل مبلغ خرید (تومان)</label><input type="number" min="0" step="1000" class="coupon-edit-minsubtotal" data-id="${c.id}" value="${c.minSubtotal||0}" placeholder="بدون محدودیت"></div>
             <div class="form-field" style="margin-bottom:0;flex:1;min-width:160px"><label>حداکثر مبلغ تخفیف (تومان)</label><input type="number" min="0" step="1000" class="coupon-edit-maxdiscount" data-id="${c.id}" value="${c.maxDiscount||''}" placeholder="بدون سقف"></div>
+          </div>
+          <div style="display:flex;align-items:end;gap:12px;flex-wrap:wrap">
+            <div class="form-field" style="margin-bottom:0;flex:1;min-width:200px">
+              <label>مدت اعتبار جدید — اختیاری${c.expiresAt ? ` (فعلی: ${couponExpiryLabel(c.expiresAt)})` : ''}</label>
+              <div style="display:flex;gap:8px">
+                <input type="number" min="0" step="1" class="coupon-edit-durationvalue" data-id="${c.id}" placeholder="خالی = بدون تغییر" style="flex:1">
+                <select class="coupon-edit-durationunit" data-id="${c.id}" style="flex:1">
+                  <option value="hour">ساعت</option>
+                  <option value="day" selected>روز</option>
+                </select>
+              </div>
+            </div>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:10px">
+              <input type="checkbox" class="coupon-edit-noexpiry" data-id="${c.id}"> حذف انقضا
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:10px">
+              <input type="checkbox" class="coupon-edit-singleuse" data-id="${c.id}" ${c.singleUse?'checked':''}> یک‌بار مصرف
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
             <button type="button" class="btn btn-solid coupon-save" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">ذخیره</button>
             <button type="button" class="btn btn-ghost coupon-cancel" data-id="${c.id}" style="padding:9px 16px;font-size:12.5px">انصراف</button>
           </div>
         </div>`;
       }
+      const expired = c.expiresAt && new Date(c.expiresAt).getTime() <= Date.now();
       return `
       <div class="coupon-row" data-id="${c.id}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px;border:1px solid var(--line)">
         <div style="flex:1;min-width:160px">
-          <div style="font-size:14px;letter-spacing:.04em">${escapeHtml(c.code)} ${c.active===false ? '<span style="color:var(--text-faint);font-size:11.5px">(غیرفعال)</span>' : ''}</div>
+          <div style="font-size:14px;letter-spacing:.04em">${escapeHtml(c.code)} ${c.active===false ? '<span style="color:var(--text-faint);font-size:11.5px">(غیرفعال)</span>' : ''}${expired ? '<span style="color:var(--danger);font-size:11.5px">(منقضی شده)</span>' : ''}</div>
           <div style="font-size:12.5px;color:var(--gold-light);margin-top:4px">${c.type==='fixed' ? RIAL(c.value)+' تخفیف' : c.value+'٪ تخفیف'}</div>
           ${(c.minSubtotal || c.maxDiscount) ? `<div style="font-size:11px;color:var(--text-faint);margin-top:3px">${c.minSubtotal?`حداقل خرید: ${RIAL(c.minSubtotal)}`:''}${c.minSubtotal && c.maxDiscount ? ' — ' : ''}${c.maxDiscount?`سقف تخفیف: ${RIAL(c.maxDiscount)}`:''}</div>` : ''}
+          ${(c.expiresAt || c.singleUse) ? `<div style="font-size:11px;color:${expired?'var(--danger)':'var(--text-faint)'};margin-top:3px">${c.expiresAt?`${expired?'منقضی شد:':'انقضا:'} ${couponExpiryLabel(c.expiresAt)}`:''}${c.expiresAt && c.singleUse ? ' — ' : ''}${c.singleUse?'یک‌بار مصرف':''}</div>` : ''}
         </div>
         <button type="button" class="btn btn-ghost coupon-toggle" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px">${c.active===false?'فعال‌سازی':'غیرفعال‌سازی'}</button>
         <button type="button" class="btn btn-ghost coupon-edit" data-id="${c.id}" style="padding:6px 12px;font-size:11.5px">ویرایش</button>
@@ -13807,19 +14608,25 @@ function bindCouponsUI(){
     const valueInput = $('#newCouponValue');
     const minSubtotalInput = $('#newCouponMinSubtotal');
     const maxDiscountInput = $('#newCouponMaxDiscount');
+    const durationValueInput = $('#newCouponDurationValue');
+    const durationUnitInput = $('#newCouponDurationUnit');
+    const singleUseInput = $('#newCouponSingleUse');
     const code = codeInput.value.trim().toUpperCase();
     const type = typeSelect ? typeSelect.value : 'percent';
     const value = Math.max(0, Number(valueInput.value) || 0);
     const minSubtotal = Math.max(0, Number(minSubtotalInput?.value) || 0);
     const maxDiscount = (maxDiscountInput?.value && Number(maxDiscountInput.value)>0) ? Number(maxDiscountInput.value) : 0;
+    const expiresAt = computeCouponExpiryFromDuration(durationValueInput?.value, durationUnitInput?.value || 'day');
+    const singleUse = !!singleUseInput?.checked;
     if(!code){ showToast('کد تخفیف را وارد کنید'); return; }
     if(pendingCoupons.some(c=>c.code.toUpperCase()===code)){ showToast('این کد قبلاً ثبت شده'); return; }
     if(!valueInput.value || value<=0){ showToast('مقدار تخفیف را وارد کنید'); return; }
     if(type==='percent' && value>100){ showToast('درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد'); return; }
-    pendingCoupons.push({id:uid(), code, type, value, active:true, minSubtotal, maxDiscount});
+    pendingCoupons.push({id:uid(), code, type, value, active:true, minSubtotal, maxDiscount, expiresAt, singleUse});
     await persistCoupons();
     showToast('کد تخفیف ثبت شد ✓');
     codeInput.value=''; valueInput.value=''; if(minSubtotalInput) minSubtotalInput.value=''; if(maxDiscountInput) maxDiscountInput.value='';
+    if(durationValueInput) durationValueInput.value=''; if(singleUseInput) singleUseInput.checked=false;
     $('#couponListBox').innerHTML = couponListHtml();
     bindCouponRowEvents();
     codeInput.focus();
@@ -13875,11 +14682,22 @@ function bindCouponRowEvents(){
       const minSubtotal = Math.max(0, Number(row.querySelector('.coupon-edit-minsubtotal')?.value) || 0);
       const maxDiscountVal = row.querySelector('.coupon-edit-maxdiscount')?.value;
       const maxDiscount = (maxDiscountVal && Number(maxDiscountVal)>0) ? Number(maxDiscountVal) : 0;
+      const durationValue = row.querySelector('.coupon-edit-durationvalue')?.value;
+      const durationUnit = row.querySelector('.coupon-edit-durationunit')?.value || 'day';
+      const noExpiry = !!row.querySelector('.coupon-edit-noexpiry')?.checked;
+      const singleUse = !!row.querySelector('.coupon-edit-singleuse')?.checked;
       if(!code){ showToast('کد تخفیف را وارد کنید'); return; }
       if(pendingCoupons.some(c=>c.id!==id && c.code.toUpperCase()===code)){ showToast('این کد قبلاً ثبت شده'); return; }
       if(type==='percent' && value>100){ showToast('درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد'); return; }
       const c = pendingCoupons.find(x=>x.id===id);
-      if(c){ c.code=code; c.type=type; c.value=value; c.minSubtotal=minSubtotal; c.maxDiscount=maxDiscount; }
+      if(c){
+        c.code=code; c.type=type; c.value=value; c.minSubtotal=minSubtotal; c.maxDiscount=maxDiscount;
+        c.singleUse = singleUse;
+        // duration field left blank => keep the current expiry as-is;
+        // "حذف انقضا" checked => clear it; otherwise recompute from now
+        if(noExpiry) c.expiresAt = null;
+        else if(durationValue && Number(durationValue)>0) c.expiresAt = computeCouponExpiryFromDuration(durationValue, durationUnit);
+      }
       editingCouponId = null;
       await persistCoupons();
       showToast('ذخیره شد ✓');
@@ -14104,10 +14922,13 @@ function bindShippingRateRowEvents(){
 }
 
 function bindAdminShell(){
-  document.addEventListener('click', function handler(e){
-    const link = e.target.closest('[data-link]');
-    if(link){ e.preventDefault(); navigate(link.getAttribute('href').replace('#','')); }
-  });
+  if(!document.body.dataset.adminShellClickBound){
+    document.body.dataset.adminShellClickBound = '1';
+    document.addEventListener('click', function handler(e){
+      const link = e.target.closest('[data-link]');
+      if(link){ e.preventDefault(); navigate(link.getAttribute('href').replace('#','')); }
+    });
+  }
 
   const logoutBtn = $('#adminLogoutBtn');
   if(logoutBtn) logoutBtn.onclick = async ()=>{
@@ -14144,6 +14965,7 @@ function bindAdminShell(){
   if(adminSection==='orderDetail') bindAdminOrderDetail(adminOrderDetailId);
   if(adminSection==='stats'){
     loadGA4Stats();
+    loadAndRenderCategoryStats();
     const saveTrackingBtn = $('#saveTrackingBtn');
     if(saveTrackingBtn) saveTrackingBtn.onclick = async ()=>{
       const gaId = ($('#gaIdInput')?.value || '').trim();
@@ -14195,6 +15017,11 @@ function bindAdminShell(){
     pForm.onsubmit = async e=>{
   e.preventDefault();
 
+  if(!pendingProductCatOrder.length){
+    showToast('حداقل یک دسته‌بندی برای محصول انتخاب کنید');
+    return;
+  }
+
   const productId = editingProductId || uid();
   showLoading();
 
@@ -14229,7 +15056,8 @@ function bindAdminShell(){
 
   const data = {
     name: $('#pName').value.trim(),
-    category: $('#pCategory').value,
+    categories: pendingProductCatOrder.slice(),
+    category: pendingProductCatOrder[0] || '',
     badges: $$('.pBadgeCheck:checked').map(el=>el.value),
     price: Number($('#pPrice').value)||0,
     compareAt: newCompareAt,
@@ -14327,7 +15155,7 @@ function bindAdminProductSettingsUI(){
   bindCategoryRowEvents();
   const addCategoryBtn = $('#addCategoryBtn');
   if(addCategoryBtn) addCategoryBtn.onclick = ()=>{
-    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', imageClassic:'', imageDark:''});
+    pendingCategories.push({slug:'cat_'+uid(), label:'', tagline:'', desc:'', imageClassic:'', imageDark:'', subcats:[], active:true});
     $('#categoryListBox').innerHTML = categoryListHtml();
     bindCategoryRowEvents();
     const inputs = $$('.cat-edit-name');
@@ -14478,6 +15306,22 @@ function bindAdminProductSettingsUI(){
     applySettingsToDOM(newSettings);
     await withLoading(()=>saveSettingsRemote(newSettings));
     showToast('قالب محصولات مرتبط ذخیره شد ✓');
+  };
+  const saveSearchEmptyColorsBtn = $('#saveSearchEmptyColorsBtn');
+  if(saveSearchEmptyColorsBtn) saveSearchEmptyColorsBtn.onclick = async ()=>{
+    const searchRelatedColor = $('#searchRelatedColorInput')?.value || '#c9a066';
+    const searchForYouColor = $('#searchForYouColorInput')?.value || '#c9a066';
+    const cartRecsColor = $('#cartRecsColorInput')?.value || '#c9a066';
+    const recentlyViewedColor = $('#recentlyViewedColorInput')?.value || '#c9a066';
+    const searchRelatedIntensity = getIntensityValue('searchRelatedIntensity', STATE.settings.searchRelatedIntensity ?? 0);
+    const searchForYouIntensity = getIntensityValue('searchForYouIntensity', STATE.settings.searchForYouIntensity ?? 0);
+    const cartRecsIntensity = getIntensityValue('cartRecsIntensity', STATE.settings.cartRecsIntensity ?? 0);
+    const recentlyViewedIntensity = getIntensityValue('recentlyViewedIntensity', STATE.settings.recentlyViewedIntensity ?? 0);
+    const newSettings = {...STATE.settings, searchRelatedColor, searchForYouColor, searchRelatedIntensity, searchForYouIntensity, cartRecsColor, cartRecsIntensity, recentlyViewedColor, recentlyViewedIntensity};
+    STATE.settings = newSettings;
+    applySettingsToDOM(newSettings);
+    await withLoading(()=>saveSettingsRemote(newSettings));
+    showToast('قالب‌های رنگ ذخیره شد ✓');
   };
   const addProductPageSectionBtn = $('#addProductPageSectionBtn');
   if(addProductPageSectionBtn) addProductPageSectionBtn.onclick = ()=>{
@@ -15691,12 +16535,25 @@ function bindCategoryRowEvents(){
   $$('.cat-edit-tagline').forEach(inp=>{
     inp.oninput = ()=>{ pendingCategories[Number(inp.dataset.idx)].tagline = inp.value; };
   });
+  $$('.cat-edit-desc').forEach(inp=>{
+    inp.oninput = ()=>{ pendingCategories[Number(inp.dataset.idx)].desc = inp.value; };
+  });
+  $$('.cat-edit-hide-label').forEach(cb=>{
+    cb.onchange = ()=>{ pendingCategories[Number(cb.dataset.idx)].showLabel = cb.checked; };
+  });
+  $$('.cat-edit-active').forEach(cb=>{
+    cb.onchange = ()=>{ pendingCategories[Number(cb.dataset.idx)].active = cb.checked; };
+  });
   $$('.cat-edit-delete').forEach(btn=>{
     btn.onclick = ()=>{
       const idx = Number(btn.dataset.idx);
       const c = pendingCategories[idx];
-      const count = STATE.products.filter(p=>p.category===c.slug).length;
-      if(count>0 && !confirm(`${count} محصول در دسته «${c.label||'بدون نام'}» هستند. با حذف این دسته، آن محصولات بدون دسته‌بندی می‌مانند. ادامه می‌دهید؟`)) return;
+      const count = STATE.products.filter(p=>productInCategory(p, c.slug)).length;
+      const subCount = (c.subcats||[]).length;
+      let msg = '';
+      if(count>0) msg += `${count} محصول در دسته «${c.label||'بدون نام'}» (و زیردسته‌هایش) هستند. با حذف این دسته، برچسب آن روی این محصولات باقی می‌ماند ولی دیگر معتبر نیست و آن محصولات از منو/فروشگاه این دسته دیده نمی‌شوند.`;
+      if(subCount>0) msg += `${msg?' همچنین ':''}${subCount} زیردسته‌ی این دسته هم با آن حذف می‌شود.`;
+      if(msg && !confirm(msg + ' ادامه می‌دهید؟')) return;
       pendingCategories.splice(idx,1);
       $('#categoryListBox').innerHTML = categoryListHtml();
       bindCategoryRowEvents();
@@ -15729,6 +16586,73 @@ function bindCategoryRowEvents(){
         hideLoading();
       }
     };
+  });
+  $$('.sub-cat-add-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      const idx = Number(btn.dataset.idx);
+      const input = $(`.sub-cat-add-input[data-idx="${idx}"]`);
+      const label = (input?.value||'').trim();
+      if(!label) return;
+      if(!pendingCategories[idx].subcats) pendingCategories[idx].subcats = [];
+      pendingCategories[idx].subcats.push({slug:'sub_'+uid(), label, desc:''});
+      $('#categoryListBox').innerHTML = categoryListHtml();
+      bindCategoryRowEvents();
+    };
+  });
+  $$('.sub-cat-add-input').forEach(input=>{
+    input.onkeydown = (e)=>{
+      if(e.key==='Enter'){ e.preventDefault(); $(`.sub-cat-add-btn[data-idx="${input.dataset.idx}"]`)?.click(); }
+    };
+  });
+  $$('.sub-cat-desc').forEach(inp=>{
+    inp.oninput = ()=>{ pendingCategories[Number(inp.dataset.idx)].subcats[Number(inp.dataset.sidx)].desc = inp.value; };
+  });
+  $$('.sub-cat-remove').forEach(btn=>{
+    btn.onclick = ()=>{
+      const idx = Number(btn.dataset.idx), sidx = Number(btn.dataset.sidx);
+      const sub = pendingCategories[idx].subcats[sidx];
+      const count = STATE.products.filter(p=>productCategories(p).includes(sub.slug)).length;
+      if(count>0 && !confirm(`${count} محصول در زیردسته «${sub.label}» هستند. با حذف این زیردسته، آن محصولات بدون این زیردسته می‌مانند. ادامه می‌دهید؟`)) return;
+      pendingCategories[idx].subcats.splice(sidx,1);
+      $('#categoryListBox').innerHTML = categoryListHtml();
+      bindCategoryRowEvents();
+    };
+  });
+  bindCategoryDragReorder();
+}
+
+/* درگ‌اند‌دراپ برای جابه‌جایی ترتیب نمایش دسته‌بندی‌ها (منو، صفحه‌ی نخست، چیپ‌های فروشگاه
+   همه از همین ترتیب STATE.settings.categories پیروی می‌کنند، پس همین‌جا کافی است) */
+function bindCategoryDragReorder(){
+  const box = $('#categoryListBox');
+  if(!box) return;
+  let dragIdx = null;
+  $$('.cat-edit-row', box).forEach(row=>{
+    row.addEventListener('dragstart', ()=>{
+      dragIdx = Number(row.dataset.idx);
+      row.classList.add('is-dragging');
+    });
+    row.addEventListener('dragend', ()=>{
+      row.classList.remove('is-dragging');
+      dragIdx = null;
+    });
+    row.addEventListener('dragover', (e)=>{
+      e.preventDefault();
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', ()=>{
+      row.classList.remove('drag-over');
+    });
+    row.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      const dropIdx = Number(row.dataset.idx);
+      if(dragIdx===null || dragIdx===dropIdx) return;
+      const [moved] = pendingCategories.splice(dragIdx, 1);
+      pendingCategories.splice(dropIdx, 0, moved);
+      $('#categoryListBox').innerHTML = categoryListHtml();
+      bindCategoryRowEvents();
+    });
   });
 }
 
@@ -16598,22 +17522,49 @@ function categoryListHtml(){
   };
   return `<div style="display:flex;flex-direction:column;gap:14px">
     ${pendingCategories.map((c,i)=>{
-      const count = STATE.products.filter(p=>p.category===c.slug).length;
+      const count = STATE.products.filter(p=>productInCategory(p, c.slug)).length;
       return `
-      <div class="cat-edit-row" data-idx="${i}" style="display:flex;flex-direction:column;gap:14px;padding:12px;border:1px solid var(--line)">
+      <div class="cat-edit-row" data-idx="${i}" draggable="true" style="display:flex;flex-direction:column;gap:14px;padding:12px;border:1px solid var(--line);cursor:grab${c.active===false?';opacity:.55':''}">
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <span class="cat-edit-drag-handle" title="بکشید برای جابه‌جایی ترتیب" style="cursor:grab;color:var(--text-faint);font-size:16px;user-select:none;flex:none">⠿</span>
           <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px">
             <input class="cat-edit-name" data-idx="${i}" value="${escapeHtml(c.label)}" placeholder="نام دسته‌بندی (مثلاً: زنانه)">
             <input class="cat-edit-tagline" data-idx="${i}" value="${escapeHtml(c.tagline||'')}" placeholder="متن کنار اسم (مثلاً: WOMEN)">
+            <textarea class="cat-edit-desc" data-idx="${i}" rows="2" placeholder="توضیح صفحه‌ی این دسته برای سئو (اختیاری — مثلاً: مجموعه‌ی لباس زیر زنانه با پارچه‌های نرم و طرح‌های خاص وایت ریون)" style="resize:vertical;font-size:12.5px">${escapeHtml(c.desc||'')}</textarea>
             <span style="font-size:11.5px;color:var(--text-faint)">${count} محصول در این دسته</span>
           </div>
           <button type="button" class="btn btn-ghost cat-edit-delete" data-idx="${i}" style="padding:6px 12px;font-size:11.5px;color:var(--danger);border-color:var(--danger)">حذف دسته</button>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-dim);cursor:pointer">
+          <input type="checkbox" class="cat-edit-active" data-idx="${i}" ${c.active===false?'':'checked'}>
+          فعال <span style="color:var(--text-faint)">(غیرفعال = موقتاً از منو، صفحه‌ی نخست و فروشگاه مخفی می‌شود؛ محصولاتش حذف نمی‌شوند)</span>
+        </label>
+        <div>
+          <span style="font-size:11px;color:var(--text-dim);display:block;margin-bottom:8px">زیردسته‌ها <span style="color:var(--text-faint)">(اختیاری — مثلاً برای «زنانه»: سوتین، شورت، رب)</span></span>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+            ${(c.subcats||[]).map((s,si)=>`
+              <div style="display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);padding:8px;border-radius:8px">
+                <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:12.5px;font-weight:600">${escapeHtml(s.label)}</span>
+                  <textarea class="sub-cat-desc" data-idx="${i}" data-sidx="${si}" rows="1" placeholder="توضیح صفحه‌ی این زیردسته برای سئو (اختیاری)" style="resize:vertical;font-size:12px">${escapeHtml(s.desc||'')}</textarea>
+                </div>
+                <button type="button" class="sub-cat-remove" data-idx="${i}" data-sidx="${si}" style="background:none;border:0;color:var(--danger);cursor:pointer;font-size:14px;line-height:1;padding:4px">✕</button>
+              </div>`).join('') || `<span style="font-size:11.5px;color:var(--text-faint)">زیردسته‌ای ثبت نشده</span>`}
+          </div>
+          <div style="display:flex;gap:8px">
+            <input class="sub-cat-add-input" data-idx="${i}" placeholder="نام زیردسته جدید (مثلاً: سوتین)" style="flex:1">
+            <button type="button" class="btn btn-ghost sub-cat-add-btn" data-idx="${i}" style="padding:6px 14px;font-size:12px;white-space:nowrap">+ افزودن</button>
+          </div>
         </div>
         <div>
           <span style="font-size:11px;color:var(--text-dim);display:block;margin-bottom:8px">عکس دسته‌بندی — یک عکس جدا برای هر تم (۱۲۰۰×۸۰۰ پیکسل، برای موبایل و دسکتاپ یکسان). اگر برای تمی نگذارید، از عکس یکی دیگر از تم‌ها استفاده می‌شود.</span>
           <div class="theme-asset-row" style="gap:14px">
             ${MODES.map(mo=>imgBox(c,i,'image'+mo.key,mo.emoji,mo.label,96,64)).join('')}
           </div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-dim);cursor:pointer;margin-top:10px">
+            <input type="checkbox" class="cat-edit-hide-label" data-idx="${i}" ${c.showLabel?'checked':''}>
+            نام و متن این دسته روی عکس در صفحه‌ی نخست نمایش داده شود (پیش‌فرض: فقط عکس، بدون متن)
+          </label>
         </div>
       </div>`;
     }).join('')}
@@ -16686,12 +17637,44 @@ function bindLogoInput(mode){
   };
 }
 
+function renderPCategoriesBox(){
+  const box = $('#pCategoriesBox');
+  if(!box) return;
+  const cats = STATE.settings.categories||[];
+  const rowHtml = (slug, label, indent)=>{
+    const idx = pendingProductCatOrder.indexOf(slug);
+    const checked = idx>-1;
+    const isPrimary = idx===0;
+    return `<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;${indent?'margin-inline-start:18px;font-size:12px;color:var(--text-dim)':''}">
+      <input type="checkbox" class="pCatCheck" value="${slug}" ${checked?'checked':''}>
+      ${indent?'‹ ':''}${escapeHtml(label)}${isPrimary?' <span style="font-size:11px;color:var(--gold-light);font-weight:600">(اصلی)</span>':''}
+    </label>`;
+  };
+  box.innerHTML = cats.map(c=>{
+    const own = rowHtml(c.slug, c.label, false);
+    const subs = (c.subcats||[]).map(s=>rowHtml(s.slug, s.label, true)).join('');
+    return `<div style="display:flex;flex-direction:column;gap:6px;flex:0 0 100%">${own}${subs}</div>`;
+  }).join('') || `<span style="font-size:12px;color:var(--text-faint)">هنوز دسته‌بندی‌ای ثبت نشده</span>`;
+  $$('.pCatCheck', box).forEach(el=>{
+    el.onchange = ()=>{
+      if(el.checked){
+        if(!pendingProductCatOrder.includes(el.value)) pendingProductCatOrder.push(el.value);
+      }else{
+        pendingProductCatOrder = pendingProductCatOrder.filter(s=>s!==el.value);
+      }
+      renderPCategoriesBox();
+    };
+  });
+}
+
 function openProductModal(id){
   editingProductId = id;
   const p = id ? findProduct(id) : null;
   $('#modalTitle').textContent = p ? 'ویرایش محصول' : 'افزودن محصول';
   $('#pName').value = p?.name || '';
-  $('#pCategory').value = p?.category || (STATE.settings.categories?.[0]?.slug || '');
+  const firstActiveCat = (STATE.settings.categories||[]).find(isCategoryActive) || STATE.settings.categories?.[0];
+  pendingProductCatOrder = p ? productCategories(p).slice() : (firstActiveCat ? [firstActiveCat.slug] : []);
+  renderPCategoriesBox();
   {
     const selected = new Set(p?.badges || []);
     $$('.pBadgeCheck').forEach(el=>{ el.checked = selected.has(el.value); });
