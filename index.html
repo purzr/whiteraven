@@ -175,71 +175,71 @@
   --logo-h:34px;
 }
 
-/* ===== تم «کلاسیک» (روشن) — پالت جدید: مشکی/سرمه‌ای/سفید + صورتی سرخابی + آبی ===== */
+/* ===== تم «کلاسیک» — محوریت سبز Sacramento (سبز تیره بطری) و طلایی #c8961f ===== */
 .account-icon-dark{display:inline-block !important}
 .account-icon-light{display:none !important}
 html[data-theme="classic"] .account-icon-dark{display:none !important}
 html[data-theme="classic"] .account-icon-light{display:inline-block !important}
 html[data-theme="classic"]{
-  --bg:#eef1f4;
-  --bg-rgb:238,241,244;
-  --bg-alt:#e1effc;
+  --bg:#f7f5ee;
+  --bg-rgb:247,245,238;
+  --bg-alt:#eee8d8;
   --bg-card:#ffffff;
-  --line:#c9d9ea;
+  --line:#d8cead;
   --text:#000000;
-  --text-dim:#233570;
-  --text-faint:#6b7ca3;
-  --gold:#cf3c80;
-  --gold-light:#e1aec1;
-  --gold-dim:#f2e2e3;
-  --danger:#b8305f;
-  --ok:#2b6ea3;
-  --shadow-color:35,52,108;
+  --text-dim:#3f5a48;
+  --text-faint:#7c9184;
+  --gold:#c8961f;
+  --gold-light:#d4a017;
+  --gold-dim:#e6c98a;
+  --danger:#b1442f;
+  --ok:#14432a;
+  --shadow-color:11,36,21;
   --shadow-sm:0 2px 14px rgba(var(--shadow-color),.14);
   --shadow-md:0 18px 40px rgba(var(--shadow-color),.20);
-  --shadow-gold:0 10px 24px rgba(207,60,128,.32);
-  --ph-bg:linear-gradient(160deg,#3a89c4,#233570);
+  --shadow-gold:0 10px 24px rgba(200,150,31,.32);
+  --ph-bg:linear-gradient(160deg,#1a5533,#14432a);
 }
-html[data-theme="classic"] .raven-mark path{fill:#fff;stroke:#233570}
-/* پس‌زمینه: پالت جدید — لهجه‌ی سرمه‌ای/مشکی + لهجه‌ی صورتی/سرخابی */
+html[data-theme="classic"] .raven-mark path{fill:#fff;stroke:#14432a}
+/* پس‌زمینه: سبز Sacramento غالب + لهجه طلایی */
 html[data-theme="classic"] body::before{
   background:
-    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(35,52,108,.16), transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(207,60,128,.10), transparent 55%);
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(11,36,21,.16), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(184,138,68,.10), transparent 55%);
 }
-/* خط تزئینی: سرمه‌ای به صورتی سرخابی */
+/* خط تزئینی: طلایی به سبز Sacramento */
 html[data-theme="classic"] .divider,
 html[data-theme="classic"] .section-head .divider{
-  background:linear-gradient(90deg,#cf3c80,#233570);
+  background:linear-gradient(90deg,#c8961f,#14432a);
 }
-/* آیکون‌های نوار ویژگی‌ها — سرمه‌ای و صورتی سرخابی متناوب */
-html[data-theme="classic"] .feature:nth-of-type(odd) svg{color:#eef1f4;background:rgba(238,241,244,.12);border-color:rgba(238,241,244,.28)}
-html[data-theme="classic"] .feature:nth-of-type(even) svg{color:#cf3c80;background:rgba(207,60,128,.12);border-color:rgba(207,60,128,.28)}
-html[data-theme="classic"] .feature:hover{background:rgba(35,52,108,.06)}
-html[data-theme="classic"] .card-badge{box-shadow:0 4px 14px rgba(184,48,95,.28)}
-html[data-theme="classic"] .card-discount{box-shadow:0 4px 14px rgba(184,48,95,.28)}
+/* آیکون‌های نوار ویژگی‌ها — سبز Sacramento و طلایی متناوب */
+html[data-theme="classic"] .feature:nth-of-type(odd) svg{color:#f3ecd9;background:rgba(243,236,217,.12);border-color:rgba(243,236,217,.28)}
+html[data-theme="classic"] .feature:nth-of-type(even) svg{color:#c8961f;background:rgba(184,138,68,.12);border-color:rgba(184,138,68,.28)}
+html[data-theme="classic"] .feature:hover{background:rgba(20,67,42,.06)}
+html[data-theme="classic"] .card-badge{box-shadow:0 4px 14px rgba(192,86,63,.28)}
+html[data-theme="classic"] .card-discount{box-shadow:0 4px 14px rgba(192,86,63,.28)}
 html[data-theme="classic"] .chip.active,
-html[data-theme="classic"] .chip:hover{box-shadow:0 3px 10px rgba(207,60,128,.20)}
-html[data-theme="classic"] .color-preset-dot.selected{box-shadow:0 0 0 2px rgba(207,60,128,.40)}
-html[data-theme="classic"] .admin-side a.active{background:rgba(35,52,108,.08)}
+html[data-theme="classic"] .chip:hover{box-shadow:0 3px 10px rgba(184,138,68,.20)}
+html[data-theme="classic"] .color-preset-dot.selected{box-shadow:0 0 0 2px rgba(184,138,68,.40)}
+html[data-theme="classic"] .admin-side a.active{background:rgba(20,67,42,.08)}
 /* نوار ویژگی‌ها و فوتر: قبلاً یک پس‌زمینه‌ی سبز تیره‌ی مخصوص («Sacramento
    green») روی کل نوار/فوتر در تم روشن اعمال می‌شد؛ چون این باند حالا به
    کارت‌های شناور با پس‌زمینه‌ی شفاف تبدیل شده، آن رنگ سبز اضافه شد و با بقیه‌ی
    تم هماهنگ نبود — حذف شد تا پشت این بخش‌ها همرنگ پس‌زمینه‌ی عادی همان تم باشد. */
-/* دکمه‌های افزودن به سبد خرید در صفحه محصول — سرمه‌ای تیره در تم روشن */
+/* دکمه‌های افزودن به سبد خرید در صفحه محصول — سبز Sacramento در تم روشن */
 html[data-theme="classic"] #addToCartBtn,
 html[data-theme="classic"] .pd-action-row .btn-solid{
-  background:#233570;border-color:#233570;color:#eef1f4;
-  box-shadow:0 10px 24px rgba(35,52,108,.28);
+  background:#14432a;border-color:#14432a;color:#f3ecd9;
+  box-shadow:0 10px 24px rgba(20,67,42,.28);
 }
 html[data-theme="classic"] #addToCartBtn:hover,
 html[data-theme="classic"] .pd-action-row .btn-solid:hover{
-  background:#2c4189;border-color:#2c4189;
+  background:#1a5533;border-color:#1a5533;
 }
-/* فلش‌های گالری و راهنمای بزرگ‌نمایی در صفحه محصول — تم روشن: صورتی روشن با پس‌زمینه سرمه‌ای تیره و شفاف */
+/* فلش‌های گالری و راهنمای بزرگ‌نمایی در صفحه محصول — تم روشن: طلایی روشن با پس‌زمینه طلایی تیره و شفاف */
 html[data-theme="classic"] .pd-gallery-arrow{
-  background:rgba(10,14,28,.55);
-  color:#f0bcd4;
+  background:rgba(20,16,4,.55);
+  color:#f2cf6b;
   -webkit-backdrop-filter:blur(2px);
   backdrop-filter:blur(2px);
 }
@@ -248,8 +248,8 @@ html[data-theme="classic"] .pd-gallery-arrow:hover{
   color:#0a0a0b;
 }
 html[data-theme="classic"] .pd-gallery-hint{
-  background:rgba(10,14,28,.32);
-  color:#f0bcd4;
+  background:rgba(20,16,4,.32);
+  color:#f2cf6b;
   -webkit-backdrop-filter:blur(2px);
   backdrop-filter:blur(2px);
 }
@@ -1850,11 +1850,11 @@ details.settings-card .settings-card-body .settings-desc{margin-top:0}
 .notify-me-btn{background:rgba(201,160,102,.14) !important;border:1.5px solid var(--gold) !important;color:var(--gold-light) !important;box-shadow:none !important;position:relative;overflow:hidden}
 .notify-me-btn:hover{background:rgba(201,160,102,.22) !important}
 .notify-me-btn svg{color:var(--gold-light)}
-html[data-theme="classic"] .notify-me-btn{background:rgba(207,60,128,.10) !important;border:1.5px solid var(--gold) !important;color:#9c1f5c !important}
-html[data-theme="classic"] .notify-me-btn:hover{background:rgba(207,60,128,.18) !important}
-html[data-theme="classic"] .notify-me-btn svg{color:#9c1f5c}
+html[data-theme="classic"] .notify-me-btn{background:rgba(184,138,68,.10) !important;border:1.5px solid var(--gold) !important;color:#a06f10 !important}
+html[data-theme="classic"] .notify-me-btn:hover{background:rgba(184,138,68,.18) !important}
+html[data-theme="classic"] .notify-me-btn svg{color:#a06f10}
 .notify-bell-btn{border-color:var(--gold) !important;color:var(--gold-light) !important}
-html[data-theme="classic"] .notify-bell-btn{color:#9c1f5c !important}
+html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 .notify-bell-btn svg{animation:notifyBellRing 2.6s ease-in-out infinite}
 @keyframes notifyBellRing{
   0%,80%,100%{transform:rotate(0)}
@@ -12199,6 +12199,15 @@ function bindCartHoverDrawer(){
 
   zone.addEventListener('mouseenter', openDrawer);
   zone.addEventListener('mouseleave', scheduleClose);
+
+  // با کلیک روی هر لینک داخل کشو (مثلاً «تکمیل خرید» یا تصویر محصول)، قبل از
+  // رفتن به صفحه بعد، کشو را ببندیم تا در صفحه‌ی جدید بازِ باز نماند.
+  drawer.addEventListener('click', e=>{
+    if(e.target.closest('[data-link]')){
+      if(closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
+      drawer.classList.remove('open');
+    }
+  });
 }
 
 function pageCart(){
