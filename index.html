@@ -104,27 +104,28 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet"></noscript>
 <!-- فونت فارسی «یکان بخ» (YekanBakh) — روی گوگل‌فونتس موجود نیست، به همین دلیل
-     با @font-face از پوشه‌ی محلی fonts/yekanbakh/ (کنار همین index.html) بارگذاری
-     می‌شود. قبلاً این فایل‌ها از یک سرویس رایگان و غیررسمی تبدیل فونت
+     با @font-face از همین پوشه (کنار خود index.html) بارگذاری می‌شود.
+     قبلاً این فایل‌ها از یک سرویس رایگان و غیررسمی تبدیل فونت
      (db.onlinewebfonts.com) لود می‌شدند که هیچ تضمین آپ‌تایمی نداشت؛ حالا خودِ
      فایل‌های woff2 دانلود و اینجا self-host شده‌اند تا سایت به دردسترس‌بودن
      یک سرویس شخص ثالث وابسته نباشد.
-     مهم: پوشه‌ی fonts/yekanbakh/ باید دقیقاً کنار همین فایل index.html روی هاست
-     آپلود شود؛ در غیر این صورت فونت لود نمی‌شود و سایت به Vazirmatn سقوط می‌کند.
+     مهم: هر ۵ فایل yekanbakh-400.woff2 تا yekanbakh-900.woff2 باید دقیقاً کنار
+     همین فایل index.html (در همان پوشه) روی هاست/ریپازیتوری آپلود شوند؛ در غیر
+     این صورت فونت لود نمی‌شود و سایت به Vazirmatn سقوط می‌کند.
      چند وزن مختلف زیر یک نام خانواده (YekanBakh) تعریف شده تا با تغییر
      font-weight در CSS، وزن مناسب همان خانواده به‌کار برود. وزن ۳۰۰ عمداً حذف
      شده چون هیچ‌جای سایت از font-weight:300 استفاده نمی‌کند. -->
 <style>
 @font-face{font-family:'YekanBakh';font-weight:400;font-style:normal;font-display:swap;
-  src:url('fonts/yekanbakh/yekanbakh-400.woff2') format('woff2');}
+  src:url('yekanbakh-400.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:500;font-style:normal;font-display:swap;
-  src:url('fonts/yekanbakh/yekanbakh-500.woff2') format('woff2');}
+  src:url('yekanbakh-500.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:700;font-style:normal;font-display:swap;
-  src:url('fonts/yekanbakh/yekanbakh-700.woff2') format('woff2');}
+  src:url('yekanbakh-700.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:800;font-style:normal;font-display:swap;
-  src:url('fonts/yekanbakh/yekanbakh-800.woff2') format('woff2');}
+  src:url('yekanbakh-800.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:900;font-style:normal;font-display:swap;
-  src:url('fonts/yekanbakh/yekanbakh-900.woff2') format('woff2');}
+  src:url('yekanbakh-900.woff2') format('woff2');}
 </style>
 <!-- Supabase client — used for the shared product catalog & orders. See README.md "اتصال به Supabase" section. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
