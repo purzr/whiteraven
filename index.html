@@ -1493,30 +1493,40 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .cart-foot{padding:22px 24px;border-top:1px solid var(--line);font-family:var(--font-body)}
 .cart-sum-row{display:flex;justify-content:space-between;font-size:calc(14px * var(--scale-body));margin-bottom:10px;color:var(--text-dim)}
 
-/* ===== Cart hover preview (desktop only) — با هاور روی آیکون سبد خرید باز می‌شود
-   و تا وقتی موس روی آیکون یا خودِ کشو باشد باز می‌ماند؛ با خروج موس بسته می‌شود ===== */
+/* ===== Cart hover preview (desktop only) — یک دراپ‌داون کوچک زیر آیکون سبد خرید
+   با هاور باز می‌شود و تا وقتی موس روی آیکون یا خودِ کشو باشد باز می‌ماند؛ با
+   خروج موس بسته می‌شود. یک فلش کوچک بالای دراپ‌داون به آیکون اشاره می‌کند. ===== */
 .cart-hover-zone{position:relative}
 .cart-hover-drawer{
-  position:fixed;top:0;bottom:0;left:0;width:100%;max-width:400px;
-  background:var(--bg-alt);z-index:250;border-right:1px solid var(--line);
+  position:absolute;top:calc(100% + 16px);left:50%;
+  transform:translateX(-50%) translateY(-6px);
+  width:340px;max-width:88vw;max-height:min(480px,70vh);
+  background:var(--bg-alt);z-index:250;border:1px solid var(--line);
+  border-radius:16px;
   box-shadow:var(--shadow-md);
-  transform:translateX(-100%);opacity:0;visibility:hidden;
-  transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s ease,visibility 0s linear .35s;
+  opacity:0;visibility:hidden;
+  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s;
   pointer-events:none;
   display:flex;flex-direction:column;
 }
-.cart-hover-drawer.open{
-  transform:translateX(0);opacity:1;visibility:visible;pointer-events:auto;
-  transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s ease;
+.cart-hover-drawer::before{
+  content:'';position:absolute;top:-7px;left:50%;margin-left:-7px;
+  width:14px;height:14px;background:var(--bg-alt);
+  border-top:1px solid var(--line);border-right:1px solid var(--line);
+  transform:rotate(-45deg);border-top-right-radius:3px;
 }
-.cart-hover-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--line)}
-.cart-hover-head h4{font-family:var(--font-heading);font-size:calc(17px * var(--scale-heading))}
-.cart-hover-head a{font-family:var(--font-body);font-size:12px;color:var(--gold-light);text-decoration:underline}
-.cart-hover-items{flex:1;overflow-y:auto;padding:4px 22px;font-family:var(--font-body)}
-.cart-hover-items .cart-line{padding:14px 0}
-.cart-hover-items .cart-line .thumb{width:58px;height:72px}
-.cart-hover-items .cart-line h4{font-size:calc(13px * var(--scale-body))}
-.cart-hover-foot{padding:16px 22px;border-top:1px solid var(--line);font-family:var(--font-body)}
+.cart-hover-drawer.open{
+  transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity .25s ease,transform .25s ease;
+}
+.cart-hover-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.cart-hover-head h4{font-family:var(--font-heading);font-size:calc(16px * var(--scale-heading))}
+.cart-hover-head a{font-family:var(--font-body);font-size:11.5px;color:var(--gold-light);text-decoration:underline}
+.cart-hover-items{flex:1;overflow-y:auto;padding:2px 18px;font-family:var(--font-body);max-height:280px}
+.cart-hover-items .cart-line{padding:12px 0}
+.cart-hover-items .cart-line .thumb{width:50px;height:64px;border-radius:8px}
+.cart-hover-items .cart-line h4{font-size:calc(12.5px * var(--scale-body))}
+.cart-hover-foot{padding:14px 18px;border-top:1px solid var(--line);font-family:var(--font-body);border-radius:0 0 16px 16px}
 @media(max-width:900px){ .cart-hover-drawer{display:none !important} }
 
 /* ===== Cart page (full page, not a drawer) ===== */
@@ -12200,13 +12210,12 @@ function bindCartHoverDrawer(){
   zone.addEventListener('mouseenter', openDrawer);
   zone.addEventListener('mouseleave', scheduleClose);
 
-  // با کلیک روی هر لینک داخل کشو (مثلاً «تکمیل خرید» یا تصویر محصول)، قبل از
-  // رفتن به صفحه بعد، کشو را ببندیم تا در صفحه‌ی جدید بازِ باز نماند.
-  drawer.addEventListener('click', e=>{
-    if(e.target.closest('[data-link]')){
-      if(closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
-      drawer.classList.remove('open');
-    }
+  // با کلیک روی هر لینک داخل ناحیه (چه خودِ آیکون سبد، چه لینک‌های داخل کشو
+  // مثل «تکمیل خرید» یا تصویر محصول)، قبل از رفتن به صفحه بعد، کشو را ببندیم
+  // تا در صفحه‌ی جدید بازِ باز نماند.
+  zone.addEventListener('click', e=>{
+    if(closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
+    drawer.classList.remove('open');
   });
 }
 
