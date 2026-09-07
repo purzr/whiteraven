@@ -101,31 +101,30 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet"></noscript>
 <!-- فونت فارسی «یکان بخ» (YekanBakh) — روی گوگل‌فونتس موجود نیست، به همین دلیل
-     مستقیماً با @font-face از یک سرویس میزبانی وب‌فونت رایگان بارگذاری می‌شود.
+     با @font-face از پوشه‌ی محلی fonts/yekanbakh/ (کنار همین index.html) بارگذاری
+     می‌شود. قبلاً این فایل‌ها از یک سرویس رایگان و غیررسمی تبدیل فونت
+     (db.onlinewebfonts.com) لود می‌شدند که هیچ تضمین آپ‌تایمی نداشت؛ حالا خودِ
+     فایل‌های woff2 دانلود و اینجا self-host شده‌اند تا سایت به دردسترس‌بودن
+     یک سرویس شخص ثالث وابسته نباشد.
+     مهم: پوشه‌ی fonts/yekanbakh/ باید دقیقاً کنار همین فایل index.html روی هاست
+     آپلود شود؛ در غیر این صورت فونت لود نمی‌شود و سایت به Vazirmatn سقوط می‌کند.
      چند وزن مختلف زیر یک نام خانواده (YekanBakh) تعریف شده تا با تغییر
-     font-weight در CSS، وزن مناسب همان خانواده به‌کار برود. -->
+     font-weight در CSS، وزن مناسب همان خانواده به‌کار برود. وزن ۳۰۰ عمداً حذف
+     شده چون هیچ‌جای سایت از font-weight:300 استفاده نمی‌کند. -->
 <style>
-@font-face{font-family:'YekanBakh';font-weight:300;font-style:normal;font-display:swap;
-  src:url('https://db.onlinewebfonts.com/t/3900805327d60d85482057d643f2a5f0.woff2') format('woff2'),
-      url('https://db.onlinewebfonts.com/t/3900805327d60d85482057d643f2a5f0.woff') format('woff');}
 @font-face{font-family:'YekanBakh';font-weight:400;font-style:normal;font-display:swap;
-  src:url('https://db.onlinewebfonts.com/t/7296ae79f6faca68798b00fbbbee4c22.woff2') format('woff2'),
-      url('https://db.onlinewebfonts.com/t/7296ae79f6faca68798b00fbbbee4c22.woff') format('woff');}
+  src:url('fonts/yekanbakh/yekanbakh-400.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:500;font-style:normal;font-display:swap;
-  src:url('https://db.onlinewebfonts.com/t/b4970ca649486b095a2e59e0cb7c7663.woff2') format('woff2'),
-      url('https://db.onlinewebfonts.com/t/b4970ca649486b095a2e59e0cb7c7663.woff') format('woff');}
+  src:url('fonts/yekanbakh/yekanbakh-500.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:700;font-style:normal;font-display:swap;
-  src:url('https://db.onlinewebfonts.com/t/41e49eab42867016423011dccc96c22a.woff2') format('woff2'),
-      url('https://db.onlinewebfonts.com/t/41e49eab42867016423011dccc96c22a.woff') format('woff');}
+  src:url('fonts/yekanbakh/yekanbakh-700.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:800;font-style:normal;font-display:swap;
-  src:url('https://db.onlinewebfonts.com/t/3231c6a7b3ba5a66dd21bfc6b461165e.woff2') format('woff2'),
-      url('https://db.onlinewebfonts.com/t/3231c6a7b3ba5a66dd21bfc6b461165e.woff') format('woff');}
+  src:url('fonts/yekanbakh/yekanbakh-800.woff2') format('woff2');}
 @font-face{font-family:'YekanBakh';font-weight:900;font-style:normal;font-display:swap;
-  src:url('https://db.onlinewebfonts.com/t/e1d06869ee86ac98052a5a1788122235.woff2') format('woff2'),
-      url('https://db.onlinewebfonts.com/t/e1d06869ee86ac98052a5a1788122235.woff') format('woff');}
+  src:url('fonts/yekanbakh/yekanbakh-900.woff2') format('woff2');}
 </style>
 <!-- Supabase client — used for the shared product catalog & orders. See README.md "اتصال به Supabase" section. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3069,6 +3068,20 @@ function rateLimitMessage(rl){
   return `تعداد ارسال شما بیش از حد مجاز است — لطفاً ${Math.ceil(rl.waitSec/60)} دقیقه‌ی دیگر دوباره امتحان کنید`;
 }
 
+/* ---------------- تعداد کل نظرات ثبت‌شده از این مرورگر ----------------
+   بر خلاف checkRateLimit (که فقط ارسال‌های چند دقیقه‌ی اخیر را می‌شمارد و
+   بعد از مدتی پاک می‌شود)، این شمارنده هیچ‌وقت منقضی نمی‌شود؛ فقط برای این
+   استفاده می‌شود که بعد از دو نظر اول از یک مرورگر، فرم نظر یک عبارت امنیتی
+   ساده (کپچای ریاضی) هم بخواهد — کاربرانی که واقعاً برای اولین/دومین‌بار
+   پیام می‌گذارند مجبور به پر کردنش نیستند. */
+const REVIEW_SUBMIT_COUNT_KEY = 'wr-review-submit-count';
+function getReviewSubmitCount(){
+  try{ return parseInt(localStorage.getItem(REVIEW_SUBMIT_COUNT_KEY) || '0', 10) || 0; }catch(e){ return 0; }
+}
+function incrementReviewSubmitCount(){
+  try{ localStorage.setItem(REVIEW_SUBMIT_COUNT_KEY, String(getReviewSubmitCount()+1)); }catch(e){ /* ignore */ }
+}
+
 /* ---------------- Supabase (shared catalog & orders) ----------------
    Fill these in with your own Supabase project's values — see README.md
    "اتصال به Supabase" for the exact steps and the SQL to create the tables.
@@ -3671,6 +3684,16 @@ function setPageMeta(title, description, image){
   if(ogDesc && description) ogDesc.setAttribute('content', description);
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if(ogUrl) ogUrl.setAttribute('content', location.origin + currentPath());
+  // canonical را هم هم‌زمان با og:url به‌روز می‌کنیم تا هر صفحه (محصول/دسته/مقاله)
+  // آدرس canonical مخصوص به خودش را داشته باشد، نه همیشه آدرس صفحه اصلی —
+  // در غیر این صورت گوگل ممکن است این صفحات را محتوای تکراری صفحه اصلی بداند.
+  let canonicalLink = document.querySelector('link[rel="canonical"]');
+  if(!canonicalLink){
+    canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel','canonical');
+    document.head.appendChild(canonicalLink);
+  }
+  canonicalLink.setAttribute('href', location.origin + currentPath());
   const finalImage = image || DEFAULT_OG_IMAGE;
   const ogImage = document.querySelector('meta[property="og:image"]');
   if(ogImage && finalImage) ogImage.setAttribute('content', finalImage);
@@ -7136,6 +7159,12 @@ function pdReviewFormHtml(p){
         <div class="pd-review-textmeta"><span id="pdReviewWordCount">۰ از ۳۰۰ کاراکتر</span></div>
       </div>
 
+      ${getReviewSubmitCount() >= 2 ? `
+      <div class="pd-review-field" id="pdReviewCaptchaField">
+        <label for="pdReviewCaptchaInput">برای جلوگیری از اسپم، حاصل این عبارت را وارد کنید: <strong id="pdReviewCaptchaQuestion">?</strong> <span class="pd-review-req">*</span></label>
+        <input type="text" inputmode="numeric" autocomplete="off" id="pdReviewCaptchaInput" name="captcha" placeholder="پاسخ" required>
+      </div>` : ''}
+
       <div class="pd-review-error" id="pdReviewError" style="display:none"></div>
 
       <button type="submit" class="btn btn-solid pd-review-submit">ارسال نظر</button>
@@ -7180,6 +7209,19 @@ function bindProductReviewForm(p){
   const formEl = $('#pdReviewFormEl', wrap);
   const successEl = $('#pdReviewSuccess', wrap);
   let currentRating = 0;
+
+  // اگر این مرورگر قبلاً ۲ بار یا بیشتر نظر ثبت کرده، فیلد کپچا (که در
+  // pdReviewFormHtml شرطاً رندر شده) را با یک سؤال جمع ساده پر می‌کنیم.
+  const captchaField = $('#pdReviewCaptchaField', wrap);
+  const captchaQuestionEl = $('#pdReviewCaptchaQuestion', wrap);
+  const captchaInputEl = $('#pdReviewCaptchaInput', wrap);
+  let captchaAnswer = null;
+  if(captchaField && captchaQuestionEl){
+    const a = 1 + Math.floor(Math.random()*8);
+    const b = 1 + Math.floor(Math.random()*8);
+    captchaAnswer = a + b;
+    captchaQuestionEl.textContent = `${a} + ${b}`;
+  }
 
   function paintStars(val){
     $$('.pd-review-star', starsEl).forEach((starEl, idx)=>{
@@ -7233,6 +7275,18 @@ function bindProductReviewForm(p){
     const rlReview = checkRateLimit('review', {minIntervalMs:20000, maxInWindow:6, windowMs:10*60*1000});
     if(!rlReview.allowed){ errorEl.textContent = rateLimitMessage(rlReview); errorEl.style.display='block'; return; }
 
+    if(captchaAnswer !== null){
+      const userAnswer = captchaInputEl ? captchaInputEl.value.trim() : '';
+      if(!userAnswer || Number(userAnswer) !== captchaAnswer){
+        errorEl.textContent = 'پاسخ عبارت امنیتی درست نیست. لطفاً دوباره بررسی کنید.';
+        errorEl.style.display='block';
+        if(captchaInputEl) captchaInputEl.focus();
+        return;
+      }
+    }
+
+    incrementReviewSubmitCount();
+
     const review = {
       id: 'rev_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
       productId: p.id,
@@ -7253,6 +7307,12 @@ function bindProductReviewForm(p){
     formEl.reset();
     setRating(0);
     updateWordCount();
+    if(captchaField && captchaQuestionEl){
+      const a2 = 1 + Math.floor(Math.random()*8);
+      const b2 = 1 + Math.floor(Math.random()*8);
+      captchaAnswer = a2 + b2;
+      captchaQuestionEl.textContent = `${a2} + ${b2}`;
+    }
 
     formEl.style.display = 'none';
     successEl.style.display = 'flex';
@@ -12167,7 +12227,7 @@ function renderCartHoverDrawer(){
     return;
   }
 
-  itemsBox.innerHTML = STATE.cart.map(ci=>{
+  itemsBox.innerHTML = STATE.cart.map((ci,idx)=>{
     const p = findProduct(ci.productId);
     if(!p) return '';
     return `
@@ -12175,8 +12235,16 @@ function renderCartHoverDrawer(){
       <a href="/product/${p.id}" data-link class="thumb">${productImgHtml(p)}</a>
       <div class="ci-body">
         <a href="/product/${p.id}" data-link><h4>${escapeHtml(p.name)}</h4></a>
-        <span class="ci-meta">${ci.size?('سایز: '+ci.size):''}${ci.color?(' · رنگ: '+escapeHtml(ci.color.label||colorLabel(ci.color))):''} × ${ci.qty}</span>
-        <span class="ci-price">${RIAL(p.price*ci.qty)}</span>
+        <span class="ci-meta">${ci.size?('سایز: '+ci.size):''}${ci.color?(' · رنگ: '+escapeHtml(ci.color.label||colorLabel(ci.color))):''}</span>
+        <div class="ci-row">
+          <div class="ci-qty">
+            <button onclick="updateCartQty(${idx},-1)">−</button>
+            <span>${ci.qty}</span>
+            <button onclick="updateCartQty(${idx},1)">+</button>
+          </div>
+          <span class="ci-price">${RIAL(p.price*ci.qty)}</span>
+        </div>
+        <button class="ci-remove" onclick="removeCartItem(${idx})">حذف</button>
       </div>
     </div>`;
   }).join('');
@@ -12210,10 +12278,11 @@ function bindCartHoverDrawer(){
   zone.addEventListener('mouseenter', openDrawer);
   zone.addEventListener('mouseleave', scheduleClose);
 
-  // با کلیک روی هر لینک داخل ناحیه (چه خودِ آیکون سبد، چه لینک‌های داخل کشو
-  // مثل «تکمیل خرید» یا تصویر محصول)، قبل از رفتن به صفحه بعد، کشو را ببندیم
-  // تا در صفحه‌ی جدید بازِ باز نماند.
+  // با کلیک روی لینک‌های ناوبری (خودِ آیکون سبد، «تکمیل خرید»، تصویر/عنوان محصول)
+  // که باعث رفتن به صفحه‌ی بعد می‌شوند، کشو را ببندیم تا در صفحه‌ی جدید باز نماند.
+  // اما کلیک روی دکمه‌های تغییر تعداد (+/−) یا «حذف» نباید کشو را ببندد.
   zone.addEventListener('click', e=>{
+    if(e.target.closest('.ci-qty, .ci-remove')) return;
     if(closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
     drawer.classList.remove('open');
   });
