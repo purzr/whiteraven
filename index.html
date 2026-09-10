@@ -5632,17 +5632,37 @@ async function markOneStockNotifyRequestNotified(row){
 async function loadMessagesRemote(){
   if(!supabaseClient) return [];
 
-  const { data, error } = await supabaseClient
-    .from('messages')
-    .select('*')
-    .order('created_at', { ascending: false });
+  // پیام‌ها دیگه با select عمومی خونده نمی‌شن (RLS جدول messages الان فقط
+  // به ادمین اجازه‌ی select می‌ده). ادمین همچنان همه‌ی پیام‌ها رو می‌گیره؛
+  // مشتری لاگین‌شده فقط پیام‌های خودش رو از طریق تابع get_my_messages
+  // (security definer، مطابق پالیسی جدید) می‌گیره؛ کاربر مهمان چیزی نمی‌گیره.
+  const admin = await isAdminLoggedIn();
 
-  if(error){
-    console.error('MESSAGES ERROR:', error);
-    return [];
+  if(admin){
+    const { data, error } = await supabaseClient
+      .from('messages')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if(error){
+      console.error('MESSAGES ERROR:', error);
+      return [];
+    }
+    return data || [];
   }
 
-  return data || [];
+  if(STATE.account?.email){
+    const { data, error } = await supabaseClient
+      .rpc('get_my_messages', { user_email: STATE.account.email });
+
+    if(error){
+      console.error('MESSAGES ERROR:', error);
+      return [];
+    }
+    return data || [];
+  }
+
+  return [];
 }
 async function deleteMessage(id) {
   const confirmDelete = confirm('آیا از حذف این پیام مطمئن هستید؟');
@@ -18474,6 +18494,111 @@ if('serviceWorker' in navigator){
     particles.length = 0;
     window.removeEventListener('touchstart', disableOnTouch);
   }, {passive:true, once:true});
+})();
+</script>
+<!-- ============ COOKIE CONSENT BANNER ============ -->
+<div id="wrCookieBanner" class="wr-cookie-banner hidden" role="dialog" aria-label="رضایت کوکی">
+  <div class="wr-cookie-inner">
+    <p class="wr-cookie-text">
+      این وبسایت از کوکی‌ها برای بهبود تجربه‌ی خرید، به‌خاطر سپردن سبد خرید
+      و تحلیل بازدید استفاده می‌کند.
+      <a href="/privacy" data-link>بیشتر بدانید</a>
+    </p>
+    <div class="wr-cookie-actions">
+      <button type="button" class="btn btn-solid" id="wrCookieAccept">قبول می‌کنم</button>
+      <button type="button" class="btn btn-outline" id="wrCookieDecline">فقط ضروری‌ها</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.wr-cookie-banner{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  z-index:9999;
+  background:var(--bg-card);
+  border-top:1px solid var(--line);
+  box-shadow:var(--shadow-md);
+  padding:16px 20px;
+  font-family:var(--font-body);
+}
+.wr-cookie-banner.hidden{ display:none; }
+.wr-cookie-inner{
+  max-width:var(--maxw);
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.wr-cookie-text{
+  color:var(--text-dim);
+  font-size:14px;
+  line-height:1.9;
+  margin:0;
+  flex:1 1 320px;
+}
+.wr-cookie-text a{
+  color:var(--gold-light);
+  text-decoration:underline;
+}
+.wr-cookie-actions{
+  display:flex;
+  gap:10px;
+  flex:0 0 auto;
+}
+.wr-cookie-actions .btn{
+  white-space:nowrap;
+  padding:9px 18px;
+  font-size:13px;
+}
+@media (max-width:560px){
+  .wr-cookie-inner{ flex-direction:column; align-items:stretch; }
+  .wr-cookie-actions{ justify-content:stretch; }
+  .wr-cookie-actions .btn{ flex:1; }
+}
+</style>
+
+<script>
+(function(){
+  var KEY = 'wr-cookie-consent'; // مقدار: 'accepted' یا 'declined'
+
+  function getConsent(){
+    try{ return localStorage.getItem(KEY); }catch(e){ return null; }
+  }
+  function setConsent(val){
+    try{ localStorage.setItem(KEY, val); }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var banner = document.getElementById('wrCookieBanner');
+    if(!banner) return;
+
+    if(!getConsent()){
+      banner.classList.remove('hidden');
+    }
+
+    var acceptBtn = document.getElementById('wrCookieAccept');
+    var declineBtn = document.getElementById('wrCookieDecline');
+
+    if(acceptBtn){
+      acceptBtn.addEventListener('click', function(){
+        setConsent('accepted');
+        banner.classList.add('hidden');
+      });
+    }
+    if(declineBtn){
+      declineBtn.addEventListener('click', function(){
+        setConsent('declined');
+        banner.classList.add('hidden');
+        // نکته: اگه بعداً گوگل آنالیتیکس یا اسکریپت تبلیغاتی اضافه کردی،
+        // اینجا باید جلوی بارگذاریش رو بگیری وقتی consent === 'declined'.
+      });
+    }
+  });
+
+  window.wrGetCookieConsent = getConsent;
 })();
 </script>
 </body>
