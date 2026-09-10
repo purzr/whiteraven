@@ -21,16 +21,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://whiteraven.ir/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://whiteraven.ir/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
     <loc>https://whiteraven.ir/product/f80e3255-bbbd-4e6d-9e07-0d5aa849d897</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
