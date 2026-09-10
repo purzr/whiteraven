@@ -2033,12 +2033,13 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
 }
 
 /* ===== Custom cursor — WHITE RAVEN (desktop only) =====
-   یک نشانگر مینیمال شبیه پیکان موس واقعی؛ در سکون همان شکل پیکان ظریف،
-   در حرکت سریع در راستای حرکت کشیده می‌شود (حالت مایع/قطره‌ای)، و با توقف
-   موس به‌آرامی به شکل اولیه برمی‌گردد. رنگ آن خودکار با تم سایت (تیره/کلاسیک)
-   هماهنگ است. فقط روی دستگاه‌هایی با موس واقعی (hover+pointer:fine) فعال
-   می‌شود و روی موبایل/تاچ کاملاً غیرفعال می‌ماند. فقط از transform استفاده
-   می‌شود (بدون blur/filter سنگین) تا حتی در حرکت سریع کاملاً روان بماند. */
+   در سکون یک پیکان مینیمال (مثل موس واقعی) نمایش داده می‌شود. وقتی موس با
+   سرعت کشیده می‌شود، پیکان محو می‌شود و به‌جایش یک «قطره‌ی مایع» ظاهر می‌شود
+   که در راستای حرکت کشیده/رام می‌شود (سر گرد جلو، دنباله‌ی باریک عقب) و گاهی
+   چند ذره‌ی ریز قطره هم پشت سرش می‌پاشد. به‌محض توقف موس، به‌آرامی به همان
+   پیکان اولیه برمی‌گردد. رنگ آن خودکار با تم سایت (تیره/کلاسیک) هماهنگ است.
+   فقط روی دستگاه‌هایی با موس واقعی (hover+pointer:fine) فعال می‌شود و روی
+   موبایل/تاچ کاملاً غیرفعال می‌ماند. */
 html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
 .wr-cursor{
   position:fixed;top:0;left:0;width:26px;height:26px;
@@ -2049,8 +2050,28 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
   opacity:0;
 }
 .wr-cursor.wr-visible{opacity:1;transition:opacity .06s linear}
-.wr-cursor svg{display:block;width:100%;height:100%;overflow:visible}
-.wr-cursor path{fill:var(--text);transition:fill .25s ease}
+.wr-cursor-arrow{display:block;width:100%;height:100%;overflow:visible;
+  opacity:1;transition:opacity .18s ease;}
+.wr-cursor-arrow path{fill:var(--text);transition:fill .25s ease}
+.wr-cursor-drop{
+  position:absolute;top:50%;left:50%;
+  width:20px;height:20px;margin:-10px 0 0 -10px;
+  background:var(--text);
+  border-radius:0% 50% 50% 50%;
+  opacity:0;
+  transform:rotate(0deg) scale(.4);
+  transition:opacity .18s ease, transform .3s cubic-bezier(.34,1.56,.64,1), background .25s ease;
+}
+.wr-cursor.wr-dragging .wr-cursor-arrow{opacity:0}
+.wr-cursor.wr-dragging .wr-cursor-drop{opacity:.92}
+.wr-cursor-particle{
+  position:fixed;top:0;left:0;
+  border-radius:50%;
+  background:var(--text);
+  pointer-events:none;z-index:99998;
+  opacity:.85;
+  will-change:transform,opacity;
+}
 .wr-cursor .wr-cursor-tag{
   position:absolute;top:100%;left:100%;margin:2px 0 0 2px;
   font-family:var(--font-header);font-size:9px;letter-spacing:.08em;
@@ -2079,9 +2100,10 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
 
 <!-- ============ CUSTOM CURSOR (desktop) ============ -->
 <div class="wr-cursor" id="wrCursor" aria-hidden="true">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg class="wr-cursor-arrow" id="wrCursorArrow" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M4.5 2.2 L4.5 19.8 L9.1 15.6 L12.1 21.8 L14.9 20.4 L11.9 14.3 L18 14.3 Z"/>
   </svg>
+  <div class="wr-cursor-drop" id="wrCursorDrop"></div>
   <span class="wr-cursor-tag" id="wrCursorTag">VIEW</span>
 </div>
 
@@ -18280,9 +18302,11 @@ if('serviceWorker' in navigator){
 </script>
 <script>
 /* ============ Custom cursor — WHITE RAVEN (desktop only) ============
-   نشانگر مینیمال شبیه پیکان واقعی موس؛ در حرکتِ سریع در راستای حرکت کشیده
-   می‌شود (حالت مایع)، با توقف موس نرم به شکل اصلی برمی‌گردد. فقط transform
-   استفاده می‌شود (بدون blur/filter سنگین) و فقط روی دستگاه با موس واقعی فعال
+   در سکون پیکان مینیمال دیده می‌شود؛ در حرکتِ سریع به یک «قطره‌ی مایع»
+   تبدیل می‌شود که سرِ گردش رو به جهت حرکت است و دنباله‌ی باریکش عقب کشیده
+   می‌شود (درست مثل قطره‌ی آب)، و گاهی چند ذره‌ی ریز پشت سرش می‌پاشد. با
+   توقف موس، نرم به پیکان اولیه برمی‌گردد. فقط transform/opacity استفاده
+   می‌شود (بدون blur/filter سنگین) و فقط روی دستگاه با موس واقعی فعال
    می‌شود؛ روی لمسی/موبایل کاملاً غیرفعال می‌ماند و نشانگر سیستم دست‌نخورده
    باقی می‌ماند. */
 (function(){
@@ -18290,8 +18314,9 @@ if('serviceWorker' in navigator){
   if(!eligible) return;
 
   const cursor = document.getElementById('wrCursor');
+  const drop = document.getElementById('wrCursorDrop');
   const tag = document.getElementById('wrCursorTag');
-  if(!cursor) return;
+  if(!cursor || !drop) return;
 
   document.documentElement.classList.add('wr-custom-cursor');
 
@@ -18305,11 +18330,56 @@ if('serviceWorker' in navigator){
 
   const EASE = 0.32; // نرمی حرکت — عدد بزرگ‌تر یعنی دنبال‌کردن سریع‌تر
 
+  // چرخشِ محلی شکلِ قطره طوری طراحی شده که سرِ گرد آن حدود ۴۵ درجه (پایین‌راستِ
+  // محلی) باشد و نوکِ باریکش حدود ۲۲۵ درجه (بالا-چپِ محلی). این افست باعث
+  // می‌شود بعد از rotate(angle+OFFSET) سرِ گرد دقیقاً رو به جهت حرکت باشد.
+  const DROP_ROT_OFFSET = -45;
+  const DRAG_ENTER_SPEED = 7;   // سرعتی که از آن بالاتر وارد حالت قطره می‌شویم
+  const DRAG_EXIT_SPEED = 2.2;  // سرعتی که از آن پایین‌تر (بعد از کمی تأخیر) به حالت پیکان برمی‌گردیم
+  const STILL_DELAY = 90;       // میلی‌ثانیه — چقدر صبر کنیم قبل از برگشت به پیکان
+  const MAX_PARTICLES = 10;
+
+  let isDragging = false;
+  let lastFastAt = 0;
+  let lastAngle = 0;
+  const particles = [];
+
   function setMode(next){
     if(mode===next) return;
     cursor.classList.remove('wr-mode-link','wr-mode-button','wr-mode-product');
     mode = next;
     if(mode!=='default') cursor.classList.add('wr-mode-'+mode);
+  }
+
+  function spawnParticle(x, y, angleDeg, strength){
+    if(particles.length >= MAX_PARTICLES) return;
+    const el = document.createElement('div');
+    el.className = 'wr-cursor-particle';
+    const rad = angleDeg * Math.PI/180;
+    // ذرات کمی پشتِ سرِ قطره و با کمی پراکندگیِ عمود بر جهت حرکت پاشیده می‌شوند
+    const back = 9 + Math.random()*8;
+    const perp = (Math.random()-0.5) * (10 + strength*10);
+    const px = x - Math.cos(rad)*back - Math.sin(rad)*perp;
+    const py = y - Math.sin(rad)*back + Math.cos(rad)*perp;
+    const size = 2.5 + Math.random()*3;
+    el.style.width = el.style.height = size+'px';
+    document.body.appendChild(el);
+    particles.push(el);
+
+    const dx = (Math.random()-0.5)*16;
+    const dy = (Math.random()-0.5)*10 + 8; // کمی به سمت پایین، مثل افتادن قطره
+    const anim = el.animate([
+      { transform:'translate('+(px-size/2)+'px,'+(py-size/2)+'px) scale(1)', opacity:.85 },
+      { transform:'translate('+(px-size/2+dx)+'px,'+(py-size/2+dy)+'px) scale(.15)', opacity:0 }
+    ], { duration: 380 + Math.random()*220, easing:'cubic-bezier(.2,.7,.3,1)' });
+
+    const cleanup = ()=>{
+      el.remove();
+      const idx = particles.indexOf(el);
+      if(idx>-1) particles.splice(idx,1);
+    };
+    anim.onfinish = cleanup;
+    anim.oncancel = cleanup;
   }
 
   const PRODUCT_SEL = '.card-img, .pd-gallery-main, .pd-gallery-slide img, .lightbox-overlay img';
@@ -18360,21 +18430,35 @@ if('serviceWorker' in navigator){
     const vx = curX-prevX, vy = curY-prevY;
     prevX = curX; prevY = curY;
 
-    const speed = Math.min(Math.hypot(vx,vy), 34);
-    const angle = speed>0.4 ? Math.atan2(vy,vx)*180/Math.PI : 0;
-    const stretch = speed/34; // 0..1
+    const speed = Math.hypot(vx,vy);
+    const speedClamped = Math.min(speed, 34);
+    if(speed > 0.4) lastAngle = Math.atan2(vy,vx)*180/Math.PI;
+    const stretch = speedClamped/34; // 0..1
 
-    const sx = 1 + stretch*0.55;
-    const sy = 1 - stretch*0.28;
+    // با هیسترزیس وارد/خارج حالت قطره می‌شویم تا سرِ مرز سرعت لرزش نداشته باشد
+    const now = performance.now();
+    if(speed > DRAG_ENTER_SPEED){ isDragging = true; lastFastAt = now; }
+    else if(speed < DRAG_EXIT_SPEED && (now-lastFastAt) > STILL_DELAY){ isDragging = false; }
+    cursor.classList.toggle('wr-dragging', isDragging);
 
     let baseScale = 1;
     if(mode==='link') baseScale = 1.15;
     else if(mode==='button') baseScale = 1.3;
     else if(mode==='product') baseScale = 1.45;
 
-    cursor.style.transform =
-      'translate('+curX+'px,'+curY+'px) rotate('+angle+'deg) '+
-      'scale('+(sx*baseScale)+','+(sy*baseScale)+') rotate('+(-angle)+'deg)';
+    cursor.style.transform = 'translate('+curX+'px,'+curY+'px) scale('+baseScale+')';
+
+    if(isDragging){
+      const sx = 1 + stretch*0.9;   // کشیدگیِ دنباله در جهت حرکت
+      const sy = Math.max(0.45, 1 - stretch*0.5); // باریک‌شدن عمود بر جهت حرکت
+      drop.style.transform = 'rotate('+(lastAngle+DROP_ROT_OFFSET)+'deg) scale('+sx+','+sy+')';
+
+      if(stretch > 0.32 && Math.random() < 0.35){
+        spawnParticle(curX, curY, lastAngle, stretch);
+      }
+    } else {
+      drop.style.transform = 'rotate(0deg) scale(.4)';
+    }
 
     raf = requestAnimationFrame(tick);
   }
@@ -18386,6 +18470,8 @@ if('serviceWorker' in navigator){
     document.documentElement.classList.remove('wr-custom-cursor');
     cursor.style.display = 'none';
     if(raf) cancelAnimationFrame(raf);
+    particles.forEach(el=>el.remove());
+    particles.length = 0;
     window.removeEventListener('touchstart', disableOnTouch);
   }, {passive:true, once:true});
 })();
