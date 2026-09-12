@@ -156,12 +156,12 @@
   --shadow-md:0 14px 34px rgba(var(--shadow-color),.38);
   --shadow-gold:0 10px 26px rgba(227,182,74,.30);
   --ph-bg:linear-gradient(160deg,#131a16,#0a0d0b);
-  --wr-particle:255,255,255;
-  --wr-glow-1:255,255,255;
-  --wr-glow-2:180,180,180;
-  --wr-glow-3:120,120,120;
-  --wr-glow-op:.05;
-  --wr-line-op:.06;
+  --wr-silk-1:8,10,9;
+  --wr-silk-2:26,32,28;
+  --wr-silk-3:242,239,232;
+  --wr-silk-op:.16;
+  --wr-sheen-op:.09;
+  --wr-grain-op:.045;
 
   /* ===== customizable typography (editable from admin ▸ تنظیمات ظاهری) ===== */
   --font-header:'YekanBakh','Vazirmatn',sans-serif;
@@ -205,12 +205,12 @@ html[data-theme="classic"]{
   --shadow-md:0 18px 40px rgba(var(--shadow-color),.20);
   --shadow-gold:0 10px 24px rgba(200,150,31,.32);
   --ph-bg:linear-gradient(160deg,#1a5533,#14432a);
-  --wr-particle:60,60,60;
-  --wr-glow-1:20,67,42;
-  --wr-glow-2:200,150,31;
-  --wr-glow-3:150,150,150;
-  --wr-glow-op:.035;
-  --wr-line-op:.05;
+  --wr-silk-1:255,255,255;
+  --wr-silk-2:230,228,220;
+  --wr-silk-3:20,20,20;
+  --wr-silk-op:.14;
+  --wr-sheen-op:.08;
+  --wr-grain-op:.035;
 }
 html[data-theme="classic"] .raven-mark path{fill:#fff;stroke:#14432a}
 /* خط تزئینی: طلایی به سبز Sacramento */
@@ -264,7 +264,7 @@ html[data-theme="classic"] .pd-gallery-hint{
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip;max-width:100%}
 body{
-  background:var(--bg);
+  background:transparent;
   color:var(--text);
   font-family:var(--font-body);
   font-size:calc(16px * var(--scale-body));
@@ -275,41 +275,83 @@ body{
 #wr-bg{
   position:fixed;inset:0;z-index:-1;pointer-events:none;
   overflow:hidden;background:var(--bg);
+  --mx:50%;--my:40%;
 }
-#wr-bg .wr-layer{
-  position:absolute;inset:-6vh -6vw;
+.wr-parallax{
+  position:absolute;inset:0;
   will-change:transform;
   transition:transform .1s linear;
 }
-#wr-particles{position:absolute;inset:0;width:100%;height:100%;display:block}
-.wr-glow{
-  position:absolute;border-radius:50%;
-  filter:blur(90px);
-  background:radial-gradient(circle, rgba(var(--wr-c),var(--wr-glow-op)), transparent 70%);
+#wr-bg .wr-fold{
+  position:absolute;inset:-15%;
+  will-change:transform;
+  filter:blur(55px);
+  border-radius:40%;
+  transition:transform .1s linear;
+}
+.wr-fold1{
+  background:radial-gradient(ellipse 60% 50% at 25% 20%, rgba(var(--wr-silk-2),var(--wr-silk-op)), transparent 65%);
+  animation:wrFold1 26s ease-in-out infinite;
+}
+.wr-fold2{
+  background:radial-gradient(ellipse 55% 45% at 75% 70%, rgba(var(--wr-silk-3),calc(var(--wr-silk-op) * 0.7)), transparent 65%);
+  animation:wrFold2 32s ease-in-out infinite;
+}
+.wr-fold3{
+  background:radial-gradient(ellipse 50% 40% at 55% 45%, rgba(var(--wr-silk-2),calc(var(--wr-silk-op) * 0.5)), transparent 70%);
+  animation:wrFold3 38s ease-in-out infinite;
+}
+@keyframes wrFold1{
+  0%{transform:translate(0,0) scale(1) rotate(0deg)}
+  33%{transform:translate(4%,-3%) scale(1.08) rotate(3deg)}
+  66%{transform:translate(-3%,4%) scale(0.96) rotate(-2deg)}
+  100%{transform:translate(0,0) scale(1) rotate(0deg)}
+}
+@keyframes wrFold2{
+  0%{transform:translate(0,0) scale(1) rotate(0deg)}
+  40%{transform:translate(-5%,3%) scale(1.06) rotate(-3deg)}
+  70%{transform:translate(3%,-4%) scale(0.97) rotate(2deg)}
+  100%{transform:translate(0,0) scale(1) rotate(0deg)}
+}
+@keyframes wrFold3{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(3%,3%) scale(1.1)}
+  100%{transform:translate(0,0) scale(1)}
+}
+.wr-mouse-light{
+  position:absolute;inset:-20%;
+  background:radial-gradient(circle 40vw at var(--mx) var(--my), rgba(var(--wr-silk-3),.09), transparent 60%);
+  will-change:background;
+  transition:background .4s ease-out;
+  filter:blur(50px);
+}
+.wr-sheen{
+  position:absolute;top:-30%;left:-60%;width:60%;height:160%;
+  background:linear-gradient(100deg, transparent 40%, rgba(var(--wr-silk-3),var(--wr-sheen-op)) 50%, transparent 60%);
+  transform:rotate(-12deg) translateX(0);
+  animation:wrSheen 22s linear infinite;
   will-change:transform;
 }
-.wr-glow.g1{--wr-c:var(--wr-glow-1);width:46vw;height:46vw;max-width:600px;max-height:600px;top:-10vw;right:-8vw;animation:wrGlow1 46s ease-in-out infinite}
-.wr-glow.g2{--wr-c:var(--wr-glow-2);width:40vw;height:40vw;max-width:520px;max-height:520px;bottom:-12vw;left:-6vw;animation:wrGlow2 54s ease-in-out infinite}
-.wr-glow.g3{--wr-c:var(--wr-glow-3);width:34vw;height:34vw;max-width:440px;max-height:440px;top:35vh;left:30vw;animation:wrGlow3 60s ease-in-out infinite}
-@keyframes wrGlow1{0%,100%{transform:translate(0,0)}50%{transform:translate(-3vw,4vw)}}
-@keyframes wrGlow2{0%,100%{transform:translate(0,0)}50%{transform:translate(4vw,-3vw)}}
-@keyframes wrGlow3{0%,100%{transform:translate(0,0)}50%{transform:translate(-3vw,-4vw)}}
-.wr-streak{
-  position:absolute;height:1px;width:38vw;max-width:460px;
-  background:linear-gradient(90deg, transparent, rgba(var(--wr-glow-1),var(--wr-line-op)), transparent);
-  will-change:transform,opacity;
+@keyframes wrSheen{
+  0%{transform:rotate(-12deg) translateX(-20%)}
+  50%{transform:rotate(-12deg) translateX(220%)}
+  100%{transform:rotate(-12deg) translateX(-20%)}
 }
-.wr-streak.s1{top:22%;left:-10%;transform:rotate(-8deg);animation:wrStreak1 38s ease-in-out infinite}
-.wr-streak.s2{top:64%;right:-10%;transform:rotate(6deg);animation:wrStreak2 44s ease-in-out infinite}
-@keyframes wrStreak1{0%,100%{opacity:0;transform:translateX(0) rotate(-8deg)}50%{opacity:1;transform:translateX(6vw) rotate(-8deg)}}
-@keyframes wrStreak2{0%,100%{opacity:0;transform:translateX(0) rotate(6deg)}50%{opacity:1;transform:translateX(-6vw) rotate(6deg)}}
+.wr-grain{
+  position:absolute;inset:-10%;
+  opacity:var(--wr-grain-op);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
 @media(prefers-reduced-motion:reduce){
-  .wr-glow,.wr-streak{animation:none !important}
-  #wr-particles{display:none}
+  .wr-fold1,.wr-fold2,.wr-fold3,.wr-sheen{animation:none !important}
+  .wr-mouse-light{display:none}
 }
 @media(max-width:760px){
-  .wr-glow{filter:blur(60px)}
-  .wr-streak{display:none}
+  #wr-bg .wr-fold{filter:blur(46px)}
+  .wr-sheen{display:none}
+  .wr-mouse-light{display:none}
+  .wr-grain{opacity:calc(var(--wr-grain-op) * 0.6)}
 }
 ::selection{background:var(--gold);color:#0a0a0b}
 :focus-visible{outline:1px solid var(--gold);outline-offset:2px}
@@ -2213,14 +2255,16 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
 </head>
 <body>
 <div id="wr-bg" aria-hidden="true">
-  <div class="wr-layer" id="wrParallaxLayer">
-    <canvas id="wr-particles"></canvas>
-    <div class="wr-glow g1"></div>
-    <div class="wr-glow g2"></div>
-    <div class="wr-glow g3"></div>
-    <div class="wr-streak s1"></div>
-    <div class="wr-streak s2"></div>
+  <div class="wr-parallax" data-wr-parallax="0.02">
+    <div class="wr-fold wr-fold1"></div>
+    <div class="wr-fold wr-fold2"></div>
+    <div class="wr-fold wr-fold3"></div>
   </div>
+  <div class="wr-parallax" data-wr-parallax="0.05">
+    <div class="wr-mouse-light"></div>
+    <div class="wr-sheen"></div>
+  </div>
+  <div class="wr-grain"></div>
 </div>
 
 <!-- ============ INITIAL PAGE LOADER (skeleton) ============ -->
@@ -18987,121 +19031,48 @@ if('serviceWorker' in navigator){
 </script>
 <script>
 (function(){
-  var canvas = document.getElementById('wr-particles');
-  var layer = document.getElementById('wrParallaxLayer');
-  if(!canvas || !layer) return;
+  var root = document.getElementById('wr-bg');
+  if(!root) return;
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-  var isSmall = window.innerWidth <= 760;
 
-  if(reduceMotion){ return; }
-
-  var ctx = canvas.getContext('2d');
-  var w, h, dpr;
-  var particles = [];
-  var COUNT = isSmall ? 16 : 34;
-  var mouse = {x:null, y:null, active:false};
-
-  function themeColor(){
-    var v = getComputedStyle(document.documentElement).getPropertyValue('--wr-particle').trim();
-    return v || '255,255,255';
-  }
-
-  function resize(){
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = canvas.width = window.innerWidth * dpr;
-    h = canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = window.innerHeight + 'px';
-  }
-
-  function makeParticle(){
-    return {
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: 0.6 + Math.random() * 1.4,
-      vx: (Math.random() - 0.5) * 0.06,
-      vy: (Math.random() - 0.5) * 0.06,
-      baseOp: 0.10 + Math.random() * 0.22,
-      phase: Math.random() * Math.PI * 2,
-      speed: 0.15 + Math.random() * 0.25
-    };
-  }
-
-  function init(){
-    resize();
-    particles = [];
-    for(var i=0;i<COUNT;i++) particles.push(makeParticle());
-  }
-
-  var t = 0;
-  function tick(){
-    t += 0.008;
-    ctx.clearRect(0,0,w,h);
-    var color = themeColor();
-    for(var i=0;i<particles.length;i++){
-      var p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if(mouse.active){
-        var dx = p.x - mouse.x, dy = p.y - mouse.y;
-        var dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 120 && dist > 0.01){
-          var force = (120 - dist) / 120 * 0.02;
-          p.x += (dx/dist) * force;
-          p.y += (dy/dist) * force;
-        }
-      }
-
-      if(p.x < -10) p.x = window.innerWidth + 10;
-      if(p.x > window.innerWidth + 10) p.x = -10;
-      if(p.y < -10) p.y = window.innerHeight + 10;
-      if(p.y > window.innerHeight + 10) p.y = -10;
-
-      var flicker = 0.75 + 0.25 * Math.sin(t * p.speed + p.phase);
-      ctx.beginPath();
-      ctx.arc(p.x*dpr, p.y*dpr, p.r*dpr, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(' + color + ',' + (p.baseOp*flicker) + ')';
-      ctx.fill();
+  if(!isTouch && !reduceMotion){
+    var tx = 50, ty = 40, cx = 50, cy = 40;
+    var raf1 = null;
+    function lerp(){
+      cx += (tx - cx) * 0.04;
+      cy += (ty - cy) * 0.04;
+      root.style.setProperty('--mx', cx + '%');
+      root.style.setProperty('--my', cy + '%');
+      raf1 = requestAnimationFrame(lerp);
     }
-    requestAnimationFrame(tick);
-  }
-
-  init();
-  requestAnimationFrame(tick);
-
-  var resizeTimer;
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function(){
-      isSmall = window.innerWidth <= 760;
-      init();
-    }, 200);
-  });
-
-  if(!isTouch){
     window.addEventListener('mousemove', function(e){
-      mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
+      tx = (e.clientX / window.innerWidth) * 100;
+      ty = (e.clientY / window.innerHeight) * 100;
     }, {passive:true});
-    window.addEventListener('mouseleave', function(){ mouse.active = false; });
+    raf1 = requestAnimationFrame(lerp);
   }
 
-  var lastScroll = window.scrollY || 0;
-  var ticking = false;
-  function applyParallax(){
-    var y = window.scrollY || 0;
-    var offset = Math.max(-24, Math.min(24, y * 0.015));
-    layer.style.transform = 'translateY(' + offset + 'px)';
-    ticking = false;
-  }
-  window.addEventListener('scroll', function(){
-    if(!ticking){
-      requestAnimationFrame(applyParallax);
-      ticking = true;
+  if(!reduceMotion){
+    var layers = root.querySelectorAll('.wr-parallax');
+    var ticking = false;
+    function applyParallax(){
+      var y = window.scrollY || 0;
+      for(var i=0;i<layers.length;i++){
+        var factor = parseFloat(layers[i].getAttribute('data-wr-parallax')) || 0;
+        var offset = Math.max(-40, Math.min(40, y * factor));
+        layers[i].style.transform = 'translateY(' + offset + 'px)';
+      }
+      ticking = false;
     }
-  }, {passive:true});
+    window.addEventListener('scroll', function(){
+      if(!ticking){
+        requestAnimationFrame(applyParallax);
+        ticking = true;
+      }
+    }, {passive:true});
+  }
 })();
 </script>
 </body>
