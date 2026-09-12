@@ -773,7 +773,7 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
 /* هاله‌ی نرم پشت آیکون فعال — محدود به داخل کادر آیتم، پشت متن زیرش */
 .mbn-icon::before{
   content:'';
-  position:absolute;inset:7px;
+  position:absolute;inset:5px;
   border-radius:50%;
   z-index:0;
   background:radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--gold-light) 30%, transparent), color-mix(in srgb, var(--gold-light) 7%, transparent) 60%, transparent 78%);
@@ -794,13 +794,13 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
 .mbn-item.active .mbn-icon{
   background:radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--gold-light) 22%, var(--bg-card)), color-mix(in srgb, var(--gold-light) 9%, var(--bg-card)) 70%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 -3px 6px -2px rgba(0,0,0,.15), 0 8px 18px -8px color-mix(in srgb, var(--gold-light) 55%, transparent);
-  transform:scale(1.12);
+  transform:scale(1.05);
   animation:wr-bn-icon-pop .5s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes wr-bn-icon-pop{
   0%{ transform:scale(.75); }
-  55%{ transform:scale(1.22); }
-  100%{ transform:scale(1.12); }
+  55%{ transform:scale(1.14); }
+  100%{ transform:scale(1.05); }
 }
 .mbn-item.active .mbn-icon::before{ opacity:1; transform:scale(1); }
 .mbn-item.active svg{
