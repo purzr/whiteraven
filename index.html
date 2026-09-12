@@ -3271,7 +3271,7 @@ async function getRecommendedProducts(limit=8){
     return data.map(r=>findProduct(r.product_id)).filter(Boolean);
   }catch(e){ return []; }
 }
-function recommendedProductsSectionHtml(products, title, eyebrow='FOR YOU', colorOverride, intensityOverride){
+function recommendedProductsSectionHtml(products, title, eyebrow='FOR YOU', colorOverride, intensityOverride, iconKey='sparkle'){
   if(!products?.length) return '';
   const relColor = colorOverride || STATE.settings.relatedColor || '#c9a066';
   const relRgb = hexToRgbStr(relColor) || '201,162,75';
@@ -3279,17 +3279,17 @@ function recommendedProductsSectionHtml(products, title, eyebrow='FOR YOU', colo
   return `
   <div class="section glass-band recs-section" style="margin-top:60px;padding:0">
     <div class="glass-panel" style="background:linear-gradient(160deg,rgba(${relRgb},${relAlpha.a1}),rgba(${relRgb},${relAlpha.a2}) 60%,rgba(255,255,255,.06))">
-      ${marksHtml('', 'sparkle', `color:${relColor}`)}
+      ${marksHtml('', iconKey, `color:${relColor}`)}
       <div class="section-head" style="text-align:right"><span class="eyebrow" style="background:rgba(${relRgb},${relAlpha.a3});color:${relColor}">${eyebrow}</span><h2 class="serif">${title || 'پیشنهاد ویژه برای شما'}</h2><div class="divider" style="margin-right:0"></div></div>
       <div class="glass-scroll">${products.map(productCard).join('')}</div>
     </div>
   </div>`;
 }
-async function renderRecommendationsInto(containerId, title, limit=8, eyebrow='FOR YOU', colorOverride, intensityOverride){
+async function renderRecommendationsInto(containerId, title, limit=8, eyebrow='FOR YOU', colorOverride, intensityOverride, iconKey='sparkle'){
   const el = document.getElementById(containerId);
   if(!el) return;
   const items = await getRecommendedProducts(limit);
-  el.innerHTML = recommendedProductsSectionHtml(items, title, eyebrow, colorOverride, intensityOverride);
+  el.innerHTML = recommendedProductsSectionHtml(items, title, eyebrow, colorOverride, intensityOverride, iconKey);
 }
 
 // ===== لیست استان‌ها و شهرهای ایران — برای تکمیل خودکار (autocomplete) فرم آدرس =====
@@ -6775,21 +6775,18 @@ function bindGlobalUI(){
   }, {passive:true});
   window.addEventListener('resize', updateBottomNavFooterState);
 
-  // دکمه «بازگشت به بالا»: بعد از اسکرول به‌اندازه‌ی کافی نمایش داده می‌شود
-  // و با کلیک، صفحه به‌آرامی به بالا برمی‌گردد. برای صفحات طولانی وبلاگ/شاپ مفید است.
+  // دکمه «بازگشت به بالا»: فقط وقتی صفحه به فوتر می‌رسد نمایش داده می‌شود
+  // و با کلیک، صفحه به‌آرامی به بالا برمی‌گردد.
   (function(){
     const btn = $('#backToTopBtn');
-    if(!btn) return;
-    let ticking2 = false;
-    function updateBackToTop(){
-      if(window.scrollY > 560) btn.classList.add('show');
-      else btn.classList.remove('show');
-      ticking2 = false;
-    }
-    window.addEventListener('scroll', ()=>{
-      if(!ticking2){ requestAnimationFrame(updateBackToTop); ticking2 = true; }
-    }, {passive:true});
-    updateBackToTop();
+    const footer = $('#siteFooter');
+    if(!btn || !footer) return;
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        btn.classList.toggle('show', entry.isIntersecting);
+      });
+    }, {root:null, threshold:0});
+    io.observe(footer);
     btn.onclick = ()=> window.scrollTo({top:0, left:0, behavior:'smooth'});
   })();
 
@@ -8652,9 +8649,9 @@ function instagramFeedSectionHtml(){
 // جدیدترین‌ها = برق/درخشش (تازگی)، تخفیف‌های امروز = برچسب قیمت، محصولات پیشنهادی = ستاره، پرفروش‌ترین‌ها = شعله
 const MARK_ICONS = {
   deals: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="currentColor" stroke="none"/><line x1="15.3" y1="8.7" x2="9.7" y2="14.3"/><circle cx="10.3" cy="9.3" r="1"/><circle cx="14.7" cy="13.7" r="1"/>',
-  new: '<path d="M12 2l1.8 5.6L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.4L12 2z"/>',
+  new: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   best: '<path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.2l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/>',
-  bestsellers: '<path d="M12 2.3c.4 3-1.6 4.9-3.1 6.6C7.3 10.7 6.2 12.4 6.2 14.5a5.8 5.8 0 0 0 11.6 0c0-2.6-1.7-4.6-3.4-6.5C13.1 6.6 12.4 4.9 12 2.3z"/>',
+  bestsellers: '<path d="M17.657 18.657A8 8 0 0 1 6.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A7.975 7.975 0 0 1 20 13a7.975 7.975 0 0 1-2.343 5.657z"/>',
   gift: '<rect x="3" y="9" width="18" height="12" rx="1.4"/><path d="M3 9h18v4H3z"/><path d="M12 9v12"/><path d="M12 9c-1.6-3.4-4-4.6-5.4-3.6C5 6.5 5.8 9 12 9z"/><path d="M12 9c1.6-3.4 4-4.6 5.4-3.6C19 6.5 18.2 9 12 9z"/>',
   tag2: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.4" fill="currentColor" stroke="none"/>',
   crown: '<path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z"/><path d="M5 21h14"/>',
@@ -8664,7 +8661,8 @@ const MARK_ICONS = {
   percent: '<circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/><line x1="18" y1="6" x2="6" y2="18"/>',
   sparkle: '<path d="M12 3l1.4 4.4L18 9l-4.6 1.6L12 15l-1.4-4.4L6 9l4.6-1.6L12 3z"/><path d="M19 15.5l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/>',
   bag: '<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
-  diamond: '<path d="M3 9l4-6h10l4 6-9 12z"/><path d="M3 9h18M8.5 3l1.5 6-2 6M15.5 3l-1.5 6 2 6"/>'
+  diamond: '<path d="M3 9l4-6h10l4 6-9 12z"/><path d="M3 9h18M8.5 3l1.5 6-2 6M15.5 3l-1.5 6 2 6"/>',
+  eye: '<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/><path d="M12 3v2M3 12h2M21 12h-2"/>'
 };
 // فهرست نمادها برای انتخاب در پنل مدیریت (بخش‌های دلخواه)
 const MARK_ICON_CHOICES = [
@@ -13189,7 +13187,7 @@ async function initCartPage(){
   const cartProductIds = STATE.cart.map(ci=>ci.productId);
   const recent = recentlyViewedProducts(cartProductIds, 15);
   const el = document.getElementById('recentlyViewedSection');
-  if(el) el.innerHTML = recommendedProductsSectionHtml(recent, 'آخرین بازدیدهای شما', 'RECENTLY VIEWED', STATE.settings.recentlyViewedColor, STATE.settings.recentlyViewedIntensity);
+  if(el) el.innerHTML = recommendedProductsSectionHtml(recent, 'آخرین بازدیدهای شما', 'RECENTLY VIEWED', STATE.settings.recentlyViewedColor, STATE.settings.recentlyViewedIntensity, 'eye');
 }
 
 /* ======================================================================
