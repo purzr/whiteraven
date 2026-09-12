@@ -761,7 +761,7 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
 .mobile-bottom-nav-row{display:flex;align-items:stretch;justify-content:space-around;position:relative}
 .mbn-item{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0px;
-  padding:8px 4px 9px;color:var(--text-faint);position:relative;
+  padding:8px 4px 9px;color:var(--text-faint);position:relative;overflow:hidden;
   background:none;border:none;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:padding .4s cubic-bezier(.22,1,.36,1),color .3s ease;
 }
@@ -770,12 +770,12 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
   width:34px;height:34px;border-radius:50%;
   transition:background .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.34,1.56,.64,1),width .4s cubic-bezier(.22,1,.36,1),height .4s cubic-bezier(.22,1,.36,1);
 }
-/* هاله‌ی شیشه‌ای پشت آیکون فعال — دایره‌ی بزرگ نرم با گرادیان طلایی که
-   با اسکیل از صفر باز می‌شود، مشابه افکت شیشه‌ای دکمه‌ی انتخاب‌شده در نمونه. */
+/* هاله‌ی نرم پشت آیکون فعال — محدود به داخل کادر آیتم، پشت متن زیرش */
 .mbn-icon::before{
   content:'';
-  position:absolute;inset:-9px;
+  position:absolute;inset:-4px;
   border-radius:50%;
+  z-index:0;
   background:radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--gold-light) 30%, transparent), color-mix(in srgb, var(--gold-light) 7%, transparent) 60%, transparent 78%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 -6px 10px -6px rgba(0,0,0,.12), 0 6px 16px -6px color-mix(in srgb, var(--gold-light) 45%, transparent);
   opacity:0; transform:scale(.4);
@@ -783,7 +783,7 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
   pointer-events:none;
 }
 .mbn-item svg{width:19px;height:19px;transition:transform .4s cubic-bezier(.34,1.56,.64,1),width .4s ease,height .4s ease,filter .35s ease;stroke-linecap:round;stroke-linejoin:round;position:relative;z-index:1}
-.mbn-item span:not(.cart-badge){font-family:var(--font-body);font-size:10px;letter-spacing:.02em;font-weight:700;transition:color .3s ease,font-weight .3s ease;margin-top:-4px}
+.mbn-item span:not(.cart-badge){font-family:var(--font-body);font-size:10px;letter-spacing:.02em;font-weight:700;transition:color .3s ease,font-weight .3s ease;margin-top:-4px;position:relative;z-index:2}
 .mbn-item:hover .mbn-icon,.mbn-item:focus-visible .mbn-icon{transform:translateY(-2px) scale(1.05)}
 .mbn-item.active{color:var(--gold-light);animation:wr-bn-item-select .5s cubic-bezier(.22,1,.36,1)}
 @keyframes wr-bn-item-select{
@@ -811,6 +811,7 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
 .mbn-item.active::after{
   content:'';
   position:absolute;bottom:1px;left:50%;width:16px;height:2px;border-radius:2px;
+  z-index:2;
   transform:translateX(-50%) scaleX(0);
   background:linear-gradient(90deg, transparent, var(--gold-light), transparent);
   box-shadow:0 0 6px 0 color-mix(in srgb, var(--gold-light) 70%, transparent);
