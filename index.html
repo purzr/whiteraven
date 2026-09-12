@@ -606,26 +606,124 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
   #backToTopBtn{bottom:calc(84px + env(safe-area-inset-bottom,0px));left:14px;width:40px;height:40px}
 }
 
-/* ===== Mobile bottom nav — Asset-based (WHITE RAVEN light/dark bars) =====
-   نوار پایین موبایل اکنون دقیقاً همان دو تصویر مرجع (روشن/مشکی) است؛ هیچ
-   border، border-radius، box-shadow یا افکتی روی خود المان اعمال نمی‌شود
-   چون این‌ها همگی داخل خود تصویر پخته شده‌اند. نسبت ابعاد نوار با
-   aspect-ratio دقیقاً برابر نسبت ابعاد فایل تصویر (2172×724) قفل می‌شود تا
-   background-size:100% 100% هیچ‌گاه تصویر را کش یا کراپ نکند. */
+/* ===== Mobile bottom nav — Floating Luxury Glass ===== */
 .mobile-bottom-nav{
   display:none;
   position:fixed;left:12px;right:12px;
   bottom:calc(10px + env(safe-area-inset-bottom,0px));
   z-index:80;
-  aspect-ratio:2172/724;
-  background-image:url("/assets/navigation/bottom-nav-dark.png");
-  background-size:100% 100%;
-  background-repeat:no-repeat;
-  background-position:center;
-  transition:bottom .4s cubic-bezier(.22,1,.36,1);
+  border-radius:22px;
+  background:color-mix(in srgb, var(--bg) 62%, transparent);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  box-shadow:0 14px 36px -12px rgba(var(--shadow-color),.32), 0 2px 10px rgba(var(--shadow-color),.1);
+  transform:translateZ(0);
+  will-change:transform;
+  transition:bottom .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+  --wr-core:#F5F5F5;
+  --wr-mid:#E4E4E4;
+  --wr-outer:#D8D8D8;
+  --wr-shine:#FFFFFF;
+  overflow:hidden;
 }
 html[data-theme="classic"] .mobile-bottom-nav{
-  background-image:url("/assets/navigation/bottom-nav-light.png");
+  --wr-core:#C9B183;
+  --wr-mid:#B79F72;
+  --wr-outer:#A48B5E;
+  --wr-shine:#FFFFFF;
+}
+html[data-theme="classic"] .mbn-flow-a{ opacity:1; }
+html[data-theme="classic"] .mbn-flow-b{ opacity:.85; }
+html[data-theme="classic"] .mbn-flow-c{ opacity:.68; }
+html[data-theme="classic"] .mbn-flow-d{ opacity:.55; }
+html[data-theme="classic"] .mbn-flow-e{ opacity:.4; }
+html[data-theme="classic"] .mbn-flow-h{ opacity:.7; }
+html[data-theme="classic"] .mbn-flow-i{ opacity:.6; }
+html[data-theme="classic"] .mbn-flow-j{ opacity:.5; }
+/* افکت انعکاس فلزی: یک مسیر SVG بسته و واحد (rect گرد) که با
+   stroke-dasharray/stroke-dashoffset روی کل محیط نوار حرکت می‌کند — بدون
+   هیچ Reset یا قطع‌شدنی بین اضلاع و گوشه‌ها. سه لایه‌ی هم‌فاز با dash های
+   متفاوت (باریک/روشن در مرکز، پهن‌تر/کم‌رنگ‌تر در اطراف) به‌جای blur یا
+   drop-shadow، فقط با opacity یک محو شدن نرم در دو سر انعکاس می‌سازند —
+   بدون هیچ Glow واقعی. overflow:hidden روی خود نوار هم به‌عنوان لایه‌ی
+   اطمینانِ اضافه، هر چیزی خارج از کادر گرد را می‌بُرد. */
+.mbn-glow-svg{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.mbn-glow-sweep{
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.mbn-glow-sweep.mbn-flow-a{ stroke:url(#wrMirrorGrad); stroke-width:1.3px; opacity:.95; animation:wr-flow-a 17s linear infinite; }
+.mbn-glow-sweep.mbn-flow-b{ stroke:url(#wrMirrorGrad); stroke-width:1.4px; opacity:.72; animation:wr-flow-b 22s linear infinite; }
+.mbn-glow-sweep.mbn-flow-c{ stroke:url(#wrMirrorGrad); stroke-width:1.5px; opacity:.52; animation:wr-flow-c 28s linear infinite; }
+.mbn-glow-sweep.mbn-flow-d{ stroke:url(#wrMirrorGrad); stroke-width:1.6px; opacity:.38; animation:wr-flow-d 34s linear infinite reverse; }
+.mbn-glow-sweep.mbn-flow-e{ stroke:url(#wrMirrorGrad); stroke-width:1.8px; opacity:.24; animation:wr-flow-e 42s linear infinite; }
+.mbn-glow-sweep.mbn-flow-h{ stroke:url(#wrMirrorGrad); stroke-width:1px;   opacity:.55; stroke-dasharray:12 988; animation:wr-flow-h 28s linear infinite; animation-delay:1s; animation-fill-mode:backwards; }
+.mbn-glow-sweep.mbn-flow-i{ stroke:url(#wrMirrorGrad); stroke-width:1px;   opacity:.45; stroke-dasharray:14 986; animation:wr-flow-i 34s linear infinite reverse; animation-delay:1.2s; animation-fill-mode:backwards; }
+.mbn-glow-sweep.mbn-flow-j{ stroke:url(#wrMirrorGrad); stroke-width:1px;   opacity:.35; stroke-dasharray:16 984; animation:wr-flow-j 42s linear infinite; animation-delay:1.4s; animation-fill-mode:backwards; }
+/* هر لایه هم دور مسیر بسته می‌چرخد (stroke-dashoffset) هم طول خودش را
+   نامتقارن کم و زیاد می‌کند (stroke-dasharray) تا حس «مایع» و ارگانیک
+   بدهد. چون سرعت و فاز هر لایه فرق دارد، گاهی طول‌ها روی هم می‌افتند و
+   بصری به هم «وصل» به‌نظر می‌رسند و گاهی کاملاً از هم «جدا» می‌شوند —
+   بدون این‌که هیچ‌کدام مسیر واحد بسته‌ی مشترک را ترک کنند. */
+@keyframes wr-flow-a{
+  0%{ stroke-dashoffset:0; stroke-dasharray:60 940; }
+  30%{ stroke-dasharray:170 830; }
+  55%{ stroke-dashoffset:-550; stroke-dasharray:90 910; }
+  80%{ stroke-dasharray:220 780; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:60 940; }
+}
+@keyframes wr-flow-b{
+  0%{ stroke-dashoffset:0; stroke-dasharray:140 860; }
+  35%{ stroke-dasharray:300 700; }
+  60%{ stroke-dashoffset:-600; stroke-dasharray:170 830; }
+  85%{ stroke-dasharray:340 660; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:140 860; }
+}
+@keyframes wr-flow-c{
+  0%{ stroke-dashoffset:0; stroke-dasharray:230 770; }
+  40%{ stroke-dasharray:430 570; }
+  65%{ stroke-dashoffset:-500; stroke-dasharray:260 740; }
+  90%{ stroke-dasharray:470 530; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:230 770; }
+}
+@keyframes wr-flow-d{
+  0%{ stroke-dashoffset:0; stroke-dasharray:300 700; }
+  30%{ stroke-dasharray:540 460; }
+  60%{ stroke-dashoffset:-500; stroke-dasharray:340 660; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:300 700; }
+}
+@keyframes wr-flow-e{
+  0%{ stroke-dashoffset:0; stroke-dasharray:380 620; }
+  50%{ stroke-dasharray:680 320; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:380 620; }
+}
+@keyframes wr-flow-h{
+  0%{ stroke-dashoffset:0; stroke-dasharray:12 988; }
+  40%{ stroke-dasharray:32 968; }
+  65%{ stroke-dashoffset:-500; stroke-dasharray:16 984; }
+  90%{ stroke-dasharray:40 960; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:12 988; }
+}
+@keyframes wr-flow-i{
+  0%{ stroke-dashoffset:0; stroke-dasharray:14 986; }
+  30%{ stroke-dasharray:38 962; }
+  60%{ stroke-dashoffset:-500; stroke-dasharray:18 982; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:14 986; }
+}
+@keyframes wr-flow-j{
+  0%{ stroke-dashoffset:0; stroke-dasharray:16 984; }
+  50%{ stroke-dasharray:36 964; }
+  100%{ stroke-dashoffset:-1000; stroke-dasharray:16 984; }
+}
+@media (prefers-reduced-motion:reduce){
+  .mbn-glow-sweep{ animation:none; }
 }
 .mobile-bottom-nav.compact{
   bottom:calc(6px + env(safe-area-inset-bottom,0px));
@@ -633,7 +731,33 @@ html[data-theme="classic"] .mobile-bottom-nav{
 .mobile-bottom-nav.compact .mbn-item{padding:6px 4px 5px}
 .mobile-bottom-nav.compact .mbn-icon{width:30px;height:30px}
 .mobile-bottom-nav.compact .mbn-item svg{width:18px;height:18px}
-.mobile-bottom-nav-row{display:flex;align-items:center;justify-content:space-around;position:relative;width:100%;height:100%}
+@supports not (-webkit-backdrop-filter: blur(1px)) and not (backdrop-filter: blur(1px)) {
+  .mobile-bottom-nav{ background:var(--bg); }
+}
+@-moz-document url-prefix(){
+  .mobile-bottom-nav{
+    background:var(--bg);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+}
+/* همان توضیح بالا: @-moz-document دیگر کار نمی‌کند؛ رفع واقعی باگ جابه‌جایی
+   حین اسکرول در فایرفاکس موبایل با حذف transform/will-change مخصوص فایرفاکس. */
+@supports (-moz-appearance:none){
+  .mobile-bottom-nav{
+    transform:none;
+    will-change:auto;
+  }
+}
+/* نوار حالا شناور است و دیگر به فوتر نمی‌چسبد؛ این کلاس فقط برای سازگاری با
+   منطق قبلی JS نگه داشته شده و تغییر ظاهری کوچکی اعمال می‌کند. */
+html[data-theme="classic"] .mobile-bottom-nav.over-footer{
+  background:color-mix(in srgb, var(--bg-card) 80%, transparent);
+}
+@supports not (-webkit-backdrop-filter: blur(1px)) and not (backdrop-filter: blur(1px)) {
+  html[data-theme="classic"] .mobile-bottom-nav.over-footer{ background:var(--bg-card); }
+}
+.mobile-bottom-nav-row{display:flex;align-items:stretch;justify-content:space-around;position:relative}
 .mbn-item{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   padding:9px 4px 8px;color:var(--text-faint);position:relative;
@@ -2504,6 +2628,25 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
 
 <!-- ============ MOBILE BOTTOM NAV (only under 900px) ============ -->
 <nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <svg class="mbn-glow-svg" id="mbnGlowSvg" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="wrMirrorGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"  style="stop-color:var(--wr-outer); stop-opacity:.55"/>
+        <stop offset="42%" style="stop-color:var(--wr-mid); stop-opacity:.9"/>
+        <stop offset="50%" style="stop-color:var(--wr-shine); stop-opacity:1"/>
+        <stop offset="58%" style="stop-color:var(--wr-mid); stop-opacity:.9"/>
+        <stop offset="100%" style="stop-color:var(--wr-outer); stop-opacity:.55"/>
+      </linearGradient>
+    </defs>
+    <rect id="mbnGlowA" class="mbn-glow-sweep mbn-flow-a" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowB" class="mbn-glow-sweep mbn-flow-b" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowC" class="mbn-glow-sweep mbn-flow-c" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowD" class="mbn-glow-sweep mbn-flow-d" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowE" class="mbn-glow-sweep mbn-flow-e" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowH" class="mbn-glow-sweep mbn-flow-h" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowI" class="mbn-glow-sweep mbn-flow-i" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+    <rect id="mbnGlowJ" class="mbn-glow-sweep mbn-flow-j" x="0.5" y="0.5" width="99" height="59" rx="21" ry="21" pathLength="1000"/>
+  </svg>
   <div class="mobile-bottom-nav-row">
     <a href="/" data-link data-route="/" class="mbn-item" id="mbnHome">
       <span class="mbn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span>
@@ -2529,6 +2672,52 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
     </a>
   </div>
 </nav>
+<script>
+/* هم‌اندازه‌سازی مسیر SVG نوار پایین با ابعاد واقعی پیکسلی خود نوار،
+   تا شعاع گوشه‌ها (rx/ry) دقیقاً با border-radius واقعی نوار یکی باشد
+   و مسیر یک Path بسته و واحد و بدون هیچ اعوجاجی بماند. */
+(function(){
+  var nav = document.getElementById('mobileBottomNav');
+  var svg = document.getElementById('mbnGlowSvg');
+  var outer = document.getElementById('mbnGlowE');
+  var mid = document.getElementById('mbnGlowC');
+  var core = document.getElementById('mbnGlowA');
+  var b = document.getElementById('mbnGlowB');
+  var d = document.getElementById('mbnGlowD');
+  var h = document.getElementById('mbnGlowH');
+  var i = document.getElementById('mbnGlowI');
+  var j = document.getElementById('mbnGlowJ');
+  if(!nav || !svg || !outer || !mid || !core || !b || !d || !h || !i || !j) return;
+  var layers = [core, b, mid, d, outer, h, i, j];
+  var raf = null;
+  function sizeGlow(){
+    var w = nav.offsetWidth, h = nav.offsetHeight;
+    if(!w || !h) return;
+    var inset = 0.75;
+    var radius = Math.min(22, (Math.min(w,h)/2) - inset);
+    if(radius < 0) radius = 0;
+    svg.setAttribute('viewBox','0 0 '+w+' '+h);
+    layers.forEach(function(el){
+      el.setAttribute('x', inset);
+      el.setAttribute('y', inset);
+      el.setAttribute('width', Math.max(0, w - inset*2));
+      el.setAttribute('height', Math.max(0, h - inset*2));
+      el.setAttribute('rx', radius);
+      el.setAttribute('ry', radius);
+    });
+  }
+  function scheduleSize(){
+    if(raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(sizeGlow);
+  }
+  scheduleSize();
+  window.addEventListener('resize', scheduleSize);
+  window.addEventListener('orientationchange', scheduleSize);
+  if(window.ResizeObserver){
+    new ResizeObserver(scheduleSize).observe(nav);
+  }
+})();
+</script>
 
 <main id="app"></main>
 <button type="button" id="backToTopBtn" aria-label="بازگشت به بالا" title="بازگشت به بالا">
