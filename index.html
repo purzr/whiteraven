@@ -210,7 +210,6 @@ html[data-theme="classic"] .section-head .divider{
 html[data-theme="classic"] .feature:nth-of-type(odd) svg{color:#f3ecd9;background:rgba(243,236,217,.12);border-color:rgba(243,236,217,.28)}
 html[data-theme="classic"] .feature:nth-of-type(even) svg{color:#c8961f;background:rgba(184,138,68,.12);border-color:rgba(184,138,68,.28)}
 html[data-theme="classic"] .feature:hover{background:rgba(20,67,42,.06)}
-html[data-theme="classic"] .card-badge{box-shadow:0 4px 14px rgba(192,86,63,.28)}
 html[data-theme="classic"] .card-discount{box-shadow:0 4px 14px rgba(192,86,63,.28)}
 html[data-theme="classic"] .chip.active,
 html[data-theme="classic"] .chip:hover{box-shadow:0 3px 10px rgba(184,138,68,.20)}
@@ -455,7 +454,6 @@ nav.main-nav.nav-hovering a:hover::after,nav.main-nav.nav-hovering .nav-drop-tri
 .icon-btn.bump svg{animation:cartBump .45s cubic-bezier(.4,0,.2,1)}
 .cart-badge.bump{animation:cartBump .45s cubic-bezier(.4,0,.2,1)}
 .notif-badge{background:var(--danger);color:#fff}
-.hamburger{display:none}
 .header-search-mobile{display:none}
 .header-theme-mobile{display:none}
 .header-search-mobile-inline{display:none}
@@ -518,10 +516,8 @@ html:not([data-theme="classic"]) .header-search-desktop.expanded{background:rgba
   nav.main-nav{display:none}
   /* منوی همبرگری موبایل حذف شد؛ دسترسی به منو از طریق نوار پایین صفحه است */
   .header-row{grid-template-columns:auto 1fr auto}
-  .wishlist-header-icon,.account-header-icon{display:none}
-  #searchOpenBtn{display:none}
+  #searchOpenBtn,#themeToggleBtn{display:none}
   .header-search-mobile{display:flex}
-  #themeToggleBtn{display:none}
   .header-theme-mobile{display:flex}
   #cartOpenBtn{display:none}
   body{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
@@ -986,7 +982,7 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
   .header-icons-left{gap:26px}
   .icon-btn svg{width:22px;height:22px}
   .cart-badge{width:19px;height:19px;font-size:11px;top:-9px;left:-11px}
-  #searchOpenBtn,.wishlist-header-icon,.account-header-icon{display:none!important}
+  #searchOpenBtn{display:none!important}
   .header-account-desktop{display:flex}
   /* منو زیر هدر جمع می‌شود وقتی پایین اسکرول می‌شود، و با اسکرول به بالا دوباره باز می‌شود */
   header.site.nav-hidden .header-row{row-gap:0}
@@ -999,38 +995,6 @@ html[data-theme="classic"] .mobile-bottom-nav.over-footer{
 .theme-toggle .icon-classic{display:none}
 html[data-theme="classic"] .theme-toggle .icon-sun{display:block}
 html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
-
-/* mobile drawer */
-.mobile-nav{
-  position:fixed;inset:0 0 0 auto;width:82%;max-width:340px;
-  background:var(--bg-alt);z-index:200;
-  display:flex;flex-direction:column;
-  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
-  border-left:1px solid var(--line);
-  padding:28px 26px;overflow-y:auto;
-  will-change:transform;
-}
-.mobile-nav.open{transform:translateX(0)}
-.mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
-.mobile-overlay.open{opacity:1;pointer-events:auto}
-.mobile-nav a{display:block;padding:14px 0;font-family:var(--font-header);font-size:calc(16px * var(--scale-header));border-bottom:1px solid var(--line);color:var(--text-dim)}
-.mobile-nav a.active{color:var(--gold-light)}
-.mobile-close{color:var(--text-dim)}
-.mobile-nav-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.mobile-nav-icons{display:flex;align-items:center;gap:16px}
-.mobile-nav-icons .icon-btn{position:relative;color:var(--text-dim)}
-.mobile-nav-icons .icon-btn svg{width:19px;height:19px}
-.mobile-nav-bottom{margin-top:auto;padding-top:8px}
-.mobile-nav-drop-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font:inherit;cursor:pointer;
-  padding:14px 0;font-family:var(--font-header);font-size:calc(16px * var(--scale-header));border-bottom:1px solid var(--line);color:var(--text-dim)}
-.mobile-nav-drop-trigger .mnav-caret{width:11px;height:11px;transition:transform .25s ease;flex:none}
-.mobile-nav-drop.open .mobile-nav-drop-trigger .mnav-caret{transform:rotate(180deg)}
-.mobile-nav-drop.open .mobile-nav-drop-trigger{color:var(--gold-light)}
-.mobile-nav-submenu{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.mobile-nav-drop.open .mobile-nav-submenu{max-height:600px}
-.mobile-nav-submenu a{padding-right:16px;font-size:calc(14.5px * var(--scale-header));color:var(--text-faint)}
-.mobile-nav-submenu a.mnav-all{color:var(--gold-light)}
-.mobile-nav-submenu a.mnav-sub{padding-right:32px;font-size:calc(13px * var(--scale-header));color:var(--text-faint);opacity:.85}
 
 /* mobile category bottom sheet (drop-up) — triggered from the bottom-nav "دسته‌بندی" button */
 .mobile-cat-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -1205,8 +1169,6 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 }
 
 /* nav arrows / dots no longer used — all category banners show at once (stacked on mobile, in a row on desktop) */
-.cat-nav-btn{display:none}
-.cat-dots{display:none}
 
 /* ===== Icon shortcuts grid (3 per row on mobile, 6 per row on desktop) ===== */
 .icon-panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}
@@ -1352,15 +1314,6 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
 .card:hover .card-img img{transform:scale(1.06)}
 .card-img .ph{color:var(--text-faint);display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-product);font-size:calc(11px * var(--scale-product));letter-spacing:.1em;text-align:center;padding:20px}
-.card-badge{position:absolute;top:10px;right:10px;background:#c0563f;color:#fff;font-size:calc(10px * var(--scale-product));padding:4px 9px;border-radius:6px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(192,86,63,.28)}
-.new-arrivals-scroll{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
-.new-arrivals-scroll::-webkit-scrollbar{display:none;height:0}
-.new-arrivals-scroll .card{flex:0 0 260px;scroll-snap-align:start}
-@media(max-width:640px){.new-arrivals-scroll .card{flex-basis:210px}}
-.bestsellers-scroll{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
-.bestsellers-scroll::-webkit-scrollbar{display:none;height:0}
-.bestsellers-scroll .card{flex:0 0 260px;scroll-snap-align:start}
-@media(max-width:640px){.bestsellers-scroll .card{flex-basis:210px}}
 
 /* ===== پنل‌های شیشه‌ای صفحه اصلی (جدیدترین‌ها / تخفیف‌های امروز / پرفروش‌ترین‌ها) =====
    یک قاب شیشه‌ای واحد برای کل بخش (از عنوان انگلیسی تا کمی پایین‌تر از عکس‌ها)،
@@ -1475,11 +1428,9 @@ html[data-theme="classic"] .glass-marks svg{
 .card-out{position:absolute;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
 .card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:#c0563f;color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px}
 @media(min-width:761px){
-  .card-badge{font-size:calc(12px * var(--scale-product));padding:6px 12px}
   .card-discount{font-size:calc(13px * var(--scale-product));padding:6px 12px}
   .card-lowstock{font-size:calc(12.5px * var(--scale-product));padding:7px 11px}
 }
-.pd-lowstock{color:var(--danger);font-weight:600}
 .card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product);min-width:0}
 .card-body .cat-tag{font-size:calc(10.5px * var(--scale-product));letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
 .card-body h3{font-size:calc(15.5px * var(--scale-product));font-weight:500;overflow-wrap:break-word;word-break:break-word}
@@ -1749,7 +1700,6 @@ html[data-theme="classic"] .glass-marks svg{
 .fabric-feature-row select.ff-icon{flex:1;min-width:130px}
 .fabric-feature-row input.ff-label{flex:1;min-width:110px}
 .fabric-feature-row input.ff-size{width:64px;flex:none}
-.fabric-feature-row .ff-clear{flex:none;font-size:11px;color:var(--text-faint);text-decoration:underline}
 .color-preset-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
 .color-preset-dot{width:30px;height:30px;border-radius:50%;flex:none;border:2px solid var(--line);padding:0;position:relative;transition:.15s}
 .color-preset-dot.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(185,151,94,.35)}
@@ -1761,8 +1711,6 @@ html[data-theme="classic"] .glass-marks svg{
 .selected-color-item .sc-dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--line)}
 .selected-color-item span{font-size:10px;color:var(--text-faint);max-width:60px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .selected-color-item button{font-size:10px;color:var(--danger);text-decoration:underline}
-.pd-meta{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:calc(12.5px * var(--scale-body));color:var(--text-faint);display:flex;flex-direction:column;gap:8px}
-
 /* ===== نشان‌های اطمینان کنار دکمه خرید (اصالت کالا / گارانتی بازگشت) ===== */
 .pd-trust-badges{display:flex;align-items:stretch;gap:0;margin-top:12px;border:1px solid var(--line);background:var(--bg-alt);border-radius:var(--radius);overflow:hidden}
 .pd-trust-badge{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:12px 14px}
@@ -1774,7 +1722,6 @@ html[data-theme="classic"] .glass-marks svg{
 /* ===== سوالات متداول محصول (FAQ) ===== */
 .pd-faq{margin-top:20px;border-top:1px solid var(--line);padding-top:18px}
 .pd-info-tab-panel .pd-faq{margin-top:0;border-top:none;padding-top:0}
-.pd-faq-title{font-size:12.5px;color:var(--text-dim);letter-spacing:.03em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .pd-faq-item{border-bottom:1px solid var(--line)}
 .pd-faq-item:first-of-type{border-top:1px solid var(--line)}
 .pd-info-tab-panel .pd-faq-item:first-of-type{border-top:none}
@@ -1867,17 +1814,6 @@ html[data-theme="classic"] .glass-marks svg{
 .pd-faq-item.open .pd-faq-a{max-height:220px}
 .pd-faq-a p{padding:0 2px 14px;font-size:11.5px;line-height:1.8;color:var(--text-faint);overflow-wrap:break-word;word-break:break-word}
 
-/* ===== Cart drawer ===== */
-.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s}
-.cart-overlay.open{opacity:1;pointer-events:auto}
-.cart-drawer{
-  position:fixed;top:0;bottom:0;left:0;width:100%;max-width:440px;
-  background:var(--bg-alt);z-index:200;border-right:1px solid var(--line);
-  transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);
-  display:flex;flex-direction:column;
-  will-change:transform;
-}
-.cart-drawer.open{transform:translateX(0)}
 .cart-head{display:flex;align-items:center;justify-content:space-between;padding:24px;border-bottom:1px solid var(--line)}
 .cart-head h3{font-family:var(--font-heading);font-size:calc(22px * var(--scale-heading))}
 .cart-items{flex:1;overflow-y:auto;padding:10px 24px;font-family:var(--font-body)}
@@ -1895,42 +1831,6 @@ html[data-theme="classic"] .glass-marks svg{
 .cart-line .ci-remove{color:var(--text-faint);font-size:calc(11.5px * var(--scale-body));text-decoration:underline}
 .cart-foot{padding:22px 24px;border-top:1px solid var(--line);font-family:var(--font-body)}
 .cart-sum-row{display:flex;justify-content:space-between;font-size:calc(14px * var(--scale-body));margin-bottom:10px;color:var(--text-dim)}
-
-/* ===== Cart hover preview (desktop only) — یک دراپ‌داون کوچک زیر آیکون سبد خرید
-   با هاور باز می‌شود و تا وقتی موس روی آیکون یا خودِ کشو باشد باز می‌ماند؛ با
-   خروج موس بسته می‌شود. یک فلش کوچک بالای دراپ‌داون به آیکون اشاره می‌کند. ===== */
-.cart-hover-zone{position:relative}
-.cart-hover-drawer{
-  position:absolute;top:calc(100% + 16px);left:50%;
-  transform:translateX(-50%) translateY(-6px);
-  width:340px;max-width:88vw;max-height:min(480px,70vh);
-  background:var(--bg-alt);z-index:250;border:1px solid var(--line);
-  border-radius:16px;
-  box-shadow:var(--shadow-md);
-  opacity:0;visibility:hidden;
-  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s;
-  pointer-events:none;
-  display:flex;flex-direction:column;
-}
-.cart-hover-drawer::before{
-  content:'';position:absolute;top:-7px;left:50%;margin-left:-7px;
-  width:14px;height:14px;background:var(--bg-alt);
-  border-top:1px solid var(--line);border-right:1px solid var(--line);
-  transform:rotate(-45deg);border-top-right-radius:3px;
-}
-.cart-hover-drawer.open{
-  transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;pointer-events:auto;
-  transition:opacity .25s ease,transform .25s ease;
-}
-.cart-hover-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
-.cart-hover-head h4{font-family:var(--font-heading);font-size:calc(16px * var(--scale-heading))}
-.cart-hover-head a{font-family:var(--font-body);font-size:11.5px;color:var(--gold-light);text-decoration:underline}
-.cart-hover-items{flex:1;overflow-y:auto;padding:2px 18px;font-family:var(--font-body);max-height:280px}
-.cart-hover-items .cart-line{padding:12px 0}
-.cart-hover-items .cart-line .thumb{width:50px;height:64px;border-radius:8px}
-.cart-hover-items .cart-line h4{font-size:calc(12.5px * var(--scale-body))}
-.cart-hover-foot{padding:14px 18px;border-top:1px solid var(--line);font-family:var(--font-body);border-radius:0 0 16px 16px}
-@media(max-width:900px){ .cart-hover-drawer{display:none !important} }
 
 /* ===== Cart page (full page, not a drawer) ===== */
 .cart-page-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:32px;align-items:start}
@@ -1972,14 +1872,6 @@ html[data-theme="classic"] .glass-marks svg{
 
 /* ===== Auth / account ===== */
 .narrow{max-width:420px;margin:0 auto}
-.cart-ship-row{margin-bottom:14px}
-.cart-ship-row label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:6px}
-.cart-ship-row select{
-  width:100%;padding:9px 10px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
-  font-family:inherit;font-size:12.5px;border-radius:8px;
-}
-.cart-ship-row select:focus{outline:none;border-color:var(--gold)}
-
 .form-field{margin-bottom:18px}
 .pm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .pm-card{position:relative;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:14px;border:1px solid var(--line);background:var(--bg-card);cursor:pointer;transition:all .25s ease;color:var(--text-dim);font-family:inherit}
@@ -2072,10 +1964,7 @@ footer.site{font-family:var(--font-footer)}
 .foot-col{min-width:0}
 .foot-bottom{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--text-faint)}
 .foot-bottom>span:first-child{color:var(--text-faint);font-weight:400;font-size:10px;letter-spacing:.01em}
-.foot-bottom-links{display:flex;gap:14px;flex-wrap:wrap}
-.foot-bottom-links a{color:var(--text-faint);font-size:11.5px}
-.foot-bottom-links a:hover{color:var(--gold-light)}
-@media(max-width:760px){.foot-bottom{flex-direction:column-reverse;text-align:center;justify-content:center}.foot-bottom-links{justify-content:center}}
+@media(max-width:760px){.foot-bottom{flex-direction:column-reverse;text-align:center;justify-content:center}}
 .foot-social{display:flex;align-items:center;gap:8px;margin-top:6px}
 .foot-social a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);color:var(--text-dim);flex-shrink:0;margin:0;box-sizing:border-box;transition:border-color .25s ease,color .25s ease}
 .foot-social a svg{width:17px;height:17px;flex:none;display:block}
@@ -2225,8 +2114,6 @@ details.settings-card .settings-card-body .settings-desc{margin-top:0}
 .toggle-slider::before{content:"";position:absolute;height:18px;width:18px;right:3px;bottom:3px;background:var(--text-dim);transition:.25s;border-radius:50%}
 .toggle-switch input:checked + .toggle-slider{background:var(--gold-dim)}
 .toggle-switch input:checked + .toggle-slider::before{transform:translateX(-18px);background:var(--gold-light)}
-.toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.toggle-row .tr-label{font-size:13.5px}
 .logo-upload-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .logo-upload-box{width:110px;height:110px;border:1px dashed var(--line);border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;background:#0d0d0e}
 .cat-edit-row.is-dragging{opacity:.45}
@@ -2430,7 +2317,7 @@ html[data-theme="classic"] .notify-bell-btn{color:#a06f10 !important}
    entirely while leaving the desktop look untouched. */
 @media (max-width:900px){
   .glass-panel,.glass-band .section-head .eyebrow{backdrop-filter:none;-webkit-backdrop-filter:none}
-  .card-badge,.card-discount,.card-lowstock,.pd-product-badge{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(192,86,63,.85)}
+  .card-discount,.card-lowstock,.pd-product-badge{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(192,86,63,.85)}
   .card-out{backdrop-filter:none}
   .lightbox-overlay{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(6,6,7,.94)}
 }
@@ -2720,28 +2607,10 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
         <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="icon-classic" width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
       </button>
-      <a href="/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn wishlist-header-icon" title="علاقه‌مندی‌ها">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
-        <span class="cart-badge hidden" id="wishlistBadge">0</span>
-      </a>
-      <a href="/account" data-link class="icon-btn account-header-icon" title="حساب کاربری">
-        <span class="account-icon-light" style="width:13px;height:13px;vertical-align:middle"></span><span class="account-icon-dark" style="width:13px;height:13px;vertical-align:middle"></span>
-        <span class="cart-badge notif-badge hidden" id="accountNotifBadge">0</span>
-      </a>
-      <div class="cart-hover-zone" id="cartHoverZone">
-        <button class="icon-btn" id="cartOpenBtn" title="سبد خرید">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8.5 8.5V7C8.5 4.51 10.01 2.5 12 2.5C13.99 2.5 15.5 4.51 15.5 7V8.5"/><path d="M5 8.5H19L19.8 20.2C19.9 21.2 19.1 22 18.1 22H5.9C4.9 22 4.1 21.2 4.2 20.2L5 8.5Z"/></svg>
-          <span class="cart-badge hidden" id="cartBadge">0</span>
-        </button>
-        <div class="cart-hover-drawer" id="cartHoverDrawer">
-          <div class="cart-hover-head">
-            <h4>سبد خرید</h4>
-            <a href="/cart" data-link>مشاهده کامل ‹</a>
-          </div>
-          <div class="cart-hover-items" id="cartHoverItems"></div>
-          <div class="cart-hover-foot" id="cartHoverFoot"></div>
-        </div>
-      </div>
+      <button class="icon-btn" id="cartOpenBtn" title="سبد خرید">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8.5 8.5V7C8.5 4.51 10.01 2.5 12 2.5C13.99 2.5 15.5 4.51 15.5 7V8.5"/><path d="M5 8.5H19L19.8 20.2C19.9 21.2 19.1 22 18.1 22H5.9C4.9 22 4.1 21.2 4.2 20.2L5 8.5Z"/></svg>
+        <span class="cart-badge hidden" id="cartBadge">0</span>
+      </button>
       <a href="/account" data-link class="header-account-desktop" id="headerAccountDesktop">
         <span class="account-icon-light" style="width:13px;height:13px;vertical-align:middle"></span><span class="account-icon-dark" style="width:13px;height:13px;vertical-align:middle"></span>
         <span id="headerAccountLabel">ورود | ثبت‌نام</span>
@@ -2776,36 +2645,6 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
     </div>
   </div>
 </header>
-
-<div class="mobile-overlay" id="mobileOverlay"></div>
-<div class="mobile-nav" id="mobileNav">
-  <div class="mobile-nav-top">
-    <div class="mobile-close" id="mobileCloseBtn">✕ بستن</div>
-    <div class="mobile-nav-icons">
-      <a href="/account" data-link data-route="/account" class="icon-btn" title="حساب کاربری">
-        <span class="account-icon-light" style="width:14px;height:14px;vertical-align:middle"></span><span class="account-icon-dark" style="width:14px;height:14px;vertical-align:middle"></span>
-        <span class="cart-badge notif-badge hidden" id="accountNotifBadgeMobile">0</span>
-      </a>
-      <a href="/account/wishlist" data-link data-route="/account/wishlist" class="icon-btn" title="علاقه‌مندی‌ها">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg>
-      </a>
-    </div>
-  </div>
-  <a href="/" data-link data-route="/">خانه</a>
-  <div class="mobile-nav-drop" id="mobileProductsDrop">
-    <button type="button" class="mobile-nav-drop-trigger" id="mobileProductsTrigger">
-      <span>محصولات</span>
-      <svg class="mnav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div class="mobile-nav-submenu" id="mobileNavCatLinks"></div>
-  </div>
-  <div class="mobile-nav-bottom">
-    <a href="/magazine" data-link data-route="/magazine">وبلاگ</a>
-    <a href="/about" data-link data-route="/about">درباره ما</a>
-    <a href="/contact" data-link data-route="/contact">تماس با ما</a>
-    <a href="/track-order" data-link data-route="/track-order">پیگیری سفارش</a>
-  </div>
-</div>
 
 <div class="mobile-cat-overlay" id="mobileCatOverlay"></div>
 <div class="mobile-cat-sheet" id="mobileCatSheet" role="dialog" aria-label="دسته‌بندی محصولات">
@@ -3380,11 +3219,6 @@ function initWrCombo(wrapperEl, getOptions, onChange){
 
 function iranAllCities(){
   return [...new Set(Object.values(IRAN_PROVINCES_CITIES).flat())].sort((a,b)=>a.localeCompare(b,'fa'));
-}
-function fillDatalist(id, items){
-  const dl = document.getElementById(id);
-  if(!dl) return;
-  dl.innerHTML = items.map(v=>`<option value="${escapeHtml(v)}"></option>`).join('');
 }
 const $$ = (sel,root=document) => [...root.querySelectorAll(sel)];
 
@@ -5100,7 +4934,7 @@ const FONT_SECTIONS = [
    the site keeps using its normal theme colors. "heading" also needs to cancel the gold gradient
    text-fill so the chosen solid color is visible. */
 const SECTION_COLOR_SELECTORS = {
-  header:'.logo .wordmark, .logo .wordmark small, nav.main-nav a, .mobile-nav a, .mobile-nav-submenu a, .header-account-desktop span',
+  header:'.logo .wordmark, .logo .wordmark small, nav.main-nav a, .header-account-desktop span',
   hero:'.hero h1',
   heading:'.section-head h2, .cat-content h3, .cart-head h3, .page-head h1, .about-block h2, .article-content h2, .article-content h3',
   product:'.card-body h3, .pd-info h1',
@@ -5526,18 +5360,6 @@ function getAboutImageForTheme(settings){
 function renderCategoryNavLinks(settings){
   const cats = (settings.categories || []).filter(isCategoryActive);
   const curPath = STATE.route;
-  const mobileSlot = document.getElementById('mobileNavCatLinks');
-  if(mobileSlot){
-    const mobileCatLinks = cats.map(c=>{
-      const parentLink = `<a href="/shop/${c.slug}" data-link data-route="/shop/${c.slug}" class="${curPath==='/shop/'+c.slug?'active':''}">${escapeHtml(c.label)}</a>`;
-      const subLinks = (c.subcats||[]).map(s=>`<a href="/shop/${s.slug}" data-link data-route="/shop/${s.slug}" class="mnav-sub ${curPath==='/shop/'+s.slug?'active':''}">‹ ${escapeHtml(s.label)}</a>`).join('');
-      return parentLink + subLinks;
-    }).join('');
-    mobileSlot.innerHTML = mobileCatLinks
-      + `<a href="/shop/all" data-link data-route="/shop/all">جدیدترین‌ها</a>`
-      + `<a href="/shop/all" data-link data-route="/shop/all" class="mnav-all ${curPath==='/shop/all'?'active':''}">همه محصولات</a>`;
-  }
-
   const catSheetSlot = document.getElementById('mobileCatSheetLinks');
   if(catSheetSlot){
     const sheetCatLinks = cats.map(c=>{
@@ -6665,7 +6487,7 @@ function router(preserveScroll){
     return;
   }
 
-  $$('#mainNav a, #mobileNav a, #mobileBottomNav a, #mobileCatSheet a, .icon-panel').forEach(a=>{
+  $$('#mainNav a, #mobileBottomNav a, #mobileCatSheet a, .icon-panel').forEach(a=>{
     a.classList.toggle('active', a.dataset.route === path || (path.startsWith('/shop') && a.dataset.route===path));
   });
   const navProductsTriggerEl = $('#navProductsTrigger');
@@ -6877,7 +6699,6 @@ function bindGlobalUI(){
   };
   const mbnCart = $('#mbnCart');
   if(mbnCart) mbnCart.onclick = openCart;
-  $('#mobileCloseBtn').onclick = closeMobile;
 
   /* ===== Mobile Fixed Contact Button: toggle ===== */
   (function(){
@@ -6998,63 +6819,6 @@ function bindGlobalUI(){
       if(e.target.closest('a')) navProductsDrop.classList.remove('drop-open');
     });
   }
-  $('#mobileOverlay').onclick = closeMobile;
-  function closeMobile(){ $('#mobileNav').classList.remove('open'); $('#mobileOverlay').classList.remove('open'); }
-  $$('#mobileNav a').forEach(a=>a.addEventListener('click', closeMobile));
-  $('#mobileNav').addEventListener('click', (e)=>{ if(e.target.closest('a')) closeMobile(); });
-
-  // swipe-to-close: drag the mobile category/menu drawer to the right (the direction it opens from) to dismiss it
-  (function initMobileNavSwipeToClose(){
-    const drawer = $('#mobileNav');
-    if(!drawer) return;
-    let startX = 0, startY = 0, dragging = false, isHorizontal = false;
-    const threshold = 90; // px dragged right before it counts as a close swipe
-
-    drawer.addEventListener('touchstart', e=>{
-      if(!drawer.classList.contains('open')) return;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      dragging = true;
-      isHorizontal = false;
-      drawer.style.transition = 'none';
-    }, {passive:true});
-
-    drawer.addEventListener('touchmove', e=>{
-      if(!dragging) return;
-      const dx = e.touches[0].clientX - startX;
-      const dy = e.touches[0].clientY - startY;
-      if(!isHorizontal){
-        if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-        isHorizontal = Math.abs(dx) > Math.abs(dy);
-        if(!isHorizontal){ dragging = false; return; }
-      }
-      if(dx > 0){ // only allow dragging toward the closed (right) side
-        drawer.style.transform = `translateX(${dx}px)`;
-        const overlay = $('#mobileOverlay');
-        if(overlay) overlay.style.opacity = String(Math.max(0, 1 - dx/300));
-      }
-    }, {passive:true});
-
-    function endDrag(e){
-      if(!dragging || !isHorizontal) { dragging = false; return; }
-      dragging = false;
-      drawer.style.transition = '';
-      drawer.style.transform = '';
-      const overlay = $('#mobileOverlay');
-      if(overlay) overlay.style.opacity = '';
-      const endX = (e.changedTouches ? e.changedTouches[0].clientX : startX);
-      if(endX - startX > threshold) closeMobile();
-    }
-    drawer.addEventListener('touchend', endDrag);
-    drawer.addEventListener('touchcancel', endDrag);
-  })();
-
-  const mobileProductsDrop = $('#mobileProductsDrop');
-  const mobileProductsTrigger = $('#mobileProductsTrigger');
-  if(mobileProductsDrop && mobileProductsTrigger){
-    mobileProductsTrigger.onclick = ()=>{ mobileProductsDrop.classList.toggle('open'); };
-  }
-
   $('#searchOpenBtn').onclick = ()=>{ $('#searchOverlay').style.display='block'; $('#searchInput').focus(); };
   $('#searchCloseBtn').onclick = ()=>{ $('#searchOverlay').style.display='none'; };
   (function(){
@@ -7184,7 +6948,6 @@ function bindGlobalUI(){
   }
 
   $('#cartOpenBtn').onclick = openCart;
-  bindCartHoverDrawer();
 
   document.addEventListener('click', e=>{
     const link = e.target.closest('[data-link]');
@@ -8564,9 +8327,6 @@ const CUSTOM_SECTION_SLOTS = [
   { value:'after_product_panels', label:'بعد از پنل‌های محصول پایین صفحه' },
   { value:'end', label:'انتهای صفحه (قبل از فوتر)' }
 ];
-function customSectionSlotLabel(v){
-  return (CUSTOM_SECTION_SLOTS.find(s=>s.value===v)||CUSTOM_SECTION_SLOTS[5]).label;
-}
 function customSectionsForSlot(slot){
   return (STATE.settings.customSections||[]).filter(cs=> (cs.position || 'after_featured') === slot && cs.enabled !== false).map(customSectionHtml).join('');
 }
@@ -10992,21 +10752,6 @@ function orderTrackResultHtml(order){
   </div>`;
 }
 
-function pageWishlist(){
-  const items = STATE.wishlist.map(id=>findProduct(id)).filter(Boolean);
-  return `
-  <div class="page-head"><span class="eyebrow">WISHLIST</span><h1 class="serif">علاقه‌مندی‌های من</h1></div>
-  <div class="section" style="padding-top:40px">
-    <div class="container">
-      ${items.length ? `<div class="grid">${items.map(productCard).join('')}</div>` :
-      `<div style="text-align:center">
-        ${emptyState('هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید')}
-        <a href="/shop/all" data-link class="btn btn-solid">مشاهده محصولات</a>
-      </div>`}
-    </div>
-  </div>`;
-}
-
 function page404(){
   return `<div class="section"><div class="container" style="text-align:center;padding:100px 0">
     <h1 class="serif" style="font-size:44px;margin-bottom:14px">۴۰۴</h1>
@@ -12499,11 +12244,6 @@ async function referralCodeForAccount(accountId){
   const userCode = profile ? (profile.user_code || profile.userCode) : null;
   return referralCodeFromUserCode(userCode);
 }
-async function referralLinkForAccount(accountId){
-  const code = await referralCodeForAccount(accountId);
-  if(!code) return '';
-  try{ return location.origin + '/?ref=' + code; }catch(e){ return '?ref=' + code; }
-}
 // stashes a ?ref=CODE found in the URL so it can be applied once the visitor signs up
 function capturePendingReferralFromUrl(){
   try{
@@ -12638,9 +12378,6 @@ async function sendSignupWelcomeMessages(account, wasReferred){
     const { error } = await supabaseClient.rpc('rpc_send_signup_welcome', { p_referred: !!wasReferred });
     if(error) console.error('sendSignupWelcomeMessages error', error);
   }catch(e){ console.error('sendSignupWelcomeMessages error', e); }
-}
-function randomCouponSuffix(){
-  return Math.random().toString(36).slice(2,8).toUpperCase();
 }
 /* شناسهٔ کاربری نمایشی (user_code): یک کد ۹ کاراکتری خوانا برای هر کاربر،
    با پیشوند ثابت WR- + ۶ کاراکتر تصادفی (حرف انگلیسی بزرگ و عدد، هر دو حتماً
@@ -12957,11 +12694,6 @@ function saveShippingCity(city){
     else localStorage.removeItem('wr-ship-city');
   }catch(e){}
 }
-function shippingProvinceList(){
-  const rates = STATE.settings.shippingRates || [];
-  return [...new Set(rates.map(r=>r.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fa'));
-}
-
 async function addToCart(productId, qty=1, size=null, color=null){
   const p = findProduct(productId);
   if(!p || p.stock<=0) return;
@@ -13226,81 +12958,6 @@ function renderCart(){
     ${shippingNote}
     <a href="/checkout" data-link class="btn btn-solid btn-block" ${!STATE.cart.length?'style="pointer-events:none;opacity:.4"':''}>تکمیل خرید ‹</a>
   `;
-
-  renderCartHoverDrawer();
-}
-
-/* ---------------- cart hover preview drawer (desktop) ---------------- */
-function renderCartHoverDrawer(){
-  const itemsBox = $('#cartHoverItems');
-  const footBox = $('#cartHoverFoot');
-  if(!itemsBox || !footBox) return;
-
-  if(!STATE.cart.length){
-    itemsBox.innerHTML = emptyState('سبد خرید شما خالی است');
-    footBox.innerHTML = '';
-    return;
-  }
-
-  itemsBox.innerHTML = STATE.cart.map((ci,idx)=>{
-    const p = findProduct(ci.productId);
-    if(!p) return '';
-    return `
-    <div class="cart-line">
-      <a href="/product/${p.id}" data-link class="thumb">${productImgHtml(p)}</a>
-      <div class="ci-body">
-        <a href="/product/${p.id}" data-link><h4>${escapeHtml(p.name)}</h4></a>
-        <span class="ci-meta">${ci.size?('سایز: '+ci.size):''}${ci.color?(' · رنگ: '+escapeHtml(ci.color.label||colorLabel(ci.color))):''}</span>
-        <div class="ci-row">
-          <div class="ci-qty">
-            <button onclick="updateCartQty(${idx},-1)">−</button>
-            <span>${ci.qty}</span>
-            <button onclick="updateCartQty(${idx},1)">+</button>
-          </div>
-          <span class="ci-price">${RIAL(p.price*ci.qty)}</span>
-        </div>
-        <button class="ci-remove" onclick="removeCartItem(${idx})">حذف</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  footBox.innerHTML = `
-    <div class="cart-sum-row total"><span>جمع کل</span><span>${RIAL(cartSubtotal())}</span></div>
-    <a href="/checkout" data-link class="btn btn-solid btn-block">تکمیل خرید ‹</a>
-  `;
-}
-
-// باز/بسته شدن با هاور: تا وقتی موس روی آیکون سبد یا خودِ کشو باشد باز می‌ماند،
-// با خروج موس از کل ناحیه (آیکون + کشو) با کمی تاخیر بسته می‌شود تا حرکت موس
-// بین آیکون و کشو باعث بسته‌شدن ناخواسته نشود. فقط دسکتاپ (کشو با مدیا-کوئری
-// روی موبایل مخفی است، پس این رفتار عملاً فقط آن‌جا فعال می‌شود).
-function bindCartHoverDrawer(){
-  const zone = $('#cartHoverZone');
-  const drawer = $('#cartHoverDrawer');
-  if(!zone || !drawer) return;
-  let closeTimer = null;
-
-  const openDrawer = ()=>{
-    if(closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
-    renderCartHoverDrawer();
-    drawer.classList.add('open');
-  };
-  const scheduleClose = ()=>{
-    if(closeTimer) clearTimeout(closeTimer);
-    closeTimer = setTimeout(()=>{ drawer.classList.remove('open'); closeTimer = null; }, 150);
-  };
-
-  zone.addEventListener('mouseenter', openDrawer);
-  zone.addEventListener('mouseleave', scheduleClose);
-
-  // با کلیک روی لینک‌های ناوبری (خودِ آیکون سبد، «تکمیل خرید»، تصویر/عنوان محصول)
-  // که باعث رفتن به صفحه‌ی بعد می‌شوند، کشو را ببندیم تا در صفحه‌ی جدید باز نماند.
-  // اما کلیک روی دکمه‌های تغییر تعداد (+/−) یا «حذف» نباید کشو را ببندد.
-  zone.addEventListener('click', e=>{
-    if(e.target.closest('.ci-qty, .ci-remove')) return;
-    if(closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
-    drawer.classList.remove('open');
-  });
 }
 
 function pageCart(){
