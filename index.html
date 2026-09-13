@@ -3758,6 +3758,10 @@ if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE
       if(event === 'SIGNED_OUT'){
         STATE.account = null;
         _isAdminCache = null;
+      }else if(event === 'PASSWORD_RECOVERY'){
+        STATE.passwordRecoveryMode = true;
+        STATE.accountAuthTab = 'reset';
+        router();
       }else if(session?.user){
         if(event === 'SIGNED_IN') _isAdminCache = null;
         if(!(await isAdminEmail(session.user.email))){
@@ -9901,19 +9905,44 @@ function pageAccount(tab, trackOrderPrefillId){
     </div></div>`;
   }
   const wantSignup = STATE.accountAuthTab === 'signup';
+  const wantForgot = STATE.accountAuthTab === 'forgot';
+  const wantReset = STATE.accountAuthTab === 'reset' && STATE.passwordRecoveryMode;
+  if(wantReset){
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">تعیین رمز عبور جدید</h1></div>
+    <div class="section"><div class="container narrow">
+      <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:18px">لطفاً یک رمز عبور جدید برای حساب خود انتخاب کنید.</p>
+      <form id="resetPassForm">
+        <div class="form-field"><label>رمز عبور جدید</label><input id="resetPass1" required type="password" autocomplete="new-password" placeholder="حداقل ۶ کاراکتر"></div>
+        <div class="form-field"><label>تکرار رمز عبور جدید</label><input id="resetPass2" required type="password" autocomplete="new-password" placeholder="رمز عبور را دوباره وارد کنید"></div>
+        <div class="err-msg" id="resetPassErr"></div>
+        <button class="btn btn-solid btn-block" type="submit">ثبت رمز عبور جدید</button>
+      </form>
+    </div></div>`;
+  }
   return `
   <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">ورود / ثبت‌نام</h1></div>
   <div class="section"><div class="container narrow">
-    <div class="acc-tabs" style="display:flex;gap:8px;margin-bottom:20px">
+    <div class="acc-tabs" style="display:flex;gap:8px;margin-bottom:20px;${wantForgot?'display:none':''}">
       <button type="button" class="btn ${wantSignup?'btn-ghost':'btn-solid'}" id="accTabLogin" style="flex:1">ورود</button>
       <button type="button" class="btn ${wantSignup?'btn-solid':'btn-ghost'}" id="accTabSignup" style="flex:1">ثبت‌نام</button>
     </div>
 
-    <form id="loginForm" style="${wantSignup?'display:none':''}">
+    <form id="loginForm" style="${(wantSignup||wantForgot)?'display:none':''}">
       <div class="form-field"><label>ایمیل</label><input id="accLoginEmail" required type="email" autocomplete="username" placeholder="you@example.com"></div>
       <div class="form-field"><label>رمز عبور</label><input id="accLoginPass" required type="password" autocomplete="current-password" placeholder="رمز عبور"></div>
+      <button type="button" id="forgotPassLink" style="background:none;border:none;padding:0;margin:-8px 0 14px;color:var(--gold-light);font-size:12.5px;cursor:pointer;text-decoration:underline;display:block">رمز عبور را فراموش کرده‌اید؟</button>
       <div class="err-msg" id="accLoginErr"></div>
       <button class="btn btn-solid btn-block" type="submit">ورود</button>
+    </form>
+
+    <form id="forgotForm" style="${wantForgot?'':'display:none'}">
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:14px">ایمیل خود را وارد کنید؛ لینک بازیابی رمز عبور برایتان ارسال می‌شود.</p>
+      <div class="form-field"><label>ایمیل</label><input id="forgotEmail" required type="email" autocomplete="username" placeholder="you@example.com"></div>
+      <div class="err-msg" id="forgotErr"></div>
+      <div id="forgotOk" style="color:var(--ok);font-size:13px;margin-bottom:10px"></div>
+      <button class="btn btn-solid btn-block" type="submit">ارسال لینک بازیابی</button>
+      <button type="button" id="backToLoginLink" style="background:none;border:none;padding:0;margin-top:14px;color:var(--text-dim);font-size:12.5px;cursor:pointer;text-decoration:underline;display:block">بازگشت به ورود</button>
     </form>
 
     <form id="signupForm" style="${wantSignup?'':'display:none'}">
@@ -11462,7 +11491,65 @@ if (messageInput && messageCounter) {
     }
   };
 
-  const signupForm = $('#signupForm');
+  const forgotPassLink = $('#forgotPassLink');
+  if(forgotPassLink) forgotPassLink.onclick = ()=>{ STATE.accountAuthTab='forgot'; router(); };
+  const backToLoginLink = $('#backToLoginLink');
+  if(backToLoginLink) backToLoginLink.onclick = ()=>{ STATE.accountAuthTab='login'; router(); };
+
+  const forgotForm = $('#forgotForm');
+  if(forgotForm) forgotForm.onsubmit = async e=>{
+    e.preventDefault();
+    const email = $('#forgotEmail').value.trim();
+    const errEl = $('#forgotErr');
+    const okEl = $('#forgotOk');
+    errEl.textContent = ''; okEl.textContent = '';
+    if(!supabaseClient){ errEl.textContent = 'در حال حاضر این امکان وجود ندارد.'; return; }
+    if(!email){ errEl.textContent = 'ایمیل را وارد کنید.'; return; }
+    showLoading();
+    try{
+      const {error} = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/account'
+      });
+      if(error) throw error;
+      okEl.textContent = 'لینک بازیابی رمز عبور به ایمیل شما ارسال شد. صندوق ورودی (و اسپم) را بررسی کنید.';
+      forgotForm.reset();
+    }catch(err){
+      errEl.textContent = 'ارسال لینک با خطا مواجه شد. دوباره تلاش کنید.';
+    }finally{
+      hideLoading();
+    }
+  };
+
+  const resetPassForm = $('#resetPassForm');
+  if(resetPassForm) resetPassForm.onsubmit = async e=>{
+    e.preventDefault();
+    const p1 = $('#resetPass1').value;
+    const p2 = $('#resetPass2').value;
+    const errEl = $('#resetPassErr');
+    errEl.textContent = '';
+    if(!supabaseClient){ errEl.textContent = 'در حال حاضر این امکان وجود ندارد.'; return; }
+    if(p1.length < 6){ errEl.textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.'; return; }
+    if(p1 !== p2){ errEl.textContent = 'رمز عبور و تکرار آن یکسان نیستند.'; return; }
+    showLoading();
+    try{
+      const {data, error} = await supabaseClient.auth.updateUser({password: p1});
+      if(error) throw error;
+      STATE.passwordRecoveryMode = false;
+      STATE.accountAuthTab = 'login';
+      STATE.account = accountFromSupabaseUser(data.user);
+      await upsertProfile(STATE.account);
+      const remoteWishlist = await loadWishlistRemote(STATE.account.id);
+      STATE.wishlist = remoteWishlist !== null ? remoteWishlist : [];
+      STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
+      STATE.addresses = await loadAddressesRemote(STATE.account.id);
+      showToast('رمز عبور با موفقیت تغییر کرد ✓');
+      postAuthNavigate();
+    }catch(err){
+      errEl.textContent = 'تغییر رمز عبور با خطا مواجه شد. دوباره تلاش کنید.';
+    }finally{
+      hideLoading();
+    }
+  };
   const accPassEl = $('#accPass');
   const accPassConfirmEl = $('#accPassConfirm');
   if(accPassEl && accPassConfirmEl){
