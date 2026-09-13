@@ -11544,7 +11544,7 @@ if (messageInput && messageCounter) {
       }
     }catch(err){
       console.error('[signup] خطای واقعی ثبت‌نام:', err);
-      errEl.textContent = err.message === 'User already registered' ? 'این ایمیل قبلاً ثبت شده است.' : 'ثبت‌نام انجام نشد. دوباره تلاش کنید.';
+      errEl.textContent = err.message === 'User already registered' ? 'این ایمیل قبلاً ثبت شده است.' : ('خطا: ' + (err.message || 'نامشخص'));
     }finally{
       hideLoading();
     }
