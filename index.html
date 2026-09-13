@@ -11543,6 +11543,7 @@ if (messageInput && messageCounter) {
         router();
       }
     }catch(err){
+      console.error('[signup] خطای واقعی ثبت‌نام:', err);
       errEl.textContent = err.message === 'User already registered' ? 'این ایمیل قبلاً ثبت شده است.' : 'ثبت‌نام انجام نشد. دوباره تلاش کنید.';
     }finally{
       hideLoading();
