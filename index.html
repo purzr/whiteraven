@@ -9907,6 +9907,25 @@ function pageAccount(tab, trackOrderPrefillId){
   const wantSignup = STATE.accountAuthTab === 'signup';
   const wantForgot = STATE.accountAuthTab === 'forgot';
   const wantReset = STATE.accountAuthTab === 'reset' && STATE.passwordRecoveryMode;
+  const wantVerify = STATE.accountAuthTab === 'verify' && STATE.pendingVerifyEmail;
+  if(wantVerify){
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">تایید ایمیل</h1></div>
+    <div class="section"><div class="container narrow">
+      <div style="text-align:center;padding:12px 0">
+        <div style="width:56px;height:56px;border-radius:50%;background:color-mix(in srgb, var(--gold-light) 15%, transparent);display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold-light)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg>
+        </div>
+        <h3 class="serif" style="font-size:19px;margin-bottom:10px">ثبت‌نام شما تقریباً کامل است</h3>
+        <p style="color:var(--text-dim);font-size:13.5px;line-height:1.9;margin-bottom:6px">برای فعال شدن حساب، وارد ایمیل زیر شوید و روی لینک تایید کلیک کنید:</p>
+        <p style="font-weight:700;margin-bottom:16px">${escapeHtml(STATE.pendingVerifyEmail)}</p>
+        <p style="color:var(--text-dim);font-size:12.5px;line-height:1.9;margin-bottom:22px">اگه ایمیل را ندیدید، پوشه‌ی اسپم/تبلیغات را هم بررسی کنید.</p>
+        <button type="button" class="btn btn-solid btn-block" id="resendVerifyBtn" style="margin-bottom:12px">ارسال دوباره لینک تایید</button>
+        <div id="resendVerifyMsg" style="font-size:12.5px;color:var(--ok);margin-bottom:12px"></div>
+        <button type="button" id="verifyBackToLoginLink" style="background:none;border:none;padding:0;color:var(--text-dim);font-size:12.5px;cursor:pointer;text-decoration:underline">بازگشت به ورود</button>
+      </div>
+    </div></div>`;
+  }
   if(wantReset){
     return `
     <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">تعیین رمز عبور جدید</h1></div>
@@ -9937,11 +9956,19 @@ function pageAccount(tab, trackOrderPrefillId){
     </form>
 
     <form id="forgotForm" style="${wantForgot?'':'display:none'}">
-      <p style="color:var(--text-dim);font-size:13px;margin-bottom:14px">ایمیل خود را وارد کنید؛ لینک بازیابی رمز عبور برایتان ارسال می‌شود.</p>
-      <div class="form-field"><label>ایمیل</label><input id="forgotEmail" required type="email" autocomplete="username" placeholder="you@example.com"></div>
-      <div class="err-msg" id="forgotErr"></div>
-      <div id="forgotOk" style="color:var(--ok);font-size:13px;margin-bottom:10px"></div>
-      <button class="btn btn-solid btn-block" type="submit">ارسال لینک بازیابی</button>
+      <div id="forgotFormFields">
+        <p style="color:var(--text-dim);font-size:13px;margin-bottom:14px">ایمیل خود را وارد کنید؛ لینک بازیابی رمز عبور برایتان ارسال می‌شود.</p>
+        <div class="form-field"><label>ایمیل</label><input id="forgotEmail" required type="email" autocomplete="username" placeholder="you@example.com"></div>
+        <div class="err-msg" id="forgotErr"></div>
+        <button class="btn btn-solid btn-block" type="submit">ارسال لینک بازیابی</button>
+      </div>
+      <div id="forgotSuccessBox" style="display:none;text-align:center;padding:12px 0">
+        <div style="width:52px;height:52px;border-radius:50%;background:color-mix(in srgb, var(--ok) 15%, transparent);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <p style="font-weight:700;margin-bottom:6px" id="forgotSuccessEmail"></p>
+        <p style="color:var(--text-dim);font-size:13px;line-height:1.9">لینک بازیابی رمز عبور ارسال شد. لطفاً ایمیل خود را چک کنید (پوشه‌ی اسپم/تبلیغات را هم بررسی کنید).</p>
+      </div>
       <button type="button" id="backToLoginLink" style="background:none;border:none;padding:0;margin-top:14px;color:var(--text-dim);font-size:12.5px;cursor:pointer;text-decoration:underline;display:block">بازگشت به ورود</button>
     </form>
 
@@ -11485,7 +11512,13 @@ if (messageInput && messageCounter) {
       showToast(notifyRegistered ? 'ورود انجام شد و درخواست اطلاع‌رسانی شما ثبت شد ✓' : 'ورود موفقیت‌آمیز بود ✓');
       postAuthNavigate();
     }catch(err){
-      errEl.textContent = 'ایمیل یا رمز عبور اشتباه است.';
+      if((err.message||'').toLowerCase().includes('email not confirmed')){
+        STATE.pendingVerifyEmail = email;
+        STATE.accountAuthTab = 'verify';
+        router();
+      }else{
+        errEl.textContent = 'ایمیل یا رمز عبور اشتباه است.';
+      }
     }finally{
       hideLoading();
     }
@@ -11501,8 +11534,7 @@ if (messageInput && messageCounter) {
     e.preventDefault();
     const email = $('#forgotEmail').value.trim();
     const errEl = $('#forgotErr');
-    const okEl = $('#forgotOk');
-    errEl.textContent = ''; okEl.textContent = '';
+    errEl.textContent = '';
     if(!supabaseClient){ errEl.textContent = 'در حال حاضر این امکان وجود ندارد.'; return; }
     if(!email){ errEl.textContent = 'ایمیل را وارد کنید.'; return; }
     showLoading();
@@ -11511,8 +11543,9 @@ if (messageInput && messageCounter) {
         redirectTo: window.location.origin + '/account'
       });
       if(error) throw error;
-      okEl.textContent = 'لینک بازیابی رمز عبور به ایمیل شما ارسال شد. صندوق ورودی (و اسپم) را بررسی کنید.';
-      forgotForm.reset();
+      $('#forgotFormFields').style.display = 'none';
+      $('#forgotSuccessEmail').textContent = email;
+      $('#forgotSuccessBox').style.display = '';
     }catch(err){
       errEl.textContent = 'ارسال لینک با خطا مواجه شد. دوباره تلاش کنید.';
     }finally{
@@ -11625,13 +11658,32 @@ if (messageInput && messageCounter) {
         // fact that this account still owes a welcome message; the login
         // handler below sends it (once) the first time they actually sign in.
         try{ localStorage.setItem('wr-pending-welcome-'+newAccount.id, wasReferred ? '1' : '0'); }catch(e){}
-        showToast('ثبت‌نام انجام شد. لطفاً ایمیل خود را تایید کنید.');
-        STATE.accountAuthTab = 'login';
+        STATE.pendingVerifyEmail = email;
+        STATE.accountAuthTab = 'verify';
         router();
       }
     }catch(err){
       console.error('[signup] خطای واقعی ثبت‌نام:', err);
       errEl.textContent = err.message === 'User already registered' ? 'این ایمیل قبلاً ثبت شده است.' : ('خطا: ' + (err.message || 'نامشخص'));
+    }finally{
+      hideLoading();
+    }
+  };
+
+  const verifyBackToLoginLink = $('#verifyBackToLoginLink');
+  if(verifyBackToLoginLink) verifyBackToLoginLink.onclick = ()=>{ STATE.accountAuthTab='login'; router(); };
+  const resendVerifyBtn = $('#resendVerifyBtn');
+  if(resendVerifyBtn) resendVerifyBtn.onclick = async ()=>{
+    const msgEl = $('#resendVerifyMsg');
+    if(!supabaseClient || !STATE.pendingVerifyEmail) return;
+    showLoading();
+    try{
+      const {error} = await supabaseClient.auth.resend({type:'signup', email: STATE.pendingVerifyEmail});
+      if(error) throw error;
+      msgEl.textContent = 'لینک تایید دوباره ارسال شد ✓';
+    }catch(err){
+      msgEl.style.color = 'var(--danger)';
+      msgEl.textContent = 'ارسال دوباره با خطا مواجه شد. کمی بعد امتحان کنید.';
     }finally{
       hideLoading();
     }
