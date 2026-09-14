@@ -2387,7 +2387,28 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
 }
 .wr-cursor.wr-visible{opacity:1;transition:opacity .12s ease}
 .wr-cursor-svg{display:block;width:100%;height:100%;overflow:visible}
-#wrCursorBlob{fill:#fff;filter:url(#wrGlow)}
+#wrCursorArrow{
+  fill:#fff;filter:url(#wrGlow);
+  opacity:1;transform:scale(1);
+  transform-origin:-15.5px -20.2px;
+  transition:opacity .16s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+#wrCursorBlob{
+  fill:#fff;filter:url(#wrGlow);
+  opacity:0;transform:scale(.3);
+  transition:opacity .16s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+/* fast movement: arrow melts away, liquid droplet blob pops in — and the
+   reverse (blob → arrow) plays just as quickly the instant it settles */
+.wr-cursor.wr-dragging #wrCursorArrow{opacity:0;transform:scale(.4)}
+.wr-cursor.wr-dragging #wrCursorBlob{opacity:.95;transform:scale(1)}
+.wr-cursor-splash{
+  position:fixed;top:0;left:0;
+  border-radius:50%;
+  background:#fff;
+  pointer-events:none;z-index:99998;
+  mix-blend-mode:difference;
+}
 .wr-cursor .wr-cursor-tag{
   position:absolute;top:100%;left:100%;margin:6px 0 0 6px;
   font-family:var(--font-header);font-size:9px;letter-spacing:.08em;
@@ -2538,6 +2559,7 @@ html.wr-custom-cursor,html.wr-custom-cursor *{cursor:none !important}
         </feMerge>
       </filter>
     </defs>
+    <path id="wrCursorArrow" d="M-15.5 -20.2 L-15.5 -2.6 L-10.9 -6.8 L-7.9 -0.6 L-5.1 -2 L-8.1 -8.1 L-2 -8.1 Z"></path>
     <path id="wrCursorBlob" d=""></path>
   </svg>
   <span class="wr-cursor-tag" id="wrCursorTag">VIEW</span>
@@ -19124,19 +19146,28 @@ if('serviceWorker' in navigator){
   const CFG = {
     radius:        9,     // resting blob radius (px)
     points:        14,    // rim samples — higher = smoother outline
-    // POSITION SPRING — how the cursor's center chases the real mouse.
-    // Critically-damped (damping ≈ 2*sqrt(stiffness)) so it catches up
-    // fast with zero overshoot and zero perceived lag.
-    posStiffness:  420,
-    posDamping:    32,
+    // POSITION — snapped straight to the mouse (see tick()), so there is
+    // never any tracking lag, moving slow or fast.
     // RIM SPRING — "surface tension": how fast each edge point relaxes
     // back toward its resting radius once the stretching force eases.
     rimStiffness:  260,
     rimDamping:    18,
     // how strongly velocity pushes the leading edge out / trailing edge in
     maxStretch:    2.1,     // multiplier on radius at the very tip, top speed
-    stretchSpeedCap: 60,    // px/frame velocity that reaches maxStretch
+    stretchSpeedCap: 60,    // px/frame-equivalent velocity that reaches maxStretch
+    stretchThreshold: 9,    // below this speed → perfectly plain circle, no stretch at all
     pinch:         0.45,    // how much the trailing edge pinches inward
+    // ARROW ↔ DROPLET morph — hysteresis so it doesn't flicker right at
+    // the boundary speed; enters droplet mode fast, but only leaves it
+    // after speed has been low for a brief settle delay (feels decisive
+    // both ways instead of twitchy).
+    dropEnterSpeed: 16,
+    dropExitSpeed:  6,
+    dropExitDelay:  70, // ms of sustained slow movement before reverting to the arrow
+    // trailing water-drop particles, only spawned while moving fast
+    splashMinSpeed: 22,     // must be moving at least this fast to splash at all
+    splashChance:   0.4,    // per-frame chance of spawning one, once above splashMinSpeed
+    splashMax:      8,      // hard cap on particles alive at once
     // hover behavior
     hoverScale:    { button: 1.9, link: 1.45, image: 2.6 },
     hoverStability:{ button: 0.35, link: 0.7, image: 0.5 }, // dampens stretch → feels "stable"
@@ -19155,8 +19186,11 @@ if('serviceWorker' in navigator){
   let mode = 'default'; // default | link | button | image
   let magnetTarget = null;
   let raf = null;
+  const splashes = [];
+  let isDragging = false;
+  let lastFastAt = 0;
 
-  // position spring state (critically damped spring-mass-damper)
+  // position state — no spring, just tracked for velocity/angle math
   const pos = { x:-100, y:-100, vx:0, vy:0 };
 
   // rim points: each has its own tiny spring for radius (surface tension)
@@ -19172,7 +19206,42 @@ if('serviceWorker' in navigator){
     tag.parentElement.classList.toggle('wr-mode-product', mode==='image');
   }
 
+  // a tiny water droplet flung out behind the cursor while it's moving fast —
+  // purely cosmetic, self-removes once its own little animation finishes.
+  function spawnSplash(x, y, travelAngle){
+    if(splashes.length >= CFG.splashMax) return;
+    const el = document.createElement('div');
+    el.className = 'wr-cursor-splash';
+    // scattered slightly behind the direction of travel, like drops shaken off
+    const back = 6 + Math.random()*10;
+    const side = (Math.random()-0.5) * 18;
+    const bx = x - Math.cos(travelAngle)*back - Math.sin(travelAngle)*side;
+    const by = y - Math.sin(travelAngle)*back + Math.cos(travelAngle)*side;
+    const size = 2 + Math.random()*3.2;
+    el.style.width = el.style.height = size+'px';
+    el.style.left = (bx - size/2)+'px';
+    el.style.top  = (by - size/2)+'px';
+    document.body.appendChild(el);
+    splashes.push(el);
+
+    const dx = (Math.random()-0.5)*10;
+    const dy = 6 + Math.random()*14; // gravity — drops fall away, like real water
+    const anim = el.animate([
+      { transform:'translate(0,0) scale(1)', opacity:.9 },
+      { transform:`translate(${dx}px,${dy}px) scale(.2)`, opacity:0 }
+    ], { duration: 340 + Math.random()*260, easing:'cubic-bezier(.25,.65,.3,1)' });
+
+    const cleanup = ()=>{
+      el.remove();
+      const i = splashes.indexOf(el);
+      if(i>-1) splashes.splice(i,1);
+    };
+    anim.onfinish = cleanup;
+    anim.oncancel = cleanup;
+  }
+
   document.addEventListener('mousemove', e=>{
+
     mouseX = e.clientX; mouseY = e.clientY;
     if(!started){
       pos.x = mouseX; pos.y = mouseY;
@@ -19223,8 +19292,9 @@ if('serviceWorker' in navigator){
     dt = Math.min(dt, 2.5);
     lastT = now;
 
-    // --------- 1) position: critically-damped spring toward the mouse,
-    // with an optional magnetic target blended in near buttons/images ---
+    // --------- 1) position: snapped directly to the mouse — zero lag.
+    // (rim spring below still gives the organic stretch/wobble, so it
+    // stays alive without the *center* ever trailing behind.) ---------
     let targetX = mouseX, targetY = mouseY;
     const pull = magnetTarget && magnetTarget.isConnected
       ? CFG.magnetPull[magnetTarget.matches(SEL.image) ? 'image' : 'button']
@@ -19234,21 +19304,36 @@ if('serviceWorker' in navigator){
       targetX += (r.left + r.width/2 - mouseX) * pull;
       targetY += (r.top  + r.height/2 - mouseY) * pull;
     }
-    const ax = (targetX - pos.x) * CFG.posStiffness - pos.vx * CFG.posDamping;
-    const ay = (targetY - pos.y) * CFG.posStiffness - pos.vy * CFG.posDamping;
-    pos.vx += ax * (dt/1000); pos.vy += ay * (dt/1000);
-    pos.x  += pos.vx * (dt/1000); pos.y += pos.vy * (dt/1000);
+    pos.vx = (targetX - pos.x) / (dt/1000 || 1/60);
+    pos.vy = (targetY - pos.y) / (dt/1000 || 1/60);
+    pos.x = targetX; pos.y = targetY;
 
-    // --------- 2) velocity-driven organic stretch ---------
+    // --------- 2) velocity-driven organic stretch — ONLY while moving
+    // fast; below the threshold it's a perfectly plain, still circle ---------
     const speed = Math.hypot(pos.vx, pos.vy) / 60; // px/frame-equivalent
     const travelAngle = Math.atan2(pos.vy, pos.vx);
-    const stretchT = Math.min(speed / CFG.stretchSpeedCap, 1);
+
+    // arrow ↔ droplet morph, with hysteresis so the crossfade commits
+    // instantly on the way in but doesn't chatter on the way out
+    if(speed > CFG.dropEnterSpeed){ isDragging = true; lastFastAt = now; }
+    else if(speed < CFG.dropExitSpeed && (now - lastFastAt) > CFG.dropExitDelay){ isDragging = false; }
+    cursor.classList.toggle('wr-dragging', isDragging);
+
+    const stretchT = speed > CFG.stretchThreshold
+      ? Math.min((speed - CFG.stretchThreshold) / (CFG.stretchSpeedCap - CFG.stretchThreshold), 1)
+      : 0;
     const stability = mode==='button' ? CFG.hoverStability.button
                      : mode==='link'   ? CFG.hoverStability.link
                      : mode==='image'  ? CFG.hoverStability.image : 1;
     const stretchAmt = stretchT * (CFG.maxStretch - 1) * stability;
 
     const hoverScale = mode==='default' ? 1 : CFG.hoverScale[mode];
+
+    // a few scattered droplets shaken off behind it, only while it's
+    // actually moving fast — like water flicked off a moving drop
+    if(speed > CFG.splashMinSpeed && Math.random() < CFG.splashChance){
+      spawnSplash(pos.x, pos.y, travelAngle);
+    }
 
     for(const p of rim){
       // angular distance from the direction of travel (0 = leading edge,
@@ -19286,6 +19371,8 @@ if('serviceWorker' in navigator){
     document.documentElement.classList.remove('wr-custom-cursor');
     cursor.style.display = 'none';
     if(raf) cancelAnimationFrame(raf);
+    splashes.forEach(el=>el.remove());
+    splashes.length = 0;
     window.removeEventListener('touchstart', disableOnTouch);
   }, {passive:true, once:true});
 })();
