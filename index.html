@@ -1515,11 +1515,11 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .shop-filter-clear{width:100%;text-align:center;border:none;background:none;color:var(--text-faint);font-family:var(--font-buttons);font-size:calc(11.5px * var(--scale-buttons));padding:9px 4px 2px;cursor:pointer;border-top:1px solid var(--line);margin-top:10px}
 .shop-filter-clear:hover{color:var(--gold-light)}
 
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;min-width:0}
 .grid>*{min-width:0}
 @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
-@media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr);gap:8px}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}}
+@media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 .pagination-bar{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:32px;flex-wrap:wrap}
 .pagination-bar .page-btn{min-width:36px;height:36px;padding:0 8px;border:1px solid var(--line);background:none;border-radius:8px;color:var(--text-dim);font-family:var(--font-buttons);font-size:calc(13px * var(--scale-buttons));cursor:pointer;transition:all .15s ease}
 .pagination-bar .page-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
@@ -1546,26 +1546,27 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 /* ===== پنل‌های شیشه‌ای صفحه اصلی (جدیدترین‌ها / تخفیف‌های امروز / پرفروش‌ترین‌ها) =====
    یک قاب شیشه‌ای واحد برای کل بخش (از عنوان انگلیسی تا کمی پایین‌تر از عکس‌ها)،
    بدون قاب اضافه دور تک‌تک کارت‌های محصول */
-.glass-band{padding:22px 0 30px;margin-bottom:6px}
+.glass-band{padding:16px 0 22px;margin-bottom:4px}
 .glass-band .container{position:relative}
 .glass-panel{
   position:relative;overflow:hidden;
-  border-radius:26px;
+  border-radius:22px;
   border:1px solid var(--line);
   background:var(--bg-card);
-  padding:22px 20px 14px;
+  padding:16px 16px 10px;
   box-shadow:0 10px 30px rgba(var(--shadow-color),.08);
 }
-.glass-band .section-head{margin-bottom:18px}
+.glass-band .section-head{margin-bottom:12px}
 .glass-band .section-head .eyebrow{padding:4px 12px;border-radius:100px;display:block;width:fit-content}
 @media(max-width:640px){
-  .glass-band{padding:16px 0 20px}
+  .glass-band{padding:10px 0 14px}
   .glass-band .container{padding:0 10px}
-  .glass-band .glass-panel{padding:16px 12px 10px}
+  .glass-band .glass-panel{padding:10px 10px 8px}
+  .glass-band .section-head{margin-bottom:8px}
 }
 @media(max-width:420px){
   .glass-band .container{padding:0 6px}
-  .glass-band .glass-panel{padding-left:8px;padding-right:8px}
+  .glass-band .glass-panel{padding-left:7px;padding-right:7px}
 }
 
 .glass-new .glass-panel{background:linear-gradient(160deg,rgba(var(--glass-new-rgb,63,149,99),var(--glass-new-a1,.20)),rgba(var(--glass-new-rgb,63,149,99),var(--glass-new-a2,.05)) 60%,rgba(255,255,255,.06));}
@@ -1608,7 +1609,7 @@ html[data-theme="classic"] .glass-marks svg{
 .glass-deals .section-head .eyebrow{background:rgba(var(--glass-deals-rgb,255,120,80),var(--glass-deals-a3,.14));color:var(--glass-deals-hex,#e0562a)}
 .glass-best .section-head .eyebrow{background:rgba(var(--glass-best-rgb,124,95,214),var(--glass-best-a3,.14));color:var(--glass-best-hex,#7c5fd6)}
 
-.glass-scroll{display:flex;gap:18px;overflow-x:auto;padding:8px 2px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;cursor:grab;user-select:none}
+.glass-scroll{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;cursor:grab;user-select:none}
 .promo-banner-link{display:block;transition:opacity .2s,transform .2s}
 .promo-banner-link:hover{opacity:.92}
 .promo-banner-link:active{transform:scale(.99)}
@@ -1626,7 +1627,7 @@ html[data-theme="classic"] .glass-marks svg{
 }
 .glass-scroll .card-img{aspect-ratio:1/1;background:transparent;padding:10px}
 .glass-scroll .card-img img{object-fit:contain;border-radius:14px;background:rgba(var(--gold-rgb),.08)}
-.glass-scroll .card-body{padding:4px 14px 14px;text-align:center;align-items:center}
+.glass-scroll .card-body{padding:6px 16px 18px;text-align:center;align-items:center}
 .glass-scroll .card-body h3{font-size:14px}
 .glass-scroll .card-price{justify-content:center}
 .glass-scroll .card:hover{
@@ -1648,8 +1649,6 @@ html[data-theme="classic"] .glass-scroll .card:hover{
 @media(max-width:640px){
   .glass-scroll .card{border-radius:14px}
   .glass-scroll .card-img img{border-radius:11px}
-  .glass-scroll .card-body{padding:3px 10px 12px}
-  .glass-scroll .card-body h3{font-size:12.5px}
 }
 
 .view-all-card{display:flex;align-items:center;justify-content:center;text-decoration:none;min-height:100%}
@@ -1666,10 +1665,6 @@ html[data-theme="classic"] .glass-scroll .card:hover{
 .card-thumbs{display:flex;gap:6px;padding:8px 2px 0;justify-content:center}
 .card-thumb{flex:0 0 44px;width:44px;aspect-ratio:1/1;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:var(--bg-alt)}
 .card-thumb img{width:100%;height:100%;object-fit:cover}
-@media(max-width:640px){
-  .card-thumbs{gap:4px;padding:5px 2px 0}
-  .card-thumb{flex-basis:32px;width:32px;border-radius:5px}
-}
 .card-discount{position:absolute;top:10px;left:10px;z-index:3;background:#c0563f;color:#fff;font-size:calc(11px * var(--scale-product));font-weight:600;padding:4px 9px;border-radius:6px;letter-spacing:.02em;box-shadow:0 4px 14px rgba(var(--danger-rgb),.28)}
 .card-out{position:absolute;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;font-size:calc(12px * var(--scale-product));color:var(--text-dim);letter-spacing:.1em}
 .card-lowstock{position:absolute;bottom:10px;right:10px;left:10px;background:#c0563f;color:#fff;font-size:calc(10.5px * var(--scale-product));padding:5px 9px;letter-spacing:.03em;text-align:center;border-radius:1px}
@@ -1677,35 +1672,26 @@ html[data-theme="classic"] .glass-scroll .card:hover{
   .card-discount{font-size:calc(13px * var(--scale-product));padding:6px 12px}
   .card-lowstock{font-size:calc(12.5px * var(--scale-product));padding:7px 11px}
 }
-.card-body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:6px;flex:1;font-family:var(--font-product);min-width:0}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1;font-family:var(--font-product);min-width:0}
 .card-body .cat-tag{font-size:calc(10.5px * var(--scale-product));letter-spacing:.15em;color:var(--gold-dim);text-transform:uppercase}
 .card-body h3{font-size:calc(15.5px * var(--scale-product));font-weight:500;overflow-wrap:break-word;word-break:break-word}
 .card-price{display:flex;align-items:baseline;gap:8px;margin-top:auto;flex-wrap:wrap;min-width:0}
 .card-price .now{color:var(--gold-light);font-size:calc(15px * var(--scale-product));font-weight:700;white-space:nowrap}
 .card-price .was{color:var(--text-faint);font-size:calc(12.5px * var(--scale-product));text-decoration:line-through;white-space:nowrap}
-.card-actions{display:flex;gap:8px;margin-top:8px;min-width:0}
-.card-actions .btn{flex:1;padding:9px;font-size:calc(12.5px * var(--scale-buttons));justify-content:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-actions{display:flex;gap:8px;margin-top:10px;min-width:0}
+.card-actions .btn{flex:1;padding:10px;font-size:calc(12.5px * var(--scale-buttons));justify-content:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .icon-sq{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;color:var(--text-dim);transition:.2s}
 .icon-sq:hover{border-color:var(--gold);color:var(--gold-light)}
 /* در کارت‌های باریک (اسکرول جدیدترین‌ها/پرفروش‌ترین‌ها/شیشه‌ای و گرید دو ستونه موبایل)
    دکمه‌ی افزودن به سبد و آیکون علاقه‌مندی کنار هم جا نمی‌شدند و آیکون از کادر
-   بیرون می‌زد یا بریده می‌شد؛ اینجا هر دو را کوچک‌تر می‌کنیم تا همیشه در یک ردیف جا شوند.
-   همچنین کل قالب کارت (پدینگ، فاصله‌ها، فونت‌ها) روی موبایل جمع‌وجورتر شده تا
-   فضای کمتری از صفحه بگیرد، بدون اینکه تصویر محصول کوچک‌تر شود. */
+   بیرون می‌زد یا بریده می‌شد؛ اینجا هر دو را کوچک‌تر می‌کنیم تا همیشه در یک ردیف جا شوند. */
 @media(max-width:640px){
-  .card-body{padding:9px 10px 11px;gap:4px}
-  .card-body .cat-tag{font-size:calc(9px * var(--scale-product))}
-  .card-body h3{font-size:calc(12.5px * var(--scale-product));line-height:1.3}
-  .card-price{gap:6px}
-  .card-price .now{font-size:calc(13px * var(--scale-product))}
-  .card-price .was{font-size:calc(10.5px * var(--scale-product))}
-  .card-actions{gap:6px;margin-top:6px}
+  .card-actions{gap:6px}
   .card-actions .btn{padding:8px 6px;font-size:calc(11px * var(--scale-buttons))}
   .icon-sq{width:32px;height:32px;border-radius:7px}
   .icon-sq svg{width:15px;height:15px}
 }
 @media(max-width:400px){
-  .card-body{padding:8px 9px 10px}
   .card-actions .btn{padding:7px 4px;font-size:calc(10px * var(--scale-buttons))}
   .icon-sq{width:28px;height:28px}
 }
