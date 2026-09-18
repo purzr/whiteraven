@@ -1,107 +1,106 @@
-// Service Worker ساده برای وایت راون. هدف: بازدید دوم به بعد سریع‌تر لود شود.
-//
-// استراتژی‌ها (عمداً محافظه‌کارانه، چون این یک فروشگاهه و قیمت/موجودی نباید
-// کهنه/کش‌شده به مشتری نشان داده شود):
-//  - صفحه‌ی اصلی (خود index.html / ناوبری‌ها): network-first — همیشه تلاش
-//    می‌شود نسخه‌ی تازه از اینترنت گرفته شود؛ فقط اگر کاربر آفلاین بود از
-//    کش قبلی نشان داده می‌شود.
-//  - عکس‌ها (محصولات از Supabase Storage + فونت‌های گوگل): cache-first —
-//    این‌ها سنگین‌ترین و کم‌تغییرترین بخش سایت هستند، پس کش‌شدنشان بی‌خطر و
-//    خیلی مفید است.
-//  - هر درخواستی به Supabase REST/RPC API (قیمت، موجودی، سفارش، حساب
-//    کاربری و...): اصلاً کش نمی‌شود — همیشه مستقیم به شبکه می‌رود.
+/* ============================================================
+   White Raven — Service Worker
+   ------------------------------------------------------------
+   هدف: بارگذاری سریع‌تر در بازدید دوم + یک صفحه‌ی جایگزین قابل‌استفاده
+   وقتی اینترنت قطع است. هیچ داده‌ی زنده‌ای (محصولات، قیمت، موجودی،
+   سفارش‌ها، حساب کاربری) این‌جا کش نمی‌شود — همه‌ی این‌ها همیشه مستقیم
+   از سوپابیس خوانده می‌شوند و از این فایل رد نمی‌شوند.
 
+   نکته‌ی مهم برای به‌روزرسانی سایت:
+   هر بار که تغییری در سایت اعمال می‌کنید که می‌خواهید کاربرهایی که
+   قبلاً سایت را باز کرده‌اند هم فوراً ببینند، کافی است عدد زیر
+   (CACHE_VERSION) را یک واحد بالا ببرید. با تغییر این عدد، مرورگر
+   خودش کش قدیمی را دور می‌ریزد و نسخه‌ی تازه را می‌گیرد — کار دیگری
+   لازم نیست.
+   ============================================================ */
 const CACHE_VERSION = 'wr-cache-v1';
-const IMAGE_CACHE = `${CACHE_VERSION}-images`;
-const PAGE_CACHE = `${CACHE_VERSION}-pages`;
+const STATIC_CACHE = CACHE_VERSION + '-static';
+
+// فقط فایل‌های ثابت و کم‌تغیر خارجی (فونت‌ها و کتابخانه‌های CDN) از قبل
+// کش می‌شوند تا لود اول هم سریع‌تر شود. اگر هرکدام در دسترس نبود، مشکلی
+// پیش نمی‌آید — نصب Service Worker با خطا متوقف نمی‌شود.
+const PRECACHE_URLS = [
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+  'https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js'
+];
 
 self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then((cache) => Promise.all(
+        PRECACHE_URLS.map((url) => cache.add(url).catch(() => null))
+      ))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(k => k.startsWith('wr-cache-') && k !== IMAGE_CACHE && k !== PAGE_CACHE)
-          .map(k => caches.delete(k))
-      )
-    )
+    caches.keys().then((keys) => Promise.all(
+      keys
+        .filter((key) => key.startsWith('wr-cache-') && key !== STATIC_CACHE)
+        .map((key) => caches.delete(key))
+    ))
   );
   self.clients.claim();
 });
 
-function isSupabaseApi(url){
-  // درخواست‌های داده‌ای (REST/RPC/auth) به Supabase — هیچ‌وقت کش نمی‌شوند
-  return url.hostname.endsWith('.supabase.co') &&
-    (url.pathname.startsWith('/rest/') || url.pathname.startsWith('/auth/') || url.pathname.startsWith('/rpc/'));
-}
-
-function isSupabaseImage(url){
-  // فایل‌های عکس داخل باکت Storage
-  return url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/storage/v1/object/public/');
-}
-
-function isGoogleFont(url){
-  return url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
-}
-
-function isImageRequest(request, url){
-  return request.destination === 'image' || /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(url.pathname);
-}
-
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  if(request.method !== 'GET') return; // فقط درخواست‌های خواندنی کش می‌شوند
+  const req = event.request;
+  if (req.method !== 'GET') return;
 
-  const url = new URL(request.url);
+  const url = new URL(req.url);
 
-  // ۱) API دیتابیس: همیشه مستقیم شبکه، بدون کش
-  if(isSupabaseApi(url)) return;
+  // ۱) درخواست‌های سوپابیس (داده‌ی زنده): این‌ها اصلاً دست‌کاری نمی‌شوند و
+  // مستقیم مثل حالت عادی به شبکه می‌روند — نه کش می‌شوند، نه از کش پاسخ
+  // می‌گیرند. این خط دقیقاً همان چیزی است که تضمین می‌کند قیمت/موجودی/
+  // سفارش‌ها همیشه لحظه‌ای و درست باشند.
+  if (url.hostname.endsWith('.supabase.co') || url.hostname.endsWith('.supabase.in')) {
+    return;
+  }
 
-  // ۲) عکس‌ها و فونت‌ها: cache-first
-  if(isSupabaseImage(url) || isGoogleFont(url) || isImageRequest(request, url)){
+  // ۲) خودِ صفحه (index.html / همه‌ی مسیرهای اپ روی همین دامنه):
+  // «اول شبکه، بعد کش». یعنی همیشه اول تلاش می‌کند نسخه‌ی تازه را از
+  // اینترنت بگیرد — پس هر تغییری که در سایت می‌دهید فوراً دیده می‌شود.
+  // فقط وقتی اینترنت واقعاً در دسترس نباشد، آخرین نسخه‌ی ذخیره‌شده نشان
+  // داده می‌شود تا کاربر به‌جای صفحه‌ی خطا، سایت را (با کمی تأخیر در
+  // به‌روز بودن) ببیند.
+  if (req.mode === 'navigate' || url.origin === self.location.origin) {
     event.respondWith(
-      caches.open(IMAGE_CACHE).then(async cache => {
-        const cached = await cache.match(request);
-        if(cached) return cached;
-        try{
-          const res = await fetch(request);
-          if(res && res.ok) cache.put(request, res.clone());
+      fetch(req)
+        .then((res) => {
+          const resClone = res.clone();
+          caches.open(STATIC_CACHE).then((cache) => cache.put(req, resClone)).catch(() => {});
           return res;
-        }catch(err){
-          return cached || Response.error();
-        }
-      })
+        })
+        .catch(() =>
+          caches.match(req).then((cached) => cached || caches.match('/'))
+        )
     );
     return;
   }
 
-  // ۳) ناوبری/صفحه‌ی اصلی (خود index.html): network-first با fallback به کش.
-  // توجه: فقط پاسخ خودِ مسیر ریشه («/») به‌عنوان «پوسته‌ی اصلی اپ» کش می‌شود —
-  // نه هر صفحه‌ای که کاربر مستقیم بازش کرده. چون بعضی مسیرها (مثل
-  // /product/{id}/) فایل HTML کاملاً متفاوتی دارند (صفحات مخصوص سئو که به
-  // اپ اصلی ریدایرکت می‌کنند)، کش‌کردنشان زیر کلید «/» باعث می‌شد در حالت
-  // آفلاین به‌جای خود سایت، آن صفحه‌ی ریدایرکت خالی نشان داده شود.
-  if(request.mode === 'navigate' || request.destination === 'document'){
+  // ۳) فایل‌های ثابت خارجی (فونت‌ها، کتابخانه‌های CDN): چون این‌ها عملاً
+  // تغییر نمی‌کنند، برای سرعت اول از کش نشان داده می‌شوند (اگر موجود
+  // باشند) و هم‌زمان در پس‌زمینه نسخه‌ی تازه هم گرفته و برای دفعه‌ی بعد
+  // ذخیره می‌شود (stale-while-revalidate).
+  const isStaticAsset =
+    url.hostname === 'fonts.googleapis.com' ||
+    url.hostname === 'fonts.gstatic.com' ||
+    url.hostname === 'cdn.jsdelivr.net';
+
+  if (isStaticAsset) {
     event.respondWith(
-      (async () => {
-        const cache = await caches.open(PAGE_CACHE);
-        try{
-          const res = await fetch(request);
-          if(res && res.ok && url.pathname === '/'){
-            cache.put('/', res.clone());
-          }
-          return res;
-        }catch(err){
-          // آفلاین یا خطای شبکه: به‌جای هر صفحه، همیشه پوسته‌ی اصلی اپ را
-          // نشان می‌دهیم (که خودش می‌تواند بعداً با اتصال دوباره، مسیر
-          // درست را از نو بارگذاری کند)
-          const cached = await cache.match('/');
-          return cached || Response.error();
-        }
-      })()
+      caches.match(req).then((cached) => {
+        const network = fetch(req)
+          .then((res) => {
+            caches.open(STATIC_CACHE).then((cache) => cache.put(req, res.clone())).catch(() => {});
+            return res;
+          })
+          .catch(() => cached);
+        return cached || network;
+      })
     );
   }
+  // بقیه‌ی درخواست‌ها (هر چیز دیگری) دست‌کاری نمی‌شوند.
 });
