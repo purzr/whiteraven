@@ -2461,18 +2461,23 @@ footer.site{font-family:var(--font-footer)}
    ================================================================ */
 .acc-shell-sidebar{display:none}
 @media(min-width:861px){
-  .acc-shell{display:grid;grid-template-columns:272px minmax(0,1fr);gap:36px;align-items:start;max-width:1180px;margin:44px auto 80px;padding:0 32px}
-  .acc-shell-sidebar{display:flex;flex-direction:column;position:sticky;top:110px;background:var(--bg-card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(var(--shadow-color),.14)}
-  .acc-shell-user{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 20px 22px;border-bottom:1px solid var(--line)}
-  .acc-shell-avatar{position:relative;flex:none;width:76px;height:76px;border-radius:50%;background:var(--bg-alt);color:var(--gold-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;font-family:var(--font-heading);border:2px solid var(--gold-border);overflow:hidden}
+  /* منوی باریک (۲۰۸px) + محتوای پهن؛ آیتم‌ها صریحاً جای‌گذاری می‌شوند و پس‌زمینه‌ی دراور موبایل
+     (acc-drawer-backdrop) روی دسکتاپ مخفی است تا یک سلول شبکه را اشغال نکند */
+  .acc-shell{display:grid;grid-template-columns:minmax(0,1fr) 208px;gap:20px;align-items:start;max-width:1320px;margin:24px auto 70px;padding:0 24px}
+  .acc-shell>.acc-drawer-backdrop{display:none}
+  .acc-shell-sidebar{grid-column:2;grid-row:1;display:flex;flex-direction:column;position:sticky;top:96px;background:var(--bg-card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 18px 44px rgba(var(--shadow-color),.14)}
+  .acc-shell-main{grid-column:1;grid-row:1}
+  .acc-shell-user{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:24px 12px 16px;border-bottom:1px solid var(--line)}
+  .acc-shell-avatar{position:relative;flex:none;width:92px;height:92px;border-radius:50%;background:var(--bg-alt);color:var(--gold-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;font-family:var(--font-heading);border:2px solid var(--gold-border);overflow:hidden}
   .acc-shell-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
   .acc-shell-user-info{min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px}
-  .acc-shell-user-info strong{font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-heading)}
+  .acc-shell-user-info strong{font-size:14.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-heading)}
   .acc-shell-user-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--gold-light);background:var(--gold-subtle);border:1px solid var(--gold-border);border-radius:20px;padding:2px 10px}
-  .acc-shell-sidebar .acc-menu{padding:14px;gap:4px}
-  .acc-shell-sidebar .acc-menu-item{padding:11px 14px;background:none;border:1px solid transparent;border-radius:10px;transition:background .25s ease,border-color .25s ease}
-  .acc-shell-sidebar .acc-menu-icon{width:30px;height:30px;background:none;color:var(--text-faint);transition:color .25s ease}
-  .acc-shell-sidebar .acc-menu-text strong{font-size:13px;font-weight:600;color:var(--text-dim);transition:color .25s ease}
+  .acc-shell-sidebar .acc-shell-user-badge{background:none;border:none;padding:0;font-size:11.5px}
+  .acc-shell-sidebar .acc-menu{padding:10px 8px;gap:2px}
+  .acc-shell-sidebar .acc-menu-item{padding:10px 10px;gap:10px;background:none;border:1px solid transparent;border-radius:10px;transition:background .25s ease,border-color .25s ease}
+  .acc-shell-sidebar .acc-menu-icon{width:26px;height:26px;background:none;color:var(--text-faint);transition:color .25s ease}
+  .acc-shell-sidebar .acc-menu-text strong{font-size:12.5px;font-weight:600;color:var(--text-dim);transition:color .25s ease}
   .acc-shell-sidebar .acc-menu-text small{display:none}
   .acc-shell-sidebar .acc-menu-item:hover{background:var(--gold-subtle)}
   .acc-shell-sidebar .acc-menu-item:hover .acc-menu-icon,
@@ -2481,7 +2486,7 @@ footer.site{font-family:var(--font-footer)}
   .acc-shell-sidebar .acc-menu-item.is-active .acc-menu-icon{color:var(--gold-light)}
   .acc-shell-sidebar .acc-menu-item.is-active .acc-menu-text strong{color:var(--text)}
   .acc-shell-sidebar .acc-menu-item-danger{margin-top:6px;border-top:1px solid var(--line);border-radius:0;padding-top:16px}
-  .acc-shell-mood{position:relative;height:170px;margin-top:auto;overflow:hidden}
+  .acc-shell-mood{position:relative;height:150px;margin-top:auto;overflow:hidden}
   .acc-shell-mood::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,var(--bg-card) 0%,transparent 42%)}
   .acc-shell-mood img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
   .acc-shell-main{min-width:0}
@@ -2494,6 +2499,25 @@ footer.site{font-family:var(--font-footer)}
   .acc-shell-main .container{padding:0;max-width:none;margin:0}
   .acc-shell-main .container.narrow{max-width:640px;margin:0}
   .acc-shell-main .section{padding:0}
+}
+/* پنل داشبورد: روی موبایل هیچ استایلی ندارد (چیدمان قبلی حفظ می‌شود) */
+.acc-dash-head{display:none}
+@media(min-width:861px){
+  .acc-hero{min-height:210px;margin-bottom:18px}
+  .acc-dash-panel{border:1px solid var(--line);border-radius:18px;padding:18px}
+  .acc-dash-top{display:flex;align-items:center;justify-content:space-between;gap:24px;border:1px solid var(--line);border-radius:14px;padding:22px 26px;margin-bottom:18px;background:var(--bg-alt)}
+  .acc-dash-head{display:block;flex:1;min-width:0}
+  .acc-dash-head h2{font-family:var(--font-heading);font-size:22px;margin-bottom:8px}
+  .acc-dash-head p{color:var(--text-dim);font-size:12.5px;line-height:1.9;max-width:320px}
+  .acc-dash-top .acc-summary-grid{flex:none;grid-template-columns:repeat(3,minmax(96px,118px));gap:12px;margin:0}
+  .acc-dash-top .acc-summary-card{flex-direction:column;justify-content:center;text-align:center;gap:8px;padding:14px 8px;border-radius:12px}
+  .acc-dash-top .acc-summary-icon{width:40px;height:40px}
+  .acc-dash-card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  .acc-dash-card .acc-order-row:last-child{margin-bottom:0}
+  .acc-dash-panel .acc-vip-banner{margin-top:0}
+  /* کارت اطلاعات حساب: پنل آواتار سمت راست، اطلاعات سمت چپ */
+  .acc-info-card{flex-direction:row-reverse}
+  .acc-info-side{border-inline-start:none;border-inline-end:1px solid var(--line)}
 }
 @media(max-width:860px){
   /* روی موبایل، سایدبار به‌جای ستون کناری به یک دراور کشویی تبدیل می‌شود
@@ -2535,7 +2559,7 @@ html[data-theme="classic"] .acc-hero::after{background:linear-gradient(90deg,rgb
 .acc-summary-card:hover{border-color:var(--gold-border);transform:translateY(-2px)}
 .acc-summary-icon{flex:none;width:46px;height:46px;border-radius:50%;background:var(--gold-subtle);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;color:var(--gold-light)}
 .acc-summary-num{font-family:var(--font-heading);font-size:20px;color:var(--text)}
-.acc-summary-title{font-size:12px;color:var(--text-dim);margin-top:2px}
+.acc-summary-title{font-size:12px;color:var(--text-dim);margin:0 0 3px}
 
 .acc-info-card{display:flex;gap:0;background:var(--bg-card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:22px}
 @media(max-width:760px){.acc-info-card{flex-direction:column-reverse}}
@@ -6740,6 +6764,16 @@ async function markAccountNotificationsRead(accountId){
 
    -- برای دیتابیس‌های موجود که قبلاً بدون ستون user_code ساخته شده‌اند، فقط این خط کافیست:
    -- alter table profiles add column if not exists user_code text unique;
+
+   -- تصویر پروفایل کاربران (تغییر تصویر در حساب کاربری + حذف از پنل مدیریت):
+   alter table profiles add column if not exists avatar_url text;
+   alter table profiles add column if not exists avatar_locked boolean default false;
+   -- کاربران واردشده (به‌جز آن‌هایی که ادمین آپلودشان را بسته) فقط داخل پوشه‌ی avatars/ آپلود کنند:
+   -- create policy "users upload own avatars" on storage.objects for insert to authenticated
+   --   with check (bucket_id = 'site-assets' and name like 'avatars/' || auth.uid()::text || '-%'
+   --     and not exists (select 1 from profiles p where p.id = auth.uid() and coalesce(p.avatar_locked,false)));
+   -- create policy "users delete own avatars" on storage.objects for delete to authenticated
+   --   using (bucket_id = 'site-assets' and name like 'avatars/' || auth.uid()::text || '-%');
 */
 async function upsertProfile(account){
   if(!account || !account.id) return;
@@ -6775,6 +6809,233 @@ async function loadProfiles(){
     return JSON.parse(localStorage.getItem('wr-profiles')||'[]')
       .slice().sort((a,b)=> new Date(b.created_at||0) - new Date(a.created_at||0));
   }catch(e){ return []; }
+}
+/* ---- تصویر پروفایل کاربر ----
+   آدرس تصویر در ستون profiles.avatar_url ذخیره می‌شود (منبع واحد برای حساب کاربر و پنل ادمین)،
+   فایل در باکت site-assets زیر avatars/<accountId>-<timestamp>.jpg. */
+/* آواتارهای آماده: به‌صورت SVG داخل خود کد ساخته می‌شوند و در ستون avatar_url به شکل «preset:<کلید>» ذخیره می‌شوند */
+const AVATAR_PRESETS = [
+  {key:'crow',    bg:['#3a3346','#6b4fa0'], icon:'<ellipse cx="48" cy="58" rx="24" ry="15"/><circle cx="68" cy="42" r="10"/><polygon points="76,39 90,44 76,49"/><polygon points="26,55 10,46 12,64"/><circle cx="70" cy="40" r="2" fill="#3a3346"/>'},
+  {key:'moon',    bg:['#c9a24b','#8a6a22'], icon:'<path d="M60 20A30 30 0 1 0 80 62A24 24 0 0 1 60 20Z"/>'},
+  {key:'star',    bg:['#2f7d5b','#1c4d38'], icon:'<polygon points="50,18 59,41 83,41 63,56 71,80 50,66 29,80 37,56 17,41 41,41"/>'},
+  {key:'diamond', bg:['#6b4fa0','#3d2b66'], icon:'<polygon points="50,20 78,44 50,82 22,44"/><path d="M22 44H78M50 20 38 44 50 82 62 44Z" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="2"/>'},
+  {key:'crown',   bg:['#c9a24b','#6b4fa0'], icon:'<polygon points="22,70 26,36 41,54 50,28 59,54 74,36 78,70"/><rect x="22" y="72" width="56" height="8" rx="2"/>'},
+  {key:'leaf',    bg:['#3f9a6f','#c9a24b'], icon:'<path d="M50 80C26 72 22 44 34 26c24 0 42 12 40 34-1 11-9 17-24 20Z"/><path d="M34 70 60 42" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="2.5" stroke-linecap="round"/>'},
+  {key:'flower',  bg:['#a35b86','#6b4fa0'], icon:'<circle cx="50" cy="30" r="12"/><circle cx="70" cy="45" r="12"/><circle cx="62" cy="68" r="12"/><circle cx="38" cy="68" r="12"/><circle cx="30" cy="45" r="12"/><circle cx="50" cy="50" r="9" fill="#c9a24b"/>'},
+  {key:'feather', bg:['#1c4d38','#c9a24b'], icon:'<path d="M28 78C28 42 50 24 76 22 74 48 58 68 32 76Z"/><path d="M28 78 60 46" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="2.5" stroke-linecap="round"/>'}
+];
+function presetAvatarSrc(key){
+  const d = AVATAR_PRESETS.find(x=>x.key===key);
+  if(!d) return null;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d.bg[0]}"/><stop offset="1" stop-color="${d.bg[1]}"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><g fill="#fff8ea">${d.icon}</g></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+// مقدار ذخیره‌شده (آدرس آپلودی یا preset:<کلید>) را به src قابل نمایش تبدیل می‌کند
+function resolveAvatarSrc(value){
+  if(!value) return null;
+  if(typeof value === 'string' && value.startsWith('preset:')) return presetAvatarSrc(value.slice(7));
+  return value;
+}
+function accountAvatarUrl(){
+  return (STATE.myAvatar && STATE.account && STATE.myAvatar.id === STATE.account.id) ? (STATE.myAvatar.url || null) : null;
+}
+function accountAvatarLocked(){
+  return !!(STATE.myAvatar && STATE.account && STATE.myAvatar.id === STATE.account.id && STATE.myAvatar.locked);
+}
+function applyAvatarToDom(){
+  const src = resolveAvatarSrc(accountAvatarUrl()) || '/assets/account/raven-profile.webp';
+  $$('.acc-avatar-img').forEach(img=>{ img.style.display=''; img.src = src; });
+  const rm = $('#accRemovePhotoBtn');
+  if(rm) rm.style.display = accountAvatarUrl() ? '' : 'none';
+}
+async function loadMyAvatarInfo(accountId){
+  if(!accountId) return {url:null, locked:false};
+  if(supabaseClient){
+    try{
+      let {data, error} = await supabaseClient.from('profiles').select('avatar_url,avatar_locked').eq('id', accountId).maybeSingle();
+      if(error){ // شاید ستون avatar_locked هنوز ساخته نشده
+        ({data, error} = await supabaseClient.from('profiles').select('avatar_url').eq('id', accountId).maybeSingle());
+      }
+      if(!error) return {url: data?.avatar_url || null, locked: !!data?.avatar_locked};
+    }catch(e){}
+  }
+  try{
+    const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
+    const r = list.find(x=>x.id===accountId) || {};
+    return {url: r.avatar_url || null, locked: !!r.avatar_locked};
+  }catch(e){ return {url:null, locked:false}; }
+}
+async function refreshMyAvatar(){
+  if(!STATE.account){ STATE.myAvatar = null; return; }
+  const id = STATE.account.id;
+  const info = await loadMyAvatarInfo(id);
+  STATE.myAvatar = {id, url: info.url, locked: info.locked};
+  applyAvatarToDom();
+}
+// ذخیره‌ی فیلدهای مربوط به تصویر پروفایل (avatar_url و/یا avatar_locked)
+async function saveProfileFields(accountId, fields){
+  if(supabaseClient){
+    if(STATE.account && STATE.account.id === accountId) await upsertProfile(STATE.account); // اطمینان از وجود ردیف پروفایل
+    const {error} = await supabaseClient.from('profiles').update(fields).eq('id', accountId);
+    if(error){
+      if(error.code === '42703') throw new Error('ستون‌های avatar_url / avatar_locked در جدول profiles ساخته نشده‌اند');
+      throw error;
+    }
+    return;
+  }
+  const list = JSON.parse(localStorage.getItem('wr-profiles') || '[]');
+  const idx = list.findIndex(x=>x.id===accountId);
+  if(idx>-1){ Object.assign(list[idx], fields); localStorage.setItem('wr-profiles', JSON.stringify(list)); }
+}
+function saveProfileAvatar(accountId, url){ return saveProfileFields(accountId, {avatar_url: url}); }
+function removeAvatarFileRemote(url, ownerId){
+  const path = storagePathFromPublicUrl(url);
+  if(!supabaseClient || !path || !path.startsWith('avatars/')) return Promise.resolve();
+  if(ownerId && !path.startsWith('avatars/'+ownerId+'-')) return Promise.resolve();
+  return supabaseClient.storage.from('site-assets').remove([path])
+    .then(({error})=>{ if(error) console.error('Delete avatar file error:', error); })
+    .catch(e=>console.error('Delete avatar file error:', e));
+}
+// برش مربعی از وسط عکس + کوچک‌سازی (۴۰۰×۴۰۰، JPEG) قبل از آپلود
+function makeSquareAvatarBlob(file, size){
+  size = size || 400;
+  return new Promise((resolve, reject)=>{
+    const objUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      URL.revokeObjectURL(objUrl);
+      const side = Math.min(img.width, img.height);
+      const sx = (img.width - side)/2, sy = (img.height - side)/2;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,size,size);
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+      canvas.toBlob(b=> b ? resolve(b) : reject(new Error('پردازش تصویر ناموفق بود')), 'image/jpeg', 0.86);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(objUrl); reject(new Error('فایل انتخاب‌شده تصویر معتبری نیست')); };
+    img.src = objUrl;
+  });
+}
+async function changeAccountAvatar(file){
+  const acc = STATE.account;
+  if(!acc) throw new Error('ابتدا وارد حساب کاربری شوید');
+  if(!supabaseClient) throw new Error('آپلود تصویر در حال حاضر در دسترس نیست');
+  const fresh = await loadMyAvatarInfo(acc.id); // وضعیت قفل را از دیتابیس دوباره می‌خوانیم
+  if(fresh.locked){
+    STATE.myAvatar = {id: acc.id, url: fresh.url, locked: true};
+    throw new Error('امکان آپلود عکس برای حساب شما غیرفعال شده است؛ می‌توانید از آواتارهای آماده استفاده کنید');
+  }
+  if(!file || !/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error('فقط تصویر JPG، PNG یا WebP مجاز است');
+  if(file.size > 10*1024*1024) throw new Error('حجم تصویر نباید بیشتر از ۱۰ مگابایت باشد');
+  const blob = await makeSquareAvatarBlob(file, 400);
+  const path = `avatars/${acc.id}-${Date.now()}.jpg`;
+  const {error: upErr} = await supabaseClient.storage.from('site-assets').upload(path, blob, {
+    cacheControl: '31536000', contentType: 'image/jpeg', upsert: false
+  });
+  if(upErr) throw upErr;
+  const {data} = supabaseClient.storage.from('site-assets').getPublicUrl(path);
+  const url = data?.publicUrl;
+  if(!url) throw new Error('URL تصویر ساخته نشد');
+  const oldUrl = accountAvatarUrl();
+  try{
+    await saveProfileAvatar(acc.id, url);
+  }catch(e){
+    await removeAvatarFileRemote(url, acc.id);
+    throw e;
+  }
+  STATE.myAvatar = {id: acc.id, url, locked: false};
+  applyAvatarToDom();
+  if(oldUrl) removeAvatarFileRemote(oldUrl, acc.id);
+  return url;
+}
+async function chooseAvatarPreset(key){
+  const acc = STATE.account;
+  if(!acc || !AVATAR_PRESETS.some(x=>x.key===key)) return;
+  const oldUrl = accountAvatarUrl();
+  const value = 'preset:'+key;
+  await saveProfileAvatar(acc.id, value);
+  STATE.myAvatar = {id: acc.id, url: value, locked: accountAvatarLocked()};
+  applyAvatarToDom();
+  if(oldUrl && !oldUrl.startsWith('preset:')) removeAvatarFileRemote(oldUrl, acc.id);
+}
+// حذف عکس/آواتار کاربر و بازگشت به تصویر پیش‌فرض
+async function removeMyAvatar(){
+  const acc = STATE.account;
+  if(!acc) return;
+  const oldUrl = accountAvatarUrl();
+  if(!oldUrl) return;
+  await saveProfileAvatar(acc.id, null);
+  STATE.myAvatar = {id: acc.id, url: null, locked: accountAvatarLocked()};
+  applyAvatarToDom();
+  if(!oldUrl.startsWith('preset:')) removeAvatarFileRemote(oldUrl, acc.id);
+}
+// پنجره‌ی انتخاب تصویر: آواتارهای آماده + (اگر مجاز باشد) آپلود عکس از دستگاه
+async function openAvatarPickerModal(){
+  if(!STATE.account) return;
+  const existing = document.getElementById('avatarPickerModal');
+  if(existing) existing.remove();
+  // وضعیت قفل را تازه بخوان تا اگر ادمین همین الان بسته باشد، دکمه‌ی آپلود نمایش داده نشود
+  try{ await refreshMyAvatar(); }catch(e){}
+  const locked = accountAvatarLocked();
+  const current = accountAvatarUrl();
+  const box = document.createElement('div');
+  box.id = 'avatarPickerModal';
+  box.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--line);padding:22px;border-radius:14px;width:min(400px,100%);max-height:90vh;overflow:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 class="serif" style="font-size:16px">انتخاب تصویر پروفایل</h3>
+        <button type="button" id="avatarPickerClose" style="background:none;border:0;color:var(--text);font-size:20px;cursor:pointer">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+        ${AVATAR_PRESETS.map(d=>`
+          <button type="button" class="avatar-preset-btn" data-key="${d.key}" aria-label="آواتار" style="padding:0;background:none;border:2px solid ${current==='preset:'+d.key ? 'var(--gold-light)' : 'transparent'};border-radius:50%;cursor:pointer;aspect-ratio:1/1;overflow:hidden">
+            <img src="${presetAvatarSrc(d.key)}" alt="" style="width:100%;height:100%;display:block;border-radius:50%">
+          </button>`).join('')}
+      </div>
+      ${locked
+        ? `<button type="button" id="avatarPickerUpload" class="btn btn-solid" disabled aria-disabled="true" tabindex="-1" style="width:100%;opacity:.35;cursor:not-allowed;pointer-events:none;filter:grayscale(.6)">انتخاب عکس از گالری</button>`
+        : `<button type="button" id="avatarPickerUpload" class="btn btn-solid" style="width:100%">انتخاب عکس از گالری</button>`}
+    </div>`;
+  document.body.appendChild(box);
+  const close = ()=> box.remove();
+  box.onclick = e=>{ if(e.target===box) close(); };
+  $('#avatarPickerClose').onclick = close;
+  $$('.avatar-preset-btn', box).forEach(btn=>{
+    btn.onclick = async ()=>{
+      try{
+        await chooseAvatarPreset(btn.dataset.key);
+        showToast('تصویر پروفایل شما به‌روز شد ✓');
+        close();
+      }catch(e){
+        console.error('Avatar preset error:', e);
+        showToast('ذخیره‌ی تصویر ناموفق بود؛ دوباره تلاش کنید');
+      }
+    };
+  });
+  const up = $('#avatarPickerUpload');
+  if(up && !locked) up.onclick = ()=>{
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/jpeg,image/png,image/webp';
+    input.onchange = async ()=>{
+      const file = input.files && input.files[0];
+      if(!file) return;
+      up.disabled = true;
+      showToast('در حال آپلود تصویر…');
+      try{
+        await changeAccountAvatar(file);
+        showToast('تصویر پروفایل شما به‌روز شد ✓');
+        close();
+      }catch(e){
+        console.error('Avatar upload error:', e);
+        showToast((e && e.message && !/row-level security|policy/i.test(e.message)) ? e.message : 'آپلود تصویر ناموفق بود؛ دوباره تلاش کنید');
+        up.disabled = false;
+      }
+    };
+    input.click();
+  };
 }
 /* sends a free-text message from the admin to one registered customer; it
    reuses the account_notifications table so it shows up in their account's
@@ -7119,6 +7380,7 @@ async function init(){
   // تا در هر دستگاهی که وارد شود همان لیست را ببیند
   if(STATE.account){
     await upsertProfile(STATE.account);
+    await refreshMyAvatar();
     const remoteWishlist = await loadWishlistRemote(STATE.account.id);
     if(remoteWishlist !== null) STATE.wishlist = remoteWishlist;
     STATE.accountNotifications = await loadAccountNotifications(STATE.account.id);
@@ -10952,7 +11214,8 @@ function accountMenuHtml(activeTab){
 // آواتار پروفایل کاربر: تصویر واقعی (در صورت آپلود بعدی) با placeholder
 // برند (raven-profile) و فallback به حرف اول نام اگر عکسی موجود نباشد
 function accAvatarHtml(size){
-  return `<img src="/assets/account/raven-profile.webp" alt="" loading="lazy" onerror="this.style.display='none'">`;
+  const src = resolveAvatarSrc(accountAvatarUrl()) || '/assets/account/raven-profile.webp';
+  return `<img class="acc-avatar-img" src="${escapeHtml(src)}" alt="" loading="lazy" onerror="this.style.display='none'">`;
 }
 /* پوسته‌ی دسکتاپ صفحات حساب کاربری: یک ستون کناری ثابت (منو + اطلاعات
    حساب) کنار محتوای هر تب. در موبایل این پوسته با CSS مخفی می‌شود و همان
@@ -10970,7 +11233,7 @@ function withAccountShell(tab, bodyHtml){
         <div class="acc-shell-avatar">${escapeHtml(initial)}${accAvatarHtml()}</div>
         <div class="acc-shell-user-info">
           <strong>${escapeHtml(acc.name || acc.email)}</strong>
-          <span class="acc-shell-user-badge">★ عضو ویژه</span>
+          <span class="acc-shell-user-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg> عضو ویژه</span>
         </div>
       </div>
       ${accountMenuHtml(tab)}
@@ -11177,11 +11440,17 @@ function pageAccount(tab, trackOrderPrefillId){
         <div class="acc-info-side">
           <div class="acc-info-avatar">${(acc.name||acc.email||'?').trim().charAt(0).toUpperCase()}${accAvatarHtml()}</div>
           <strong>${escapeHtml(acc.name || acc.email)}</strong>
-          <span class="acc-shell-user-badge">★ عضو ویژه</span>
+          <span class="acc-shell-user-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg> عضو ویژه</span>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">
           <button type="button" class="acc-info-change-btn" id="accChangePhotoBtn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             تغییر تصویر
           </button>
+          <button type="button" class="acc-info-change-btn" id="accRemovePhotoBtn"${accountAvatarUrl() ? '' : ' style="display:none"'}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            حذف عکس
+          </button>
+          </div>
         </div>
       </div>
     </div></div>`;
@@ -11192,9 +11461,9 @@ function pageAccount(tab, trackOrderPrefillId){
       <div class="acc-hero">
         <div class="acc-hero-bg"><img src="/assets/account/raven-hero.webp" alt="" onerror="this.style.display='none'"></div>
         <div class="acc-hero-content">
-          <h2 class="serif">سلام، ${escapeHtml(acc.name || acc.email)}</h2>
-          <p>به حساب کاربری خود خوش آمدید</p>
-          <p>همیشه انتخابی خاص، برای لحظه‌های خاص.</p>
+          <h2 class="serif" style="font-weight:800">سلام، ${escapeHtml(acc.name || acc.email)}</h2>
+          <p>فضای شخصی شما</p>
+          <p>همه‌چیز برای یک تجربه متفاوت</p>
           <div class="acc-hero-divider"></div>
         </div>
       </div>
@@ -11204,26 +11473,33 @@ function pageAccount(tab, trackOrderPrefillId){
         <p style="color:var(--text-dim);font-size:12.5px;margin-top:8px">برای مشاهده‌ی شناسه‌ها و کد دعوت، ابتدا وارد ایمیل خود شوید و روی لینک تایید کلیک کنید.</p>
       </div>`}
 
+      <div class="acc-dash-panel">
+      <div class="acc-dash-top">
+      <div class="acc-dash-head">
+        <h2 class="serif">حساب کاربری</h2>
+        <p>مدیریت اطلاعات، سفارش‌ها و تنظیمات حساب کاربری خود را در این بخش انجام دهید.</p>
+        <div class="acc-hero-divider"></div>
+      </div>
       <div class="acc-summary-grid" id="accSummaryGrid">
-        <div class="acc-summary-card">
+        <a href="/account/wishlist" data-link class="acc-summary-card" style="cursor:pointer;text-decoration:none;color:inherit">
           <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg></div>
-          <div><div class="acc-summary-num">${(STATE.wishlist||[]).length.toLocaleString('fa-IR')}</div><div class="acc-summary-title">علاقه‌مندی‌ها</div></div>
-        </div>
-        <div class="acc-summary-card">
-          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg></div>
-          <div><div class="acc-summary-num" id="accSummaryLoyalty">${STATE.settings.loyalty?.active ? '…' : '—'}</div><div class="acc-summary-title">باشگاه مشتریان</div></div>
-        </div>
-        <a href="${STATE.settings.wheel?.active ? '/account/wheel' : '#'}" data-link class="acc-summary-card" style="cursor:pointer;text-decoration:none;color:inherit">
-          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></div>
-          <div><div class="acc-summary-num" style="font-size:14px">${STATE.settings.wheel?.active ? 'بچرخان' : 'غیرفعال'}</div><div class="acc-summary-title">چرخ شانس روزانه</div></div>
+          <div><div class="acc-summary-title">علاقه‌مندی‌ها</div><div class="acc-summary-num">${(STATE.wishlist||[]).length.toLocaleString('fa-IR')}</div></div>
         </a>
+        <${STATE.settings.loyalty?.active ? 'a href="/account/loyalty" data-link' : 'div'} class="acc-summary-card"${STATE.settings.loyalty?.active ? ' style="cursor:pointer;text-decoration:none;color:inherit"' : ''}>
+          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg></div>
+          <div><div class="acc-summary-title">باشگاه مشتریان</div><div class="acc-summary-num" id="accSummaryLoyalty">${STATE.settings.loyalty?.active ? '…' : '—'}</div></div>
+        </${STATE.settings.loyalty?.active ? 'a' : 'div'}>
+        <${STATE.settings.wheel?.active ? 'a href="/account/wheel" data-link' : 'div'} class="acc-summary-card"${STATE.settings.wheel?.active ? ' style="cursor:pointer;text-decoration:none;color:inherit"' : ''}>
+          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></div>
+          <div><div class="acc-summary-title">چرخ شانس روزانه</div><div class="acc-summary-num" style="font-size:14px">${STATE.settings.wheel?.active ? 'بچرخان' : 'غیرفعال'}</div></div>
+        </${STATE.settings.wheel?.active ? 'a' : 'div'}>
+      </div>
       </div>
 
       <div class="acc-info-card">
         <div class="acc-info-main">
           <div class="acc-info-head">
             <div><h3>اطلاعات حساب</h3><p>مشخصات شخصی و اطلاعات حساب کاربری شما</p></div>
-            <button type="button" class="acc-info-edit-btn" id="accEditInfoBtn">ویرایش اطلاعات</button>
           </div>
           <div class="acc-info-row">
             <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg></div>
@@ -11241,19 +11517,17 @@ function pageAccount(tab, trackOrderPrefillId){
         <div class="acc-info-side">
           <div class="acc-info-avatar">${(acc.name||acc.email||'?').trim().charAt(0).toUpperCase()}${accAvatarHtml()}</div>
           <strong>${escapeHtml(acc.name || acc.email)}</strong>
-          <span class="acc-shell-user-badge">★ عضو ویژه</span>
-          <button type="button" class="acc-info-change-btn" id="accChangePhotoBtn">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            تغییر تصویر
-          </button>
+          <span class="acc-shell-user-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/></svg> عضو ویژه</span>
         </div>
       </div>
 
+      <div class="acc-dash-card">
       <div class="acc-section-head">
         <h3>سفارش‌های اخیر</h3>
         <a href="/account/orders" data-link id="accViewAllOrders" style="display:none">مشاهده همه ‹</a>
       </div>
       <div id="accRecentOrders">${skeletonRowsHtml(3)}</div>
+      </div>
 
       <div class="acc-vip-banner">
         <div class="acc-vip-bg"><img src="/assets/account/luxury-box.webp" alt="" onerror="this.style.display='none'"></div>
@@ -11262,6 +11536,7 @@ function pageAccount(tab, trackOrderPrefillId){
           <p>از اعتماد شما سپاسگزاریم. به جمع دوستداران WHITE RAVEN خوش آمدید.</p>
           <a href="https://instagram.com/WhiteRavenLabel" target="_blank" rel="noopener" class="btn btn-solid" style="padding:9px 20px;font-size:12.5px">مشاهده صفحه اینستاگرام</a>
         </div>
+      </div>
       </div>
     </div></div>`;
   }
@@ -11598,7 +11873,21 @@ function bindAccountInfoButtons(){
   const editBtn = $('#accEditInfoBtn');
   if(editBtn) editBtn.onclick = ()=> showToast('این قابلیت به‌زودی فعال می‌شود');
   const photoBtn = $('#accChangePhotoBtn');
-  if(photoBtn) photoBtn.onclick = ()=> showToast('این قابلیت به‌زودی فعال می‌شود');
+  if(photoBtn) photoBtn.onclick = ()=> openAvatarPickerModal();
+  const rmBtn = $('#accRemovePhotoBtn');
+  if(rmBtn) rmBtn.onclick = async ()=>{
+    if(!confirm('عکس پروفایل حذف شود و تصویر پیش‌فرض نمایش داده شود؟')) return;
+    rmBtn.disabled = true;
+    try{
+      await removeMyAvatar();
+      showToast('عکس پروفایل شما حذف شد');
+    }catch(e){
+      console.error('Remove avatar error:', e);
+      showToast('حذف عکس ناموفق بود؛ دوباره تلاش کنید');
+    }finally{
+      rmBtn.disabled = false;
+    }
+  };
 }
 // خلاصه‌ی حساب در داشبورد: امتیاز باشگاه مشتریان (async) و ۳ سفارش اخیر
 async function initAccountDashboard(){
@@ -12919,6 +13208,7 @@ if (messageInput && messageCounter) {
       if(error) throw error;
       STATE.account = accountFromSupabaseUser(data.user);
       await upsertProfile(STATE.account);
+      await refreshMyAvatar();
       // if this is the first login after an email-confirmation signup, the
       // welcome message(s) couldn't be sent yet (no session = no auth.uid()
       // for the RPC) — send them now, once, and clear the flag.
@@ -16691,7 +16981,7 @@ function adminUsers(){
   </div>
   <div class="table-wrap">
     <table class="admin-table">
-      <thead><tr><th>ردیف</th><th>شناسه کاربری</th><th>نام و نام‌خانوادگی</th><th>ایمیل</th><th>شماره تماس</th><th>آدرس</th><th>تاریخ ثبت‌نام</th><th>عملیات</th></tr></thead>
+      <thead><tr><th>ردیف</th><th>تصویر</th><th>شناسه کاربری</th><th>نام و نام‌خانوادگی</th><th>ایمیل</th><th>شماره تماس</th><th>آدرس</th><th>تاریخ ثبت‌نام</th><th>عملیات</th></tr></thead>
       <tbody id="adminUsersTbody">${adminUsersRowsHtml(items, (page-1)*ADMIN_USERS_PAGE_SIZE)}</tbody>
     </table>
   </div>
@@ -16699,7 +16989,7 @@ function adminUsers(){
 }
 function adminUsersRowsHtml(list, startIndex){
   startIndex = startIndex || 0;
-  if(!list.length) return `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز هیچ کاربری ثبت‌نام نکرده است</td></tr>`;
+  if(!list.length) return `<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-faint)">هنوز هیچ کاربری ثبت‌نام نکرده است</td></tr>`;
   return list.map((u,i)=>{
     const id = u.id;
     const userCode = u.user_code || u.userCode || '—';
@@ -16715,6 +17005,15 @@ function adminUsersRowsHtml(list, startIndex){
       : `<span style="color:var(--text-faint);font-size:11.5px">—</span>`;
     return `<tr data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" class="admin-user-row" style="cursor:pointer">
       <td>${(startIndex+i+1).toLocaleString('fa-IR')}</td>
+      <td>${(u.avatar_url || u.avatar_locked)
+        ? `<span style="display:inline-flex;align-items:center;gap:8px">
+            <span style="position:relative;display:inline-block">
+              ${u.avatar_url ? `<img src="${escapeHtml(resolveAvatarSrc(u.avatar_url) || '')}" alt="" loading="lazy" draggable="false" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-dim);display:block;pointer-events:none">` : `<span style="display:flex;width:38px;height:38px;border-radius:50%;border:1px dashed var(--gold-dim);align-items:center;justify-content:center;color:var(--text-faint);font-size:12px">—</span>`}
+              ${u.avatar_locked ? `<span title="آپلود عکس بسته شده" style="position:absolute;bottom:-4px;inset-inline-end:-4px;font-size:12px;background:var(--bg-card);border-radius:50%;line-height:1;padding:1px">🔒</span>` : ''}
+            </span>
+            <button type="button" class="admin-avatar-manage" data-uid="${escapeHtml(id)}" data-name="${escapeHtml(name)}" style="background:var(--bg-card);color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:8px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit">مدیریت</button>
+          </span>`
+        : `<span style="color:var(--text-faint);font-size:11.5px">—</span>`}</td>
       <td style="font-family:monospace;font-size:11.5px;color:var(--text-dim);user-select:all;letter-spacing:.5px">${escapeHtml(userCode)}</td>
       <td>${escapeHtml(name)}</td>
       <td>${escapeHtml(email)}</td>
@@ -16742,9 +17041,93 @@ function bindAdminUsersRowButtons(){
   $$('.admin-addr-peek').forEach(el=>{
     el.onclick = (e)=>{ e.stopPropagation(); openAdminUserAddressModal(el.dataset.uid, el.dataset.name); };
   });
+  $$('.admin-avatar-manage').forEach(el=>{
+    el.onclick = (e)=>{ e.stopPropagation(); openAdminUserAvatarModal(el.dataset.uid, el.dataset.name); };
+  });
   $$('.admin-user-row').forEach(row=>{
     row.onclick = ()=> openAdminUserOrdersPanel(row.dataset.uid, row.dataset.name);
   });
+}
+/* مشاهده و مدیریت تصویر پروفایل کاربر در پنل مدیریت:
+   حذف عکس آپلودی (با گزینه‌ی هم‌زمانِ بستن آپلود عکس) و باز/بستن آپلود برای کاربر */
+function openAdminUserAvatarModal(accountId, name){
+  const prof = (STATE.profiles||[]).find(x=>x.id===accountId);
+  if(!prof) return;
+  const src = resolveAvatarSrc(prof.avatar_url);
+  const isUpload = !!prof.avatar_url && !String(prof.avatar_url).startsWith('preset:');
+  const locked = !!prof.avatar_locked;
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--line);padding:22px;border-radius:12px;width:min(390px,100%);max-height:92vh;overflow:auto;text-align:center">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 class="serif" style="font-size:16px">تصویر ${escapeHtml(name||'کاربر')}</h3>
+        <button type="button" id="adminAvatarCloseBtn" style="background:none;border:0;color:var(--text);font-size:20px;cursor:pointer">✕</button>
+      </div>
+      ${src
+        ? `<img src="${escapeHtml(src)}" alt="" draggable="false" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-dim);display:block;margin:0 auto 6px;pointer-events:none">
+           <p style="color:var(--text-faint);font-size:11.5px;margin-bottom:14px">${isUpload ? 'عکس آپلودشده توسط کاربر' : 'آواتار آماده'}</p>`
+        : `<p style="color:var(--text-faint);font-size:12.5px;margin:6px 0 14px">این کاربر تصویری ندارد.</p>`}
+      ${isUpload ? `
+        <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;color:var(--text-dim);margin-bottom:10px;cursor:pointer;line-height:1.7;text-align:start">
+          <input type="checkbox" id="adminAvatarLockToo" ${locked ? 'checked disabled' : ''} style="flex:none">
+          <span>${locked ? 'آپلود عکس برای این کاربر بسته است' : 'هم‌زمان آپلود عکس را برای این کاربر ببند (فقط آواتار آماده انتخاب کند)'}</span>
+        </label>
+        <button type="button" id="adminAvatarDeleteBtn" style="background:var(--danger);color:#fff;border:0;border-radius:8px;padding:10px 22px;font-size:13px;cursor:pointer;font-family:inherit">حذف تصویر</button>
+        <p style="color:var(--text-faint);font-size:11.5px;margin:10px 0 14px">پس از حذف، برای کاربر تصویر پیش‌فرض نمایش داده می‌شود.</p>` : ''}
+      <button type="button" id="adminAvatarLockBtn" style="background:var(--bg-card);color:var(--gold-light);border:1px solid var(--gold-dim);border-radius:8px;padding:9px 18px;font-size:12.5px;cursor:pointer;font-family:inherit">${locked ? '🔓 باز کردن آپلود عکس برای این کاربر' : '🔒 بستن آپلود عکس (فقط آواتار آماده)'}</button>
+    </div>`;
+  document.body.appendChild(box);
+  box.onclick = e=>{ if(e.target===box) box.remove(); };
+  $('#adminAvatarCloseBtn').onclick = ()=> box.remove();
+  const delBtn = $('#adminAvatarDeleteBtn');
+  if(delBtn) delBtn.onclick = async ()=>{
+    const lockToo = !!($('#adminAvatarLockToo') && $('#adminAvatarLockToo').checked);
+    if(!confirm(lockToo ? 'تصویر این کاربر حذف و آپلود عکس برایش بسته شود؟' : 'آیا از حذف تصویر این کاربر مطمئن هستید؟')) return;
+    delBtn.disabled = true;
+    try{
+      await adminDeleteUserAvatar(accountId, lockToo);
+      box.remove();
+      showToast(lockToo ? 'تصویر حذف شد و آپلود عکس برای کاربر بسته شد' : 'تصویر کاربر حذف شد');
+    }catch(e){
+      console.error('Delete user avatar error:', e);
+      delBtn.disabled = false;
+      showToast('حذف تصویر ناموفق بود');
+    }
+  };
+  const lockBtn = $('#adminAvatarLockBtn');
+  lockBtn.onclick = async ()=>{
+    lockBtn.disabled = true;
+    try{
+      await adminSetAvatarLocked(accountId, !locked);
+      box.remove();
+      showToast(!locked ? 'آپلود عکس برای این کاربر بسته شد' : 'آپلود عکس برای این کاربر باز شد');
+    }catch(e){
+      console.error('Toggle avatar lock error:', e);
+      lockBtn.disabled = false;
+      showToast('تغییر وضعیت ناموفق بود؛ ستون avatar_locked را در دیتابیس بررسی کنید');
+    }
+  };
+}
+function adminRerenderUsersList(){
+  const search = $('#adminUsersSearch');
+  adminUsersRenderPage(filterAdminUsersList(search ? search.value.trim().toLowerCase() : ''));
+}
+async function adminDeleteUserAvatar(accountId, lockToo){
+  const prof = (STATE.profiles||[]).find(x=>x.id===accountId);
+  const oldUrl = prof && prof.avatar_url;
+  const fields = {avatar_url: null};
+  if(lockToo) fields.avatar_locked = true;
+  await saveProfileFields(accountId, fields);
+  if(prof){ prof.avatar_url = null; if(lockToo) prof.avatar_locked = true; }
+  if(oldUrl) await removeAvatarFileRemote(oldUrl, accountId);
+  adminRerenderUsersList();
+}
+async function adminSetAvatarLocked(accountId, locked){
+  await saveProfileFields(accountId, {avatar_locked: !!locked});
+  const prof = (STATE.profiles||[]).find(x=>x.id===accountId);
+  if(prof) prof.avatar_locked = !!locked;
+  adminRerenderUsersList();
 }
 function openAdminUserAddressModal(accountId, name){
   const addr = bestAddressForAccount(accountId);
