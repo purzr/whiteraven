@@ -2462,19 +2462,32 @@ footer.site{font-family:var(--font-footer)}
 .acc-shell-sidebar{display:none}
 @media(min-width:861px){
   .acc-shell{display:grid;grid-template-columns:272px minmax(0,1fr);gap:36px;align-items:start;max-width:1180px;margin:44px auto 80px;padding:0 32px}
-  .acc-shell-sidebar{display:block;position:sticky;top:110px}
-  .acc-shell-user{display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-card);border:1px solid var(--line);border-radius:12px;margin-bottom:18px}
-  .acc-shell-avatar{flex:none;width:46px;height:46px;border-radius:50%;background:var(--gold-gradient);color:var(--gold-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;font-family:var(--font-heading)}
-  .acc-shell-user-info{min-width:0;display:flex;flex-direction:column;gap:2px}
-  .acc-shell-user-info strong{font-size:13.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .acc-shell-user-info small{font-size:11.5px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .acc-shell-sidebar .acc-menu-item{padding:12px 14px}
-  .acc-shell-sidebar .acc-menu-icon{width:32px;height:32px}
-  .acc-shell-sidebar .acc-menu-item.is-active{border-color:var(--gold);background:var(--gold-subtle)}
-  .acc-shell-sidebar .acc-menu-item.is-active .acc-menu-icon{color:var(--gold-light);background:var(--bg-card-elevated)}
+  .acc-shell-sidebar{display:flex;flex-direction:column;position:sticky;top:110px;background:var(--bg-card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(var(--shadow-color),.14)}
+  .acc-shell-user{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:30px 20px 22px;border-bottom:1px solid var(--line)}
+  .acc-shell-avatar{position:relative;flex:none;width:76px;height:76px;border-radius:50%;background:var(--bg-alt);color:var(--gold-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;font-family:var(--font-heading);border:2px solid var(--gold-border);overflow:hidden}
+  .acc-shell-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .acc-shell-user-info{min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .acc-shell-user-info strong{font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-heading)}
+  .acc-shell-user-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--gold-light);background:var(--gold-subtle);border:1px solid var(--gold-border);border-radius:20px;padding:2px 10px}
+  .acc-shell-sidebar .acc-menu{padding:14px;gap:4px}
+  .acc-shell-sidebar .acc-menu-item{padding:11px 14px;background:none;border:1px solid transparent;border-radius:10px;transition:background .25s ease,border-color .25s ease}
+  .acc-shell-sidebar .acc-menu-icon{width:30px;height:30px;background:none;color:var(--text-faint);transition:color .25s ease}
+  .acc-shell-sidebar .acc-menu-text strong{font-size:13px;font-weight:600;color:var(--text-dim);transition:color .25s ease}
+  .acc-shell-sidebar .acc-menu-text small{display:none}
+  .acc-shell-sidebar .acc-menu-item:hover{background:var(--gold-subtle)}
+  .acc-shell-sidebar .acc-menu-item:hover .acc-menu-icon,
+  .acc-shell-sidebar .acc-menu-item:hover .acc-menu-text strong{color:var(--gold-light)}
+  .acc-shell-sidebar .acc-menu-item.is-active{border-color:var(--gold-border);background:var(--gold-subtle);box-shadow:0 0 14px -4px rgba(var(--gold-light-rgb),.35)}
+  .acc-shell-sidebar .acc-menu-item.is-active .acc-menu-icon{color:var(--gold-light)}
+  .acc-shell-sidebar .acc-menu-item.is-active .acc-menu-text strong{color:var(--text)}
+  .acc-shell-sidebar .acc-menu-item-danger{margin-top:6px;border-top:1px solid var(--line);border-radius:0;padding-top:16px}
+  .acc-shell-mood{position:relative;height:170px;margin-top:auto;overflow:hidden}
+  .acc-shell-mood::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,var(--bg-card) 0%,transparent 42%)}
+  .acc-shell-mood img{width:100%;height:100%;object-fit:cover;display:block;opacity:.9}
   .acc-shell-main{min-width:0}
   .acc-shell-main .acc-back-link{display:none}
   .acc-shell-main .acc-menu{display:none}
+  .acc-shell-main .acc-mobile-drawer-trigger{display:none}
   .acc-shell-main .page-head{text-align:right;padding:0 0 24px;margin-bottom:28px;border-bottom:1px solid var(--line)}
   .acc-shell-main .page-head .eyebrow{display:none}
   .acc-shell-main .page-head h1{font-size:26px}
@@ -2482,6 +2495,96 @@ footer.site{font-family:var(--font-footer)}
   .acc-shell-main .container.narrow{max-width:640px;margin:0}
   .acc-shell-main .section{padding:0}
 }
+@media(max-width:860px){
+  /* روی موبایل، سایدبار به‌جای ستون کناری به یک دراور کشویی تبدیل می‌شود
+     که با دکمه‌ی «منوی حساب» بالای هر صفحه باز می‌شود. ناوبری پایین صفحه
+     (Bottom Navigation) دست‌نخورده می‌ماند. */
+  .acc-mobile-drawer-trigger{display:flex;align-items:center;gap:10px;width:100%;background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:18px;color:var(--text);font-family:inherit;font-size:13.5px;cursor:pointer}
+  .acc-mobile-drawer-trigger svg{flex:none;color:var(--gold-light)}
+  .acc-shell-sidebar{position:fixed;inset:0 18% 0 auto;z-index:220;display:flex;flex-direction:column;background:var(--bg-card);border-inline-start:1px solid var(--line);transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+  html[dir="rtl"] .acc-shell-sidebar,.acc-shell-sidebar{inset-inline-start:18%;inset-inline-end:0}
+  body.acc-drawer-open .acc-shell-sidebar{transform:translateX(0)}
+  .acc-drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:210;opacity:0;pointer-events:none;transition:opacity .3s ease}
+  body.acc-drawer-open .acc-drawer-backdrop{opacity:1;pointer-events:auto}
+  .acc-shell-user{display:flex;align-items:center;gap:12px;padding:20px 18px;border-bottom:1px solid var(--line)}
+  .acc-shell-avatar{position:relative;flex:none;width:52px;height:52px;border-radius:50%;background:var(--bg-alt);color:var(--gold-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;font-family:var(--font-heading);border:2px solid var(--gold-border);overflow:hidden}
+  .acc-shell-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .acc-shell-user-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:var(--gold-light);background:var(--gold-subtle);border:1px solid var(--gold-border);border-radius:20px;padding:2px 9px;margin-top:3px}
+  .acc-shell-sidebar .acc-menu{padding:10px}
+  .acc-shell-sidebar .acc-menu-item.is-active{border-color:var(--gold-border);background:var(--gold-subtle)}
+  .acc-shell-sidebar .acc-menu-item.is-active .acc-menu-icon{color:var(--gold-light)}
+  .acc-shell-mood{display:none}
+}
+/* ================================================================
+   داشبورد جدید حساب کاربری: Hero + خلاصه‌ی حساب + کارت اطلاعات +
+   سفارش‌های اخیر + بنر ویژه — با هویت بصری لوکس WHITE RAVEN
+   ================================================================ */
+.acc-hero{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--gold-border);min-height:190px;display:flex;align-items:center;margin-bottom:22px}
+.acc-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-alt) 100%)}
+.acc-hero-bg img{width:100%;height:100%;object-fit:cover;opacity:.55}
+.acc-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.55) 15%,rgba(0,0,0,.05) 75%)}
+html[data-theme="classic"] .acc-hero::after{background:linear-gradient(90deg,rgba(255,255,255,.72) 15%,rgba(255,255,255,.15) 75%)}
+.acc-hero-content{position:relative;z-index:1;padding:30px 34px;max-width:78%}
+.acc-hero-content h2{font-family:var(--font-heading);font-size:26px;margin-bottom:8px}
+.acc-hero-content p{color:var(--text-dim);font-size:13px;margin-bottom:3px}
+.acc-hero-divider{width:46px;height:2px;background:var(--gold-light);margin-top:14px;border-radius:2px}
+@media(max-width:640px){.acc-hero{min-height:150px}.acc-hero-content{padding:20px 20px;max-width:100%}.acc-hero-content h2{font-size:19px}}
+
+.acc-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:640px){.acc-summary-grid{grid-template-columns:1fr}}
+.acc-summary-card{display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--line);border-radius:16px;padding:18px;transition:border-color .25s ease,transform .25s ease}
+.acc-summary-card:hover{border-color:var(--gold-border);transform:translateY(-2px)}
+.acc-summary-icon{flex:none;width:46px;height:46px;border-radius:50%;background:var(--gold-subtle);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;color:var(--gold-light)}
+.acc-summary-num{font-family:var(--font-heading);font-size:20px;color:var(--text)}
+.acc-summary-title{font-size:12px;color:var(--text-dim);margin-top:2px}
+
+.acc-info-card{display:flex;gap:0;background:var(--bg-card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:22px}
+@media(max-width:760px){.acc-info-card{flex-direction:column-reverse}}
+.acc-info-main{flex:1;min-width:0;padding:24px}
+.acc-info-side{flex:none;width:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;border-inline-start:1px solid var(--line);background:var(--bg-alt)}
+@media(max-width:760px){.acc-info-side{width:auto;border-inline-start:none;border-bottom:1px solid var(--line)}}
+.acc-info-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.acc-info-head h3{font-family:var(--font-heading);font-size:17px}
+.acc-info-head p{font-size:11.5px;color:var(--text-faint);margin-top:3px}
+.acc-info-edit-btn{background:none;border:1px solid var(--gold-border);color:var(--gold-light);border-radius:20px;padding:6px 14px;font-size:12px;font-family:inherit;cursor:pointer;transition:background .2s}
+.acc-info-edit-btn:hover{background:var(--gold-subtle)}
+.acc-info-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.acc-info-row:last-child{border-bottom:none}
+.acc-info-row-icon{flex:none;width:34px;height:34px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;color:var(--gold-light)}
+.acc-info-row small{display:block;font-size:11px;color:var(--text-faint)}
+.acc-info-row span{font-size:13.5px;color:var(--text)}
+.acc-info-avatar{position:relative;width:78px;height:78px;border-radius:50%;background:var(--bg-card);border:2px solid var(--gold-border);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-size:26px;font-family:var(--font-heading)}
+.acc-info-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.acc-info-side strong{font-size:14px}
+.acc-info-side .acc-shell-user-badge{margin-bottom:2px}
+.acc-info-change-btn{background:none;border:1px solid var(--line);color:var(--text-dim);border-radius:20px;padding:5px 13px;font-size:11.5px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:border-color .2s,color .2s}
+.acc-info-change-btn:hover{border-color:var(--gold-border);color:var(--gold-light)}
+
+.acc-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.acc-section-head h3{font-family:var(--font-heading);font-size:16px}
+.acc-section-head a{font-size:12px;color:var(--gold-light)}
+.acc-order-row{display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;transition:border-color .2s}
+.acc-order-row:hover{border-color:var(--gold-border)}
+.acc-order-thumb{flex:none;width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--bg-alt)}
+.acc-order-thumb img{width:100%;height:100%;object-fit:cover}
+.acc-order-mid{flex:1;min-width:0}
+.acc-order-mid .oid{color:var(--gold-light);font-size:12.5px}
+.acc-order-mid .odate{font-size:11px;color:var(--text-faint);margin-top:2px}
+.acc-order-side{flex:none;text-align:left;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.acc-order-price{font-size:12.5px;color:var(--text)}
+.acc-badge{font-size:10.5px;padding:3px 11px;border-radius:20px;font-weight:600;white-space:nowrap}
+.acc-badge-ok{background:rgba(63,149,99,.14);color:var(--ok)}
+.acc-badge-pending{background:rgba(230,192,106,.13);color:var(--gold-light)}
+.acc-badge-cancel{background:rgba(192,86,63,.14);color:var(--danger)}
+
+.acc-vip-banner{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--gold-border);min-height:130px;display:flex;align-items:flex-end;margin-top:22px}
+.acc-vip-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--bg-card),var(--bg-alt))}
+.acc-vip-bg img{width:100%;height:100%;object-fit:cover;opacity:.6}
+.acc-vip-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 10%,rgba(0,0,0,.05) 85%)}
+html[data-theme="classic"] .acc-vip-banner::after{background:linear-gradient(to top,rgba(255,255,255,.85) 10%,rgba(255,255,255,.15) 85%)}
+.acc-vip-content{position:relative;z-index:1;padding:22px 26px;width:100%}
+.acc-vip-content h3{font-family:var(--font-heading);font-size:18px;margin-bottom:6px}
+.acc-vip-content p{font-size:12.5px;color:var(--text-dim);margin-bottom:14px}
 .my-orders-list{display:flex;flex-direction:column;gap:12px}
 .my-order-card{background:var(--bg-card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:border-color .2s}
 .my-order-card:hover{border-color:var(--gold-dim)}
@@ -7205,6 +7308,7 @@ function router(preserveScroll){
   else if(path==='/return-policy') app.innerHTML = pageReturnPolicy();
   else if(path==='/contact') app.innerHTML = pageContact();
   else if(path==='/account') app.innerHTML = withAccountShell('profile', pageAccount('profile'));
+  else if(path==='/account/info') app.innerHTML = withAccountShell('info', pageAccount('info'));
   else if(path==='/account/wishlist') app.innerHTML = withAccountShell('wishlist', pageAccount('wishlist'));
   else if(path==='/account/addresses') app.innerHTML = withAccountShell('addresses', pageAccount('addresses'));
   else if(path==='/account/orders') app.innerHTML = withAccountShell('orders', pageAccount('orders'));
@@ -10793,59 +10897,63 @@ function accountMenuHtml(activeTab){
   const isActive = t => activeTab===t ? ' is-active' : '';
   return `
   <div class="acc-menu">
+    <a href="/account" data-link class="acc-menu-item${isActive('profile')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+      <span class="acc-menu-text"><strong>پیش‌خوان</strong><small>نمای کلی حساب کاربری شما</small></span>
+    </a>
+    <a href="/account/info" data-link class="acc-menu-item${isActive('info')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg></span>
+      <span class="acc-menu-text"><strong>اطلاعات حساب</strong><small>مشخصات شخصی و اطلاعات تماس شما</small></span>
+    </a>
+    <a href="/account/orders" data-link class="acc-menu-item${isActive('orders')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
+      <span class="acc-menu-text"><strong>سفارش‌های من</strong><small>وضعیت و جزئیات سفارش‌های خود را ببینید</small></span>
+    </a>
     <a href="/account/wishlist" data-link class="acc-menu-item${isActive('wishlist')}">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg></span>
       <span class="acc-menu-text"><strong>علاقه‌مندی‌های من</strong><small>محصولاتی که ذخیره کرده‌اید</small></span>
-      
+    </a>
+    <a href="/account/addresses" data-link class="acc-menu-item${isActive('addresses')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
+      <span class="acc-menu-text"><strong>آدرس‌های من</strong><small>آدرس‌های ذخیره‌شده برای ارسال سفارش</small></span>
+    </a>
+    <a href="/account/messages" data-link class="acc-menu-item${isActive('messages')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg></span>
+      <span class="acc-menu-text"><strong>پیام‌های من</strong><small>پیام‌های تماس با ما و پاسخ فروشگاه</small>${acc && myUnreadMessageReplyCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadMessageReplyCount()}</span>` : ''}</span>
+    </a>
+    <a href="/account/reviews" data-link class="acc-menu-item${isActive('reviews')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="acc-menu-text"><strong>نظرات و پرسش‌های من</strong><small>نظراتی که ثبت کرده‌اید، لایک‌ها و پاسخ فروشگاه</small>${acc && myUnreadReviewReplyCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadReviewReplyCount()}</span>` : ''}</span>
+    </a>
+    <a href="/account/notifications" data-link class="acc-menu-item${isActive('notifications')}">
+      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+      <span class="acc-menu-text"><strong>اطلاع‌رسانی موجودی</strong><small>محصولاتی که برای اعلام موجود شدن ثبت کرده‌اید</small>${acc && myUnreadStockNotifCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadStockNotifCount()}</span>` : ''}</span>
     </a>
     <a href="/account/referral" data-link class="acc-menu-item${isActive('referral')}">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
       <span class="acc-menu-text"><strong>دعوت دوستان</strong><small>کد دعوت خود را به اشتراک بگذارید و تخفیف بگیرید</small></span>
-      
     </a>
     ${STATE.settings.loyalty?.active ? `
     <a href="/account/loyalty" data-link class="acc-menu-item${isActive('loyalty')}">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg></span>
       <span class="acc-menu-text"><strong>باشگاه مشتریان</strong><small>امتیاز جمع کنید و به تخفیف تبدیلش کنید</small></span>
-      
     </a>` : ''}
     ${STATE.settings.wheel?.active ? `
     <a href="/account/wheel" data-link class="acc-menu-item${isActive('wheel')}">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></span>
       <span class="acc-menu-text"><strong>چرخ شانس روزانه</strong><small>هر روز یک‌بار بچرخان و امتیاز ببر</small></span>
-      
     </a>` : ''}
-    <a href="/account/addresses" data-link class="acc-menu-item${isActive('addresses')}">
-      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
-      <span class="acc-menu-text"><strong>آدرس‌های من</strong><small>آدرس‌های ذخیره‌شده برای ارسال سفارش</small></span>
-      
-    </a>
-    <a href="/account/orders" data-link class="acc-menu-item${isActive('orders')}">
-      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
-      <span class="acc-menu-text"><strong>سفارش‌های من</strong><small>وضعیت و جزئیات سفارش‌های خود را ببینید</small></span>
-      
-    </a>
-    <a href="/account/reviews" data-link class="acc-menu-item${isActive('reviews')}">
-      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-      <span class="acc-menu-text"><strong>نظرات و پرسش‌های من</strong><small>نظراتی که ثبت کرده‌اید، لایک‌ها و پاسخ فروشگاه</small>${acc && myUnreadReviewReplyCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadReviewReplyCount()}</span>` : ''}</span>
-      
-    </a>
-    <a href="/account/messages" data-link class="acc-menu-item${isActive('messages')}">
-      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg></span>
-      <span class="acc-menu-text"><strong>پیام‌های من</strong><small>پیام‌های تماس با ما و پاسخ فروشگاه</small>${acc && myUnreadMessageReplyCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadMessageReplyCount()}</span>` : ''}</span>
-      
-    </a>
-    <a href="/account/notifications" data-link class="acc-menu-item${isActive('notifications')}">
-      <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-      <span class="acc-menu-text"><strong>اطلاع‌رسانی موجودی</strong><small>محصولاتی که برای اعلام موجود شدن ثبت کرده‌اید</small>${acc && myUnreadStockNotifCount()>0 ? ` <span style="background:var(--danger);color:#fff;border-radius:20px;font-size:10.5px;padding:1px 7px;margin-inline-start:4px">${myUnreadStockNotifCount()}</span>` : ''}</span>
-      
-    </a>
     ${acc ? `
     <button type="button" id="logoutBtn" class="acc-menu-item acc-menu-item-danger">
       <span class="acc-menu-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
       <span class="acc-menu-text"><strong>خروج از حساب</strong></span>
     </button>` : ''}
   </div>`;
+}
+// آواتار پروفایل کاربر: تصویر واقعی (در صورت آپلود بعدی) با placeholder
+// برند (raven-profile) و فallback به حرف اول نام اگر عکسی موجود نباشد
+function accAvatarHtml(size){
+  return `<img src="/assets/account/raven-profile.webp" alt="" loading="lazy" onerror="this.style.display='none'">`;
 }
 /* پوسته‌ی دسکتاپ صفحات حساب کاربری: یک ستون کناری ثابت (منو + اطلاعات
    حساب) کنار محتوای هر تب. در موبایل این پوسته با CSS مخفی می‌شود و همان
@@ -10857,18 +10965,34 @@ function withAccountShell(tab, bodyHtml){
   const acc = STATE.account;
   const initial = (acc.name || acc.email || '?').trim().charAt(0).toUpperCase();
   return `<div class="acc-shell">
-    <aside class="acc-shell-sidebar">
+    <div class="acc-drawer-backdrop" id="accDrawerBackdrop"></div>
+    <aside class="acc-shell-sidebar" id="accShellSidebar">
       <div class="acc-shell-user">
-        <div class="acc-shell-avatar">${escapeHtml(initial)}</div>
+        <div class="acc-shell-avatar">${escapeHtml(initial)}${accAvatarHtml()}</div>
         <div class="acc-shell-user-info">
           <strong>${escapeHtml(acc.name || acc.email)}</strong>
-          <small>${escapeHtml(acc.email||'')}</small>
+          <span class="acc-shell-user-badge">★ عضو ویژه</span>
         </div>
       </div>
       ${accountMenuHtml(tab)}
+      <div class="acc-shell-mood">
+        <img src="/assets/account/sidebar-mood.webp" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">
+      </div>
     </aside>
-    <div class="acc-shell-main">${bodyHtml}</div>
+    <div class="acc-shell-main">
+      <button type="button" class="acc-mobile-drawer-trigger" id="accDrawerTrigger">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        منوی حساب کاربری
+      </button>
+      ${bodyHtml}
+    </div>
   </div>`;
+}
+function bindAccountDrawerUI(){
+  const trigger = $('#accDrawerTrigger');
+  const backdrop = $('#accDrawerBackdrop');
+  if(trigger) trigger.onclick = ()=> document.body.classList.add('acc-drawer-open');
+  if(backdrop) backdrop.onclick = ()=> document.body.classList.remove('acc-drawer-open');
 }
 function accountRequireLoginPage(title){
   STATE.accountAuthTab = 'login';
@@ -11026,19 +11150,120 @@ function pageAccount(tab, trackOrderPrefillId){
       </div>
     </div></div>`;
   }
+  if(tab==='info'){
+    if(!acc) return accountRequireLoginPage('اطلاعات حساب');
+    return `
+    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">اطلاعات حساب</h1></div>
+    <div class="section"><div class="container">
+      ${accountBackLink()}
+      <div class="acc-info-card" style="margin-top:18px">
+        <div class="acc-info-main">
+          <div class="acc-info-head">
+            <div><h3>اطلاعات حساب</h3><p>مشخصات شخصی و اطلاعات حساب کاربری شما</p></div>
+            <button type="button" class="acc-info-edit-btn" id="accEditInfoBtn">ویرایش اطلاعات</button>
+          </div>
+          <div class="acc-info-row">
+            <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg></div>
+            <div><small>نام و نام خانوادگی</small><span>${escapeHtml(acc.name || '—')}</span></div>
+          </div>
+          <div class="acc-info-row">
+            <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg></div>
+            <div><small>ایمیل</small><span>${escapeHtml(acc.email || '—')}</span></div>
+          </div>
+          <div class="acc-info-row">
+            <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></div>
+            <div><small>شماره موبایل</small><span>${escapeHtml(acc.phone || '—')}</span></div>
+          </div>
+        </div>
+        <div class="acc-info-side">
+          <div class="acc-info-avatar">${(acc.name||acc.email||'?').trim().charAt(0).toUpperCase()}${accAvatarHtml()}</div>
+          <strong>${escapeHtml(acc.name || acc.email)}</strong>
+          <span class="acc-shell-user-badge">★ عضو ویژه</span>
+          <button type="button" class="acc-info-change-btn" id="accChangePhotoBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            تغییر تصویر
+          </button>
+        </div>
+      </div>
+    </div></div>`;
+  }
   if(acc){
     return `
-    <div class="page-head"><span class="eyebrow">MY ACCOUNT</span><h1 class="serif">حساب کاربری</h1></div>
-    <div class="section"><div class="container narrow">
-      <p style="margin-bottom:6px;color:var(--text-dim)">خوش آمدید،</p>
-      <h3 class="serif" style="font-size:24px;margin-bottom:10px">${escapeHtml(acc.name || acc.email)}</h3>
-      ${acc.emailConfirmed
-        ? `<div style="display:inline-flex;align-items:center;gap:5px;background:color-mix(in srgb, var(--ok) 15%, transparent);color:var(--ok);border:1px solid var(--ok);border-radius:20px;padding:3px 12px;font-size:12px;margin-bottom:24px">✓ ایمیل تایید شده</div>`
-        : `<div style="margin-bottom:24px">
-             <div style="display:inline-flex;align-items:center;gap:5px;background:color-mix(in srgb, var(--gold-light) 15%, transparent);color:var(--gold-light);border:1px solid var(--gold-light);border-radius:20px;padding:3px 12px;font-size:12px">ایمیل تایید نشده</div>
-             <p style="color:var(--text-dim);font-size:12.5px;margin-top:8px">برای مشاهده‌ی شناسه‌ها و کد دعوت، ابتدا وارد ایمیل خود شوید و روی لینک تایید کلیک کنید.</p>
-           </div>`}
-      ${accountMenuHtml()}
+    <div class="section"><div class="container">
+      <div class="acc-hero">
+        <div class="acc-hero-bg"><img src="/assets/account/raven-hero.webp" alt="" onerror="this.style.display='none'"></div>
+        <div class="acc-hero-content">
+          <h2 class="serif">سلام، ${escapeHtml(acc.name || acc.email)}</h2>
+          <p>به حساب کاربری خود خوش آمدید</p>
+          <p>همیشه انتخابی خاص، برای لحظه‌های خاص.</p>
+          <div class="acc-hero-divider"></div>
+        </div>
+      </div>
+      ${acc.emailConfirmed ? '' : `
+      <div style="margin-bottom:22px">
+        <div style="display:inline-flex;align-items:center;gap:5px;background:var(--gold-subtle);color:var(--gold-light);border:1px solid var(--gold-border);border-radius:20px;padding:3px 12px;font-size:12px">ایمیل تایید نشده</div>
+        <p style="color:var(--text-dim);font-size:12.5px;margin-top:8px">برای مشاهده‌ی شناسه‌ها و کد دعوت، ابتدا وارد ایمیل خود شوید و روی لینک تایید کلیک کنید.</p>
+      </div>`}
+
+      <div class="acc-summary-grid" id="accSummaryGrid">
+        <div class="acc-summary-card">
+          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20.5C12 20.5 3.75 15.6 3.75 9.75C3.75 6.99 5.99 4.75 8.75 4.75C10.36 4.75 11.62 5.5 12 6.55C12.38 5.5 13.64 4.75 15.25 4.75C18.01 4.75 20.25 6.99 20.25 9.75C20.25 15.6 12 20.5 12 20.5Z"/></svg></div>
+          <div><div class="acc-summary-num">${(STATE.wishlist||[]).length.toLocaleString('fa-IR')}</div><div class="acc-summary-title">علاقه‌مندی‌ها</div></div>
+        </div>
+        <div class="acc-summary-card">
+          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg></div>
+          <div><div class="acc-summary-num" id="accSummaryLoyalty">${STATE.settings.loyalty?.active ? '…' : '—'}</div><div class="acc-summary-title">باشگاه مشتریان</div></div>
+        </div>
+        <a href="${STATE.settings.wheel?.active ? '/account/wheel' : '#'}" data-link class="acc-summary-card" style="cursor:pointer;text-decoration:none;color:inherit">
+          <div class="acc-summary-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></div>
+          <div><div class="acc-summary-num" style="font-size:14px">${STATE.settings.wheel?.active ? 'بچرخان' : 'غیرفعال'}</div><div class="acc-summary-title">چرخ شانس روزانه</div></div>
+        </a>
+      </div>
+
+      <div class="acc-info-card">
+        <div class="acc-info-main">
+          <div class="acc-info-head">
+            <div><h3>اطلاعات حساب</h3><p>مشخصات شخصی و اطلاعات حساب کاربری شما</p></div>
+            <button type="button" class="acc-info-edit-btn" id="accEditInfoBtn">ویرایش اطلاعات</button>
+          </div>
+          <div class="acc-info-row">
+            <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg></div>
+            <div><small>نام و نام خانوادگی</small><span>${escapeHtml(acc.name || '—')}</span></div>
+          </div>
+          <div class="acc-info-row">
+            <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg></div>
+            <div><small>ایمیل</small><span>${escapeHtml(acc.email || '—')}</span></div>
+          </div>
+          <div class="acc-info-row">
+            <div class="acc-info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></div>
+            <div><small>شماره موبایل</small><span>${escapeHtml(acc.phone || '—')}</span></div>
+          </div>
+        </div>
+        <div class="acc-info-side">
+          <div class="acc-info-avatar">${(acc.name||acc.email||'?').trim().charAt(0).toUpperCase()}${accAvatarHtml()}</div>
+          <strong>${escapeHtml(acc.name || acc.email)}</strong>
+          <span class="acc-shell-user-badge">★ عضو ویژه</span>
+          <button type="button" class="acc-info-change-btn" id="accChangePhotoBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            تغییر تصویر
+          </button>
+        </div>
+      </div>
+
+      <div class="acc-section-head">
+        <h3>سفارش‌های اخیر</h3>
+        <a href="/account/orders" data-link id="accViewAllOrders" style="display:none">مشاهده همه ‹</a>
+      </div>
+      <div id="accRecentOrders">${skeletonRowsHtml(3)}</div>
+
+      <div class="acc-vip-banner">
+        <div class="acc-vip-bg"><img src="/assets/account/luxury-box.webp" alt="" onerror="this.style.display='none'"></div>
+        <div class="acc-vip-content">
+          <h3>ویژه شما</h3>
+          <p>از اعتماد شما سپاسگزاریم. به جمع دوستداران WHITE RAVEN خوش آمدید.</p>
+          <a href="https://instagram.com/WhiteRavenLabel" target="_blank" rel="noopener" class="btn btn-solid" style="padding:9px 20px;font-size:12.5px">مشاهده صفحه اینستاگرام</a>
+        </div>
+      </div>
     </div></div>`;
   }
   const wantSignup = STATE.accountAuthTab === 'signup';
@@ -11364,6 +11589,63 @@ function myOrderCardHtml(order){
         </div>
       </div>
       <div style="margin-top:8px;font-size:13px">${RIAL(order.total)}</div>
+    </div>
+  </a>`;
+}
+// کارت‌های اطلاعات حساب (هم داشبورد و هم صفحه‌ی مستقل «اطلاعات حساب») هنوز
+// فرم ویرایش/آپلود واقعی ندارند — فعلاً فقط یک پیام آگاهی‌بخش نشان می‌دهیم
+// تا رابط کاربری شکسته به‌نظر نرسد، بدون اینکه قابلیتی را جعل کنیم.
+function bindAccountInfoButtons(){
+  const editBtn = $('#accEditInfoBtn');
+  if(editBtn) editBtn.onclick = ()=> showToast('این قابلیت به‌زودی فعال می‌شود');
+  const photoBtn = $('#accChangePhotoBtn');
+  if(photoBtn) photoBtn.onclick = ()=> showToast('این قابلیت به‌زودی فعال می‌شود');
+}
+// خلاصه‌ی حساب در داشبورد: امتیاز باشگاه مشتریان (async) و ۳ سفارش اخیر
+async function initAccountDashboard(){
+  bindAccountInfoButtons();
+  const loyaltyEl = $('#accSummaryLoyalty');
+  if(loyaltyEl && STATE.account && STATE.settings.loyalty?.active){
+    try{
+      const balance = await getLoyaltyBalance(STATE.account.id);
+      loyaltyEl.textContent = balance.toLocaleString('fa-IR');
+    }catch(e){ loyaltyEl.textContent = '—'; }
+  }
+  const ordersBox = $('#accRecentOrders');
+  if(ordersBox && STATE.account){
+    try{
+      const allOrders = await loadMyOrders();
+      const orders = allOrders.filter(o=>o.status!=='لغو شده').slice(0,3);
+      if(!orders.length){
+        ordersBox.innerHTML = `<p style="color:var(--text-faint);font-size:13px">هنوز سفارشی با این حساب ثبت نکرده‌اید.</p>`;
+      }else{
+        ordersBox.innerHTML = orders.map(accDashboardOrderRowHtml).join('');
+        const viewAll = $('#accViewAllOrders');
+        if(viewAll && allOrders.filter(o=>o.status!=='لغو شده').length>3) viewAll.style.display = '';
+      }
+    }catch(e){
+      ordersBox.innerHTML = `<p style="color:var(--text-faint);font-size:13px">مشکلی در بارگذاری سفارش‌ها پیش آمد.</p>`;
+    }
+  }
+}
+function accDashboardOrderRowHtml(order){
+  const dt = new Date(order.createdAt);
+  const dateStr = isNaN(dt) ? '' : dt.toLocaleDateString('fa-IR');
+  const badge = order.status==='لغو شده' ? { cls:'acc-badge-cancel', label: order.status }
+    : order.status==='تحویل داده شده' ? { cls:'acc-badge-ok', label: order.status }
+    : { cls:'acc-badge-pending', label: order.status||'در حال پردازش' };
+  const firstItem = (order.items||[])[0];
+  const img = firstItem ? (firstItem.image || findProduct(firstItem.productId)?.image || '') : '';
+  return `
+  <a href="/account/order/${escapeHtml(order.id)}" data-link class="acc-order-row">
+    <div class="acc-order-thumb">${img ? `<img loading="lazy" decoding="async" src="${img}" alt="">` : ''}</div>
+    <div class="acc-order-mid">
+      <div class="oid">سفارش #${escapeHtml(order.id)}</div>
+      <div class="odate">${dateStr}</div>
+    </div>
+    <div class="acc-order-side">
+      <span class="acc-badge ${badge.cls}">${escapeHtml(badge.label)}</span>
+      <span class="acc-order-price">${RIAL(order.total)}</span>
     </div>
   </a>`;
 }
@@ -12364,6 +12646,8 @@ function bindPageUI(){
   initInstagramFeedSlider();
   initMyOrdersList();
   initOrderDetailPage();
+  bindAccountDrawerUI();
+  initAccountDashboard();
   bindIdCopyButtons();
   bindMagazineFilterTabs();
   $$('#pdFaqPage .pd-faq-item').forEach(item=>{
