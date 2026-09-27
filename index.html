@@ -1610,28 +1610,29 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 
 /* ===== Cursor-following Radial Glow + Gradient Border روی Product Card (فقط دسکتاپ) =====
    فقط با ماوس واقعی (hover:hover و pointer:fine) فعال می‌شود؛ روی موبایل/تاچ کاملاً غیرفعال است.
-   مقادیر قابل تنظیم: اندازه/شدت گلو و بردر و سرعت fade در متغیرهای --cg-* پایین. */
+   رنگ‌بندی دور کارت ثابت و یکسان برای همه‌ی محصولات است (بالاراست/بالاچپ/پایین‌چپ/پایین‌راست هرکدام
+   یک رنگ نزدیک‌به‌هم دارند) و با حرکت ماوس، نور روی همان بخشی که ماوس نزدیک آن است روشن‌تر می‌شود. */
 @media (hover:hover) and (pointer:fine){
   .card{
     --mx:50%; --my:50%;
-    --cg-size:340px;             /* اندازه‌ی گلوی داخلی */
-    --cg-inner:rgba(217,70,239,.16);   /* رنگ مرکز گلو (مجنتا) */
-    --cg-mid:rgba(168,85,247,.09);     /* رنگ میانی گلو (بنفش) */
-    --cg-border-size:260px;      /* اندازه‌ی گلوی روی بردر */
-    --cg-border-inner:rgba(236,72,201,.95); /* رنگ مرکز بردر نورانی (پینک) */
-    --cg-border-mid:rgba(168,85,247,.55);   /* رنگ میانی بردر نورانی (بنفش) */
+    --cg-border-size:300px;      /* اندازه‌ی نور روشن‌کننده روی بردر */
+    --cg-c1:#ec46c9;  /* بالا-راست: پینک */
+    --cg-c2:#8b5cf6;  /* بالا-چپ: بنفش */
+    --cg-c3:#3b82f6;  /* پایین-چپ: آبی */
+    --cg-c4:#22c1c3;  /* پایین-راست: فیروزه‌ای */
     --cg-fade-in:.5s;
     --cg-fade-out:.6s;
   }
-  .card::before,.card::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;border-radius:inherit;transition:opacity var(--cg-fade-out) ease}
+  .card::before,.card::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;border-radius:inherit;padding:2px;transition:opacity var(--cg-fade-out) ease;-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
   .card.hover-glow::before,.card.hover-glow::after{opacity:1;transition:opacity var(--cg-fade-in) ease}
-  .card::before{background:radial-gradient(var(--cg-size) circle at var(--mx) var(--my), var(--cg-inner), var(--cg-mid) 42%, transparent 72%)}
+  /* رینگ رنگی ثابت دور کارت (یکسان روی همه‌ی محصولات) */
+  .card::before{
+    background:conic-gradient(from -45deg, var(--cg-c1), var(--cg-c2), var(--cg-c3), var(--cg-c4), var(--cg-c1));
+  }
+  /* نور متحرک همراه ماوس که روی همان رینگ رنگی می‌درخشد */
   .card::after{
-    padding:1px;
-    background:radial-gradient(var(--cg-border-size) circle at var(--mx) var(--my), var(--cg-border-inner), var(--cg-border-mid) 45%, transparent 72%);
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
+    background:radial-gradient(var(--cg-border-size) circle at var(--mx) var(--my), rgba(255,255,255,.95), transparent 60%);
+    mix-blend-mode:overlay;
   }
   .card > a,.card-body{position:relative;z-index:2}
 }
