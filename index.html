@@ -1605,17 +1605,17 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 .pd-wishlist-btn{width:52px;height:52px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:14px}
 .pd-wishlist-btn svg{width:20px;height:20px}
 .card:hover{border-color:var(--gold-dim);border-top-color:var(--gold);transform:translateY(-5px);box-shadow:0 14px 28px rgba(var(--shadow-color),.14)}
-.card.card-deal{--op-t:0;--op-r:0;--op-b:0;--op-l:0;transition:border-color .3s ease, transform .35s cubic-bezier(.16,1,.3,1), box-shadow .12s linear;box-shadow:0 2px 12px rgba(var(--shadow-color),.08),0 -26px 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-t)),26px 0 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-r)),0 26px 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-b)),-26px 0 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-l))}
-.card.card-deal:hover{border-color:var(--gold-dim);border-top-color:var(--gold);transform:translateY(-5px);box-shadow:0 14px 28px rgba(var(--shadow-color),.14),0 -26px 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-t)),26px 0 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-r)),0 26px 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-b)),-26px 0 34px -10px rgba(var(--glow-rgb,0,0,0),var(--op-l))}
+.card.card-deal{transition:border-color .3s ease, transform .35s cubic-bezier(.16,1,.3,1), box-shadow .12s linear}
+.card.card-deal:hover{border-color:var(--gold-dim);border-top-color:var(--gold);transform:translateY(-5px);box-shadow:0 14px 28px rgba(var(--shadow-color),.14)}
 
-/* ===== Cursor-following Radial Glow + Gradient Border روی Product Card (فقط دسکتاپ) =====
+/* ===== Cursor-following Colored Glow روی بردر Product Card (فقط دسکتاپ) =====
    فقط با ماوس واقعی (hover:hover و pointer:fine) فعال می‌شود؛ روی موبایل/تاچ کاملاً غیرفعال است.
-   رنگ‌بندی دور کارت ثابت و یکسان برای همه‌ی محصولات است (بالاراست/بالاچپ/پایین‌چپ/پایین‌راست هرکدام
-   یک رنگ نزدیک‌به‌هم دارند) و با حرکت ماوس، نور روی همان بخشی که ماوس نزدیک آن است روشن‌تر می‌شود. */
+   هر گوشه‌ی کارت یک رنگ ثابت دارد (یکسان روی همه‌ی محصولات) اما رنگ فقط وقتی دیده می‌شود
+   که ماوس به همان گوشه نزدیک شود؛ بقیه‌ی بردر شفاف می‌ماند. نور سفید اضافه‌ای وجود ندارد. */
 @media (hover:hover) and (pointer:fine){
   .card{
     --mx:50%; --my:50%;
-    --cg-border-size:300px;      /* اندازه‌ی نور روشن‌کننده روی بردر */
+    --cg-border-size:260px;      /* شعاع ناحیه‌ای که رنگ در آن دیده می‌شود */
     --cg-c1:#ec46c9;  /* بالا-راست: پینک */
     --cg-c2:#8b5cf6;  /* بالا-چپ: بنفش */
     --cg-c3:#3b82f6;  /* پایین-چپ: آبی */
@@ -1623,21 +1623,26 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
     --cg-fade-in:.5s;
     --cg-fade-out:.6s;
   }
-  .card::before,.card::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;border-radius:inherit;padding:2px;transition:opacity var(--cg-fade-out) ease;-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-  .card.hover-glow::before,.card.hover-glow::after{opacity:1;transition:opacity var(--cg-fade-in) ease}
-  /* رینگ رنگی ثابت دور کارت (یکسان روی همه‌ی محصولات) */
-  .card::before{
-    background:conic-gradient(from -45deg, var(--cg-c1), var(--cg-c2), var(--cg-c3), var(--cg-c4), var(--cg-c1));
-  }
-  /* نور متحرک همراه ماوس که روی همان رینگ رنگی می‌درخشد */
   .card::after{
-    background:radial-gradient(var(--cg-border-size) circle at var(--mx) var(--my), rgba(255,255,255,.95), transparent 60%);
-    mix-blend-mode:overlay;
+    content:'';position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;border-radius:inherit;padding:2px;
+    transition:opacity var(--cg-fade-out) ease;
+    background:conic-gradient(from -45deg, var(--cg-c1), var(--cg-c2), var(--cg-c3), var(--cg-c4), var(--cg-c1));
+    -webkit-mask:
+      linear-gradient(#000 0 0),
+      linear-gradient(#000 0 0) content-box,
+      radial-gradient(var(--cg-border-size) circle at var(--mx) var(--my), #000, transparent 70%);
+    -webkit-mask-composite: xor, source-in;
+    mask-image:
+      linear-gradient(#000 0 0),
+      linear-gradient(#000 0 0) content-box,
+      radial-gradient(var(--cg-border-size) circle at var(--mx) var(--my), #000, transparent 70%);
+    mask-composite: exclude, intersect;
   }
+  .card.hover-glow::after{opacity:1;transition:opacity var(--cg-fade-in) ease}
   .card > a,.card-body{position:relative;z-index:2}
 }
 @media (prefers-reduced-motion:reduce){
-  .card::before,.card::after{transition:none}
+  .card::after{transition:none}
 }
 /* ===== اسکلتون درخشان + fade-in برای عکس محصول =====
    تا لود شدن عکس، همان جای رزروشده یک درخشش ملایم دارد؛ بعد عکس با محو شدن نرم ظاهر می‌شود.
@@ -9594,38 +9599,6 @@ function wireLightbox(){
   });
 }
 
-function hashStrToInt(s){
-  let h = 0;
-  s = String(s);
-  for(let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) >>> 0; }
-  return h;
-}
-// هر محصول یک رنگ ثابت (زرد/بنفش/سبز/قرمز) دارد؛ هاله همان رنگ به‌صورت نرم دنبال موس حرکت می‌کند
-// و هر چه موس به لبه/گوشه کارت نزدیک‌تر شود، همان سمت پررنگ‌تر می‌شود.
-const DEAL_GLOW_COLORS = ['250,204,21', '168,85,247', '34,197,94', '239,68,68'];
-function dealGlowStyleAttr(id){
-  const h = hashStrToInt(id);
-  return `--glow-rgb:${DEAL_GLOW_COLORS[h % DEAL_GLOW_COLORS.length]}`;
-}
-function dealCardPointer(el, ev){
-  const rect = el.getBoundingClientRect();
-  const x = ev.clientX - rect.left, y = ev.clientY - rect.top;
-  const w = rect.width, h = rect.height;
-  const reach = Math.max(w, h) * 0.65;
-  const distL = x, distR = w - x, distT = y, distB = h - y;
-  const op = d => (Math.max(0, 1 - d / reach) * 0.65).toFixed(2);
-  el.style.setProperty('--op-l', op(distL));
-  el.style.setProperty('--op-r', op(distR));
-  el.style.setProperty('--op-t', op(distT));
-  el.style.setProperty('--op-b', op(distB));
-}
-function dealCardLeave(el){
-  el.style.setProperty('--op-t', '0');
-  el.style.setProperty('--op-r', '0');
-  el.style.setProperty('--op-b', '0');
-  el.style.setProperty('--op-l', '0');
-}
-
 /* ===== Cursor-following Glow روی Product Card (فقط دسکتاپ - hover:hover + pointer:fine) =====
    یک event delegation سراسری روی document (به‌جای listener جدا برای هر کارت) تا با تعداد
    زیاد محصول هم سبک و بدون افت Performance بماند. موقعیت ماوس به‌صورت درصد (--mx/--my)
@@ -9682,7 +9655,7 @@ function productCard(p, isDeal){
   const shownPrice = flashDeal ? flashPrice : p.price;
   const wasPrice = flashDeal ? p.price : p.compareAt;
   const extraImgs = normalizeImages(p).slice(1, 4);
-  const dealAttrs = isDeal ? ` card-deal" style="${dealGlowStyleAttr(p.id)}" onmousemove="dealCardPointer(this,event)" onmouseleave="dealCardLeave(this)` : '';
+  const dealAttrs = isDeal ? ` card-deal` : '';
   return `
   <div class="card${dealAttrs}">
     <a href="/product/${p.id}" data-link>
