@@ -1618,48 +1618,38 @@ html[data-theme="classic"] .theme-toggle .icon-moon{display:none}
 
 /* ===== Cursor-following Glow + Interactive Gradient Border روی Product Card (فقط دسکتاپ) =====
    فقط با ماوس واقعی (hover:hover و pointer:fine) فعال می‌شود؛ روی موبایل/تاچ کاملاً غیرفعال است.
-   فقط بوردر رنگی می‌شود و داخل کارت نوری نیست. رنگ بوردر مثل ویدیوی مرجع به «محل» ماوس بستگی دارد
-   (چپ: بنفش، بالا: ماژنتا، بالا-راست: نارنجی، راست: زرد، پایین-راست: قرمز، پایین: صورتی) و
-   نزدیک Cursor روشن‌تر است. مختصات ماوس (--mx/--my) با JS (initCardCursorGlow) ست می‌شود.
-   برای تنظیم رنگ/شدت/سرعت فقط متغیرهای --cg-* پایین را تغییر بدهید. */
+   نور بنفش → ماژنتا → صورتی دقیقاً زیر Cursor است: روی بردر کارت (نزدیک Cursor روشن‌تر) و
+   خیلی ملایم داخل کارت. مختصات ماوس (--mx/--my) با JS (initCardCursorGlow) روی همان کارت ست می‌شود.
+   برای تنظیم شدت/رنگ/سرعت فقط متغیرهای --cg-* پایین را تغییر بدهید. */
 @media (hover:hover) and (pointer:fine){
   .card{
     --mx:50%; --my:50%;
-    --cg-top:#d855e8;           /* بالا: ماژنتا */
-    --cg-top-right:#f59e42;     /* بالا-راست: نارنجی */
-    --cg-right:#f3d34a;         /* راست: زرد */
-    --cg-bottom-right:#ef5b6a;  /* پایین-راست: قرمز مرجانی */
-    --cg-bottom:#e85fc0;        /* پایین: صورتی */
-    --cg-bottom-left:#b465e8;   /* پایین-چپ: بنفش */
-    --cg-left:#9a6bff;          /* چپ: بنفش/ویولت */
-    --cg-top-left:#b060f0;      /* بالا-چپ: بنفش */
-    --cg-core-alpha:.55;        /* روشنیِ سفیدِ هسته‌ی نور دقیقاً زیر Cursor (0 تا 1) */
-    --cg-border-size:240px;     /* شعاع روشن شدن بوردر */
-    --cg-border-width:1.5px;    /* ضخامت بوردر */
-    --cg-border-opacity:1;      /* شدت بوردر (0 تا 1) */
+    --cg-purple:168,85,247;      /* بنفش */
+    --cg-magenta:217,70,239;     /* ماژنتا */
+    --cg-pink:244,114,182;       /* صورتی */
+    --cg-core:255,205,240;       /* هسته‌ی روشن بوردر نزدیک Cursor */
+    --cg-border-size:240px;      /* شعاع روشن شدن بوردر */
+    --cg-border-width:1.5px;     /* ضخامت بوردر */
+    --cg-border-opacity:1;       /* شدت بوردر (0 تا 1) */
     --cg-fade-in:.35s;
     --cg-fade-out:.55s;
   }
   .card::after{
     content:'';position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;border-radius:inherit;
-    padding:var(--cg-border-width);
     transition:opacity var(--cg-fade-out) ease;
-    background:
-      radial-gradient(circle 90px at var(--mx) var(--my), rgba(255,255,255,var(--cg-core-alpha)), transparent 100%),
-      conic-gradient(from 0deg at 50% 50%,
-        var(--cg-top) 0deg, var(--cg-top-right) 45deg, var(--cg-right) 90deg, var(--cg-bottom-right) 135deg,
-        var(--cg-bottom) 180deg, var(--cg-bottom-left) 225deg, var(--cg-left) 270deg, var(--cg-top-left) 315deg,
-        var(--cg-top) 360deg);
-    -webkit-mask:
-      linear-gradient(#000 0 0),
-      linear-gradient(#000 0 0) content-box,
-      radial-gradient(circle var(--cg-border-size) at var(--mx) var(--my), #000 0, rgba(0,0,0,.55) 40%, transparent 100%);
-    -webkit-mask-composite: xor, source-in;
-    mask-image:
-      linear-gradient(#000 0 0),
-      linear-gradient(#000 0 0) content-box,
-      radial-gradient(circle var(--cg-border-size) at var(--mx) var(--my), #000 0, rgba(0,0,0,.55) 40%, transparent 100%);
-    mask-composite: exclude, intersect;
+  }
+  .card::after{
+    padding:var(--cg-border-width);
+    background:radial-gradient(circle var(--cg-border-size) at var(--mx) var(--my),
+      rgba(var(--cg-core),.95) 0,
+      rgba(var(--cg-pink),.85) 14%,
+      rgba(var(--cg-magenta),.6) 36%,
+      rgba(var(--cg-purple),.28) 62%,
+      transparent 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    mask-composite:exclude;
   }
   .card.hover-glow::after{opacity:var(--cg-border-opacity);transition-duration:var(--cg-fade-in)}
   .card > a,.card-body{position:relative;z-index:2}
