@@ -647,6 +647,8 @@ nav.main-nav.nav-hovering a:hover::after,nav.main-nav.nav-hovering .nav-drop-tri
   transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s;
   z-index:70;
 }
+/* پل نامرئی بین دکمه «فروشگاه» و پنل، تا موقع حرکت موس از دکمه به پنل، هاور قطع نشود و پنل بسته نشود */
+.nav-megamenu::before{content:"";position:absolute;left:0;right:0;top:-32px;height:32px}
 .nav-item-drop:hover .nav-megamenu,.nav-item-drop.drop-open .nav-megamenu{
   opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);
   transition:opacity .28s ease,transform .28s ease,visibility 0s linear 0s;
@@ -2447,6 +2449,20 @@ footer.site>.container{background:var(--bg-card);border:1px solid var(--line);bo
   footer.site{padding:0 36px 40px}
 }
 .footer-logo-img{display:none;max-width:140px;max-height:52px;object-fit:contain;margin-bottom:8px}
+/* عکس فوتر دیگر بالای نام برند نمایش داده نمی‌شود؛ به‌جایش پس‌زمینه‌ی کل فوتر است */
+footer.site .footer-logo-img{display:none!important}
+footer.site{--footer-bg-tint:color-mix(in srgb, var(--bg-card) 30%, transparent)}
+footer.site>.container{
+  background-color:var(--bg-card);
+  background-image:linear-gradient(var(--footer-bg-tint),var(--footer-bg-tint)),var(--fbg,none);
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+}
+html:not([data-theme="classic"]) footer.site>.container{--fbg:var(--footer-bg-dark-d,none)}
+html[data-theme="classic"] footer.site>.container{--fbg:var(--footer-bg-classic-d,none)}
+@media (max-width:760px){
+  html:not([data-theme="classic"]) footer.site>.container{--fbg:var(--footer-bg-dark-m,none)}
+  html[data-theme="classic"] footer.site>.container{--fbg:var(--footer-bg-classic-m,none)}
+}
 html:not([data-theme="classic"]) .footer-logo-desktop.footer-logo-dark{display:block}
 html[data-theme="classic"] .footer-logo-desktop.footer-logo-classic{display:block}
 @media (max-width:760px){
@@ -6329,16 +6345,15 @@ function applySettingsToDOM(settings){
       footTag.style.display = 'none';
     }
   }
+  // عکس فوتر به‌عنوان پس‌زمینه‌ی کل فوتر (نه لوگو بالای برند)
   [
-    ['footerLogoImgDarkDesktop', settings.footerLogoDark],
-    ['footerLogoImgClassicDesktop', settings.footerLogoClassic],
-    ['footerLogoImgDarkMobile', settings.footerLogoDarkMobile || settings.footerLogoDark],
-    ['footerLogoImgClassicMobile', settings.footerLogoClassicMobile || settings.footerLogoClassic]
-  ].forEach(([elId,url])=>{
-    const img = document.getElementById(elId);
-    if(!img) return;
-    if(url){ img.src = url; img.style.display = ''; }
-    else{ img.removeAttribute('src'); img.style.display = 'none'; }
+    ['--footer-bg-dark-d', settings.footerLogoDark],
+    ['--footer-bg-classic-d', settings.footerLogoClassic],
+    ['--footer-bg-dark-m', settings.footerLogoDarkMobile || settings.footerLogoDark],
+    ['--footer-bg-classic-m', settings.footerLogoClassicMobile || settings.footerLogoClassic]
+  ].forEach(([varName,url])=>{
+    if(url) root.setProperty(varName, 'url("' + String(url).replace(/"/g,'%22') + '")');
+    else root.removeProperty(varName);
   });
   const subtitleEl = $('#logoSubtitleText');
   const wordmarkEl = document.querySelector('.logo .wordmark');
@@ -6398,10 +6413,12 @@ function applySettingsToDOM(settings){
     }
     if(!bars.length){
       annBar.style.display = 'none';
+      annBar.style.minHeight = '';
+      window.__annMeasure = null;
     } else {
       annBar.style.display = 'flex';
       let idx = 0;
-      const renderBar = ()=>{
+      const renderBar = (measureOnly)=>{
         const b = bars[idx % bars.length];
         root.setProperty('--announce-bg', b.bg || '#0a0a0b');
         root.setProperty('--announce-color', b.color || '#f3efe6');
@@ -6444,10 +6461,39 @@ function applySettingsToDOM(settings){
           annBar.classList.remove('has-link');
           annBar.onclick = null;
         }
+        if(measureOnly === true) return;
         const secs = Math.max(0.1, Number(b.seconds)||6);
         window.__annRotateTimer = setTimeout(()=>{ idx++; renderBar(); }, secs*1000);
       };
+      // ارتفاع نوار را روی بلندترین اعلان قفل می‌کنیم تا با عوض شدن اعلان‌ها
+      // (متن‌های کوتاه/بلند، دو خطی شدن در موبایل، لیبل و آیکون) کل سایت بالا و پایین نپرد.
+      const measureMax = ()=>{
+        annBar.style.minHeight = '';
+        const saved = idx;
+        let max = 0;
+        for(let i=0;i<bars.length;i++){
+          idx = i;
+          renderBar(true);
+          max = Math.max(max, annBar.getBoundingClientRect().height);
+        }
+        idx = saved;
+        renderBar(true);
+        if(max > 0) annBar.style.minHeight = Math.ceil(max) + 'px';
+      };
+      window.__annMeasure = bars.length > 1 ? measureMax : null;
+      if(bars.length > 1) measureMax();
       renderBar();
+    }
+    if(!window.__annResizeBound){
+      window.__annResizeBound = true;
+      let t = null;
+      window.addEventListener('resize', ()=>{
+        clearTimeout(t);
+        t = setTimeout(()=>{ if(window.__annMeasure) window.__annMeasure(); }, 150);
+      });
+      if(document.fonts && document.fonts.ready){
+        document.fonts.ready.then(()=>{ if(window.__annMeasure) window.__annMeasure(); });
+      }
     }
 
     // رنگ قالب پنل‌های «جدیدترین‌ها» و «تخفیف‌های امروز» صفحه اول
@@ -7968,6 +8014,13 @@ function bindGlobalUI(){
     });
     navProductsDrop.addEventListener('click', (e)=>{
       if(e.target.closest('a')) navProductsDrop.classList.remove('drop-open');
+    });
+    // دسکتاپ (دستگاه‌های دارای موس): با خروج موس از کل ناحیه (دکمه + پنل) بسته شود،
+    // حتی اگر قبلاً با کلیک باز شده باشد. کلیک و لمس در موبایل/تبلت دست‌نخورده می‌ماند.
+    navProductsDrop.addEventListener('mouseleave', ()=>{
+      if(window.matchMedia && window.matchMedia('(hover:hover)').matches){
+        navProductsDrop.classList.remove('drop-open');
+      }
     });
   }
 
@@ -18493,7 +18546,7 @@ function adminContent(){
 
   <div class="settings-card">
     <h3 class="serif">عکس فوتر سایت</h3>
-    <p class="settings-desc">برای فوتر می‌توانید جدا برای دسکتاپ و موبایل، و جدا برای هر تم (مشکی/روشن) یک عکس بگذارید. اگر برای موبایل عکسی نگذارید، همان عکس دسکتاپ آن تم استفاده می‌شود. پیشنهاد می‌شود عکس PNG با پس‌زمینه کاملاً شفاف باشد.</p>
+    <p class="settings-desc">برای فوتر می‌توانید جدا برای دسکتاپ و موبایل، و جدا برای هر تم (مشکی/روشن) یک عکس بگذارید. این عکس پس‌زمینه‌ی کل فوتر می‌شود. اگر برای موبایل عکسی نگذارید، همان عکس دسکتاپ آن تم استفاده می‌شود. پیشنهاد می‌شود عکس افقی و با کیفیت باشد.</p>
     <h4 style="font-size:13px;color:var(--text-dim);margin:4px 0 10px">دسکتاپ</h4>
     <div class="theme-asset-row">
       <div class="theme-asset-col">
@@ -18505,7 +18558,7 @@ function adminContent(){
           </div>
           ${pendingFooterImage.Dark ? `<button type="button" class="btn btn-ghost" id="removeFooterImgBtnDark" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
-        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">PNG با پس‌زمینه شفاف پیشنهاد می‌شود.</span>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">عکس به‌صورت پس‌زمینه‌ی کل فوتر نمایش داده می‌شود.</span>
       </div>
       <div class="theme-asset-col">
         <span class="theme-asset-label">☀️ عکس فوتر دسکتاپ - تم روشن</span>
@@ -18516,7 +18569,7 @@ function adminContent(){
           </div>
           ${pendingFooterImage.Classic ? `<button type="button" class="btn btn-ghost" id="removeFooterImgBtnClassic" style="padding:8px 16px;font-size:12.5px">حذف</button>` : ''}
         </div>
-        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">PNG با پس‌زمینه شفاف پیشنهاد می‌شود.</span>
+        <span style="font-size:11px;color:var(--text-faint);display:block;margin-top:6px">عکس به‌صورت پس‌زمینه‌ی کل فوتر نمایش داده می‌شود.</span>
       </div>
     </div>
     <h4 style="font-size:13px;color:var(--text-dim);margin:18px 0 10px">موبایل</h4>
